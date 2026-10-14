@@ -1,0 +1,47 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'uk.mbc.legacies'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'uk.mbc.legacies'
+        minSdk 24
+        targetSdk 34
+        // CI passes the run number so every build installs over the last one
+        versionCode (project.findProperty('versionCode') ?: '1') as int
+        versionName (project.findProperty('versionName') ?: '1.0')
+    }
+
+    signingConfigs {
+        // One fixed key for every build, so a new APK installs over the old one without uninstalling.
+        // It lives in the repo on purpose: this is a private game for friends, not a Play Store app.
+        mbc {
+            storeFile file('../mbc.keystore')
+            storePassword 'mbclegacies'
+            keyAlias 'mbc'
+            keyPassword 'mbclegacies'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.mbc
+        }
+        debug {
+            signingConfig signingConfigs.mbc
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.11.0'
+}
