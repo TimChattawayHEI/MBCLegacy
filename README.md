@@ -8,6 +8,10 @@ The lads vs everybody. A 16-bit beat 'em up, Orpington 1999 to Elba 2002 to Deni
 
 Open the file on your phone. The first time, Android asks whether to allow installs from your browser or files app: allow it. To update, install the new one over the top.
 
+## How to play
+
+Move with the stick, HIT to attack (tap it for your combo), JUMP, and SPECIAL when the bar is full. Hold HIT and let go for your lad's mini special: it hits everyone around you, but costs a little health if it lands. PLAY ONLINE on the select screen starts a two-player game with a friend's phone: one hosts and reads out the code, the other joins.
+
 ## What's here
 
 - `web/` the game itself (one page plus its art, music and fonts). The same game runs on claude.ai.
