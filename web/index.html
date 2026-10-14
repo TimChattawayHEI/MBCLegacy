@@ -444,7 +444,7 @@ let typed = '';
 const KEYMAP = { ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right', ArrowUp: 'up', KeyW: 'up',
   ArrowDown: 'down', KeyS: 'down', KeyJ: 'punch', KeyZ: 'punch', KeyK: 'jump', KeyX: 'jump', Space: 'jump',
   KeyL: 'special', KeyC: 'special', KeyU: 'back', KeyV: 'back', Enter: 'start', Escape: 'escape',
-  KeyM: 'mute', KeyF: 'lang', KeyB: 'board', KeyR: 'route', KeyT: 'diff', KeyP: 'pause' };
+  KeyM: 'mute', KeyO: 'online', KeyF: 'lang', KeyB: 'board', KeyR: 'route', KeyT: 'diff', KeyP: 'pause' };
 window.addEventListener('keydown', e => {
   const tg = e.target && e.target.tagName;
   if (tg === 'INPUT' || tg === 'TEXTAREA' || tg === 'BUTTON' && (e.code === 'Enter' || e.code === 'Space')) return;
@@ -1248,6 +1248,7 @@ const STAGES = {
     ] },
 };
 const ROUTE = ['frequency', 'soundz', 'airport', 'road', 'divebar', 'beach', 'club', 'arrival', 'naval', 'social', 'pegnine'];
+function netUnl() { return NET.on ? NET.unlocked : settings.unlocked; }
 function routeFrom(start) {
   if (start === 'ramsden') return ['ramsden'];
   const at = { elba: 'airport', carpdiem: 'arrival', fishery: 'arrival' }[start];
@@ -1498,7 +1499,7 @@ const dCache = {};
 function D() {
   const base = DIFFS[(run && run.diff) || settings.diff] || DIFFS.normal;
   if (!run || !run.route || run.route.length <= 2) return base;
-  const i = run.idx || 0, key = base.label + i;
+  const i = run.idx || 0, key = base.label + i + (netCoop() ? 'c' : '');
   if (!dCache[key]) {
     const o = Object.assign({}, base);
     const ramp = i === 0 ? (base.label === 'HARD' ? 0.9 : 0.55) : i === 1 ? (base.label === 'HARD' ? 1 : 0.8) : 1;
@@ -1507,6 +1508,7 @@ function D() {
     // deeper into a run, the same stage is tougher: from the third stage on, a little more health, damage and company each stage
     const ri = run.route.indexOf('road'), deep = Math.max(0, i - 2 - (ri >= 0 && ri < i ? 1 : 0));
     o.hp *= 1 + 0.035 * deep; o.boss *= 1 + 0.03 * deep; o.dmg *= 1 + 0.025 * deep; o.extra += 0.06 * deep;
+    if (netCoop()) { o.hp *= 1.25; o.boss *= 1.4; o.extra += 0.5; }
     dCache[key] = o;
   }
   return dCache[key];
@@ -1676,7 +1678,7 @@ function ladSay(kind, p, force) {
 }
 function updateBubbles(dt) {
   for (const b of bubbles) b.t += dt;
-  bubbles = bubbles.filter(b => b.t < b.life && !b.e.remove && (b.e === player || foes.includes(b.e) || allies.includes(b.e) || b.e.npc || b.e.kind === 'ghost'));
+  bubbles = bubbles.filter(b => b.t < b.life && !b.e.remove && (b.e === player || PL.includes(b.e) || foes.includes(b.e) || allies.includes(b.e) || b.e.npc || b.e.kind === 'ghost'));
 }
 
 // ------------------------------------------------------------------ entities
@@ -1744,7 +1746,7 @@ function hitFruit(fm) {
   fm.hits++; fm.spin = 0.7; fm.flash = 0.15; sfx('page');
   if (fm.hits >= 5 && !fm.paid) {
     fm.paid = true; run.jackpot = true;
-    const was = settings.unlocked; settings.unlocked = true; saveSettings();
+    const was = netUnl(); settings.unlocked = true; NET.unlocked = true; saveSettings();
     addScore(2000); sfx('jackpot'); addShake(5);
     popWord(fm.x, FT + 4, 150, 'THREE MARCS!', true);
     for (let i = 0; i < 14; i++) parts.push({ k: 'debris', x: fm.x, y: FT + 10, z: 70, vx: rand(-200, 200), vz: rand(200, 480), t: 0, life: 1.3, r: 5, col: '#ffd23f', rot: 0, vr: rand(-10, 10) });
@@ -2197,7 +2199,7 @@ function updatePlayer(p, dt) {
       p.lastTap = { dir: d, t: time };
     }
   }
-  if (touchUI && stickVec()) p.running = stickRun();
+  if (NET.on) { if (held.has('run')) p.running = true; else if (p.runBit) p.running = false; p.runBit = held.has('run'); } else if (touchUI && stickVec()) p.running = stickRun();
   if (!ix || (p.running && ix !== p.face && p.state === 'run')) p.running = false;
   const chord = pressed.has('back') || (pressed.has('punch') && pressed.has('jump'));
   switch (p.state) {
@@ -2286,7 +2288,7 @@ function updatePlayer(p, dt) {
       p.vx = 0; p.vy = 0;
       if (p.t > 1.3 && mode === 'play') {
         run.lives--; run.livesLost++;
-        if (run.lives > 0) respawn(p); else gameOver();
+        if (run.lives > 0) respawn(p); else if (!netOutOfLives(p)) gameOver();
       }
       break;
   }
@@ -2326,6 +2328,7 @@ function callAllies(p) {
 }
 function updateAllies(dt) {
   for (const a of allies) {
+    if (NET.on) player = a.own || PL[0];
     a.t += dt; a.life -= dt; if (a.atk) a.atkT += dt;
     if (a.sayCool > 0) a.sayCool -= dt; if (a.cool > 0) a.cool -= dt; if (a.comboT > 0) a.comboT -= dt;
     const SP = a.def.speed * 1.15;
@@ -2366,6 +2369,7 @@ function updateAllies(dt) {
     }
     a.x += a.vx * dt; a.y = clamp(a.y + a.vy * dt, FT, FB);
   }
+  if (NET.on) player = PL[0];
   allies = allies.filter(a => !a.remove);
 }
 function startBarrage(kind, pw) {
@@ -3924,6 +3928,7 @@ function drawTransmitter(b) {
 // ------------------------------------------------------------------ shots and hazards
 function updateShots(dt) {
   for (const s of shots) {
+    if (NET.on) player = s.own || netNear(s.x, s.y);
     s.t += dt;
     if (s.kind === 'boomerang') {
       if (!s.back) { s.vx -= s.face * 1400 * dt; if (Math.sign(s.vx) !== s.face || s.t > 0.8) { s.back = true; s.hit = new Set(); } }
@@ -3957,6 +3962,7 @@ function updateShots(dt) {
       s.dead = true; applyHit(s.from, player, { dmg: s.dmg, kd: false, kb: 80, hs: 0.04 }, Math.sign(s.vx) || 1);
     }
   }
+  if (NET.on) player = PL[0];
   shots = shots.filter(s => !s.dead);
 }
 function landArc(s) {
@@ -3974,6 +3980,7 @@ function spawnMoped() {
 }
 function updateHazards(dt) {
   for (const h of hazards) {
+    if (NET.on) player = netNear(h.x, h.y);
     h.t += dt;
     if (h.kind === 'mortar' || h.kind === 'skyball') {
       if (h.t >= h.fall) {
@@ -4014,6 +4021,7 @@ function updateHazards(dt) {
       if (h.kind === 'firewave' && chance(0.5)) flames(h.x, h.y, 1, 10);
     }
   }
+  if (NET.on) player = PL[0];
   hazards = hazards.filter(h => !h.dead);
 }
 
@@ -6256,6 +6264,7 @@ function startStage(key) {
   mode = 'play'; modeT = 0;
   showBanner(ST.hidden ? 'HIDDEN STAGE' : 'STAGE ' + ST.n, ST.title, 2.4);
   musicSet(ST.music);
+  netStageStart();
   if (ST.drive) driveStart(); else setTimeout0(() => ladSay('start', 1, true), 2.2);
 }
 function finishStage() {
@@ -6288,8 +6297,8 @@ function afterClear() {
   const key = run.route[run.idx];
   if (key === 'pegnine') {
     run.cleared = true;
-    if (run.livesLost === 0 && !settings.unlocked) { settings.unlocked = true; saveSettings(); run.flawless = true; }
-    if (settings.unlocked && !run.route.includes('ramsden')) run.route.push('ramsden');
+    if (run.livesLost === 0 && !netUnl()) { settings.unlocked = true; NET.unlocked = true; saveSettings(); run.flawless = true; }
+    if (netUnl() && !run.route.includes('ramsden')) run.route.push('ramsden');
   }
   if (key === 'ramsden') run.ramsdenCleared = run.idx === run.route.length - 1;
   run.idx++;
@@ -6524,6 +6533,7 @@ function optionPills() {
     { id: 'route', label: 'START: ' + ({ elba: 'ELBA 2002', carpdiem: 'CARP DIEM', ramsden: 'RAMSDEN' }[startAt] || '1999'), key: 'R' },
     { id: 'board', label: 'LEADERBOARD', key: 'B' },
   ];
+  if (netAvailable()) pills.unshift({ id: 'online', label: 'PLAY ONLINE', key: 'O' });
   ctx.font = '800 11px ' + BODY;
   let total = 0; for (const p of pills) { p.w = ctx.measureText(p.label + (touchUI ? '' : '  ' + p.key)).width + 26; total += p.w + 10; }
   let x = (W - total + 10) / 2;
@@ -6535,6 +6545,7 @@ function toggleOption(id) {
   if (id === 'lang') { settings.sweary = !settings.sweary; saveSettings(); }
   else if (id === 'mute') { settings.sound = !settings.sound; saveSettings(); applySound(); }
   else if (id === 'board') openBoard(null, 'select');
+  else if (id === 'online') openNetLobby();
   else if (id === 'route') { const opts = settings.unlocked ? ['1999', 'elba', 'carpdiem', 'ramsden'] : ['1999', 'elba', 'carpdiem']; startAt = opts[(opts.indexOf(startAt) + 1) % opts.length]; }
   else if (id === 'diff') { settings.diff = DIFF_ORDER[(DIFF_ORDER.indexOf(settings.diff) + 1) % DIFF_ORDER.length]; saveSettings(); }
 }
@@ -6543,6 +6554,7 @@ function updateSelect() {
   if (pressed.has('left')) { sel = (sel + n - 1) % n; sfx('swing'); }
   if (pressed.has('right')) { sel = (sel + 1) % n; sfx('swing'); }
   for (const id of ['lang', 'mute', 'board', 'route', 'diff']) if (pressed.has(id)) toggleOption(id);
+  if (pressed.has('online') && netAvailable()) { toggleOption('online'); return; }
   if (typed.endsWith('RAMSDEN') && !settings.unlocked) { settings.unlocked = true; saveSettings(); typed = ''; sfx('jackpot'); showBanner('RAMSDEN UNLOCKED', 'Press R to start there', 2.4); }
   if (mode !== 'select') return;
   let go = pressed.has('punch') || pressed.has('start');
@@ -6633,6 +6645,7 @@ function drawClear() {
 }
 function updateEnd() {
   updateParts(1 / 60);
+  if (NET.on) { if (modeT > 1.4 && (pressed.has('punch') || pressed.has('start'))) netQuit(); return; }
   if (modeT > 1.4 && (pressed.has('punch') || pressed.has('start') || taps.length)) openNameEntry();
 }
 
@@ -6912,6 +6925,7 @@ function pauseAct(id) {
   else if (id === 'quit') { if (!pauseConfirm) { pauseConfirm = true; sfx('page'); } else { pauseConfirm = false; mode = 'select'; modeT = 0; banner = null; musicSet(null); } }
 }
 function updatePause() {
+  if (NET.on) { if (modeT > 0.15 && ['pause', 'escape', 'start', 'punch'].some(a => pressed.has(a))) resumeGame(); return; }
   const its = pauseItems();
   if (modeT > 0.15 && (pressed.has('pause') || pressed.has('escape'))) { resumeGame(); return; }
   if (pressed.has('up')) { pauseSel = (pauseSel + its.length - 1) % its.length; pauseConfirm = false; sfx('swing'); }
@@ -6920,6 +6934,7 @@ function updatePause() {
   for (const t of taps) for (let i = 0; i < its.length; i++) { const it = its[i]; if (t.x > it.x && t.x < it.x + it.w && t.y > it.y && t.y < it.y + it.h) { pauseSel = i; pauseAct(it.id); } }
 }
 function drawPause() {
+  if (NET.on) { ctx.fillStyle = 'rgba(10,14,16,0.75)'; ctx.fillRect(0, 0, W, H); textOut('PAUSED', W / 2, H / 2 - 20, '44px ' + DISPLAY, '#f2a23a', OUT, 7, 'center'); ctx.font = '700 15px ' + BODY; ctx.fillStyle = '#efe6d2'; ctx.textAlign = 'center'; ctx.fillText('Either of you: press pause or HIT to carry on', W / 2, H / 2 + 30); return; }
   ctx.fillStyle = 'rgba(10,14,16,0.82)'; ctx.fillRect(0, 0, W, H);
   textOut('PAUSED', 64, 96, '44px ' + DISPLAY, '#f2a23a', OUT, 7, 'left');
   pauseItems().forEach((it, i) => {
@@ -7718,12 +7733,13 @@ const ROAD_LINES = {
 // ------------------------------------------------------------------ setup, from startStage
 function driveStart() {
   const me = player.def.id, ids = ['sam'];
-  if (me !== 'sam') ids.push(me);
+  for (const q of players()) if (!q.gone && !ids.includes(q.def.id)) ids.push(q.def.id);
+  if (!ids.includes(me)) ids.push(me);
   for (const id of ['tim', 'seb', 'byron', 'pearcy', 'kelly']) if (ids.length < 5 && !ids.includes(id)) ids.push(id);
   S.drv = { phase: 'intro', t: 0, sx: -220, y: ROAD.lanes[1], speed: 500, dents: 0, inv: 0, near: 0, picks: 0, bounce: 0, tilt: 0,
     obs: [], next: 1700, chatT: 7, smashT: ROAD.smashT, go: false, wreck: false, fire: 0, cheerT: 3, boom: false,
     crew: ids.map(id => ({ npc: true, kind: 'crew', id, def: CHAR_BY_ID[id], x: 0, y: 0, z: 0, face: 1, sayCool: 0, scale: 1 })) };
-  cam.x = 0; player.x = -900; player.state = 'idle'; player.vx = player.vy = 0; ST.len = 40000;
+  cam.x = 0; for (const q of players()) { q.x = -900; q.state = 'idle'; q.vx = q.vy = 0; } ST.len = 40000;
   S.npcs = [];
 }
 function crewSay(kind, force) {
@@ -7738,7 +7754,7 @@ function driveTick(dt) {
   const d = S.drv; if (!d) return false;
   if (d.phase === 'smash' || d.phase === 'fire') return false;
   d.t += dt; if (d.inv > 0) d.inv -= dt; if (d.bounce > 0) d.bounce -= dt;
-  player.x = cam.x - 900; player.vx = player.vy = 0; player.state = 'idle';
+  for (const q of players()) { q.x = cam.x - 900; q.vx = q.vy = 0; q.state = 'idle'; }
   const inp = readInput();
   if (d.phase === 'intro') {
     d.sx = Math.min(240, d.sx + 420 * dt);
@@ -7863,7 +7879,8 @@ function smashSetup() {
   foes.length = 0; foes.push(car); allies.length = 0; hazards.length = 0; shots.length = 0; items.length = 0;
   // everyone piles out
   const p = player; p.x = cam.x + 230; p.y = FT + 104; p.z = 0; p.vx = p.vy = p.vz = 0; p.face = 1; setIdle(p); p.inv = 0;
-  const watch = d.crew.filter(c => c.id !== player.def.id);
+  for (const q of players()) if (q !== p && !q.gone) { q.x = cam.x + 160; q.y = FT + 150; q.z = 0; q.vx = q.vy = q.vz = 0; q.face = 1; setIdle(q); q.inv = 0; }
+  const watch = d.crew.filter(c => !players().some(q => q.def.id === c.id));
   watch.forEach((c, i) => {
     const n = makeNpc(c.id, cam.x + 60 + i * 70, FT + 14 + (i % 2) * 22, CHAR_BY_ID[c.id].look); n.def = CHAR_BY_ID[c.id]; n.face = 1; n.state = 'idle'; n.lad = true;
     S.npcs.push(n);
@@ -8038,8 +8055,9 @@ function drawDriveHud() {
   if (d.phase === 'smash' || d.phase === 'fire') {
     if (d.go || d.phase === 'fire') {
       const t = Math.max(0, Math.ceil(d.phase === 'fire' ? (d.left || 0) : d.smashT));
-      textOut(String(t), W / 2, 58, '52px ' + DISPLAY, t <= 10 && d.phase === 'smash' && Math.floor(time * 4) % 2 ? '#ff6a4a' : '#ffd23f', OUT, 8, 'center');
-      ctx.font = '800 12px ' + BODY; ctx.fillStyle = '#efe6d2'; ctx.textAlign = 'center'; ctx.fillText('SMASH THE ESPACE', W / 2, 96);
+      const ty = typeof netCoop === 'function' && NET.on ? 112 : 58;
+      textOut(String(t), W / 2, ty, '52px ' + DISPLAY, t <= 10 && d.phase === 'smash' && Math.floor(time * 4) % 2 ? '#ff6a4a' : '#ffd23f', OUT, 8, 'center');
+      ctx.font = '800 12px ' + BODY; ctx.fillStyle = '#efe6d2'; ctx.textAlign = 'center'; ctx.fillText('SMASH THE ESPACE', W / 2, ty + 38);
     }
   } else {
     const x0 = 300, x1 = 660, y = H - 44, p = clamp(cam.x / ROAD.len, 0, 1);
@@ -8059,6 +8077,498 @@ function driveRows(add) {
   add('Close calls x' + d.near, d.near * 200);
   add('Espace wrecked', d.wreck ? 5000 : 0);
   add('Time to spare', d.wreck ? Math.ceil(d.left || 0) * 200 : 0);
+}
+const __FIREBASE__ = null;
+// ================================================================== ONLINE CO-OP (Version 39)
+// Two phones run the same game in step ("lockstep") and swap only button presses, a few frames ahead.
+// Player 1 is the host. Everything random inside the game comes from a shared seed, so both phones
+// see exactly the same fight. The relay is a Firebase Realtime Database (or a local mock for testing).
+
+const NET = { on: false, solo: false, role: null, me: 0, code: null, frame: 0, delay: 6, q: [new Map(), new Map()], prod: 0, prodT: 0,
+  rng: null, cur: [null, null], myAck: -1, theirAck: -1, sendT: 0, lastSend: -1, stallT: 0, stallN: 0, adaptT: 0, calmT: 0,
+  sums: new Map(), theirSums: [], desync: false, unlocked: false, lastRecvAt: 0, leftAt: 0, pendLeave: false, startedAt: 0, ping: 0 };
+let PL = [];
+function players() { return NET.on && PL.length === 2 ? PL : [player]; }
+function netCoop() { return NET.on && PL.length === 2 && !PL[1 - NET.me].gone; }
+
+// ------------------------------------------------------------------ determinism: the game's own random numbers
+const nativeRandom = Math.random;
+let simRng = null;
+Math.random = function () { return simRng ? simRng() : nativeRandom(); };
+function makeRng(seed) {
+  let a = seed >>> 0;
+  const f = () => { a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  f.st = () => a >>> 0;
+  return f;
+}
+// sound, music and particles are local only: they must never use (or skip using) the shared random numbers
+function outsideSim(fn) { return function () { const r = simRng; simRng = null; try { return fn.apply(this, arguments); } finally { simRng = r; } }; }
+sfx = outsideSim(sfx); musicSet = outsideSim(musicSet); musicTick = outsideSim(musicTick); updateParts = outsideSim(updateParts);
+
+// ------------------------------------------------------------------ input as data: 11 held bits + 11 pressed bits per frame
+const NACT = ['left', 'right', 'up', 'down', 'punch', 'jump', 'special', 'back', 'start', 'pause', 'run'];
+const netPressed = new Set();
+function netBitsNow() {
+  let hb = 0, pb = 0;
+  for (let i = 0; i < 9; i++) if (held.has(NACT[i]) || touchHeld(NACT[i])) hb |= 1 << i;
+  if (touchUI && stickVec() && stickRun()) hb |= 1 << 10;
+  for (const a of netPressed) { const i = NACT.indexOf(a === 'escape' ? 'pause' : a); if (i >= 0) pb |= 1 << i; }
+  netPressed.clear();
+  return hb | (pb << 11);
+}
+function decodeBits(b) {
+  const h = new Set(), p = new Set();
+  for (let i = 0; i < 11; i++) { if (b & (1 << i)) h.add(NACT[i]); if (b & (1 << (i + 11))) p.add(NACT[i]); }
+  return { held: h, pressed: p };
+}
+function setSimInput(io) { held.clear(); pressed.clear(); for (const a of io.held) held.add(a); for (const a of io.pressed) pressed.add(a); }
+
+// ------------------------------------------------------------------ the two players inside one game
+function netEachPlayer(dt) {
+  for (let i = 0; i < PL.length; i++) {
+    const p = PL[i]; if (p.gone || p.out) continue;
+    setSimInput(NET.cur[i] || { held: new Set(), pressed: new Set() });
+    player = p;
+    try { updatePlayer(p, dt); } catch (e) { glitch('player' + (i + 1) + ' ' + p.state, e); setIdle(p); p.z = 0; p.vz = 0; p.grab = null; }
+    netTag(p);
+  }
+  player = PL[0];
+  setSimInput(NET.union || { held: new Set(), pressed: new Set() });
+}
+// anything a player starts (a thrown weapon, the backup lads, a cut-in) remembers who started it
+function netTag(p) {
+  for (const s of shots) if (!s._o) { s._o = 1; s.own = p; }
+  for (const a of allies) if (!a._o) { a._o = 1; a.own = p; }
+  if (cutin && !cutin._o) { cutin._o = 1; cutin.own = p; }
+}
+function netTagFoe() { for (const s of shots) if (!s._o) s._o = 1; }
+function netAlive(p) { return p && !p.gone && !p.out && p.state !== 'dead'; }
+// each enemy picks one of the lads to go after, and sticks with them for a bit
+function netTarget(f) {
+  if (!netCoop()) return PL[0];
+  const cur = PL[f.tp | 0];
+  if (f.tpT > time && netAlive(cur)) return cur;
+  let best = PL[0], bd = 1e9;
+  for (const p of PL) { if (!netAlive(p)) continue; const d = Math.abs(p.x - f.x) + 2 * Math.abs(p.y - f.y); if (d < bd) { bd = d; best = p; } }
+  f.tp = PL.indexOf(best); f.tpT = time + (f.boss ? 2.6 : 1.6);
+  return best;
+}
+function netNear(x, y) {
+  let best = PL[0], bd = 1e9;
+  for (const p of PL) { if (!netAlive(p)) continue; const d = Math.abs(p.x - x) + 2 * Math.abs(p.y - y); if (d < bd) { bd = d; best = p; } }
+  return best;
+}
+function netLead() { let b = PL[0]; for (const p of PL) if (netAlive(p) && p.x > b.x) b = p; return b; }
+function netDrawPlayers() { return NET.on && PL.length === 2 ? PL.filter(p => !p.gone && !p.out) : [player]; }
+// a new stage: the second lad walks in beside the first
+function netStageStart() {
+  if (!NET.on || PL.length < 2) return;
+  const a = PL[0], p = PL[1];
+  for (const q of PL) q.out = false;
+  if (p.gone) { p.x = -2000; return; }
+  p.look = lookFor(p.def, ST.era);
+  p.hp = p.maxHp; p.z = 0; p.vx = p.vy = p.vz = 0; p.inv = 1; p.atk = null; p.grab = null; p.weapon = null; p.running = false; p.face = 1; p.buffT = 0; p.crashT = 0; p.scale = 1; p.meter = 100;
+  if (ST.fixed) { p.x = 560; p.y = FB - 30; setIdle(p); }
+  else { p.x = a.x - 40; p.y = clamp(a.y - 46, FT + 6, FB - 6); p.state = a.state; p.t = 0; }
+}
+// with no lives left, a lad sits out until the next stage, as long as their mate is still going
+function netOutOfLives(p) {
+  if (!netCoop()) return false;
+  const other = PL.find(q => q !== p);
+  if (!netAlive(other)) return false;
+  p.out = true; p.x = -2000; showBanner(p.def.name + " IS OUT", 'Back next stage. Keep going!', 2.2);
+  return true;
+}
+
+// ------------------------------------------------------------------ the relay: Firebase, or a mock for testing on one computer
+const FB_CFG = typeof __FIREBASE__ !== 'undefined' ? __FIREBASE__ : null;
+function netMockWanted() { return /[?&]netmock/.test(location.search); }
+function netAvailable() { return netMockWanted() || (!!FB_CFG && !!window.MBC_APP); }
+const NT = {
+  kind: null, db: null, code: null, offs: [], bc: null, lat: 70,
+  async init() {
+    if (this.kind) return;
+    if (netMockWanted()) {
+      this.kind = 'mock'; const m = location.search.match(/netmock=(\d+)/); this.lat = m ? +m[1] : 70;
+      this.bc = new BroadcastChannel('mbc-net');
+      this.bc.onmessage = ev => { const { path, val } = ev.data; setTimeout(() => { for (const w of this.watchers) if (w.path === path) w.cb(val); }, this.lat * (0.7 + nativeRandom() * 0.6)); };
+      this.watchers = [];
+      return;
+    }
+    await new Promise((res, rej) => {
+      if (window.firebase && window.firebase.database) return res();
+      const add = (src, next) => { const s = document.createElement('script'); s.src = src; s.onload = next; s.onerror = () => rej(new Error('no connection')); document.head.appendChild(s); };
+      add('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js', () => add('https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js', res));
+    });
+    if (!window.firebase.apps.length) window.firebase.initializeApp(FB_CFG);
+    this.db = window.firebase.database(); this.kind = 'fb';
+  },
+  key(path) { return 'mbcnet/' + this.code + '/' + path; },
+  put(path, val) {
+    if (this.kind === 'mock') { try { if (val == null) localStorage.removeItem(this.key(path)); else localStorage.setItem(this.key(path), JSON.stringify(val)); } catch (e) { /* ok */ } this.bc.postMessage({ path: this.code + '/' + path, val }); return Promise.resolve(); }
+    return this.db.ref('rooms/' + this.code + '/' + path).set(val == null ? null : val);
+  },
+  async get(path) {
+    if (this.kind === 'mock') { try { const v = localStorage.getItem(this.key(path)); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+    const s = await this.db.ref('rooms/' + this.code + '/' + path).once('value'); return s.val();
+  },
+  watch(path, cb) {
+    if (this.kind === 'mock') { const w = { path: this.code + '/' + path, cb }; this.watchers.push(w); this.get(path).then(v => { if (v != null) cb(v); }); this.offs.push(() => { this.watchers = this.watchers.filter(x => x !== w); }); return; }
+    const ref = this.db.ref('rooms/' + this.code + '/' + path), h = s => cb(s.val());
+    ref.on('value', h); this.offs.push(() => ref.off('value', h));
+  },
+  dropOnLeave(path) {
+    if (this.kind === 'mock') { const k = this.code + '/' + path, me = this; window.addEventListener('pagehide', () => me.bc.postMessage({ path: k, val: null })); return; }
+    this.db.ref('rooms/' + this.code + (path ? '/' + path : '')).onDisconnect().remove();
+  },
+  close() {
+    for (const f of this.offs) try { f(); } catch (e) { /* gone */ }
+    this.offs = [];
+    if (this.kind === 'fb' && this.code) try { this.db.ref('rooms/' + this.code + '/lobby_' + NET.role).onDisconnect().cancel(); } catch (e) { /* ok */ }
+  },
+};
+
+// ------------------------------------------------------------------ the lobby: host or join, pick lads, go
+const NL = { screen: 'menu', sel: 0, code: '', msg: '', busy: false, me: null, them: null, go: null, t: 0, input: null, lad: 0, ready: false, diff: 'normal', start: '1999' };
+function openNetLobby() {
+  audioInit(); sfx('page');
+  mode = 'net'; modeT = 0; NL.screen = 'menu'; NL.sel = 0; NL.msg = ''; NL.code = ''; NL.ready = false; NL.them = null; NL.go = null; NL.lad = sel;
+  NL.diff = settings.diff; NL.start = startAt;
+}
+function netCodeInput(show) {
+  if (!NL.input) {
+    const el = document.createElement('input');
+    el.type = 'text'; el.maxLength = 4; el.autocomplete = 'off'; el.spellcheck = false; el.setAttribute('autocapitalize', 'characters');
+    el.style.cssText = 'position:fixed;z-index:50;font:700 34px "Pixelify Sans",monospace;letter-spacing:14px;text-align:center;text-transform:uppercase;background:#0c1014;color:#ffd23f;border:3px solid #f2a23a;border-radius:10px;padding:6px 10px;width:220px;';
+    el.addEventListener('input', () => { NL.code = el.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4); el.value = NL.code; if (NL.code.length === 4) netJoin(NL.code); });
+    el.addEventListener('keydown', e => { if (e.key === 'Escape') { e.preventDefault(); netBackToMenu(); } e.stopPropagation(); });
+    document.body.appendChild(el); NL.input = el;
+  }
+  const el = NL.input;
+  if (!show) { el.style.display = 'none'; el.blur(); return; }
+  const r = canvas.getBoundingClientRect(), k = r.width / W;
+  el.style.display = 'block'; netPlaceInput();
+  el.value = NL.code;
+  setTimeout(() => { try { el.focus(); } catch (e) { /* ok */ } }, 30);
+}
+// keep the code box over the canvas (the phone keyboard can resize the page)
+function netPlaceInput() {
+  const el = NL.input; if (!el || el.style.display === 'none') return;
+  const r = canvas.getBoundingClientRect(), k = r.width / W, w = Math.max(180, 260 * k);
+  el.style.width = w + 'px'; el.style.fontSize = Math.max(22, 40 * k) + 'px';
+  el.style.left = (r.left + W / 2 * k - w / 2) + 'px'; el.style.top = (r.top + 150 * k) + 'px';
+}
+function netRoomCode() { const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; let s = ''; for (let i = 0; i < 4; i++) s += A[Math.floor(nativeRandom() * A.length)]; return s; }
+async function netHost() {
+  NL.busy = true; NL.msg = 'Connecting...';
+  try {
+    await NT.init();
+    for (let i = 0; i < 6; i++) { NT.code = netRoomCode(); const ex = await NT.get('meta'); if (!ex) break; }
+    NET.role = 'h'; NET.me = 0; NL.screen = 'host'; NL.msg = '';
+    await NT.put('meta', { open: true, v: 39 });
+    NT.dropOnLeave('');
+    netLobbyPublish();
+    NT.watch('lobby_g', v => { NL.them = v; if (v && NL.screen === 'host') { NL.screen = 'lobby'; sfx('start'); } if (!v && NL.screen === 'lobby') { NL.screen = 'host'; NL.ready = false; netLobbyPublish(); } });
+  } catch (e) { NL.msg = "Couldn't connect. Check your signal and try again."; NL.screen = 'menu'; }
+  NL.busy = false;
+}
+async function netJoin(code) {
+  if (NL.busy) return;
+  NL.busy = true; NL.msg = 'Looking for ' + code + '...';
+  try {
+    await NT.init(); NT.code = code;
+    const meta = await NT.get('meta');
+    if (!meta) { NL.msg = 'No game with code ' + code + '. Check it with your mate.'; NL.busy = false; NL.code = ''; if (NL.input) NL.input.value = ''; return; }
+    const g = await NT.get('lobby_g');
+    if (g && g.here) { NL.msg = 'That game already has two players.'; NL.busy = false; return; }
+    NET.role = 'g'; NET.me = 1; netCodeInput(false);
+    NL.screen = 'lobby'; NL.msg = ''; sfx('start');
+    NT.dropOnLeave('lobby_g');
+    NT.watch('lobby_h', v => { NL.them = v; if (!v && mode === 'net') { NL.msg = 'The host has gone.'; netBackToMenu(true); } });
+    NT.watch('go', v => { if (v && !NL.go && mode === 'net') { NL.go = v; netBegin(v); } });
+    netLobbyPublish();
+  } catch (e) { NL.msg = "Couldn't connect. Check your signal and try again."; }
+  NL.busy = false;
+}
+function netLobbyPublish() {
+  const me = { here: true, lad: PLAYABLE[NL.lad].id, ready: NL.ready };
+  if (NET.role === 'h') Object.assign(me, { diff: NL.diff, start: NL.start, unlocked: !!settings.unlocked });
+  NT.put('lobby_' + NET.role, me);
+}
+function netBackToMenu(keepMsg) {
+  netCodeInput(false);
+  if (NT.kind && NT.code) { if (NET.role === 'h') { NT.put('meta', null); NT.put('lobby_h', null); NT.put('go', null); } else if (NET.role) NT.put('lobby_g', null); NT.close(); }
+  NET.role = null; NL.screen = 'menu'; NL.them = null; NL.ready = false; NL.go = null; if (!keepMsg) NL.msg = '';
+}
+function netLadTaken(i) { return NL.them && NL.them.lad === PLAYABLE[i].id; }
+function updateNetLobby() {
+  NL.t += 1 / 60;
+  const tapsNow = taps.slice();
+  const B = netLobbyButtons();
+  const hit = id => tapsNow.some(t => { const b = B[id]; return b && t.x > b.x && t.x < b.x + b.w && t.y > b.y && t.y < b.y + b.h; });
+  if (pressed.has('escape') || pressed.has('pause') || hit('back')) {
+    if (NL.screen === 'menu') { netCodeInput(false); mode = 'select'; modeT = 0; sfx('page'); return; }
+    netBackToMenu(); sfx('page'); return;
+  }
+  if (NL.screen === 'menu') {
+    if (pressed.has('left') || pressed.has('right') || pressed.has('up') || pressed.has('down')) { NL.sel = 1 - NL.sel; sfx('swing'); }
+    let pick = (pressed.has('punch') || pressed.has('start')) && modeT > 0.2 ? NL.sel : -1;
+    if (hit('host')) pick = 0; if (hit('join')) pick = 1;
+    if (pick === 0 && !NL.busy) { sfx('page'); netHost(); }
+    if (pick === 1 && !NL.busy) { sfx('page'); NL.screen = 'join'; NL.code = ''; NL.msg = ''; netCodeInput(true); }
+    return;
+  }
+  if (NL.screen === 'join') {
+    if (hit('code')) netCodeInput(true);
+    return;
+  }
+  if (NL.screen === 'lobby') {
+    const n = PLAYABLE.length, step = d => { let i = NL.lad; for (let k = 0; k < n; k++) { i = (i + d + n) % n; if (!netLadTaken(i)) break; } NL.lad = i; NL.ready = false; sfx('swing'); netLobbyPublish(); };
+    if (!NL.ready && pressed.has('left')) step(-1);
+    if (!NL.ready && pressed.has('right')) step(1);
+    for (const t of tapsNow) PLAYABLE.forEach((c, i) => { const x = tileX(i); if (!NL.ready && t.x > x && t.x < x + TILE.w && t.y > TILE.y - 8 && t.y < TILE.y + TILE.h && !netLadTaken(i)) { NL.lad = i; sfx('swing'); netLobbyPublish(); } });
+    if (netLadTaken(NL.lad) && !NL.ready) step(1);
+    if (NET.role === 'h' && !NL.ready) {
+      if (pressed.has('diff') || hit('diff')) { NL.diff = DIFF_ORDER[(DIFF_ORDER.indexOf(NL.diff) + 1) % DIFF_ORDER.length]; sfx('page'); netLobbyPublish(); }
+      if (pressed.has('route') || hit('route')) { const o = settings.unlocked ? ['1999', 'elba', 'carpdiem', 'ramsden'] : ['1999', 'elba', 'carpdiem']; NL.start = o[(o.indexOf(NL.start) + 1) % o.length]; sfx('page'); netLobbyPublish(); }
+    }
+    if (((pressed.has('punch') || pressed.has('start')) && modeT > 0.3) || hit('ready')) { NL.ready = !NL.ready; sfx(NL.ready ? 'start' : 'page'); netLobbyPublish(); }
+    // the host starts it once both are ready
+    if (NET.role === 'h' && NL.ready && NL.them && NL.them.ready && !NL.go) {
+      const gi = PLAYABLE.findIndex(c => c.id === NL.them.lad);
+      const go = { seed: (nativeRandom() * 4294967296) >>> 0, lads: [NL.lad, gi < 0 ? (NL.lad + 1) % n : gi], diff: NL.diff, start: NL.start, route: routeFrom(NL.start), unlocked: !!settings.unlocked };
+      NL.go = go; NT.put('go', go); netBegin(go);
+    }
+  }
+}
+// both phones start the same run from the same seed
+function netBegin(go) {
+  netCodeInput(false);
+  NET.on = true; NET.solo = false; NET.frame = 0; NET.prod = 0; NET.prodT = 0; NET.q = [new Map(), new Map()]; NET.myAck = -1; NET.theirAck = -1;
+  NET.sums = new Map(); NET.theirSums = []; NET.desync = false; NET.stallT = 0; NET.stallN = 0; NET.adaptT = 0; NET.calmT = 0; NET.delay = 6;
+  NET.unlocked = !!go.unlocked; NET.maxRecv = 0; NET.minLead = null; NET.lastRecvAt = performance.now(); NET.leftAt = 0; NET.pendLeave = false; NET.startedAt = performance.now();
+  for (let f = 0; f < NET.delay; f++) { NET.q[0].set(f, 0); NET.q[1].set(f, 0); }
+  NET.prod = NET.delay;
+  NET.rng = makeRng(go.seed);
+  const other = NET.role === 'h' ? 'g' : 'h';
+  NT.watch('i_' + other, netOnPacket);
+  NT.watch('lobby_' + other, v => { if (!v && NET.on && !NET.solo) NET.pendLeave = true; });
+  // everything the game remembers from before this run starts the same on both phones
+  time = 0; cam.x = 0; hitstop = 0; flashT = 0; shake = 0; banner = null; cutin = null; timers.length = 0; lastFoe = null; lastFoeT = 0; meterNopeT = 0;
+  simRng = NET.rng;
+  try {
+    const keep = settings.diff; settings.diff = go.diff;
+    startAt = go.start;
+    newRun(go.lads[0], go.start);
+    settings.diff = keep;
+    run.route = go.route.slice();
+    PL = [player, makePlayer(PLAYABLE[go.lads[1]])];
+    PL[0].pn = 1; PL[1].pn = 2;
+  } finally { simRng = null; }
+  held.clear(); pressed.clear(); taps.length = 0;
+}
+function netOnPacket(pk) {
+  if (!pk || !NET.on || NET.solo) return;
+  NET.lastRecvAt = performance.now();
+  const o = 1 - NET.me, q = NET.q[o];
+  if (Array.isArray(pk.b)) for (let i = 0; i < pk.b.length; i++) { const f = pk.f + i; if (f > NET.myAck && !q.has(f)) q.set(f, pk.b[i] | 0); }
+  while (q.has(NET.myAck + 1)) NET.myAck++;
+  // how early the other phone's buttons arrive, in frames: the delay is tuned from this
+  if (Array.isArray(pk.b) && pk.b.length) { const last = pk.f + pk.b.length - 1; if (last > (NET.maxRecv | 0)) { NET.maxRecv = last; const lead = last - NET.frame; NET.minLead = Math.min(NET.minLead == null ? 99 : NET.minLead, lead); } }
+  if (typeof pk.a === 'number') NET.theirAck = Math.max(NET.theirAck, pk.a);
+  if (pk.c) { NET.theirSums.push(pk.c); if (NET.theirSums.length > 20) NET.theirSums.shift(); netCheckSums(); }
+}
+function netSend(force) {
+  const now = performance.now();
+  if (!force && now - NET.sendT < 15) return;
+  const from = Math.max(NET.theirAck + 1, NET.prod - 240), to = NET.prod - 1;
+  if (from > to && !force && now - NET.sendT < 500) return;
+  NET.sendT = now;
+  const b = []; for (let f = from; f <= to; f++) b.push(NET.q[NET.me].get(f) | 0);
+  let c = null; for (const [f, v] of NET.sums) c = [f, v];
+  NT.put('i_' + NET.role, { f: from, b, a: NET.myAck, c });
+}
+function netChecksum() {
+  let h = 2166136261 >>> 0;
+  const mix = v => { h = Math.imul(h ^ (Math.round((+v || 0) * 8) | 0), 16777619) >>> 0; };
+  mix(NET.rng.st()); mix(run ? run.score : 0); mix(run ? run.lives : 0); mix(foes.length); mix(mode.charCodeAt(0)); mix(S ? S.waveIdx : 0);
+  for (const p of PL) { mix(p.x); mix(p.y); mix(p.z); mix(p.hp); }
+  for (const f of foes) { mix(f.x); mix(f.y); mix(f.hp); }
+  return h;
+}
+function netCheckSums() {
+  for (const [f, v] of NET.theirSums) { const mine = NET.sums.get(f); if (mine != null && mine !== v && !NET.desync) { NET.desync = true; console.warn('net: out of sync at frame', f); } }
+}
+function netReady(f) { return NET.q[0].has(f) && (NET.solo || NET.q[1].has(f)); }
+function netSimFrame() {
+  const f = NET.frame;
+  const a = NET.q[0].get(f) | 0, b = NET.solo ? 0 : (NET.q[1].get(f) | 0);
+  NET.cur = [decodeBits(a), decodeBits(b)];
+  NET.union = decodeBits(a | b);
+  setSimInput(NET.union);
+  taps.length = 0;
+  simRng = NET.rng;
+  try { step(1 / 60); } catch (e) { glitch('net', e); } finally { simRng = null; }
+  if (window.__netlog) {
+    const r = v => Math.round((+v || 0) * 100) / 100;
+    const st = [f, NET.rng.st(), r(time), mode, run && run.score, S && S.waveIdx, S && S.g, r(cam.x), timers.length, bubbles.length, shots.length, hazards.length, items.length, allies.length,
+      PL.map(p => [r(p.x), r(p.y), r(p.z), r(p.hp), p.state, r(p.t), p.face, p.combo, r(p.meter)].join(',')).join('|'),
+      foes.map(e => [e.kind, r(e.x), r(e.y), r(e.z), r(e.hp), e.state, r(e.t), r(e.cool), r(e.inv)].join(',')).join('|')].join(' ');
+    (window.__nl = window.__nl || []).push(st); if (window.__nl.length > 3000) window.__nl.shift();
+  }
+  NET.frame++;
+  if (f % 30 === 0 && f > 0) { NET.sums.set(f, netChecksum()); if (NET.sums.size > 12) NET.sums.delete(NET.sums.keys().next().value); netCheckSums(); }
+  if (f > 300) { NET.q[0].delete(f - 300); NET.q[1].delete(f - 300); }
+}
+// the other phone left (or vanished): their lad says bye and you carry on alone
+function netGoSolo() {
+  NET.solo = true; NET.pendLeave = false;
+  const p = PL[1 - NET.me]; if (!p) return;
+  if (mode === 'play') { say(p, pick(['Gotta go, lads.', 'Battery. Sorry lads.', "I'll catch you up."]), 2.4, true); }
+  p.gone = true; p.x = -2000;
+  showBanner('PLAYER ' + (2 - NET.me) + ' LEFT', 'Carry on without them', 2.6);
+}
+// the loop while playing online: read your buttons, swap them, run the frames both phones have, draw
+function netFrameLoop(realDt) {
+  NET.calls = (NET.calls || 0) + 1; NET.rsum = (NET.rsum || 0) + realDt;
+  for (const a of pressed) netPressed.add(a);
+  pressed.clear();
+  for (const t of taps) { const pb = pauseBtn(); if (mode === 'play' && Math.hypot(t.x - pb.x, t.y - pb.y) < pb.r + 10) netPressed.add('pause'); else if (mode !== 'play') netPressed.add('punch'); }
+  taps.length = 0;
+  const local = new Set(held);
+  // make this phone's input for the frame a few frames ahead (sixty a second, by the clock)
+  NET.prodT += Math.min(0.25, realDt);
+  let made = 0;
+  while (NET.prodT >= 1 / 60 && made < 10) {
+    NET.prodT -= 1 / 60; made++;
+    const tf = Math.max(NET.prod, NET.frame + NET.delay);
+    if (tf > NET.frame + NET.delay + 3) { NET.prodT = 0; break; }
+    for (let k = 0; k < 9; k++) if (local.has(NACT[k])) held.add(NACT[k]);
+    const bits = netBitsNow();
+    for (let f = NET.prod; f <= tf; f++) NET.q[NET.me].set(f, f === tf ? bits : (bits & 0x7ff));
+    NET.prod = tf + 1;
+  }
+  if (NET.pendLeave && !NET.solo) netGoSolo();
+  if (!NET.solo) netSend();
+  // run every frame that both phones' buttons are in for (a few at a time to catch up)
+  let ran = 0;
+  // never ahead of this phone's own clock: a frame runs once its local buttons are `delay` frames old
+  while (ran < 4 && NET.frame < NET.prod - NET.delay && netReady(NET.frame)) { netSimFrame(); ran++; if (!NET.on) break; }
+  if (!NET.on) return;
+  held.clear(); for (const a of local) held.add(a); pressed.clear();
+  // waiting on the other phone: count it, and stretch the delay if it keeps happening
+  if (!ran && !NET.solo && !netReady(NET.frame)) { NET.stallT += realDt; if (NET.stallT > 0.05) NET.stallN++; } else if (ran) NET.stallT = 0;
+  NET.adaptT += realDt;
+  if (NET.adaptT > 2) {
+    const ml = NET.minLead == null ? 99 : NET.minLead;
+    (NET.dbg = NET.dbg || []).push([NET.delay, ml, NET.stallN, NET.frame]);
+    if ((ml < 1 || NET.stallN > 20) && NET.delay < 15) { NET.delay++; NET.calmT = 0; }
+    else if (ml >= 3 && NET.stallN < 3 && (NET.calmT += NET.adaptT) >= 6 && NET.delay > 4) { NET.delay--; NET.calmT = 0; }
+    NET.adaptT = 0; NET.stallN = 0; NET.minLead = null;
+  }
+  if (!NET.solo && performance.now() - NET.lastRecvAt > 20000 && performance.now() - NET.startedAt > 20000) NET.pendLeave = true;
+  // draw from this phone's point of view
+  const keep = player; player = PL[NET.me] || player;
+  try { render(); if (mode === 'play' || mode === 'pause') drawNetHud(); } finally { player = keep; }
+}
+function netQuit() {
+  NET.on = false; NET.solo = false;
+  if (NT.kind && NT.code) { if (NET.role === 'h') { NT.put('meta', null); NT.put('go', null); NT.put('lobby_h', null); NT.put('i_h', null); } else { NT.put('lobby_g', null); NT.put('i_g', null); } NT.close(); }
+  if (PL[0]) player = PL[0];
+  PL = []; NET.role = null; held.clear(); pressed.clear();
+  mode = 'select'; modeT = 0; musicSet('title');
+}
+
+// ------------------------------------------------------------------ drawing: the lobby, the partner panel, the P1/P2 tags
+function netLobbyButtons() {
+  const B = { back: { x: 20, y: 18, w: 110, h: 40 } };
+  if (NL.screen === 'menu') { B.host = { x: W / 2 - 250, y: 230, w: 230, h: 110 }; B.join = { x: W / 2 + 20, y: 230, w: 230, h: 110 }; }
+  if (NL.screen === 'join') B.code = { x: W / 2 - 140, y: 140, w: 280, h: 90 };
+  if (NL.screen === 'lobby') { B.ready = { x: W / 2 - 110, y: 340, w: 220, h: 50 }; if (NET.role === 'h') { B.diff = { x: W / 2 - 330, y: 350, w: 190, h: 30 }; B.route = { x: W / 2 + 140, y: 350, w: 190, h: 30 }; } }
+  return B;
+}
+function netBtn(b, label, on, sub) {
+  rrect(b.x, b.y, b.w, b.h, 10); ctx.fillStyle = on ? '#2a3a42' : 'rgba(24,36,42,0.92)'; ctx.fill(); ctx.strokeStyle = on ? '#f2a23a' : '#2b3b42'; ctx.lineWidth = on ? 4 : 2; ctx.stroke();
+  textOut(label, b.x + b.w / 2, b.y + b.h / 2 - (sub ? 10 : 0), (b.h > 60 ? 26 : 16) + 'px ' + DISPLAY, on ? '#ffd23f' : '#efe6d2', OUT, 5, 'center');
+  if (sub) { ctx.font = '600 13px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'center'; ctx.fillText(sub, b.x + b.w / 2, b.y + b.h / 2 + 22); }
+}
+function drawNetLobby() {
+  drawSelectBg();
+  drawTitleLogo(W / 2, 44, true);
+  const B = netLobbyButtons();
+  textOut('PLAY ONLINE', W / 2, 118, '30px ' + DISPLAY, '#efe6d2', OUT, 6, 'center');
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  if (NL.screen === 'menu') {
+    netBtn(B.host, 'HOST', NL.sel === 0, 'Get a code for your mate');
+    netBtn(B.join, 'JOIN', NL.sel === 1, "Type in your mate's code");
+    ctx.font = '600 14px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.fillText('Two players, one campaign. You both need the app and a signal.', W / 2, 380);
+  } else if (NL.screen === 'host') {
+    ctx.font = '700 15px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.fillText('YOUR CODE', W / 2, 170);
+    textOut(NT.code || '....', W / 2, 232, '72px ' + DISPLAY, '#ffd23f', OUT, 10, 'center');
+    ctx.font = '600 15px ' + BODY; ctx.fillStyle = '#efe6d2'; ctx.fillText('Tell your mate to tap JOIN and type it in.', W / 2, 300);
+    ctx.fillStyle = '#93a3a1'; ctx.fillText('Waiting for them' + '...'.slice(0, 1 + Math.floor(time * 2) % 3), W / 2, 330);
+  } else if (NL.screen === 'join') {
+    ctx.font = '700 15px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.fillText("TYPE YOUR MATE'S 4-LETTER CODE", W / 2, 140);
+    ctx.fillStyle = '#efe6d2'; ctx.fillText('Tap the box if the keyboard is hidden.', W / 2, 250);
+    netPlaceInput();
+  } else if (NL.screen === 'lobby') {
+    const mine = PLAYABLE[NL.lad], them = NL.them && CHAR_BY_ID[NL.them.lad];
+    const slot = (x, c, label, ready, isMe) => {
+      ctx.fillStyle = 'rgba(10,8,6,0.45)'; ctx.beginPath(); ctx.ellipse(x, 300, 50, 9, 0, 0, Math.PI * 2); ctx.fill();
+      if (c) drawHuman({ look: c.look, def: c, face: 1, state: ready ? 'idle' : 'walk', t: 0, z: 0, walk: time * 8, vx: 0, vy: 0, flash: 0, atkT: 0 }, x - 6, 300, 1.35);
+      textOut(label, x, 152, '15px ' + DISPLAY, isMe ? '#ffd23f' : '#7fd0ff', OUT, 4, 'center');
+      textOut(c ? c.name : '...', x, 318, '20px ' + DISPLAY, '#efe6d2', OUT, 5, 'center');
+      ctx.font = '800 12px ' + BODY; ctx.fillStyle = ready ? '#7fcf5a' : '#93a3a1'; ctx.textAlign = 'center'; ctx.fillText(ready ? 'READY' : isMe ? 'PICKING' : 'PICKING...', x, 336);
+    };
+    const hostIsMe = NET.role === 'h';
+    slot(W / 2 - 230, hostIsMe ? mine : them, 'PLAYER 1' + (hostIsMe ? ' (YOU)' : ''), hostIsMe ? NL.ready : !!(NL.them && NL.them.ready), hostIsMe);
+    slot(W / 2 + 230, hostIsMe ? them : mine, 'PLAYER 2' + (hostIsMe ? '' : ' (YOU)'), hostIsMe ? !!(NL.them && NL.them.ready) : NL.ready, !hostIsMe);
+    netBtn(B.ready, NL.ready ? 'READY!' : 'READY?', NL.ready);
+    const h = hostIsMe ? NL : (NL.them || {});
+    const dl = (DIFFS[h.diff] || DIFFS.normal).label, sl = { elba: 'ELBA 2002', carpdiem: 'CARP DIEM', ramsden: 'RAMSDEN' }[h.start] || '1999';
+    ctx.font = '800 12px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'center';
+    if (hostIsMe) { netBtn(B.diff, 'DIFFICULTY: ' + dl, false); netBtn(B.route, 'START: ' + sl, false); }
+    else ctx.fillText('DIFFICULTY: ' + dl + '   ·   START: ' + sl + '   (the host picks)', W / 2, 365);
+    PLAYABLE.forEach((ch, i) => {
+      const x = tileX(i), on = NL.lad === i, taken = netLadTaken(i), y = TILE.y - (on ? 6 : 0);
+      ctx.save(); rrect(x, y, TILE.w, TILE.h, 8); ctx.fillStyle = on ? '#2a3a42' : 'rgba(24,36,42,0.92)'; ctx.fill(); ctx.clip();
+      const pi = portraitImg(ch.id); if (pi) { ctx.globalAlpha = taken ? 0.3 : 1; ctx.imageSmoothingEnabled = false; ctx.drawImage(pi, x + TILE.w / 2 - 36, y - 6, 72, 72); }
+      ctx.restore(); rrect(x, y, TILE.w, TILE.h, 8); ctx.strokeStyle = on ? '#f2a23a' : taken ? '#7fd0ff' : '#2b3b42'; ctx.lineWidth = on || taken ? 3 : 2; ctx.stroke();
+    });
+  }
+  if (NL.msg) { ctx.font = '700 14px ' + BODY; ctx.fillStyle = '#ff9a7a'; ctx.textAlign = 'center'; ctx.fillText(NL.msg, W / 2, 400); }
+  netBtn(B.back, 'BACK', false);
+}
+function drawNetHud() {
+  if (!NET.on || PL.length < 2) return;
+  const mate = PL[1 - NET.me];
+  // tags over both lads' heads
+  for (const p of PL) {
+    if (p.gone || p.out) continue;
+    const x = p.x - cam.x, y = p.y - p.z - 158 * (p.scale || 1);
+    if (x < -40 || x > W + 40) continue;
+    const mine = p === PL[NET.me];
+    const col = mine ? '#ffd23f' : '#7fd0ff';
+    textOut('P' + p.pn, x, y - 8, '17px ' + DISPLAY, col, OUT, 5, 'center');
+    ctx.fillStyle = OUT; ctx.beginPath(); ctx.moveTo(x - 8, y + 4); ctx.lineTo(x + 8, y + 4); ctx.lineTo(x, y + 13); ctx.fill();
+    ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(x - 5, y + 5); ctx.lineTo(x + 5, y + 5); ctx.lineTo(x, y + 10); ctx.fill();
+  }
+  if (mode !== 'play' || cutin) return;
+  // the partner panel
+  if (!mate.gone) {
+    pxPanel(384, 12, 210, 50);
+    ctx.save(); ctx.beginPath(); ctx.rect(390, 18, 38, 38); ctx.clip(); ctx.fillStyle = '#2a3a42'; ctx.fillRect(390, 18, 38, 38);
+    const pi = portraitImg(mate.def.id); if (pi) { ctx.imageSmoothingEnabled = false; ctx.drawImage(pi, 385, 16, 48, 48); }
+    ctx.restore();
+    textOut('P' + mate.pn + ' ' + mate.def.name, 436, 26, '13px ' + DISPLAY, '#7fd0ff', OUT, 3, 'left');
+    bar(436, 38, 148, 8, mate.out ? 0 : mate.hp / mate.maxHp, mate.hp / mate.maxHp < 0.3 ? '#e5484d' : '#7fcf5a');
+    bar(436, 50, 100, 5, mate.meter / 100, mate.meter >= 100 ? '#ffd23f' : '#c98a2e', '#2c2a22');
+  }
+  if (!NET.solo && NET.stallT > 0.6) {
+    ctx.fillStyle = 'rgba(12,16,20,0.75)'; ctx.fillRect(W / 2 - 170, H / 2 - 26, 340, 52);
+    textOut(NET.stallT > 8 ? 'CONNECTION SHAKY. HANG ON...' : 'WAITING FOR PLAYER ' + (2 - NET.me) + '...', W / 2, H / 2, '16px ' + DISPLAY, '#ffd23f', OUT, 4, 'center');
+  }
+  if (NET.desync) { ctx.font = '700 10px ' + BODY; ctx.fillStyle = '#ff9a7a'; ctx.textAlign = 'left'; ctx.fillText('out of sync', 384, 72); }
 }
 // ================================================================== step & render
 // ------------------------------------------------------------------ Seb's ARTILLERY: a Streets of Rage style cut-in
@@ -8165,6 +8675,7 @@ function step(dt) {
   musicTick();
   if (mode === 'title') { updateTitle(); return true; }
   if (mode === 'select') { updateSelect(); return true; }
+  if (mode === 'net') { updateNetLobby(); return true; }
   if (mode === 'chat') { updateChat(dt); return true; }
   if (mode === 'clear') { updateClear(); return true; }
   if (mode === 'board') { updateBoard(); return true; }
@@ -8174,26 +8685,29 @@ function step(dt) {
   if (hitstop > 0) { hitstop -= dt; shake = Math.max(0, shake - dt * 30); return false; }
   if (pressed.has('pause') || pressed.has('escape')) { openPause(); return true; }
   { const pb = pauseBtn(); for (const t of taps) if (Math.hypot(t.x - pb.x, t.y - pb.y) < pb.r + 10) { openPause(); return true; } }
-  if (cutin) { try { updateCutin(dt); } catch (e) { glitch('cutin', e); cutin = null; } return true; }
+  if (cutin) { if (NET.on) player = cutin.own || PL[0]; try { updateCutin(dt); } catch (e) { glitch('cutin', e); cutin = null; } if (NET.on) player = PL[0]; return true; }
   S.time += dt;
   if (S.chainT > 0) { S.chainT -= dt; if (S.chainT <= 0) S.chain = 0; }
   if (flashT > 0) flashT -= dt;
   updateTimers(dt);
   if (ST.drive) { let own = false; try { own = driveTick(dt); } catch (e) { glitch('drive', e); } if (own) { updateParts(dt); updateBubbles(dt); updateWaves(dt); shake = Math.max(0, shake - dt * 30); return true; } }
-  try { updatePlayer(player, dt); } catch (e) { glitch('player ' + player.state, e); setIdle(player); player.z = 0; player.vz = 0; player.grab = null; }
+  if (NET.on) netEachPlayer(dt); else try { updatePlayer(player, dt); } catch (e) { glitch('player ' + player.state, e); setIdle(player); player.z = 0; player.vz = 0; player.grab = null; }
   try { updateElba(dt); } catch (e) { glitch('elba', e); }
   try { updateLadFx(dt); } catch (e) { glitch('ladfx', e); }
   try { updateAllies(dt); updateBarrages(dt); } catch (e) { glitch('allies', e); allies = []; barrages = []; }
-  for (const f of foes) { try { updateFoe(f, dt); } catch (e) { glitch(f.kind + ' ' + f.state, e); f.remove = true; if (f.token) f.token = false; } }
+  for (const f of foes) { if (NET.on) player = netTarget(f); try { updateFoe(f, dt); } catch (e) { glitch(f.kind + ' ' + f.state, e); f.remove = true; if (f.token) f.token = false; } }
   foes = foes.filter(f => !f.remove);
+  if (NET.on) { player = PL[0]; netTagFoe(); }
   for (const b of breakables) if (b.flash > 0) b.flash -= dt;
   if (S.fruit) { if (S.fruit.spin > 0) S.fruit.spin -= dt; if (S.fruit.flash > 0) S.fruit.flash -= dt; }
   separate();
   try { updateShots(dt); } catch (e) { glitch('shots', e); shots = []; }
   try { updateHazards(dt); } catch (e) { glitch('hazards', e); hazards = []; }
   if (ST.fixed) { S.scrollX += dt * (S.tow ? 300 : 40); updateNaval(dt); }
+  if (NET.on) player = netLead();
   updateWaves(dt);
   updateCam(dt);
+  if (NET.on) player = PL[0];
   updateParts(dt);
   updateBubbles(dt);
   for (const it of items) it.t += dt;
@@ -8219,7 +8733,7 @@ function drawWorld(pix) {
   for (const h of hazards) if (h.kind !== 'moped') drawHazardFloor(h);
   drawDeniseFloor(); drawBossFloor();
   const list = [];
-  for (const e of [player, ...allies, ...foes]) list.push({ y: e.y + (e.state === 'netted' ? 1 : 0), f: () => drawEntity(e) });
+  for (const e of [...netDrawPlayers(), ...allies, ...foes]) list.push({ y: e.y + (e.state === 'netted' ? 1 : 0), f: () => drawEntity(e) });
   for (const b of breakables) list.push({ y: b.y, f: () => drawBreakable(b) });
   for (const n of (S.npcs || [])) list.push({ y: n.y, f: () => n.draw ? n.draw(n) : drawEntity(n) });
   ladFxDraw(list);
@@ -8269,6 +8783,7 @@ function render() {
   ctx.globalAlpha = 1;
   if (mode === 'title') { drawTitleScreen(); return; }
   if (mode === 'select') { drawSelect(); drawBanner(); return; }
+  if (mode === 'net') { drawNetLobby(); return; }
   if (mode === 'chat') { drawChat(); drawStatic(); return; }
   if (mode === 'board') { drawBoard(); return; }
   drawWorldPixel();
@@ -8296,6 +8811,7 @@ function drawGlitch() {
 // ================================================================== loop & boot
 let last = 0;
 function frame(ts) {
+  if (NET.on) { const rdt = last ? Math.min(0.1, (ts - last) / 1000) : 0.016; last = ts; try { netFrameLoop(rdt); } catch (e) { glitch('online', e); } requestAnimationFrame(frame); return; }
   const dt = last ? Math.min(0.05, (ts - last) / 1000) : 0.016;
   last = ts;
   try {
@@ -8310,6 +8826,8 @@ function frame(ts) {
   requestAnimationFrame(frame);
 }
 window.__appBack = () => {
+  if (NET.on) { netPressed.add('pause'); return true; }
+  if (mode === 'net') { if (NL.screen === 'menu') { mode = 'select'; modeT = 0; } else netBackToMenu(); return true; }
   if (mode === 'play') { openPause(); return true; }
   if (mode === 'pause') { resumeGame(); return true; }
   return false;
@@ -8323,7 +8841,7 @@ if (fsBtn) {
 }
 const pauseBtnEl = document.getElementById('pauseBtn');
 if (pauseBtnEl) pauseBtnEl.addEventListener('click', () => { audioInit(); if (mode === 'play') openPause(); else if (mode === 'pause') resumeGame(); canvas.focus(); });
-document.addEventListener('visibilitychange', () => { if (document.hidden && mode === 'play') openPause(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden && mode === 'play' && !NET.on) openPause(); });
 if (sndBtn) sndBtn.addEventListener('click', () => { audioInit(); settings.sound = !settings.sound; saveSettings(); applySound(); canvas.focus(); });
 applySound();
 canvas.addEventListener('pointerdown', () => { if (mode !== 'name') canvas.focus(); });
