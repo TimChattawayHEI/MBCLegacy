@@ -8309,11 +8309,16 @@ function frame(ts) {
   }
   requestAnimationFrame(frame);
 }
+window.__appBack = () => {
+  if (mode === 'play') { openPause(); return true; }
+  if (mode === 'pause') { resumeGame(); return true; }
+  return false;
+};
 requestAnimationFrame(frame);
 
 const fsBtn = document.getElementById('fs'), frameEl = document.getElementById('frame'), sndBtn = document.getElementById('snd');
 if (fsBtn) {
-  if (!frameEl || !frameEl.requestFullscreen) fsBtn.hidden = true;
+  if (!frameEl || !frameEl.requestFullscreen || window.MBC_APP) fsBtn.hidden = true;
   fsBtn.addEventListener('click', () => { try { const tgt = padOn() ? document.querySelector('.wrap') : frameEl; const r = tgt.requestFullscreen(); if (r && r.catch) r.catch(() => {}); } catch (e) { /* optional */ } canvas.focus(); });
 }
 const pauseBtnEl = document.getElementById('pauseBtn');
