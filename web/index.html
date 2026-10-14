@@ -8131,8 +8131,9 @@ function miniHoldTick(p, dt) {
   if (down && MINI_STATES.has(p.state) && p.z === 0) {
     p.holdT = (p.holdT || 0) + dt;
     if (p.holdT >= MINI_HOLD) {
-      if (!p.holdReady) { p.holdReady = true; sfx('page'); }
-      if (chance(dt * 22)) parts.push({ k: 'sparkle', x: p.x + rand(-26, 26), y: p.y, z: rand(20, 140), t: 0, life: 0.45 });
+      // charged: the lad flashes white, a scuff of dust at his feet, then a quick white blink while you hold it
+      if (!p.holdReady) { p.holdReady = true; p.holdBlink = 0; p.flash = 0.1; sfx('page'); dust(p.x, p.y, 3, 30); }
+      if ((p.holdBlink = (p.holdBlink || 0) + dt) >= 0.32) { p.holdBlink = 0; p.flash = 0.05; }
     }
     return;
   }
@@ -8173,7 +8174,7 @@ function miniBurst(p, m, last) {
   // the look of it
   if (m.powder) { for (let i = 0; i < 26; i++) { const a = i / 26 * Math.PI * 2; parts.push({ k: 'puff', x: p.x + Math.cos(a) * 20, y: p.y + Math.sin(a) * 8, z: rand(70, 130), vx: Math.cos(a) * rand(160, 300), vy: Math.sin(a) * 40, vz: rand(-10, 30), t: 0, life: rand(0.8, 1.3), r: rand(9, 15) }); } sfx('gust'); }
   else if (m.hearts) { for (let i = 0; i < 14; i++) parts.push({ k: 'heart', x: p.x + rand(-m.r, m.r), y: p.y + rand(-20, 20), z: rand(60, 140), t: 0, life: rand(0.8, 1.3) }); }
-  else for (let i = 0; i < 10; i++) { const a = i / 10 * Math.PI * 2; parts.push({ k: 'sparkle', x: p.x + Math.cos(a) * m.r * 0.7, y: p.y + Math.sin(a) * 14, z: rand(40, 110), t: 0, life: 0.4 }); }
+  else if (last) dust(p.x, p.y, 10, 90);
   addShake(last ? 6 : 3); if (last) sfx('heavy');
   // the price
   if (n && !p.miniPaid) { p.miniPaid = true; const c = Math.round(p.maxHp * MINI_COST); p.hp = Math.max(1, p.hp - c); dmgNum(p.x, p.y, p.z + 120, c); }
