@@ -8078,7 +8078,7 @@ function driveRows(add) {
   add('Espace wrecked', d.wreck ? 5000 : 0);
   add('Time to spare', d.wreck ? Math.ceil(d.left || 0) * 200 : 0);
 }
-const __FIREBASE__ = null;
+const __FIREBASE__ = {"apiKey": "AIzaSyDfimpSRIiAsd5PksE_ZnqXs8Y_5ASGFXY", "authDomain": "mbclegacy-2cba7.firebaseapp.com", "databaseURL": "https://mbclegacy-2cba7-default-rtdb.europe-west1.firebasedatabase.app", "projectId": "mbclegacy-2cba7", "storageBucket": "mbclegacy-2cba7.firebasestorage.app", "messagingSenderId": "568523988024", "appId": "1:568523988024:web:7397742803e4dbdb455acd"};
 // ================================================================== ONLINE CO-OP (Version 39)
 // Two phones run the same game in step ("lockstep") and swap only button presses, a few frames ahead.
 // Player 1 is the host. Everything random inside the game comes from a shared seed, so both phones
@@ -8197,8 +8197,10 @@ const NT = {
     }
     await new Promise((res, rej) => {
       if (window.firebase && window.firebase.database) return res();
-      const add = (src, next) => { const s = document.createElement('script'); s.src = src; s.onload = next; s.onerror = () => rej(new Error('no connection')); document.head.appendChild(s); };
-      add('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js', () => add('https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js', res));
+      // the app carries its own copy of the Firebase library (fb/); the web falls back to Google's copy
+      const add = (names, next) => { let i = 0; const go = () => { const s = document.createElement('script'); s.src = names[i]; s.onload = next; s.onerror = () => { i++; if (i < names.length) go(); else rej(new Error('no connection')); }; document.head.appendChild(s); }; go(); };
+      const V = 'https://www.gstatic.com/firebasejs/10.12.2/';
+      add(['fb/firebase-app-compat.js', V + 'firebase-app-compat.js'], () => add(['fb/firebase-database-compat.js', V + 'firebase-database-compat.js'], res));
     });
     if (!window.firebase.apps.length) window.firebase.initializeApp(FB_CFG);
     this.db = window.firebase.database(); this.kind = 'fb';
