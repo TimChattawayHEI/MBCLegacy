@@ -10,7 +10,8 @@ const T3 = (() => {
   if (!root || !cv) return api;
 
   // ---------------------------------------------------------------- data from the game
-  const ORDER = ['marc', 'sam', 'seb', 'tim', 'byron', 'pearcy', 'kelly'];
+  const ORDER = ['marc', 'sam', 'seb', 'tim', 'byron', 'pearcy', 'kelly', 'thet'];   // Thet on the end (Version 50), a silhouette until unlocked
+  const MID = (ORDER.length - 1) / 2;
   const BOSS = { frequency: 'The Parkie', soundz: 'Master Control', airport: 'No boss. Make the taxi rank.', road: 'No boss. Wreck the Espace.',
     divebar: 'Il Carabiniere, then I Fratelli', beach: 'Don Vito', club: 'Big Tony and Little Nicky', arrival: 'The Far Bank (two of them)',
     naval: 'No boss. Survive the night.', social: 'Nozzer, then Denise', pegnine: 'Big Gary', ramsden: 'Big Gaz, then Lady Addict' };
@@ -73,7 +74,7 @@ const T3 = (() => {
   // each lad's select-screen pose (Version 48): his own animation, drawn three-quarter on (south-east), a view the
   // fights never show. A strip of frames in sprites/pose_<id>.png at his sheet's cell size, feet on the sheet's anchor.
   // Frame 0 is him standing facing you (shown while he's chosen), the rest play when he's picked.
-  const POSES = { tim: 1, seb: 1, byron: 1, pearcy: 1, kelly: 1, marc: 1, sam: 1 };
+  const POSES = { tim: 1, seb: 1, byron: 1, pearcy: 1, kelly: 1, marc: 1, sam: 1, thet: 1 };
   function ladAtlas(id, img, pose) {
     const m = SPRITE_META[id], c = m.cell, idle = m.rows.idle, runR = m.rows.run;
     const all = r => r ? [...Array(r[1]).keys()] : [];
@@ -91,7 +92,7 @@ const T3 = (() => {
   }
   // what each lad shouts and sounds like when he's picked
   const PICK = { tim: ['RIGHT, LADS!', 'airhorn'], seb: ['SIR, YES SIR!', 'incoming'], byron: ['REF\u2019S DECISION!', 'whistle'],
-    pearcy: ['CARP DIEM!', 'thud'], kelly: ['MASS HEAD!', 'ready'], marc: ['G\u2019DAY, LADS!', 'cooee'], sam: ['I\u2019M UP, I\u2019M UP!', 'yawn'] };
+    pearcy: ['CARP DIEM!', 'thud'], kelly: ['MASS HEAD!', 'ready'], marc: ['G\u2019DAY, LADS!', 'cooee'], sam: ['I\u2019M UP, I\u2019M UP!', 'yawn'], thet: ['CAN\u2019T SEE ME!', 'incoming'] };
   // an action on the lad sprite: the frames of one row, forward, held, then back to standing
   function act(L, kind) {
     const n = kind === 'pick' ? L.a.spN : L.a.miniN; if (!n) return;
@@ -257,11 +258,11 @@ const T3 = (() => {
 
     // the seven lads, in a shallow V with the middle nearest
     ORDER.forEach((id, i) => {
-      const a = ladAtlas(id, img['lad_' + id], img['pose_' + id]), depth = Math.abs(i - 3);
+      const a = ladAtlas(id, img['lad_' + id], img['pose_' + id]), depth = Math.abs(i - MID);
       const g = new THREE.PlaneGeometry(a.c, a.c); g.translate(a.c / 2 - a.ax, a.ay - a.c / 2, 0);
       const m = new THREE.Mesh(g, mat(a.tex, { tint: [0.86, 0.8, 0.98], glow: 0.6, rect: [0, 1 - 1 / ROWS, 1 / a.cols, 1 / ROWS] }));
       m.position.set(-330, KERB - 1, 0); m.visible = false; scene.add(m);
-      lads.push({ id, a, m, sh: addShadow(0, 0, 24), i, tx: (i - 3) * 50, tz: 24 - depth * 18, delay: (6 - i) * 0.13,
+      lads.push({ id, a, m, sh: addShadow(0, 0, 24), i, tx: (i - MID) * 50, tz: 24 - depth * 18, delay: (ORDER.length - 1 - i) * 0.13,
         frame: 0, ft: 0, state: 'off', gx: 0, gz: 0, face: 1, wait: 0, moving: false, act: null, tint: V3(0.86, 0.8, 0.98) });
     });
 
@@ -302,10 +303,10 @@ const T3 = (() => {
     if (v === 'lad' || v === 'cont') for (const o of lads) { o.gx = o.tx; o.gz = o.tz + (o === L ? 30 : 0); }
     if (v === 'lad') flex(L);
     else if (v === 'stage') {
-      const spots = [[-124, -40], [124, -60], [-140, -130], [140, -150], [-118, -220], [118, -240]];
+      const spots = [[-124, -40], [124, -60], [-140, -130], [140, -150], [-118, -220], [118, -240], [0, -290]];
       let k = 0; for (const o of lads) { if (o === L) { o.gx = 0; o.gz = 40; } else [o.gx, o.gz] = spots[k++]; }
     } else if (v === 'diff') {
-      const spots = [[44, -26], [-40, -38], [88, -56], [-82, -70], [130, -86], [-124, -102]];
+      const spots = [[44, -26], [-40, -38], [88, -56], [-82, -70], [130, -86], [-124, -102], [170, -118]];
       let k = 0; for (const o of lads) { if (o === L) { o.gx = 0; o.gz = 40; } else [o.gx, o.gz] = spots[k++]; }
     } else if (v === 'go') {
       let k = 0; for (const o of lads) { o.gx = 900; o.wait = o === L ? 0 : 0.12 + 0.09 * k++; }
@@ -332,6 +333,7 @@ const T3 = (() => {
   function newInstead() { sfx('page'); setView('lad'); }
   function pick() {
     const L = chosen(), id = L.id, P = PICK[id] || ['', 'start'];
+    if (ladLocked(CHAR_BY_ID[id])) { sfx('nope'); toast('LOCKED'); return; }
     act(L, 'pick'); L.tint.set(2.4, 2.3, 2.1);
     picking = { t: 0, len: L.act ? L.act.len + 0.15 : 0.4 };
     sfx('special'); sfx(P[1]); if (P[0]) toast(P[0], 'shout');
@@ -408,16 +410,16 @@ const T3 = (() => {
     q('hint').textContent = hint();
   }
   function renderLad() {
-    const c = CHAR_BY_ID[chosen().id], mm = MINI[c.id];
-    q('name').textContent = c.name; q('name').style.color = c.color;
-    q('ltag').textContent = c.tag;
+    const c = CHAR_BY_ID[chosen().id], mm = MINI[c.id], lk = ladLocked(c);
+    q('name').textContent = lk ? '???' : c.name; q('name').style.color = lk ? 'var(--t3grey)' : c.color;
+    q('ltag').textContent = lk ? 'Someone is hiding in the bushes. Finish the campaign to find out who.' : c.tag;
     q('stats').innerHTML = ['Speed', 'Power', 'Grit'].map((l, j) =>
-      `<span class="t3cap">${l}</span><span class="t3bar" role="img" aria-label="${l} ${c.stats[j]} of 5">${[0, 1, 2, 3, 4].map(k => `<b class="${k < c.stats[j] ? 'f' : ''}"></b>`).join('')}</span>`).join('');
-    q('special').textContent = c.special; q('blurb').textContent = c.blurb;
-    q('mini').textContent = mm ? mm.name : '';
+      `<span class="t3cap">${l}</span><span class="t3bar" role="img" aria-label="${l} ${c.stats[j]} of 5">${[0, 1, 2, 3, 4].map(k => `<b class="${k < (lk ? 0 : c.stats[j]) ? 'f' : ''}"></b>`).join('')}</span>`).join('');
+    q('special').textContent = lk ? '???' : c.special; q('blurb').textContent = lk ? '' : c.blurb;
+    q('mini').textContent = lk ? '???' : mm ? mm.name : '';
     q('minicap').textContent = 'Mini special · ' + (touchUI ? 'hold HIT, let go' : 'hold J, let go');
-    q('pick').textContent = 'PICK ' + c.name; q('pick').disabled = false;
-    q('roster').innerHTML = ORDER.map((id, i) => `<button type="button" data-i="${i}" aria-pressed="${i === li}" style="--c:${CHAR_BY_ID[id].color}">${CHAR_BY_ID[id].name}</button>`).join('');
+    q('pick').textContent = lk ? 'LOCKED' : 'PICK ' + c.name; q('pick').disabled = lk;
+    q('roster').innerHTML = ORDER.map((id, i) => `<button type="button" data-i="${i}" aria-pressed="${i === li}" style="--c:${ladLocked(CHAR_BY_ID[id]) ? '#5a6068' : CHAR_BY_ID[id].color}">${ladLocked(CHAR_BY_ID[id]) ? '???' : CHAR_BY_ID[id].name}</button>`).join('');
   }
   function stageNo(k) { return STAGES[k].hidden ? 'Hidden stage' : 'Stage ' + STAGES[k].n + ' of ' + ROUTE.length; }
   function renderStage() {
@@ -454,6 +456,7 @@ const T3 = (() => {
       settings.unlocked = true; saveSettings(); typed = ''; sfx('jackpot'); toast('RAMSDEN UNLOCKED');
       if (view === 'stage') renderStage();
     }
+    if (typed.endsWith('THET') && unlockThet()) { typed = ''; sfx('jackpot'); toast('THET UNLOCKED'); if (view === 'lad') renderLad(); }
     if (view === 'title') { if (P('punch') || P('start') || P('jump') || P('special')) next(); return; }
     if (view === 'go') return;
     if (P('mute')) toggleSound();
@@ -462,7 +465,7 @@ const T3 = (() => {
     if (P('escape') || P('back')) { back(); return; }
     if (P('punch') || P('start')) { next(); return; }
     if (view === 'cont') { if (P('jump')) newInstead(); return; }
-    if (view === 'lad' && !picking) { if (P('left')) chooseLad((li + 6) % 7); if (P('right')) chooseLad((li + 1) % 7); }
+    if (view === 'lad' && !picking) { const n = ORDER.length; if (P('left')) chooseLad((li + n - 1) % n); if (P('right')) chooseLad((li + 1) % n); }
     else if (view === 'stage') { if (P('left')) moveChap(-1); if (P('right')) moveChap(1); if (P('up')) moveStage(-1); if (P('down')) moveStage(1); }
     else if (view === 'diff') {
       if (P('left')) setDiff(Math.max(0, diffSel - 1)); if (P('right')) setDiff(Math.min(2, diffSel + 1));
@@ -602,6 +605,7 @@ const T3 = (() => {
       L.sh.visible = L.m.visible; L.sh.position.set(L.m.position.x, KERB + 0.8, L.m.position.z);
       const pick = L === chosen() && view !== 'title';
       const tt = view === 'title' || view === 'go' ? [0.86, 0.8, 0.98] : pick ? [1, 0.95, 1.04] : view === 'lad' || view === 'cont' ? [0.42, 0.38, 0.6] : [0.62, 0.56, 0.78];
+      if (ladLocked(CHAR_BY_ID[L.id])) tt.fill(0.04);   // a black silhouette until he's unlocked
       L.tint.lerp(V3(...tt), damp(L.act && L.act.kind === 'pick' ? 3 : 5, dt)); L.m.material.uniforms.tint.value.copy(L.tint);
     }
     const L = chosen(), menu = view === 'lad' || view === 'diff' || view === 'stage' || view === 'cont';
