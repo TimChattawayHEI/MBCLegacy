@@ -423,9 +423,10 @@ const T3 = (() => {
   function renderStage() {
     const f = FLAT[stageSel], ch = CHAPS[f.ci], locked = stageLocked(), st = STAGES[f.k];
     q('tabs').innerHTML = CHAPS.map((c, i) => `<button type="button" role="tab" data-c="${i}" aria-selected="${i === f.ci}">${c.name}</button>`).join('');
+    const RK = typeof stageRanks === 'function' ? stageRanks() : {};   // best rank per stage (Version 49)
     q('list').innerHTML = ch.keys.map(k => {
       const fi = FLAT.findIndex(x => x.k === k), s = STAGES[k];
-      return `<li><button type="button" data-f="${fi}" aria-pressed="${fi === stageSel}"${locked ? ' disabled' : ''}><span class="n">${s.hidden ? '?' : String(s.n).padStart(2, '0')}</span>${locked ? 'LOCKED' : s.title}</button></li>`;
+      return `<li><button type="button" data-f="${fi}" aria-pressed="${fi === stageSel}"${locked ? ' disabled' : ''}><span class="n">${s.hidden ? '?' : String(s.n).padStart(2, '0')}</span>${locked ? 'LOCKED' : s.title}${!locked && RK[k] ? `<span class="rk r${RK[k]}" aria-label="Best rank ${RK[k]}">${RK[k]}</span>` : ''}</button></li>`;
     }).join('');
     q('snum').textContent = locked ? ch.name : stageNo(f.k) + ' · ' + ch.name;
     q('stitle').textContent = locked ? '? ? ?' : st.title;
