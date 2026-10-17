@@ -64,6 +64,7 @@ html.phone-land .frame{border-radius:4px;flex:0 0 auto}
 .stick{position:relative;justify-self:center;width:min(40vw,190px,100%);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 50% 50%,#22323a 0 55%,#1a262c 56% 100%);border:2px solid var(--line);touch-action:none}
 .stick::after{content:'';position:absolute;inset:18%;border-radius:50%;border:1px dashed rgba(239,230,210,.18)}
 .knob{position:absolute;left:30%;top:30%;width:40%;height:40%;border-radius:50%;background:var(--ink);box-shadow:0 4px 0 rgba(0,0,0,.35);opacity:.9;pointer-events:none}
+.knob.run{background:#f2a23a}
 .btns{position:relative;justify-self:center;width:min(44vw,210px,100%);aspect-ratio:1}
 .pb{position:absolute;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid var(--line);background:#22323a;color:var(--ink);font:400 clamp(11px,3.2vw,14px)/1 var(--display);letter-spacing:.02em;touch-action:none;user-select:none;-webkit-user-select:none;padding:0;box-shadow:0 4px 0 rgba(0,0,0,.35)}
 .pb.on{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.35);filter:brightness(1.25)}
@@ -252,7 +253,7 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
       <button class="pb hit" type="button" data-act="punch">HIT</button>
       <button class="pb jump" type="button" data-act="jump">JUMP</button>
     </div>
-    <p class="padnote">Flick the stick twice to run. Walk into someone to grab them, then HIT to knee or stick + HIT to throw.</p>
+    <p class="padnote">Hold the stick right out to run. Walk into someone to grab them, then HIT to knee or stick + HIT to throw.</p>
   </div>
   <div class="legend">
     <div><kbd>WASD</kbd> or arrows move, tap twice to run</div>
@@ -745,16 +746,27 @@ if (padEl) {
   });
   padEl.addEventListener('contextmenu', e => e.preventDefault());
 }
-const SR = { out: false, backT: -9, dir: 0, on: false, at: -1 };
+// running on the touch stick: hold it right out to the side and he breaks into a run after a moment (Version 47),
+// or flick it out, back and out again for a run straight away
+const runHold = () => settings.run === 'push' ? 0.06 : 0.35;
+const SR = { out: false, backT: -9, dir: 0, on: false, at: -1, hold: 0, hdir: 0 };
 function stickRun() {
-  const v = stickVec(); if (!v) { SR.on = false; SR.out = false; return false; }
-  if (SR.at === time) return SR.on; SR.at = time;
-  const k = Math.abs(v.dx) / v.R, dir = Math.sign(v.dx) || SR.dir;
+  const v = stickVec(); if (!v) { SR.on = false; SR.out = false; SR.hold = 0; return false; }
+  if (SR.at === time) return SR.on;
+  const dt = SR.at < 0 ? 0 : Math.min(0.1, Math.max(0, time - SR.at)); SR.at = time;
+  const k = Math.abs(v.dx) / v.R, mag = Math.hypot(v.dx, v.dy) / v.R, dir = Math.sign(v.dx) || SR.dir;
   if (k > 0.85 && !SR.out) { if (time - SR.backT < 0.4 && dir === SR.dir) SR.on = true; SR.out = true; SR.dir = dir; }
   else if (k < 0.45 && SR.out) { SR.out = false; SR.backT = time; }
+  if (mag > 0.78 && k > 0.6) {
+    if (dir !== SR.hdir) { SR.hdir = dir; SR.hold = 0; }
+    SR.hold += dt;
+    if (SR.hold >= runHold() && !SR.on) { SR.on = true; SR.dir = dir; }
+  } else SR.hold = 0;
   if (SR.on && (k < 0.55 || dir !== SR.dir)) SR.on = false;
   return SR.on;
 }
+// how far the hold-to-run has built up, 0 to 1, for the ring round the knob
+function stickRunCharge() { return SR.on ? 1 : Math.min(1, SR.hold / runHold()); }
 
 // ================================================================== data: the lads
 const CHARS = [
@@ -6360,6 +6372,7 @@ function drawTouch() {
   let kx = ox, ky = oy;
   if (st) { const dx = st.x - ox, dy = st.y - oy, d = Math.hypot(dx, dy), m = Math.min(d, STICK.r * 0.8); if (d > 0) { kx = ox + dx / d * m; ky = oy + dy / d * m; } }
   ctx.fillStyle = stickRun() ? 'rgba(242,162,58,0.8)' : 'rgba(239,230,210,0.6)'; circle(kx, ky, 28); ctx.fill();
+  { const ch = st ? stickRunCharge() : 0; if (ch > 0.05 && ch < 1) { ctx.strokeStyle = 'rgba(242,162,58,0.9)'; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(kx, ky, 34, -Math.PI / 2, -Math.PI / 2 + ch * Math.PI * 2); ctx.stroke(); } }
   for (const b of BTN) {
     const on = touchHeld(b.id), ready = b.id === 'special' && player.meter >= 100;
     ctx.fillStyle = on ? 'rgba(242,162,58,0.85)' : ready ? 'rgba(242,162,58,0.55)' : 'rgba(15,22,25,0.45)';
@@ -6436,8 +6449,9 @@ function setRows() {
     { id: 'pad', label: 'BUTTON SIZE', val: ({ s: 'SMALL', m: 'MEDIUM', l: 'LARGE' })[settings.pad] || 'MEDIUM', touch: true },
     { id: 'ghost', label: 'BUTTONS', val: settings.ghost ? 'SEE-THROUGH' : 'SOLID', touch: true },
     { id: 'lefty', label: 'STICK', val: settings.lefty ? 'ON THE RIGHT' : 'ON THE LEFT', touch: true },
+    { id: 'run', label: 'RUNNING', val: settings.run === 'push' ? 'ANY FULL PUSH' : 'HOLD THE STICK OUT', touch: true },
   ].filter(r => !r.touch || touchUI || (r.id === 'buzz' && canBuzz()));
-  rows.forEach((r, i) => { r.x = 452; r.y = 112 + i * 34; r.w = 426; r.h = 30; r.vx = r.x + 196; });
+  rows.forEach((r, i) => { r.x = 452; r.y = 110 + i * 32; r.w = 426; r.h = 28; r.vx = r.x + 196; });
   return rows;
 }
 function setAdj(id, d) {
@@ -6450,6 +6464,7 @@ function setAdj(id, d) {
   else if (id === 'pad') { const o = ['s', 'm', 'l'], i = o.indexOf(settings.pad); settings.pad = o[clamp((i < 0 ? 1 : i) + d, 0, 2)]; applyTouchLayout(); }
   else if (id === 'ghost') settings.ghost = !settings.ghost;
   else if (id === 'lefty') { settings.lefty = !settings.lefty; applyTouchLayout(); }
+  else if (id === 'run') settings.run = settings.run === 'push' ? 'hold' : 'push';
   saveSettings();
   if (id !== 'fx') sfx('swing');
 }
@@ -8487,10 +8502,11 @@ function drawWorldPixel() {
   for (const b of bubbles) drawBubble(b);
   ctx.globalAlpha = 1;
 }
-const padSpecialEl = document.getElementById('padSpecial');
+const padSpecialEl = document.getElementById('padSpecial'), padKnobEl = document.getElementById('padKnob');
 function render() {
   resize();
   if (padSpecialEl) padSpecialEl.classList.toggle('ready', mode === 'play' && !!player && player.meter >= 100);
+  if (padKnobEl && padOn()) padKnobEl.classList.toggle('run', mode === 'play' && stickRun());
   passScale = scale; ctx.setTransform(scale, 0, 0, scale, 0, 0);
   ctx.globalAlpha = 1;
   if (mode === 'title') { if (!T3.live()) drawTitleScreen(); return; }
@@ -8621,22 +8637,25 @@ const T3 = (() => {
   // the idle, run, mini special and special frames from a lad's sheet, packed into four rows
   // (the last two play when he's chosen and when he's picked, Version 46)
   const ROWS = 4, ROW = { idle: 0, run: 1, mini: 2, special: 3 };
-  function ladAtlas(id, img) {
+  // lads with a pick pose of their own (frames in a strip, same cell and anchor as the sheet)
+  const POSES = { tim: 1 };
+  function ladAtlas(id, img, pose) {
     const m = SPRITE_META[id], c = m.cell, idle = m.rows.idle, runR = m.rows.run;
     const all = r => r ? [...Array(r[1]).keys()] : [];
     const runF = (LAD_FRAMES[id] && LAD_FRAMES[id].run) || all(runR);
-    const miniF = all(m.rows.mini), spF = (LAD_FRAMES[id] && LAD_FRAMES[id].special) || all(m.rows.special);
+    const miniF = all(m.rows.mini), spF = pose ? [...Array(Math.floor(pose.width / c)).keys()] : (LAD_FRAMES[id] && LAD_FRAMES[id].special) || all(m.rows.special);
     const cols = Math.max(idle[1], runF.length, miniF.length, spF.length);
     const g = document.createElement('canvas'); g.width = cols * c; g.height = ROWS * c;
     const x = g.getContext('2d');
     for (let f = 0; f < idle[1]; f++) x.drawImage(img, f * c, idle[0] * c, c, c, f * c, 0, c, c);
     runF.forEach((fi, f) => x.drawImage(img, fi * c, runR[0] * c, c, c, f * c, c, c, c));
     if (m.rows.mini) miniF.forEach((fi, f) => x.drawImage(img, fi * c, m.rows.mini[0] * c, c, c, f * c, 2 * c, c, c));
-    if (m.rows.special) spF.forEach((fi, f) => x.drawImage(img, fi * c, m.rows.special[0] * c, c, c, f * c, 3 * c, c, c));
+    if (pose) spF.forEach((fi, f) => x.drawImage(pose, fi * c, 0, c, c, f * c, 3 * c, c, c));
+    else if (m.rows.special) spF.forEach((fi, f) => x.drawImage(img, fi * c, m.rows.special[0] * c, c, c, f * c, 3 * c, c, c));
     return { tex: prep(new THREE.CanvasTexture(g)), cols, c, idleN: idle[1], runN: runF.length, miniN: miniF.length, spN: spF.length, ax: m.ax, ay: m.ay };
   }
   // what each lad shouts and sounds like when he's picked
-  const PICK = { tim: ['DUCK AND COVER!', 'incoming'], seb: ['ARTILLERY!', 'incoming'], byron: ['UNDER 12\u2019S!', 'whistle'],
+  const PICK = { tim: ['RIGHT, LADS!', 'airhorn'], seb: ['ARTILLERY!', 'incoming'], byron: ['UNDER 12\u2019S!', 'whistle'],
     pearcy: ['CARP DIEM!', 'clink'], kelly: ['MASS HEAD!', 'inflate'], marc: ['DROP BEARS!', 'cooee'], sam: ['SLEEPY SAM!', 'yawn'] };
   // an action on the lad sprite: the frames of one row, forward, held, then back to standing
   function act(L, kind) {
@@ -8731,6 +8750,8 @@ const T3 = (() => {
     SHOPS.forEach(s => { paths[s] = 'bg/orpington/' + s + '.png'; });
     ORDER.forEach(id => { paths['lad_' + id] = 'sprites/' + id + '.png'; });
     const img = {}; await Promise.all(Object.keys(paths).map(async k => { img[k] = await loadImg(paths[k]); }));
+    // a lad can have his own pick pose: a strip of frames in his sheet's cell size, sprites/pose_<id>.png (Version 47)
+    await Promise.all(Object.keys(POSES).map(async id => { try { img['pose_' + id] = await loadImg('sprites/pose_' + id + '.png'); } catch (e) { /* use his special */ } }));
     const T = {}; for (const k in img) if (!k.startsWith('lad_')) T[k] = prep(new THREE.Texture(img[k]));
 
     // backdrop: the title painting, hung far away on the camera's horizon
@@ -8799,7 +8820,7 @@ const T3 = (() => {
 
     // the seven lads, in a shallow V with the middle nearest
     ORDER.forEach((id, i) => {
-      const a = ladAtlas(id, img['lad_' + id]), depth = Math.abs(i - 3);
+      const a = ladAtlas(id, img['lad_' + id], img['pose_' + id]), depth = Math.abs(i - 3);
       const g = new THREE.PlaneGeometry(a.c, a.c); g.translate(a.c / 2 - a.ax, a.ay - a.c / 2, 0);
       const m = new THREE.Mesh(g, mat(a.tex, { tint: [0.86, 0.8, 0.98], glow: 0.6, rect: [0, 1 - 1 / ROWS, 1 / a.cols, 1 / ROWS] }));
       m.position.set(-330, KERB - 1, 0); m.visible = false; scene.add(m);

@@ -10,7 +10,7 @@ Open the file on your phone. The first time, Android asks whether to allow insta
 
 ## How to play
 
-Move with the stick, HIT to attack (tap it for your combo), JUMP, and SPECIAL when the bar is full. Hold HIT and let go for your lad's mini special: it hits everyone around you, but costs a little health if it lands. PLAY ONLINE on the select screen starts a two-player game with a friend's phone: one hosts and reads out the code, the other joins.
+Move with the stick (hold it right out to run), HIT to attack (tap it for your combo), JUMP, and SPECIAL when the bar is full. Hold HIT and let go for your lad's mini special: it hits everyone around you, but costs a little health if it lands. PLAY ONLINE on the select screen starts a two-player game with a friend's phone: one hosts and reads out the code, the other joins.
 
 ## What's here
 
@@ -19,6 +19,7 @@ Move with the stick, HIT to attack (tap it for your combo), JUMP, and SPECIAL wh
 - `tools/title3d_build.py` wires the 3D title and select screens (`tools/title3d/`) and any-stage starts into `web/index.html`. Run it again after rebuilding the page from older sources.
 - `tools/v44_build.py` (run after `title3d_build.py`) is the Version 44 optimisation pass: no full-size copies of the sprite sheets, skies and the fishery car park drawn once and reused, all art preloaded with a LOADING wait at stage start, and the old vector fallback art removed. Run it again after rebuilding the page from claude.ai.
 - `tools/v45_build.py` (run after `v44_build.py`) is the Version 45 quality of life pass: CARRY ON a run after the app closes, RESTART STAGE and a SETTINGS panel in the pause menu (music and effects volume, vibration, gentler shake and flashes, touch button size, see-through buttons, left-handed stick), a SKIP button on group chats, and phone vibration.
+- `tools/v47_build.py` (run after `v45_build.py`): hold the touch stick right out to run (a ring fills round the knob first), plus a RUNNING setting for running on any full push. Lads can have their own select-screen pick pose in `web/sprites/pose_<id>.png` (a strip of frames at the sheet's cell size); Tim has one.
 - `web/vendor/three.module.min.js` is three.js r165 (MIT, see `three.LICENSE`), used by the title screen in the app.
 - `.github/workflows/apk.yml` builds the APK on every push to `main` and publishes it as the latest release.
 

@@ -70,22 +70,25 @@ const T3 = (() => {
   // the idle, run, mini special and special frames from a lad's sheet, packed into four rows
   // (the last two play when he's chosen and when he's picked, Version 46)
   const ROWS = 4, ROW = { idle: 0, run: 1, mini: 2, special: 3 };
-  function ladAtlas(id, img) {
+  // lads with a pick pose of their own (frames in a strip, same cell and anchor as the sheet)
+  const POSES = { tim: 1 };
+  function ladAtlas(id, img, pose) {
     const m = SPRITE_META[id], c = m.cell, idle = m.rows.idle, runR = m.rows.run;
     const all = r => r ? [...Array(r[1]).keys()] : [];
     const runF = (LAD_FRAMES[id] && LAD_FRAMES[id].run) || all(runR);
-    const miniF = all(m.rows.mini), spF = (LAD_FRAMES[id] && LAD_FRAMES[id].special) || all(m.rows.special);
+    const miniF = all(m.rows.mini), spF = pose ? [...Array(Math.floor(pose.width / c)).keys()] : (LAD_FRAMES[id] && LAD_FRAMES[id].special) || all(m.rows.special);
     const cols = Math.max(idle[1], runF.length, miniF.length, spF.length);
     const g = document.createElement('canvas'); g.width = cols * c; g.height = ROWS * c;
     const x = g.getContext('2d');
     for (let f = 0; f < idle[1]; f++) x.drawImage(img, f * c, idle[0] * c, c, c, f * c, 0, c, c);
     runF.forEach((fi, f) => x.drawImage(img, fi * c, runR[0] * c, c, c, f * c, c, c, c));
     if (m.rows.mini) miniF.forEach((fi, f) => x.drawImage(img, fi * c, m.rows.mini[0] * c, c, c, f * c, 2 * c, c, c));
-    if (m.rows.special) spF.forEach((fi, f) => x.drawImage(img, fi * c, m.rows.special[0] * c, c, c, f * c, 3 * c, c, c));
+    if (pose) spF.forEach((fi, f) => x.drawImage(pose, fi * c, 0, c, c, f * c, 3 * c, c, c));
+    else if (m.rows.special) spF.forEach((fi, f) => x.drawImage(img, fi * c, m.rows.special[0] * c, c, c, f * c, 3 * c, c, c));
     return { tex: prep(new THREE.CanvasTexture(g)), cols, c, idleN: idle[1], runN: runF.length, miniN: miniF.length, spN: spF.length, ax: m.ax, ay: m.ay };
   }
   // what each lad shouts and sounds like when he's picked
-  const PICK = { tim: ['DUCK AND COVER!', 'incoming'], seb: ['ARTILLERY!', 'incoming'], byron: ['UNDER 12\u2019S!', 'whistle'],
+  const PICK = { tim: ['RIGHT, LADS!', 'airhorn'], seb: ['ARTILLERY!', 'incoming'], byron: ['UNDER 12\u2019S!', 'whistle'],
     pearcy: ['CARP DIEM!', 'clink'], kelly: ['MASS HEAD!', 'inflate'], marc: ['DROP BEARS!', 'cooee'], sam: ['SLEEPY SAM!', 'yawn'] };
   // an action on the lad sprite: the frames of one row, forward, held, then back to standing
   function act(L, kind) {
@@ -180,6 +183,8 @@ const T3 = (() => {
     SHOPS.forEach(s => { paths[s] = 'bg/orpington/' + s + '.png'; });
     ORDER.forEach(id => { paths['lad_' + id] = 'sprites/' + id + '.png'; });
     const img = {}; await Promise.all(Object.keys(paths).map(async k => { img[k] = await loadImg(paths[k]); }));
+    // a lad can have his own pick pose: a strip of frames in his sheet's cell size, sprites/pose_<id>.png (Version 47)
+    await Promise.all(Object.keys(POSES).map(async id => { try { img['pose_' + id] = await loadImg('sprites/pose_' + id + '.png'); } catch (e) { /* use his special */ } }));
     const T = {}; for (const k in img) if (!k.startsWith('lad_')) T[k] = prep(new THREE.Texture(img[k]));
 
     // backdrop: the title painting, hung far away on the camera's horizon
@@ -248,7 +253,7 @@ const T3 = (() => {
 
     // the seven lads, in a shallow V with the middle nearest
     ORDER.forEach((id, i) => {
-      const a = ladAtlas(id, img['lad_' + id]), depth = Math.abs(i - 3);
+      const a = ladAtlas(id, img['lad_' + id], img['pose_' + id]), depth = Math.abs(i - 3);
       const g = new THREE.PlaneGeometry(a.c, a.c); g.translate(a.c / 2 - a.ax, a.ay - a.c / 2, 0);
       const m = new THREE.Mesh(g, mat(a.tex, { tint: [0.86, 0.8, 0.98], glow: 0.6, rect: [0, 1 - 1 / ROWS, 1 / a.cols, 1 / ROWS] }));
       m.position.set(-330, KERB - 1, 0); m.visible = false; scene.add(m);
