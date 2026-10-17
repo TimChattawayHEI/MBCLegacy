@@ -160,8 +160,10 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
 #t3-online{color:var(--t3orange)!important;border-color:var(--t3orange)!important}
 #t3-toast{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);font:700 calc(var(--t3u) * 12) var(--t3disp);color:var(--t3gold);pointer-events:none;opacity:0;white-space:nowrap}
 #t3-toast.on{animation:t3toast 2.2s ease-out}
+#t3-toast.shout{left:29%;top:20%;font-size:calc(var(--t3u) * 17);text-shadow:calc(var(--t3u) * -1.5) 0 var(--t3ink),calc(var(--t3u) * 1.5) 0 var(--t3ink),0 calc(var(--t3u) * -1.5) var(--t3ink),0 calc(var(--t3u) * 1.5) var(--t3ink);animation:t3shout 1.6s ease-out}
+@keyframes t3shout{0%{opacity:0;transform:translate(-50%,-50%) scale(2.2)}12%{opacity:1;transform:translate(-50%,-50%) scale(.92)}20%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
 @keyframes t3toast{0%{opacity:0}10%{opacity:1}75%{opacity:1}100%{opacity:0}}
-@media (prefers-reduced-motion:reduce){#t3-start.blink{animation:none}.t3sel,.t3sel.on{transform:none;transition:opacity .2s}#t3-crumbs,#t3-crumbs.on{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){#t3-toast.shout{animation:t3toast 1.6s ease-out}#t3-start.blink{animation:none}.t3sel,.t3sel.on{transform:none;transition:opacity .2s}#t3-crumbs,#t3-crumbs.on{transform:translateX(-50%)}}
 /* T3 css end */
 </style>
 
@@ -8580,7 +8582,7 @@ const T3 = (() => {
   // ---------------------------------------------------------------- state
   let THREE = null, renderer = null, scene = null, camera = null, ready = false, failed = false, claimed = false;
   let view = 'title', viewT = 0, t = 0, intro = true, last = 0, lastMode = null, fadeTarget = 1;
-  let li = 3, stageSel = 0, diffSel = 1, sendT = 0, sent = false, carry = false;
+  let li = 3, stageSel = 0, diffSel = 1, sendT = 0, sent = false, carry = false, picking = null;
   const lads = [], billboards = [], glows = [], pools = [];
   let backdrop, logo, logoW = 1, logoH = 1, spot, shaft, FOG, shared, V3;
   const cam = {}, tgt = {}, moodCur = {};
@@ -8616,15 +8618,37 @@ const T3 = (() => {
     return prep(new THREE.CanvasTexture(c), mips);
   }
   // the idle and run frames from a lad's sheet, packed into two rows
+  // the idle, run, mini special and special frames from a lad's sheet, packed into four rows
+  // (the last two play when he's chosen and when he's picked, Version 46)
+  const ROWS = 4, ROW = { idle: 0, run: 1, mini: 2, special: 3 };
   function ladAtlas(id, img) {
     const m = SPRITE_META[id], c = m.cell, idle = m.rows.idle, runR = m.rows.run;
-    const runF = (LAD_FRAMES[id] && LAD_FRAMES[id].run) || [...Array(runR[1]).keys()];
-    const cols = Math.max(idle[1], runF.length);
-    const g = document.createElement('canvas'); g.width = cols * c; g.height = 2 * c;
+    const all = r => r ? [...Array(r[1]).keys()] : [];
+    const runF = (LAD_FRAMES[id] && LAD_FRAMES[id].run) || all(runR);
+    const miniF = all(m.rows.mini), spF = (LAD_FRAMES[id] && LAD_FRAMES[id].special) || all(m.rows.special);
+    const cols = Math.max(idle[1], runF.length, miniF.length, spF.length);
+    const g = document.createElement('canvas'); g.width = cols * c; g.height = ROWS * c;
     const x = g.getContext('2d');
     for (let f = 0; f < idle[1]; f++) x.drawImage(img, f * c, idle[0] * c, c, c, f * c, 0, c, c);
     runF.forEach((fi, f) => x.drawImage(img, fi * c, runR[0] * c, c, c, f * c, c, c, c));
-    return { tex: prep(new THREE.CanvasTexture(g)), cols, c, idleN: idle[1], runN: runF.length, ax: m.ax, ay: m.ay };
+    if (m.rows.mini) miniF.forEach((fi, f) => x.drawImage(img, fi * c, m.rows.mini[0] * c, c, c, f * c, 2 * c, c, c));
+    if (m.rows.special) spF.forEach((fi, f) => x.drawImage(img, fi * c, m.rows.special[0] * c, c, c, f * c, 3 * c, c, c));
+    return { tex: prep(new THREE.CanvasTexture(g)), cols, c, idleN: idle[1], runN: runF.length, miniN: miniF.length, spN: spF.length, ax: m.ax, ay: m.ay };
+  }
+  // what each lad shouts and sounds like when he's picked
+  const PICK = { tim: ['DUCK AND COVER!', 'incoming'], seb: ['ARTILLERY!', 'incoming'], byron: ['UNDER 12\u2019S!', 'whistle'],
+    pearcy: ['CARP DIEM!', 'clink'], kelly: ['MASS HEAD!', 'inflate'], marc: ['DROP BEARS!', 'cooee'], sam: ['SLEEPY SAM!', 'yawn'] };
+  // an action on the lad sprite: the frames of one row, forward, held, then back to standing
+  function act(L, kind) {
+    const n = kind === 'pick' ? L.a.spN : L.a.miniN; if (!n) return;
+    const fps = kind === 'pick' ? 11 : 15, hold = kind === 'pick' ? 0.55 : 0.12, back = kind === 'pick' ? 18 : 22;
+    L.act = { kind, row: kind === 'pick' ? ROW.special : ROW.mini, n, t: 0, fwd: n / fps, hold, back: n / back };
+    L.act.len = L.act.fwd + hold + L.act.back;
+  }
+  function actFrame(A) {
+    if (A.t < A.fwd) return Math.min(A.n - 1, Math.floor(A.t / A.fwd * A.n));
+    if (A.t < A.fwd + A.hold) return A.n - 1;
+    return Math.max(0, A.n - 1 - Math.floor((A.t - A.fwd - A.hold) / A.back * A.n));
   }
 
   const VERT = `
@@ -8777,10 +8801,10 @@ const T3 = (() => {
     ORDER.forEach((id, i) => {
       const a = ladAtlas(id, img['lad_' + id]), depth = Math.abs(i - 3);
       const g = new THREE.PlaneGeometry(a.c, a.c); g.translate(a.c / 2 - a.ax, a.ay - a.c / 2, 0);
-      const m = new THREE.Mesh(g, mat(a.tex, { tint: [0.86, 0.8, 0.98], glow: 0.6, rect: [0, 0.5, 1 / a.cols, 0.5] }));
+      const m = new THREE.Mesh(g, mat(a.tex, { tint: [0.86, 0.8, 0.98], glow: 0.6, rect: [0, 1 - 1 / ROWS, 1 / a.cols, 1 / ROWS] }));
       m.position.set(-330, KERB - 1, 0); m.visible = false; scene.add(m);
       lads.push({ id, a, m, sh: addShadow(0, 0, 24), i, tx: (i - 3) * 50, tz: 24 - depth * 18, delay: (6 - i) * 0.13,
-        frame: 0, ft: 0, state: 'off', gx: 0, gz: 0, face: 1, wait: 0, moving: false, tint: V3(0.86, 0.8, 0.98) });
+        frame: 0, ft: 0, state: 'off', gx: 0, gz: 0, face: 1, wait: 0, moving: false, act: null, tint: V3(0.86, 0.8, 0.98) });
     });
 
     if (document.fonts && document.fonts.load) await Promise.race([document.fonts.load('700 34px "Pixelify Sans"').catch(() => {}), new Promise(r => setTimeout(r, 2500))]);
@@ -8816,7 +8840,9 @@ const T3 = (() => {
   function setView(v) {
     view = v; viewT = 0;
     const L = chosen();
+    if (v !== 'lad') picking = null;
     if (v === 'lad' || v === 'cont') for (const o of lads) { o.gx = o.tx; o.gz = o.tz + (o === L ? 30 : 0); }
+    if (v === 'lad') flex(L);
     else if (v === 'stage') {
       const spots = [[-124, -40], [124, -60], [-140, -130], [140, -150], [-118, -220], [118, -240]];
       let k = 0; for (const o of lads) { if (o === L) { o.gx = 0; o.gz = 40; } else [o.gx, o.gz] = spots[k++]; }
@@ -8837,13 +8863,25 @@ const T3 = (() => {
       const sr = savedRun();
       if (sr) { li = Math.max(0, ORDER.indexOf(PLAYABLE[sr.ci].id)); setView('cont'); } else setView('lad');
     } else if (view === 'cont') carryOn();
-    else if (view === 'lad') { sfx('page'); setView('stage'); }
+    else if (view === 'lad') {
+      if (picking) { picking = null; sfx('page'); setView('stage'); return; }   // pressed again: skip the show
+      pick();
+    }
     else if (view === 'stage') { if (stageLocked()) { sfx('nope'); return; } sfx('page'); setView('diff'); }
     else if (view === 'diff') { sfx('start'); commit(); setView('go'); }
   }
   function carryOn() { if (!savedRun()) { setView('lad'); return; } sfx('start'); carry = true; setView('go'); }
   function newInstead() { sfx('page'); setView('lad'); }
+  function pick() {
+    const L = chosen(), id = L.id, P = PICK[id] || ['', 'start'];
+    act(L, 'pick'); L.tint.set(2.4, 2.3, 2.1);
+    picking = { t: 0, len: L.act ? L.act.len + 0.15 : 0.4 };
+    sfx('special'); sfx(P[1]); if (P[0]) toast(P[0], 'shout');
+    q('pick').textContent = CHAR_BY_ID[id].name + '!'; q('pick').disabled = true;
+  }
+  function flex(L) { if (!L.act) act(L, 'mini'); }
   function back() {
+    if (picking) { picking = null; const L = chosen(); L.act = null; sfx('page'); renderLad(); return true; }
     if (view === 'cont') { sfx('page'); mode = 'title'; modeT = 0; lastMode = 'title'; restart(true); return true; }
     if (view === 'lad') { sfx('page'); mode = 'title'; modeT = 0; lastMode = 'title'; restart(true); }
     else if (view === 'stage') { sfx('page'); setView('lad'); }
@@ -8858,12 +8896,17 @@ const T3 = (() => {
     settings.diff = DIFF_ORDER[diffSel]; saveSettings();
   }
   const stageLocked = () => chap().hidden && !settings.unlocked;
-  function chooseLad(i) { if (i === li) return; li = i; sfx('swing'); renderLad(); for (const o of lads) { o.gx = o.tx; o.gz = o.tz + (o === chosen() ? 30 : 0); } }
+  function chooseLad(i) {
+    if (i === li || picking) return;
+    for (const o of lads) if (o.act && o.act.kind === 'mini') o.act = null;
+    li = i; sfx('swing'); renderLad(); for (const o of lads) { o.gx = o.tx; o.gz = o.tz + (o === chosen() ? 30 : 0); }
+    flex(chosen());   // a quick flourish from his mini special once he's stepped forward
+  }
   function moveStage(d) { stageSel = (stageSel + d + FLAT.length) % FLAT.length; sfx('swing'); renderStage(); }
   function moveChap(d) { const ci = (FLAT[stageSel].ci + d + CHAPS.length) % CHAPS.length; stageSel = FLAT.findIndex(f => f.ci === ci); sfx('swing'); renderStage(); }
   function setDiff(d) { if (d === diffSel) return; diffSel = d; sfx('swing'); renderDiff(); }
   function toggleSound() { settings.sound = !settings.sound; saveSettings(); applySound(); sfx('page'); renderFoot(); }
-  function toast(msg) { const el = q('toast'); el.textContent = msg; el.classList.remove('on'); void el.offsetWidth; el.classList.add('on'); }
+  function toast(msg, cls) { const el = q('toast'); el.textContent = msg; el.className = ''; void el.offsetWidth; el.classList.add('on'); if (cls) el.classList.add(cls); }
 
   // ---------------------------------------------------------------- menus
   function sync() {
@@ -8915,7 +8958,7 @@ const T3 = (() => {
     q('special').textContent = c.special; q('blurb').textContent = c.blurb;
     q('mini').textContent = mm ? mm.name : '';
     q('minicap').textContent = 'Mini special · ' + (touchUI ? 'hold HIT, let go' : 'hold J, let go');
-    q('pick').textContent = 'PICK ' + c.name;
+    q('pick').textContent = 'PICK ' + c.name; q('pick').disabled = false;
     q('roster').innerHTML = ORDER.map((id, i) => `<button type="button" data-i="${i}" aria-pressed="${i === li}" style="--c:${CHAR_BY_ID[id].color}">${CHAR_BY_ID[id].name}</button>`).join('');
   }
   function stageNo(k) { return STAGES[k].hidden ? 'Hidden stage' : 'Stage ' + STAGES[k].n + ' of ' + ROUTE.length; }
@@ -8960,7 +9003,7 @@ const T3 = (() => {
     if (P('escape') || P('back')) { back(); return; }
     if (P('punch') || P('start')) { next(); return; }
     if (view === 'cont') { if (P('jump')) newInstead(); return; }
-    if (view === 'lad') { if (P('left')) chooseLad((li + 6) % 7); if (P('right')) chooseLad((li + 1) % 7); }
+    if (view === 'lad' && !picking) { if (P('left')) chooseLad((li + 6) % 7); if (P('right')) chooseLad((li + 1) % 7); }
     else if (view === 'stage') { if (P('left')) moveChap(-1); if (P('right')) moveChap(1); if (P('up')) moveStage(-1); if (P('down')) moveStage(1); }
     else if (view === 'diff') {
       if (P('left')) setDiff(Math.max(0, diffSel - 1)); if (P('right')) setDiff(Math.min(2, diffSel + 1));
@@ -9013,7 +9056,11 @@ const T3 = (() => {
   }
   function selectPose() {
     const L = chosen();
-    if (view === 'lad' || view === 'cont') { tgt.pos.set(L.gx + 72, 46, L.gz + 165); tgt.look.set(L.gx + 72, 40, L.gz - 500); tgt.fov = 50; }
+    if (view === 'lad' || view === 'cont') {
+      // picking: the camera leans in on him and swings round to centre him
+      const k = picking && !reduceMotion ? easeInOut(clamp(picking.t / 0.5, 0, 1)) : 0;
+      tgt.pos.set(L.gx + 72 - 34 * k, 46 - 4 * k, L.gz + 165 - 32 * k); tgt.look.set(L.gx + 72 - 44 * k, 40 - 3 * k, L.gz - 500); tgt.fov = 50 - 4 * k;
+    }
     else if (view === 'stage') { tgt.pos.set(Math.sin(t * 0.2) * 10 * (reduceMotion ? 0 : 1), 118, 330); tgt.look.set(0, 44, -420); tgt.fov = 50; }
     else if (view === 'diff') { tgt.pos.set(-118, 22, 186); tgt.look.set(-20, 50, -150); tgt.fov = 46; }
     else { const k = easeInOut(clamp(viewT / 1.6, 0, 1)); tgt.pos.set(-118 + 260 * k, 22 + 24 * k, 186 - 40 * k); tgt.look.set(-20 + 300 * k, 50, -150); tgt.fov = 46 + 6 * k; }
@@ -9022,6 +9069,7 @@ const T3 = (() => {
   // ---------------------------------------------------------------- per frame
   function step(dt) {
     t += dt; viewT += dt;
+    if (picking) { picking.t += dt; if (picking.t >= picking.len) { picking = null; sfx('page'); setView('stage'); } }
     if (view === 'title') {
       titlePose();
       if (intro && t < T_FLY + 0.05) { cam.pos.copy(tgt.pos); cam.look.copy(tgt.look); cam.fov = tgt.fov; }
@@ -9072,22 +9120,30 @@ const T3 = (() => {
         }
       }
       if (moving !== L.moving) { L.frame = 0; L.ft = 0; L.moving = moving; }
-      const n = moving ? L.a.runN : L.a.idleN, fps = moving ? 14 : 7;
-      L.ft += dt; if (L.ft > 1 / fps) { L.ft = 0; L.frame = (L.frame + 1) % n; }
-      const u = L.m.material.uniforms.uvRect.value; u.x = L.frame / L.a.cols; u.y = moving ? 0 : 0.5;
+      const u = L.m.material.uniforms.uvRect.value;
+      if (L.act && !moving) {
+        L.act.t += dt;
+        if (L.act.t >= L.act.len) { L.act = null; L.frame = 0; L.ft = 0; }
+      }
+      if (L.act && !moving) { u.x = actFrame(L.act) / L.a.cols; u.y = 1 - (L.act.row + 1) / ROWS; }
+      else {
+        const n = moving ? L.a.runN : L.a.idleN, fps = moving ? 14 : 7;
+        L.ft += dt; if (L.ft > 1 / fps) { L.ft = 0; L.frame = (L.frame + 1) % n; }
+        u.x = L.frame / L.a.cols; u.y = 1 - ((moving ? ROW.run : ROW.idle) + 1) / ROWS;
+      }
       L.m.visible = L.state !== 'off';
       L.m.rotation.y = Math.atan2(cam.pos.x - L.m.position.x, cam.pos.z - L.m.position.z); L.m.scale.x = L.face;
       L.sh.visible = L.m.visible; L.sh.position.set(L.m.position.x, KERB + 0.8, L.m.position.z);
       const pick = L === chosen() && view !== 'title';
       const tt = view === 'title' || view === 'go' ? [0.86, 0.8, 0.98] : pick ? [1, 0.95, 1.04] : view === 'lad' || view === 'cont' ? [0.42, 0.38, 0.6] : [0.62, 0.56, 0.78];
-      L.tint.lerp(V3(...tt), damp(5, dt)); L.m.material.uniforms.tint.value.copy(L.tint);
+      L.tint.lerp(V3(...tt), damp(L.act && L.act.kind === 'pick' ? 3 : 5, dt)); L.m.material.uniforms.tint.value.copy(L.tint);
     }
     const L = chosen(), menu = view === 'lad' || view === 'diff' || view === 'stage' || view === 'cont';
     spot.position.set(L.m.position.x, KERB + 0.7, L.m.position.z);
-    spot.material.opacity += ((menu ? 0.5 : 0) * fade - spot.material.opacity) * damp(4, dt);
+    spot.material.opacity += ((picking ? 0.95 : menu ? 0.5 : 0) * fade - spot.material.opacity) * damp(picking ? 9 : 4, dt);
     shaft.position.set(L.m.position.x, KERB, L.m.position.z - 2);
     shaft.rotation.y = Math.atan2(cam.pos.x - shaft.position.x, cam.pos.z - shaft.position.z);
-    shaft.material.opacity += ((view === 'lad' || view === 'diff' || view === 'cont' ? 0.45 : 0) * fade - shaft.material.opacity) * damp(4, dt);
+    shaft.material.opacity += ((picking ? 0.9 : view === 'lad' || view === 'diff' || view === 'cont' ? 0.45 : 0) * fade - shaft.material.opacity) * damp(4, dt);
 
     // logo: spins in edge-on and lands, rocks gently, and tucks into the corner for the menus
     const pxu = 2 * 200 * Math.tan(vh) / PH, wob = reduceMotion ? 0 : 1;
@@ -9145,7 +9201,7 @@ const T3 = (() => {
   api.input = input;
   api.back = back;
   if (window.__mbcTest) window.__mbcTest.t3 = { step: s => { for (let i = 0; i < s * 60; i++) step(1 / 60); renderer.render(scene, camera); }, next, back, chooseLad, moveChap, moveStage, setDiff,
-    state: () => ({ view, li, stageSel, diffSel, ready, claimed, failed }),
+    state: () => ({ view, li, stageSel, diffSel, ready, claimed, failed, picking: !!picking, act: lads[li] && lads[li].act && lads[li].act.kind }),
     toSelect: () => { mode = 'select'; modeT = 0; },
     game: () => ({ mode, startAt, sel, route: run && run.route, off: run && run.off, diff: settings.diff, D: run ? D() : null }) };
   return api;

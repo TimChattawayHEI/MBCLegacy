@@ -76,5 +76,7 @@
 #t3-online{color:var(--t3orange)!important;border-color:var(--t3orange)!important}
 #t3-toast{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);font:700 calc(var(--t3u) * 12) var(--t3disp);color:var(--t3gold);pointer-events:none;opacity:0;white-space:nowrap}
 #t3-toast.on{animation:t3toast 2.2s ease-out}
+#t3-toast.shout{left:29%;top:20%;font-size:calc(var(--t3u) * 17);text-shadow:calc(var(--t3u) * -1.5) 0 var(--t3ink),calc(var(--t3u) * 1.5) 0 var(--t3ink),0 calc(var(--t3u) * -1.5) var(--t3ink),0 calc(var(--t3u) * 1.5) var(--t3ink);animation:t3shout 1.6s ease-out}
+@keyframes t3shout{0%{opacity:0;transform:translate(-50%,-50%) scale(2.2)}12%{opacity:1;transform:translate(-50%,-50%) scale(.92)}20%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
 @keyframes t3toast{0%{opacity:0}10%{opacity:1}75%{opacity:1}100%{opacity:0}}
-@media (prefers-reduced-motion:reduce){#t3-start.blink{animation:none}.t3sel,.t3sel.on{transform:none;transition:opacity .2s}#t3-crumbs,#t3-crumbs.on{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){#t3-toast.shout{animation:t3toast 1.6s ease-out}#t3-start.blink{animation:none}.t3sel,.t3sel.on{transform:none;transition:opacity .2s}#t3-crumbs,#t3-crumbs.on{transform:translateX(-50%)}}
