@@ -172,12 +172,14 @@ function prefetchStageMusic(key) {
 }
 function startStageNow(key) {""", 'stage start gate')
 
-s = swap(s, """  if (mode === 'chat') { updateChat(dt); return true; }""",
-         """  if (mode === 'chat') { updateChat(dt); return true; }
+if "  if (mode === 'loading') { updateLoading(dt); return true; }" not in s:
+    s = swap(s, """  if (mode === 'chat') { updateChat(dt); return true; }""",
+             """  if (mode === 'chat') { updateChat(dt); return true; }
   if (mode === 'loading') { updateLoading(dt); return true; }""", 'loading step')
-s = swap(s, """  if (mode === 'chat') { drawChat(); drawStatic(); return; }""",
-         """  if (mode === 'chat') { drawChat(); drawStatic(); return; }
-  if (mode === 'loading') { drawLoading(); return; }""", 'loading render')
+if "  if (mode === 'loading') { drawLoading(); return; }" not in s:
+    s = swap(s, """  if (mode === 'board') { drawBoard(); return; }""",
+             """  if (mode === 'loading') { drawLoading(); return; }
+  if (mode === 'board') { drawBoard(); return; }""", 'loading render')
 s = swap(s, """  if (mode === 'select' && T3.live()) return T3.back();""",
          """  if (mode === 'select' && T3.live()) return T3.back();
   if (mode === 'loading') return true;   // the phone's back button never closes the app mid-load""", 'back button while loading')

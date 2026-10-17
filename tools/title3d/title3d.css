@@ -28,6 +28,8 @@
 .t3ghost{font:800 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 4.8)) var(--t3body)!important;letter-spacing:.12em;text-transform:uppercase;background:rgba(13,8,38,.6);border:1px solid var(--t3rule);padding:calc(var(--t3u) * 2.5) calc(var(--t3u) * 5)}
 .t3ghost:hover{border-color:var(--t3gold);color:var(--t3gold)}
 .t3ghost.off{color:var(--t3grey)}
+#t3-cont{left:calc(var(--t3u) * 12);bottom:calc(var(--t3u) * 22);width:calc(var(--t3u) * 230);display:grid;gap:calc(var(--t3u) * 5)}
+#t3-cstage{font-size:calc(var(--t3u) * 15);color:var(--t3gold)}
 #t3-crumbs{top:calc(var(--t3u) * 8);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:calc(var(--t3u) * 4);font:700 max(calc(var(--t3m) * 9px),calc(var(--t3u) * 6)) var(--t3disp);letter-spacing:.06em;white-space:nowrap}
 #t3-crumbs.on{transform:translateX(-50%)}
 #t3-crumbs span{color:var(--t3grey);text-shadow:0 calc(var(--t3u) * 1) 0 var(--t3ink)}

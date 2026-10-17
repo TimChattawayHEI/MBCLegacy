@@ -31,7 +31,7 @@ const T3 = (() => {
   // ---------------------------------------------------------------- state
   let THREE = null, renderer = null, scene = null, camera = null, ready = false, failed = false, claimed = false;
   let view = 'title', viewT = 0, t = 0, intro = true, last = 0, lastMode = null, fadeTarget = 1;
-  let li = 3, stageSel = 0, diffSel = 1, sendT = 0, sent = false;
+  let li = 3, stageSel = 0, diffSel = 1, sendT = 0, sent = false, carry = false;
   const lads = [], billboards = [], glows = [], pools = [];
   let backdrop, logo, logoW = 1, logoH = 1, spot, shaft, FOG, shared, V3;
   const cam = {}, tgt = {}, moodCur = {};
@@ -267,7 +267,7 @@ const T3 = (() => {
   function setView(v) {
     view = v; viewT = 0;
     const L = chosen();
-    if (v === 'lad') for (const o of lads) { o.gx = o.tx; o.gz = o.tz + (o === L ? 30 : 0); }
+    if (v === 'lad' || v === 'cont') for (const o of lads) { o.gx = o.tx; o.gz = o.tz + (o === L ? 30 : 0); }
     else if (v === 'stage') {
       const spots = [[-124, -40], [124, -60], [-140, -130], [140, -150], [-118, -220], [118, -240]];
       let k = 0; for (const o of lads) { if (o === L) { o.gx = 0; o.gz = 40; } else [o.gx, o.gz] = spots[k++]; }
@@ -283,12 +283,19 @@ const T3 = (() => {
     audioInit();
     if (view === 'title') {
       if (t < T_READY) { restart(true); return; }
-      sfx('start'); mode = 'select'; modeT = 0; lastMode = 'select'; setView('lad');
-    } else if (view === 'lad') { sfx('page'); setView('stage'); }
+      sfx('start'); mode = 'select'; modeT = 0; lastMode = 'select';
+      // a run saved when the app closed: offer to carry on with it first (Version 45)
+      const sr = savedRun();
+      if (sr) { li = Math.max(0, ORDER.indexOf(PLAYABLE[sr.ci].id)); setView('cont'); } else setView('lad');
+    } else if (view === 'cont') carryOn();
+    else if (view === 'lad') { sfx('page'); setView('stage'); }
     else if (view === 'stage') { if (stageLocked()) { sfx('nope'); return; } sfx('page'); setView('diff'); }
     else if (view === 'diff') { sfx('start'); commit(); setView('go'); }
   }
+  function carryOn() { if (!savedRun()) { setView('lad'); return; } sfx('start'); carry = true; setView('go'); }
+  function newInstead() { sfx('page'); setView('lad'); }
   function back() {
+    if (view === 'cont') { sfx('page'); mode = 'title'; modeT = 0; lastMode = 'title'; restart(true); return true; }
     if (view === 'lad') { sfx('page'); mode = 'title'; modeT = 0; lastMode = 'title'; restart(true); }
     else if (view === 'stage') { sfx('page'); setView('lad'); }
     else if (view === 'diff') { sfx('page'); setView('stage'); }
@@ -313,7 +320,7 @@ const T3 = (() => {
   function sync() {
     const on = (id, v) => { const el = q(id); el.classList.toggle('on', v); el.inert = !v; if (!v && el.contains(document.activeElement)) document.activeElement.blur(); };
     const menu = view === 'lad' || view === 'stage' || view === 'diff';
-    on('crumbs', menu); on('foot', menu);
+    on('crumbs', menu); on('foot', menu || view === 'cont'); on('cont', view === 'cont');
     on('lad', view === 'lad'); on('roster', view === 'lad');
     on('stages', view === 'stage'); on('info', view === 'stage'); on('diff', view === 'diff');
     if (view !== 'title') ['sub', 'start', 'tag'].forEach(id => q(id).classList.remove('on', 'blink'));
@@ -327,6 +334,13 @@ const T3 = (() => {
     if (view === 'lad') renderLad();
     if (view === 'stage') renderStage();
     if (view === 'diff') renderDiff();
+    if (view === 'cont') renderCont();
+  }
+  function renderCont() {
+    const r = savedRun(); if (!r) return;
+    const st = STAGES[r.route[r.idx]], c = PLAYABLE[r.ci], d = DIFFS[r.diff] || DIFFS.normal;
+    q('cstage').textContent = (st.hidden ? 'Hidden stage' : 'Stage ' + st.n) + ' \u00B7 ' + st.title;
+    q('cline').textContent = c.name + ' \u00B7 ' + r.lives + (r.lives === 1 ? ' life' : ' lives') + ' \u00B7 ' + (r.score || 0).toLocaleString('en-GB') + ' points \u00B7 ' + d.label;
   }
   function hint() {
     const pad = padOn(), tch = touchUI && !pad;
@@ -334,6 +348,7 @@ const T3 = (() => {
       lad: pad ? 'Stick to choose · HIT to pick · BACK' : tch ? 'Tap a lad. Tap again to pick.' : '← → choose · J pick · Esc back',
       stage: pad ? 'Stick for chapter · HIT to start here' : tch ? 'Tap a chapter, then a stage.' : '← → chapter · ↑ ↓ stage · J start here',
       diff: pad ? 'Stick for difficulty · HIT to go' : tch ? 'Pick a difficulty, then go.' : '← → difficulty · F language · J go',
+      cont: pad ? 'HIT to carry on · JUMP for a new run' : tch ? 'Carry on, or start a new run.' : 'J carry on · K new run · Esc back',
     })[view] || '';
   }
   function renderFoot() {
@@ -395,6 +410,7 @@ const T3 = (() => {
     if (P('online') && netAvailable()) { sfx('page'); openNetLobby(); return; }
     if (P('escape') || P('back')) { back(); return; }
     if (P('punch') || P('start')) { next(); return; }
+    if (view === 'cont') { if (P('jump')) newInstead(); return; }
     if (view === 'lad') { if (P('left')) chooseLad((li + 6) % 7); if (P('right')) chooseLad((li + 1) % 7); }
     else if (view === 'stage') { if (P('left')) moveChap(-1); if (P('right')) moveChap(1); if (P('up')) moveStage(-1); if (P('down')) moveStage(1); }
     else if (view === 'diff') {
@@ -432,6 +448,8 @@ const T3 = (() => {
   click('lang', () => { settings.sweary = !settings.sweary; saveSettings(); sfx('page'); renderDiff(); });
   click('go', next);
   click('back', back);
+  click('carry', carryOn);
+  click('new', newInstead);
   click('sound', toggleSound);
   click('board', () => { sfx('page'); openBoard(null, 'select'); });
   click('online', () => { if (netAvailable()) { sfx('page'); openNetLobby(); } });
@@ -446,7 +464,7 @@ const T3 = (() => {
   }
   function selectPose() {
     const L = chosen();
-    if (view === 'lad') { tgt.pos.set(L.gx + 72, 46, L.gz + 165); tgt.look.set(L.gx + 72, 40, L.gz - 500); tgt.fov = 50; }
+    if (view === 'lad' || view === 'cont') { tgt.pos.set(L.gx + 72, 46, L.gz + 165); tgt.look.set(L.gx + 72, 40, L.gz - 500); tgt.fov = 50; }
     else if (view === 'stage') { tgt.pos.set(Math.sin(t * 0.2) * 10 * (reduceMotion ? 0 : 1), 118, 330); tgt.look.set(0, 44, -420); tgt.fov = 50; }
     else if (view === 'diff') { tgt.pos.set(-118, 22, 186); tgt.look.set(-20, 50, -150); tgt.fov = 46; }
     else { const k = easeInOut(clamp(viewT / 1.6, 0, 1)); tgt.pos.set(-118 + 260 * k, 22 + 24 * k, 186 - 40 * k); tgt.look.set(-20 + 300 * k, 50, -150); tgt.fov = 46 + 6 * k; }
@@ -468,7 +486,7 @@ const T3 = (() => {
 
     // the send-off: everyone runs off, fade to black, then the run starts
     if (view === 'go' && viewT > 1.15) fadeTarget = 0;
-    if (view === 'go' && viewT > 1.75 && !sent) { sent = true; newRun(sel, startAt); }
+    if (view === 'go' && viewT > 1.75 && !sent) { sent = true; if (carry) { carry = false; if (!continueRun()) newRun(sel, startAt); } else newRun(sel, startAt); }
     const into = view === 'title' && intro ? clamp(t / 0.6, 0, 1) : 1;
     shared.fade.value += (Math.min(fadeTarget, into) - shared.fade.value) * damp(view === 'title' && intro ? 30 : view === 'go' ? 6 : 4, dt);
     const fade = shared.fade.value;
@@ -512,15 +530,15 @@ const T3 = (() => {
       L.m.rotation.y = Math.atan2(cam.pos.x - L.m.position.x, cam.pos.z - L.m.position.z); L.m.scale.x = L.face;
       L.sh.visible = L.m.visible; L.sh.position.set(L.m.position.x, KERB + 0.8, L.m.position.z);
       const pick = L === chosen() && view !== 'title';
-      const tt = view === 'title' || view === 'go' ? [0.86, 0.8, 0.98] : pick ? [1, 0.95, 1.04] : view === 'lad' ? [0.42, 0.38, 0.6] : [0.62, 0.56, 0.78];
+      const tt = view === 'title' || view === 'go' ? [0.86, 0.8, 0.98] : pick ? [1, 0.95, 1.04] : view === 'lad' || view === 'cont' ? [0.42, 0.38, 0.6] : [0.62, 0.56, 0.78];
       L.tint.lerp(V3(...tt), damp(5, dt)); L.m.material.uniforms.tint.value.copy(L.tint);
     }
-    const L = chosen(), menu = view === 'lad' || view === 'diff' || view === 'stage';
+    const L = chosen(), menu = view === 'lad' || view === 'diff' || view === 'stage' || view === 'cont';
     spot.position.set(L.m.position.x, KERB + 0.7, L.m.position.z);
     spot.material.opacity += ((menu ? 0.5 : 0) * fade - spot.material.opacity) * damp(4, dt);
     shaft.position.set(L.m.position.x, KERB, L.m.position.z - 2);
     shaft.rotation.y = Math.atan2(cam.pos.x - shaft.position.x, cam.pos.z - shaft.position.z);
-    shaft.material.opacity += ((view === 'lad' || view === 'diff' ? 0.45 : 0) * fade - shaft.material.opacity) * damp(4, dt);
+    shaft.material.opacity += ((view === 'lad' || view === 'diff' || view === 'cont' ? 0.45 : 0) * fade - shaft.material.opacity) * damp(4, dt);
 
     // logo: spins in edge-on and lands, rocks gently, and tucks into the corner for the menus
     const pxu = 2 * 200 * Math.tan(vh) / PH, wob = reduceMotion ? 0 : 1;

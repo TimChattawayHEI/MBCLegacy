@@ -112,6 +112,8 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
 .t3ghost{font:800 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 4.8)) var(--t3body)!important;letter-spacing:.12em;text-transform:uppercase;background:rgba(13,8,38,.6);border:1px solid var(--t3rule);padding:calc(var(--t3u) * 2.5) calc(var(--t3u) * 5)}
 .t3ghost:hover{border-color:var(--t3gold);color:var(--t3gold)}
 .t3ghost.off{color:var(--t3grey)}
+#t3-cont{left:calc(var(--t3u) * 12);bottom:calc(var(--t3u) * 22);width:calc(var(--t3u) * 230);display:grid;gap:calc(var(--t3u) * 5)}
+#t3-cstage{font-size:calc(var(--t3u) * 15);color:var(--t3gold)}
 #t3-crumbs{top:calc(var(--t3u) * 8);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:calc(var(--t3u) * 4);font:700 max(calc(var(--t3m) * 9px),calc(var(--t3u) * 6)) var(--t3disp);letter-spacing:.06em;white-space:nowrap}
 #t3-crumbs.on{transform:translateX(-50%)}
 #t3-crumbs span{color:var(--t3grey);text-shadow:0 calc(var(--t3u) * 1) 0 var(--t3ink)}
@@ -205,6 +207,12 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
         <div id="t3-cards"></div>
         <div class="t3row"><button class="t3ghost" id="t3-lang" type="button" aria-pressed="false">Language</button><button class="t3go" id="t3-go" type="button">LET'S GO</button></div>
       </section>
+      <section class="t3sel t3panel" id="t3-cont" aria-live="polite">
+        <p class="t3cap">Your last run</p>
+        <h2 class="t3h t3out" id="t3-cstage"></h2>
+        <p class="t3txt" id="t3-cline"></p>
+        <div class="t3row"><button class="t3ghost" id="t3-new" type="button">New run</button><button class="t3go" id="t3-carry" type="button">CARRY ON</button></div>
+      </section>
       <div class="t3sel" id="t3-foot">
         <button class="t3ghost" id="t3-back" type="button">&lsaquo; Back</button>
         <p class="t3cap" id="t3-hint"></p>
@@ -284,7 +292,8 @@ function seeded(s) { return () => { s = (s * 16807) % 2147483647; return (s - 1)
 // ------------------------------------------------------------------ storage & settings
 function lsGet(k, d) { try { const v = window.localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }
 function lsSet(k, v) { try { window.localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage optional */ } }
-const settings = Object.assign({ sweary: true, sound: true, unlocked: false, lastName: '', diff: 'normal' }, lsGet('carpdiem.settings', {}) || {});
+const settings = Object.assign({ sweary: true, sound: true, unlocked: false, lastName: '', diff: 'normal',
+  mus: 10, fx: 10, buzz: true, shake: 'full', flash: true, pad: 'm', ghost: false, lefty: false }, lsGet('carpdiem.settings', {}) || {});   // Version 45 adds the volumes, comfort and touch options
 function saveSettings() { lsSet('carpdiem.settings', settings); }
 
 // ------------------------------------------------------------------ language filter (family mode)
@@ -322,7 +331,7 @@ function audioInit() {
   } catch (e) { actx = null; }
 }
 function applySound() {
-  if (actx) { sfxBus.gain.value = settings.sound ? 1 : 0; musBus.gain.value = settings.sound ? 0.6 : 0; }
+  if (actx) { sfxBus.gain.value = settings.sound ? (settings.fx ?? 10) / 10 : 0; musBus.gain.value = settings.sound ? 0.6 * (settings.mus ?? 10) / 10 : 0; }
   const b = document.getElementById('snd'); if (b) b.textContent = settings.sound ? 'Sound on' : 'Sound off';
 }
 function noise(len, hp, lp, vol, pow, delay, bus) {
@@ -584,7 +593,7 @@ let typed = '';
 const KEYMAP = { ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right', ArrowUp: 'up', KeyW: 'up',
   ArrowDown: 'down', KeyS: 'down', KeyJ: 'punch', KeyZ: 'punch', KeyK: 'jump', KeyX: 'jump', Space: 'jump',
   KeyL: 'special', KeyC: 'special', KeyU: 'back', KeyV: 'back', Enter: 'start', Escape: 'escape',
-  KeyM: 'mute', KeyO: 'online', KeyF: 'lang', KeyB: 'board', KeyR: 'route', KeyT: 'diff', KeyP: 'pause' };
+  KeyM: 'mute', KeyC: 'cont', KeyO: 'online', KeyF: 'lang', KeyB: 'board', KeyR: 'route', KeyT: 'diff', KeyP: 'pause' };
 window.addEventListener('keydown', e => {
   const tg = e.target && e.target.tagName;
   if (tg === 'INPUT' || tg === 'TEXTAREA' || tg === 'BUTTON' && (e.code === 'Enter' || e.code === 'Space')) return;
@@ -605,6 +614,14 @@ const BTN = [
   { id: 'special', x: 862, y: 334, r: 34, label: 'SPECIAL' },
 ];
 const STICK = { x: 130, y: 430, r: 70 };
+// touch layout options (Version 45): button size, and the stick on the right for left-handed players
+const BTN0 = BTN.map(b => Object.assign({}, b)), STICK0 = Object.assign({}, STICK);
+function applyTouchLayout() {
+  const k = { s: 0.85, m: 1, l: 1.18 }[settings.pad] || 1, L = !!settings.lefty;
+  BTN.forEach((b, i) => { const o = BTN0[i], x = W - (W - o.x) * k; b.x = L ? W - x : x; b.y = H - (H - o.y) * k; b.r = o.r * k; });
+  STICK.r = STICK0.r * k; STICK.x = L ? W - STICK0.x : STICK0.x; STICK.y = H - (H - STICK0.y) * k;
+}
+applyTouchLayout();
 const pointers = new Map();
 function toLogical(e) {
   const r = canvas.getBoundingClientRect();
@@ -620,7 +637,7 @@ canvas.addEventListener('pointerdown', e => {
   if (mode !== 'play') return;
   let role = null;
   for (const b of BTN) if (Math.hypot(p.x - b.x, p.y - b.y) < b.r + 14) { role = b.id; break; }
-  if (!role && p.x < W * 0.5 && p.y > 120) role = 'stick';
+  if (!role && (settings.lefty ? p.x > W * 0.5 : p.x < W * 0.5) && p.y > 120) role = 'stick';
   if (role === 'stick') pointers.set(e.pointerId, { role, ox: p.x, oy: p.y, x: p.x, y: p.y });
   else if (role) { pointers.set(e.pointerId, { role }); pressed.add(role); }
   e.preventDefault();
@@ -1639,7 +1656,7 @@ let FT = 340, FB = 506;
 const BBQ = { kind: 'bbq', x: 480, y: 428, face: 1 };
 
 function showBanner(text, sub, life) { banner = { text, sub, t: 0, life }; }
-function addShake(v) { shake = Math.max(shake, reduceMotion ? v * 0.25 : v); }
+function addShake(v) { shake = Math.max(shake, reduceMotion || settings.shake === 'less' ? v * 0.25 : v); }
 // difficulty, eased in over the first two stages of a run so the opener stays an opener
 const dCache = {};
 function D() {
@@ -1938,6 +1955,7 @@ function applyHit(a, t, k, dir) {
   hitstop = Math.max(hitstop, k.hs || 0.05);
   sfx(big ? 'heavy' : 'hit');
   if (a === player && player.buffT > 0) { k = Object.assign({}, k, { kb: (k.kb || 120) * 1.35 }); }
+  if (big && a && isMine(a) && t !== a) buzz(18);
   if (a === player) { gainMeter(player, METER.hit, k); addScore(Math.round(dmg * 3)); if (k.word) popWord(t.x, t.y, t.z + 130, k.word, false); }
   if (t === player) { hurtPlayer(t, k, dir, big); return; }
   if (t.car) { espaceHit(t, k, dir, big, dmg); return; }
@@ -1959,6 +1977,7 @@ function applyHit(a, t, k, dir) {
   } else { t.state = 'hurt'; t.t = 0; t.vx = dir * (k.kb || 90); t.vy = 0; }
 }
 function hurtPlayer(p, k, dir, big) {
+  if (isMine(p)) buzz(big || k.kd ? 70 : 30);
   if (S) { S.hitsTaken++; if (S.bosses && S.bosses.length) S.bossHits++; if (S.chain >= 5) popWord(p.x, p.y, 190, 'CHAIN BROKEN', false); S.chain = 0; S.chainT = 0; }
   if (p.state === 'drowsy') { p.drowsy = 0; p.wakeT = 3.5; }
   gainMeter(p, METER.hurt); sfx('ouch');
@@ -1969,6 +1988,15 @@ function hurtPlayer(p, k, dir, big) {
   else { p.state = 'hurt'; p.t = 0; p.vx = dir * (k.kb || 120); p.vy = 0; }
   addShake(big ? 7 : 3);
   if (p.hp > 0 && p.hp < p.maxHp * 0.3) ladSay('hurt', 0.5); else ladSay('hurt', 0.12);
+}
+// a short buzz on the phone for the local lad's big moments (Version 45); local only, never part of the shared game
+let buzzT = 0;
+const canBuzz = () => typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function' && touchUI;
+function isMine(p) { return NET.on ? p === PL[NET.me] : p === player; }
+function buzz(ms) {
+  if (!settings.buzz || !canBuzz()) return;
+  const now = performance.now(); if (now < buzzT) return; buzzT = now + 70;
+  try { navigator.vibrate(ms); } catch (e) { /* optional */ }
 }
 function knockDown(t, dir, kb) { t.state = 'down'; t.t = 0; t.vz = 430; t.z = Math.max(t.z, 1); t.vx = dir * kb; t.vy = 0; t.atk = null; t.landed = false; }
 function bossHit(b, k, dir, big) {
@@ -2233,6 +2261,7 @@ function launchThrow(p) {
 
 // specials
 function startSpecial(p) {
+  if (isMine(p)) buzz(90);
   p.meter = 0; p.state = 'special'; p.t = 0; p.inv = 99; p.spDone = false; p.spEnd = 0; p.vx = 0; p.vy = 0; p.landed = false; p.atk = null; p.running = false;
   p.spWhistle = false; p.spDove = false; p.spGhost = p.spInf = p.spYawn = p.spZ = p.spSnore = p.spWake = false; p.headK = 1;
   if (p.grab) releaseGrab(p);
@@ -5617,6 +5646,34 @@ function drawEntity(e) {
 }
 
 // ================================================================== run & stage flow
+// carry on a run after the app closes (Version 45): the run as it stood when this stage started
+const RUN_SAVE = 'carpdiem.run';
+let stageSnap = null;
+function runData() { const r = Object.assign({}, run); delete r.c; return JSON.parse(JSON.stringify(r)); }
+function savedRun() {
+  const r = lsGet(RUN_SAVE, null);
+  return r && r.v === 1 && PLAYABLE[r.ci] && Array.isArray(r.route) && STAGES[r.route[r.idx]] ? r : null;
+}
+function clearSavedRun() { stageSnap = null; try { window.localStorage.removeItem(RUN_SAVE); } catch (e) { /* storage optional */ } }
+function savedRunLabel(r) { const st = STAGES[r.route[r.idx]]; return st.hidden ? 'HIDDEN STAGE' : 'STAGE ' + st.n; }
+function restoreRun(r) {
+  run = Object.assign(JSON.parse(JSON.stringify(r)), { c: PLAYABLE[r.ci] }); delete run.v; delete run.key; delete run.saved;
+  sel = r.ci; player = makePlayer(run.c);
+}
+function continueRun() {
+  const r = savedRun(); if (!r) return false;
+  restoreRun(r);
+  const key = run.route[run.idx];
+  prefetchStageMusic(key);
+  openChat(CHATS[STAGES[key].intro], () => startStage(key), 'CARRYING ON', STAGES[key].era);
+  return true;
+}
+function restartStage() {
+  if (!stageSnap) return;
+  const snap = stageSnap;
+  restoreRun(snap.run); held.clear(); pointers.clear(); pressed.clear();
+  musicSet(null); startStage(snap.key);
+}
 function newRun(ci, start) {
   const c = PLAYABLE[ci];
   run = { ci, c, route: routeFrom(start), off: routeDepth(start), vroute: ROUTE.includes(start) ? routeFrom(chapterOf(start)) : null, idx: 0, score: 0, lives: (DIFFS[settings.diff] || DIFFS.normal).lives, diff: settings.diff, livesLost: 0, totalTime: 0,
@@ -5681,6 +5738,7 @@ function startStageNow(key) {
   musicSet(ST.music);
   netStageStart();
   if (ST.drive) driveStart(); else setTimeout0(() => ladSay('start', 1, true), 2.2);
+  if (!NET.on && run) { const d = runData(); stageSnap = { key, run: d }; lsSet(RUN_SAVE, Object.assign({ v: 1, key, saved: Date.now() }, d)); }
 }
 function finishStage() {
   if (mode !== 'play') return;
@@ -5728,8 +5786,9 @@ function afterClear() {
     openChat(lines, winGame);
   }
 }
-function gameOver() { mode = 'over'; modeT = 0; musicSet(null); showBanner('BLANKED', 'Nothing in the net this time', 99); }
+function gameOver() { if (!NET.on) clearSavedRun(); mode = 'over'; modeT = 0; musicSet(null); showBanner('BLANKED', 'Nothing in the net this time', 99); }
 function winGame() {
+  if (!NET.on) clearSavedRun();
   run.winBonus = Math.round(run.lives * 10000 * D().score); addScore(run.winBonus, true);
   mode = 'win'; modeT = 0; musicSet('title'); showBanner(run.ramsdenCleared ? 'RAMSDEN SURVIVED' : 'YOU LANDED BIG GARY', run.ramsdenCleared ? 'Gary, Gaz, Denise and the lot.' : 'New lake record. Denise is not happy.', 99); }
 function resultLabel() {
@@ -5751,10 +5810,21 @@ function revealChat() {
 }
 function updateChat(dt) {
   chat.t += dt;
+  if (chatSkipShown() && modeT > 0.2 && taps.some(t => t.x > CHAT_SKIP.x - 8 && t.x < CHAT_SKIP.x + CHAT_SKIP.w + 8 && t.y > CHAT_SKIP.y - 8 && t.y < CHAT_SKIP.y + CHAT_SKIP.h + 8)) { sfx('page'); skipChat(); return; }
   if (chat.shown < chat.lines.length && chat.t > 0.95) revealChat();
   const adv = pressed.has('punch') || pressed.has('start') || taps.length > 0;
   if (pressed.has('jump') || pressed.has('escape')) { while (chat.shown < chat.lines.length) revealChat(); finishChat(); return; }
   if (adv && modeT > 0.2) { if (chat.shown < chat.lines.length) revealChat(); else finishChat(); }
+}
+// a SKIP button on touch screens (the portrait pad has JUMP to skip) (Version 45)
+const CHAT_SKIP = { x: W - 118, y: 18, w: 100, h: 38 };
+const chatSkipShown = () => touchUI && !padOn();
+function skipChat() { while (chat.shown < chat.lines.length) revealChat(); finishChat(); }
+function drawChatSkip() {
+  if (!chat || !chatSkipShown()) return;
+  const b = CHAT_SKIP;
+  rrect(b.x, b.y, b.w, b.h, 10); ctx.fillStyle = 'rgba(24,36,42,0.92)'; ctx.fill(); ctx.strokeStyle = '#f2a23a'; ctx.lineWidth = 2; ctx.stroke();
+  ctx.font = '15px ' + DISPLAY; ctx.fillStyle = '#ffd23f'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('SKIP \u203A', b.x + b.w / 2, b.y + b.h / 2 + 1);
 }
 function finishChat() { const n = chat.next; chat = null; if (n) n(); else mode = 'select'; }
 function drawNokia() {
@@ -5951,6 +6021,7 @@ function optionPills() {
     { id: 'board', cap: 'HIGH SCORES', label: 'LEADERBOARD', key: 'B' },
   ];
   if (netAvailable()) pills.unshift({ id: 'online', cap: 'TWO PLAYERS', label: 'PLAY ONLINE', key: 'O', hot: true });
+  { const sr = savedRun(); if (sr) pills.unshift({ id: 'cont', cap: 'CARRY ON', label: savedRunLabel(sr) + '  ·  ' + PLAYABLE[sr.ci].name, key: 'C', hot: true }); }
   ctx.font = '800 13px ' + BODY;
   let total = 0; for (const p of pills) { const lw = ctx.measureText(p.label).width; ctx.font = '800 9px ' + BODY; const cw = ctx.measureText(p.cap).width; ctx.font = '800 13px ' + BODY; p.w = Math.max(lw, cw) + (touchUI ? 26 : 40); total += p.w + 8; }
   const sk = Math.min(1, (W - 24) / (total - 8));
@@ -5964,6 +6035,7 @@ function toggleOption(id) {
   else if (id === 'mute') { settings.sound = !settings.sound; saveSettings(); applySound(); }
   else if (id === 'board') openBoard(null, 'select');
   else if (id === 'online') openNetLobby();
+  else if (id === 'cont') { audioInit(); sfx('start'); continueRun(); }
   else if (id === 'route') { const opts = settings.unlocked ? ['1999', 'elba', 'carpdiem', 'ramsden'] : ['1999', 'elba', 'carpdiem']; startAt = opts[(opts.indexOf(startAt) + 1) % opts.length]; }
   else if (id === 'diff') { settings.diff = DIFF_ORDER[(DIFF_ORDER.indexOf(settings.diff) + 1) % DIFF_ORDER.length]; saveSettings(); }
 }
@@ -5973,6 +6045,7 @@ function updateSelect() {
   if (pressed.has('right')) { sel = (sel + 1) % n; sfx('swing'); }
   for (const id of ['lang', 'mute', 'board', 'route', 'diff']) if (pressed.has(id)) toggleOption(id);
   if (pressed.has('online') && netAvailable()) { toggleOption('online'); return; }
+  if (pressed.has('cont') && savedRun()) { toggleOption('cont'); return; }
   if (typed.endsWith('RAMSDEN') && !settings.unlocked) { settings.unlocked = true; saveSettings(); typed = ''; sfx('jackpot'); showBanner('RAMSDEN UNLOCKED', 'Press R to start there', 2.4); }
   if (mode !== 'select') return;
   let go = pressed.has('punch') || pressed.has('start');
@@ -5980,6 +6053,7 @@ function updateSelect() {
   for (const t of taps) {
     let used = false;
     for (const p of pills) if (t.x > p.x && t.x < p.x + p.w && t.y > p.y && t.y < p.y + p.h) { toggleOption(p.id); used = true; }
+    if (mode !== 'select') return;
     if (used) continue;
     PLAYABLE.forEach((c, i) => { const x = tileX(i); if (t.x > x && t.x < x + TILE.w && t.y > TILE.y - 8 && t.y < TILE.y + TILE.h) { used = true; if (sel === i) go = true; else { sel = i; sfx('swing'); } } });
     if (!used && t.y > 120 && t.y < 390) go = true;
@@ -6276,7 +6350,7 @@ function drawHUD() {
 }
 function drawTouch() {
   if (!touchUI || mode !== 'play' || padOn()) return;
-  ctx.save(); ctx.globalAlpha = 0.85;
+  ctx.save(); ctx.globalAlpha = settings.ghost ? 0.4 : 0.85;
   let st = null; for (const p of pointers.values()) if (p.role === 'stick') st = p;
   const ox = st ? st.ox : STICK.x, oy = st ? st.oy : STICK.y;
   ctx.fillStyle = 'rgba(15,22,25,0.35)'; circle(ox, oy, STICK.r); ctx.fill();
@@ -6317,41 +6391,115 @@ function drawBanner() {
 }
 
 // ================================================================== pause
+let pauseFocus = 'left', setSel = 0, restartConfirm = false;
 let pauseSel = 0, pauseTab = 'info', pauseConfirm = false, pausedMusic = null, lastPlateW = 150;
 function pauseBtn(plateW) { if (plateW) lastPlateW = plateW; return { x: W - 12 - lastPlateW - 28, y: 34, r: 20 }; }
 function pauseItems() {
   const items = [
     { id: 'resume', label: 'RESUME' },
+    { id: 'restart', label: restartConfirm ? 'SURE? START AGAIN' : 'RESTART STAGE' },
+    { id: 'settings', label: 'SETTINGS' },
     { id: 'scores', label: pauseTab === 'scores' ? 'RUN INFO' : 'HIGH SCORES' },
-    { id: 'mute', label: 'SOUND: ' + (settings.sound ? 'ON' : 'OFF') },
-    { id: 'lang', label: 'LANGUAGE: ' + (settings.sweary ? 'SWEARY' : 'FAMILY') },
     { id: 'quit', label: pauseConfirm ? 'SURE? YOUR RUN ENDS' : 'QUIT TO MENU' },
   ];
+  if (!stageSnap) items.splice(1, 1);
   items.forEach((it, i) => { it.x = 64; it.y = 150 + i * 56; it.w = 300; it.h = 44; });
   return items;
 }
 function openPause() {
   if (mode !== 'play') return;
-  mode = 'pause'; modeT = 0; pauseSel = 0; pauseTab = 'info'; pauseConfirm = false;
+  mode = 'pause'; modeT = 0; pauseSel = 0; pauseTab = 'info'; pauseConfirm = false; restartConfirm = false; pauseFocus = 'left';
   held.clear(); pointers.clear(); pausedMusic = mus.key; musicSet(null); sfx('page');
 }
 function resumeGame() { mode = 'play'; held.clear(); pointers.clear(); musicSet(pausedMusic, true); sfx('page'); canvas.focus(); }
 function pauseAct(id) {
   if (id !== 'quit') pauseConfirm = false;
+  if (id !== 'restart') restartConfirm = false;
   if (id === 'resume') resumeGame();
-  else if (id === 'scores') { pauseTab = pauseTab === 'scores' ? 'info' : 'scores'; sfx('page'); }
-  else if (id === 'mute') { settings.sound = !settings.sound; saveSettings(); applySound(); sfx('page'); }
-  else if (id === 'lang') { settings.sweary = !settings.sweary; saveSettings(); sfx('page'); }
-  else if (id === 'quit') { if (!pauseConfirm) { pauseConfirm = true; sfx('page'); } else { pauseConfirm = false; mode = 'select'; modeT = 0; banner = null; musicSet(null); } }
+  else if (id === 'restart') { if (!restartConfirm) { restartConfirm = true; sfx('page'); } else { restartConfirm = false; sfx('start'); restartStage(); } }
+  else if (id === 'settings') { pauseTab = 'settings'; pauseFocus = 'right'; setSel = 0; sfx('page'); }
+  else if (id === 'scores') { pauseTab = pauseTab === 'scores' ? 'info' : 'scores'; pauseFocus = 'left'; sfx('page'); }
+  else if (id === 'quit') { if (!pauseConfirm) { pauseConfirm = true; sfx('page'); } else { pauseConfirm = false; clearSavedRun(); mode = 'select'; modeT = 0; banner = null; musicSet(null); } }
+}
+// the settings panel on the right of the pause screen (Version 45)
+function setRows() {
+  const rows = [
+    { id: 'mus', label: 'MUSIC', vol: true },
+    { id: 'fx', label: 'EFFECTS', vol: true },
+    { id: 'sound', label: 'ALL SOUND', val: settings.sound ? 'ON' : 'OFF' },
+    { id: 'lang', label: 'LANGUAGE', val: settings.sweary ? 'SWEARY' : 'FAMILY' },
+    { id: 'buzz', label: 'VIBRATION', val: settings.buzz ? 'ON' : 'OFF', touch: true },
+    { id: 'shake', label: 'SCREEN SHAKE', val: settings.shake === 'less' ? 'GENTLE' : 'FULL' },
+    { id: 'flash', label: 'SCREEN FLASHES', val: settings.flash === false ? 'SOFT' : 'FULL' },
+    { id: 'pad', label: 'BUTTON SIZE', val: ({ s: 'SMALL', m: 'MEDIUM', l: 'LARGE' })[settings.pad] || 'MEDIUM', touch: true },
+    { id: 'ghost', label: 'BUTTONS', val: settings.ghost ? 'SEE-THROUGH' : 'SOLID', touch: true },
+    { id: 'lefty', label: 'STICK', val: settings.lefty ? 'ON THE RIGHT' : 'ON THE LEFT', touch: true },
+  ].filter(r => !r.touch || touchUI || (r.id === 'buzz' && canBuzz()));
+  rows.forEach((r, i) => { r.x = 452; r.y = 112 + i * 34; r.w = 426; r.h = 30; r.vx = r.x + 196; });
+  return rows;
+}
+function setAdj(id, d) {
+  if (id === 'mus' || id === 'fx') { settings[id] = clamp((settings[id] ?? 10) + d, 0, 10); applySound(); if (id === 'fx') sfx('hit'); }
+  else if (id === 'sound') { settings.sound = !settings.sound; applySound(); }
+  else if (id === 'lang') settings.sweary = !settings.sweary;
+  else if (id === 'buzz') { settings.buzz = !settings.buzz; if (settings.buzz) { buzzT = 0; buzz(40); } }
+  else if (id === 'shake') settings.shake = settings.shake === 'less' ? 'full' : 'less';
+  else if (id === 'flash') settings.flash = settings.flash === false;
+  else if (id === 'pad') { const o = ['s', 'm', 'l'], i = o.indexOf(settings.pad); settings.pad = o[clamp((i < 0 ? 1 : i) + d, 0, 2)]; applyTouchLayout(); }
+  else if (id === 'ghost') settings.ghost = !settings.ghost;
+  else if (id === 'lefty') { settings.lefty = !settings.lefty; applyTouchLayout(); }
+  saveSettings();
+  if (id !== 'fx') sfx('swing');
+}
+function drawPauseSettings(x) {
+  const rows = setRows();
+  ctx.font = '800 12px ' + BODY; ctx.fillStyle = '#f2a23a'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('SETTINGS', x + 22, 96);
+  rows.forEach((r, i) => {
+    const on = pauseFocus === 'right' && i === setSel;
+    if (on) { rrect(r.x - 8, r.y, r.w, r.h, 6); ctx.fillStyle = 'rgba(242,162,58,0.16)'; ctx.fill(); ctx.strokeStyle = '#f2a23a'; ctx.lineWidth = 2; ctx.stroke(); }
+    ctx.font = '800 12px ' + BODY; ctx.fillStyle = on ? '#ffd23f' : '#93a3a1'; ctx.textAlign = 'left'; ctx.fillText(r.label, r.x + 6, r.y + r.h / 2 + 1);
+    if (r.vol) {
+      const v = settings[r.id] ?? 10, off = !settings.sound;
+      ctx.font = '15px ' + DISPLAY; ctx.fillStyle = '#efe6d2'; ctx.fillText('\u2039', r.vx, r.y + r.h / 2 + 1); ctx.fillText('\u203A', r.vx + 196, r.y + r.h / 2 + 1);
+      for (let k = 0; k < 10; k++) { ctx.fillStyle = k < v ? (off ? '#5d6a6c' : '#f2a23a') : '#2b3b42'; ctx.fillRect(r.vx + 18 + k * 17, r.y + 9, 13, 12); }
+    } else {
+      ctx.font = '14px ' + DISPLAY; ctx.fillStyle = '#efe6d2'; ctx.fillText(r.val, r.vx, r.y + r.h / 2 + 1);
+    }
+  });
 }
 function updatePause() {
   if (NET.on) { if (modeT > 0.15 && ['pause', 'escape', 'start', 'punch'].some(a => pressed.has(a))) resumeGame(); return; }
   const its = pauseItems();
-  if (modeT > 0.15 && (pressed.has('pause') || pressed.has('escape'))) { resumeGame(); return; }
-  if (pressed.has('up')) { pauseSel = (pauseSel + its.length - 1) % its.length; pauseConfirm = false; sfx('swing'); }
-  if (pressed.has('down')) { pauseSel = (pauseSel + 1) % its.length; pauseConfirm = false; sfx('swing'); }
-  if (pressed.has('punch') || pressed.has('start')) pauseAct(its[pauseSel].id);
-  for (const t of taps) for (let i = 0; i < its.length; i++) { const it = its[i]; if (t.x > it.x && t.x < it.x + it.w && t.y > it.y && t.y < it.y + it.h) { pauseSel = i; pauseAct(it.id); } }
+  if (pauseSel >= its.length) pauseSel = its.length - 1;
+  const rows = pauseTab === 'settings' ? setRows() : [];
+  if (setSel >= rows.length) setSel = Math.max(0, rows.length - 1);
+  if (pauseFocus === 'right' && rows.length) {
+    if (modeT > 0.15 && (pressed.has('pause') || pressed.has('escape') || pressed.has('back') || pressed.has('jump'))) { pauseFocus = 'left'; sfx('page'); }
+    else {
+      if (pressed.has('up')) { setSel = (setSel + rows.length - 1) % rows.length; sfx('swing'); }
+      if (pressed.has('down')) { setSel = (setSel + 1) % rows.length; sfx('swing'); }
+      const r = rows[setSel];
+      if (pressed.has('left')) setAdj(r.id, -1);
+      if (pressed.has('right')) setAdj(r.id, 1);
+      if (pressed.has('punch') || pressed.has('start')) setAdj(r.id, r.vol && (settings[r.id] ?? 10) >= 10 ? -10 : 1);
+    }
+  } else {
+    if (modeT > 0.15 && (pressed.has('pause') || pressed.has('escape'))) { resumeGame(); return; }
+    if (pressed.has('up')) { pauseSel = (pauseSel + its.length - 1) % its.length; pauseConfirm = false; restartConfirm = false; sfx('swing'); }
+    if (pressed.has('down')) { pauseSel = (pauseSel + 1) % its.length; pauseConfirm = false; restartConfirm = false; sfx('swing'); }
+    if (pauseTab === 'settings' && pressed.has('right')) { pauseFocus = 'right'; sfx('swing'); }
+    else if (pressed.has('punch') || pressed.has('start')) pauseAct(its[pauseSel].id);
+  }
+  for (const t of taps) {
+    for (let i = 0; i < its.length; i++) { const it = its[i]; if (t.x > it.x && t.x < it.x + it.w && t.y > it.y && t.y < it.y + it.h) { pauseSel = i; pauseAct(it.id); } }
+    if (mode !== 'pause') return;
+    rows.forEach((r, i) => {
+      if (t.x < r.x - 8 || t.x > r.x + r.w || t.y < r.y - 3 || t.y > r.y + r.h + 3) return;
+      pauseFocus = 'right'; setSel = i;
+      if (r.vol) { if (t.x >= r.vx - 10) setAdj(r.id, t.x < r.vx + 98 ? -1 : 1); }
+      else setAdj(r.id, 1);
+    });
+  }
 }
 function drawPause() {
   if (NET.on) { ctx.fillStyle = 'rgba(10,14,16,0.75)'; ctx.fillRect(0, 0, W, H); textOut('PAUSED', W / 2, H / 2 - 20, '44px ' + DISPLAY, '#f2a23a', OUT, 7, 'center'); ctx.font = '700 15px ' + BODY; ctx.fillStyle = '#efe6d2'; ctx.textAlign = 'center'; ctx.fillText('Either of you: press pause or HIT to carry on', W / 2, H / 2 + 30); return; }
@@ -6363,11 +6511,12 @@ function drawPause() {
     ctx.font = '16px ' + DISPLAY; ctx.fillStyle = on ? '#1b1206' : (it.id === 'quit' && pauseConfirm ? '#ff8a7a' : '#efe6d2'); ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(it.label, it.x + 18, it.y + it.h / 2 + 1);
   });
   ctx.font = '600 12px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'left';
-  ctx.fillText(touchUI ? 'Tap an option.' : 'Arrows and J to pick. P or Esc to carry on.', 64, 448);
+  ctx.fillText(touchUI ? (pauseTab === 'settings' ? 'Tap a setting to change it.' : 'Tap an option.') : pauseTab === 'settings' ? (pauseFocus === 'right' ? '\u2191 \u2193 pick, \u2190 \u2192 change, Esc back.' : '\u2192 into settings. P or Esc to carry on.') : 'Arrows and J to pick. P or Esc to carry on.', 64, 448);
   // right: the run so far, and how to score
   const x = 430, dd = DIFFS[run.diff] || DIFFS.normal;
   rrect(x, 70, 470, 404, 12); ctx.fillStyle = 'rgba(24,36,42,0.95)'; ctx.fill(); ctx.strokeStyle = '#2b3b42'; ctx.lineWidth = 2; ctx.stroke();
   if (pauseTab === 'scores') { drawPauseScores(x, dd); return; }
+  if (pauseTab === 'settings') { drawPauseSettings(x); return; }
   const info = [
     ['STAGE', (ST.hidden ? 'HIDDEN' : ST.n) + '  ·  ' + ST.title],
     ['DIFFICULTY', dd.label + (dd.pts ? '  (' + dd.pts + ')' : '')],
@@ -8314,7 +8463,7 @@ function drawWorld(pix) {
   drawCine(); drawLids();
   if (!pix) for (const b of bubbles) drawBubble(b);
   ctx.restore();
-  if (flashT > 0) { ctx.fillStyle = 'rgba(255,240,200,' + Math.min(0.85, flashT * 3).toFixed(3) + ')'; ctx.fillRect(0, 0, W, H); }
+  if (flashT > 0) { ctx.fillStyle = 'rgba(255,240,200,' + (Math.min(0.85, flashT * 3) * (settings.flash === false ? 0.2 : 1)).toFixed(3) + ')'; ctx.fillRect(0, 0, W, H); }
 }
 function drawWorldPixel() {
   const main = ctx;
@@ -8345,7 +8494,7 @@ function render() {
   if (mode === 'title') { if (!T3.live()) drawTitleScreen(); return; }
   if (mode === 'select') { if (!T3.live()) { drawSelect(); drawBanner(); } return; }
   if (mode === 'net') { drawNetLobby(); return; }
-  if (mode === 'chat') { drawChat(); drawStatic(); return; }
+  if (mode === 'chat') { drawChat(); drawChatSkip(); drawStatic(); return; }
   if (mode === 'loading') { drawLoading(); return; }
   if (mode === 'board') { drawBoard(); return; }
   drawWorldPixel();
@@ -8391,6 +8540,7 @@ window.__appBack = () => {
   if (NET.on) { netPressed.add('pause'); return true; }
   if (mode === 'select' && T3.live()) return T3.back();
   if (mode === 'loading') return true;   // the phone's back button never closes the app mid-load
+  if (mode === 'chat' && chat) { skipChat(); return true; }   // and skips a group chat (Version 45)
   if (mode === 'net') { if (NL.screen === 'menu') { mode = 'select'; modeT = 0; } else netBackToMenu(); return true; }
   if (mode === 'play') { openPause(); return true; }
   if (mode === 'pause') { resumeGame(); return true; }
@@ -8430,7 +8580,7 @@ const T3 = (() => {
   // ---------------------------------------------------------------- state
   let THREE = null, renderer = null, scene = null, camera = null, ready = false, failed = false, claimed = false;
   let view = 'title', viewT = 0, t = 0, intro = true, last = 0, lastMode = null, fadeTarget = 1;
-  let li = 3, stageSel = 0, diffSel = 1, sendT = 0, sent = false;
+  let li = 3, stageSel = 0, diffSel = 1, sendT = 0, sent = false, carry = false;
   const lads = [], billboards = [], glows = [], pools = [];
   let backdrop, logo, logoW = 1, logoH = 1, spot, shaft, FOG, shared, V3;
   const cam = {}, tgt = {}, moodCur = {};
@@ -8666,7 +8816,7 @@ const T3 = (() => {
   function setView(v) {
     view = v; viewT = 0;
     const L = chosen();
-    if (v === 'lad') for (const o of lads) { o.gx = o.tx; o.gz = o.tz + (o === L ? 30 : 0); }
+    if (v === 'lad' || v === 'cont') for (const o of lads) { o.gx = o.tx; o.gz = o.tz + (o === L ? 30 : 0); }
     else if (v === 'stage') {
       const spots = [[-124, -40], [124, -60], [-140, -130], [140, -150], [-118, -220], [118, -240]];
       let k = 0; for (const o of lads) { if (o === L) { o.gx = 0; o.gz = 40; } else [o.gx, o.gz] = spots[k++]; }
@@ -8682,12 +8832,19 @@ const T3 = (() => {
     audioInit();
     if (view === 'title') {
       if (t < T_READY) { restart(true); return; }
-      sfx('start'); mode = 'select'; modeT = 0; lastMode = 'select'; setView('lad');
-    } else if (view === 'lad') { sfx('page'); setView('stage'); }
+      sfx('start'); mode = 'select'; modeT = 0; lastMode = 'select';
+      // a run saved when the app closed: offer to carry on with it first (Version 45)
+      const sr = savedRun();
+      if (sr) { li = Math.max(0, ORDER.indexOf(PLAYABLE[sr.ci].id)); setView('cont'); } else setView('lad');
+    } else if (view === 'cont') carryOn();
+    else if (view === 'lad') { sfx('page'); setView('stage'); }
     else if (view === 'stage') { if (stageLocked()) { sfx('nope'); return; } sfx('page'); setView('diff'); }
     else if (view === 'diff') { sfx('start'); commit(); setView('go'); }
   }
+  function carryOn() { if (!savedRun()) { setView('lad'); return; } sfx('start'); carry = true; setView('go'); }
+  function newInstead() { sfx('page'); setView('lad'); }
   function back() {
+    if (view === 'cont') { sfx('page'); mode = 'title'; modeT = 0; lastMode = 'title'; restart(true); return true; }
     if (view === 'lad') { sfx('page'); mode = 'title'; modeT = 0; lastMode = 'title'; restart(true); }
     else if (view === 'stage') { sfx('page'); setView('lad'); }
     else if (view === 'diff') { sfx('page'); setView('stage'); }
@@ -8712,7 +8869,7 @@ const T3 = (() => {
   function sync() {
     const on = (id, v) => { const el = q(id); el.classList.toggle('on', v); el.inert = !v; if (!v && el.contains(document.activeElement)) document.activeElement.blur(); };
     const menu = view === 'lad' || view === 'stage' || view === 'diff';
-    on('crumbs', menu); on('foot', menu);
+    on('crumbs', menu); on('foot', menu || view === 'cont'); on('cont', view === 'cont');
     on('lad', view === 'lad'); on('roster', view === 'lad');
     on('stages', view === 'stage'); on('info', view === 'stage'); on('diff', view === 'diff');
     if (view !== 'title') ['sub', 'start', 'tag'].forEach(id => q(id).classList.remove('on', 'blink'));
@@ -8726,6 +8883,13 @@ const T3 = (() => {
     if (view === 'lad') renderLad();
     if (view === 'stage') renderStage();
     if (view === 'diff') renderDiff();
+    if (view === 'cont') renderCont();
+  }
+  function renderCont() {
+    const r = savedRun(); if (!r) return;
+    const st = STAGES[r.route[r.idx]], c = PLAYABLE[r.ci], d = DIFFS[r.diff] || DIFFS.normal;
+    q('cstage').textContent = (st.hidden ? 'Hidden stage' : 'Stage ' + st.n) + ' \u00B7 ' + st.title;
+    q('cline').textContent = c.name + ' \u00B7 ' + r.lives + (r.lives === 1 ? ' life' : ' lives') + ' \u00B7 ' + (r.score || 0).toLocaleString('en-GB') + ' points \u00B7 ' + d.label;
   }
   function hint() {
     const pad = padOn(), tch = touchUI && !pad;
@@ -8733,6 +8897,7 @@ const T3 = (() => {
       lad: pad ? 'Stick to choose · HIT to pick · BACK' : tch ? 'Tap a lad. Tap again to pick.' : '← → choose · J pick · Esc back',
       stage: pad ? 'Stick for chapter · HIT to start here' : tch ? 'Tap a chapter, then a stage.' : '← → chapter · ↑ ↓ stage · J start here',
       diff: pad ? 'Stick for difficulty · HIT to go' : tch ? 'Pick a difficulty, then go.' : '← → difficulty · F language · J go',
+      cont: pad ? 'HIT to carry on · JUMP for a new run' : tch ? 'Carry on, or start a new run.' : 'J carry on · K new run · Esc back',
     })[view] || '';
   }
   function renderFoot() {
@@ -8794,6 +8959,7 @@ const T3 = (() => {
     if (P('online') && netAvailable()) { sfx('page'); openNetLobby(); return; }
     if (P('escape') || P('back')) { back(); return; }
     if (P('punch') || P('start')) { next(); return; }
+    if (view === 'cont') { if (P('jump')) newInstead(); return; }
     if (view === 'lad') { if (P('left')) chooseLad((li + 6) % 7); if (P('right')) chooseLad((li + 1) % 7); }
     else if (view === 'stage') { if (P('left')) moveChap(-1); if (P('right')) moveChap(1); if (P('up')) moveStage(-1); if (P('down')) moveStage(1); }
     else if (view === 'diff') {
@@ -8831,6 +8997,8 @@ const T3 = (() => {
   click('lang', () => { settings.sweary = !settings.sweary; saveSettings(); sfx('page'); renderDiff(); });
   click('go', next);
   click('back', back);
+  click('carry', carryOn);
+  click('new', newInstead);
   click('sound', toggleSound);
   click('board', () => { sfx('page'); openBoard(null, 'select'); });
   click('online', () => { if (netAvailable()) { sfx('page'); openNetLobby(); } });
@@ -8845,7 +9013,7 @@ const T3 = (() => {
   }
   function selectPose() {
     const L = chosen();
-    if (view === 'lad') { tgt.pos.set(L.gx + 72, 46, L.gz + 165); tgt.look.set(L.gx + 72, 40, L.gz - 500); tgt.fov = 50; }
+    if (view === 'lad' || view === 'cont') { tgt.pos.set(L.gx + 72, 46, L.gz + 165); tgt.look.set(L.gx + 72, 40, L.gz - 500); tgt.fov = 50; }
     else if (view === 'stage') { tgt.pos.set(Math.sin(t * 0.2) * 10 * (reduceMotion ? 0 : 1), 118, 330); tgt.look.set(0, 44, -420); tgt.fov = 50; }
     else if (view === 'diff') { tgt.pos.set(-118, 22, 186); tgt.look.set(-20, 50, -150); tgt.fov = 46; }
     else { const k = easeInOut(clamp(viewT / 1.6, 0, 1)); tgt.pos.set(-118 + 260 * k, 22 + 24 * k, 186 - 40 * k); tgt.look.set(-20 + 300 * k, 50, -150); tgt.fov = 46 + 6 * k; }
@@ -8867,7 +9035,7 @@ const T3 = (() => {
 
     // the send-off: everyone runs off, fade to black, then the run starts
     if (view === 'go' && viewT > 1.15) fadeTarget = 0;
-    if (view === 'go' && viewT > 1.75 && !sent) { sent = true; newRun(sel, startAt); }
+    if (view === 'go' && viewT > 1.75 && !sent) { sent = true; if (carry) { carry = false; if (!continueRun()) newRun(sel, startAt); } else newRun(sel, startAt); }
     const into = view === 'title' && intro ? clamp(t / 0.6, 0, 1) : 1;
     shared.fade.value += (Math.min(fadeTarget, into) - shared.fade.value) * damp(view === 'title' && intro ? 30 : view === 'go' ? 6 : 4, dt);
     const fade = shared.fade.value;
@@ -8911,15 +9079,15 @@ const T3 = (() => {
       L.m.rotation.y = Math.atan2(cam.pos.x - L.m.position.x, cam.pos.z - L.m.position.z); L.m.scale.x = L.face;
       L.sh.visible = L.m.visible; L.sh.position.set(L.m.position.x, KERB + 0.8, L.m.position.z);
       const pick = L === chosen() && view !== 'title';
-      const tt = view === 'title' || view === 'go' ? [0.86, 0.8, 0.98] : pick ? [1, 0.95, 1.04] : view === 'lad' ? [0.42, 0.38, 0.6] : [0.62, 0.56, 0.78];
+      const tt = view === 'title' || view === 'go' ? [0.86, 0.8, 0.98] : pick ? [1, 0.95, 1.04] : view === 'lad' || view === 'cont' ? [0.42, 0.38, 0.6] : [0.62, 0.56, 0.78];
       L.tint.lerp(V3(...tt), damp(5, dt)); L.m.material.uniforms.tint.value.copy(L.tint);
     }
-    const L = chosen(), menu = view === 'lad' || view === 'diff' || view === 'stage';
+    const L = chosen(), menu = view === 'lad' || view === 'diff' || view === 'stage' || view === 'cont';
     spot.position.set(L.m.position.x, KERB + 0.7, L.m.position.z);
     spot.material.opacity += ((menu ? 0.5 : 0) * fade - spot.material.opacity) * damp(4, dt);
     shaft.position.set(L.m.position.x, KERB, L.m.position.z - 2);
     shaft.rotation.y = Math.atan2(cam.pos.x - shaft.position.x, cam.pos.z - shaft.position.z);
-    shaft.material.opacity += ((view === 'lad' || view === 'diff' ? 0.45 : 0) * fade - shaft.material.opacity) * damp(4, dt);
+    shaft.material.opacity += ((view === 'lad' || view === 'diff' || view === 'cont' ? 0.45 : 0) * fade - shaft.material.opacity) * damp(4, dt);
 
     // logo: spins in edge-on and lands, rocks gently, and tucks into the corner for the menus
     const pxu = 2 * 200 * Math.tan(vh) / PH, wob = reduceMotion ? 0 : 1;
