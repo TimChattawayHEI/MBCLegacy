@@ -16,6 +16,8 @@ Move with the stick, HIT to attack (tap it for your combo), JUMP, and SPECIAL wh
 
 - `web/` the game itself (one page plus its art, music and fonts). The same game runs on claude.ai.
 - `android/` a small Android app that shows the game full screen.
+- `tools/title3d_build.py` wires the 3D title and select screens (`tools/title3d/`) and any-stage starts into `web/index.html`. Run it again after rebuilding the page from older sources.
+- `web/vendor/three.module.min.js` is three.js r165 (MIT, see `three.LICENSE`), used by the title screen in the app.
 - `.github/workflows/apk.yml` builds the APK on every push to `main` and publishes it as the latest release.
 
 The signing key (`android/mbc.keystore`) is in the repo on purpose, so every build installs over the previous one. This is a game for friends, not a Play Store app.

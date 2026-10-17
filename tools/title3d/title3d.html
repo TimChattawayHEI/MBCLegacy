@@ -1,0 +1,40 @@
+    <div id="t3" hidden>
+      <canvas id="t3cv" width="480" height="270" aria-label="Title screen: the camera flies down a dusk high street and the seven lads run in"></canvas>
+      <div class="t3ov t3out" id="t3-sub">1999.&nbsp; ELBA 2002.&nbsp; CARP DIEM.</div>
+      <div class="t3ov t3out" id="t3-start">PRESS START</div>
+      <div class="t3ov" id="t3-tag">SEVEN LADS.&nbsp; THREE TRIPS.&nbsp; ONE BIG CARP.</div>
+      <nav class="t3sel" id="t3-crumbs" aria-label="Steps"><span data-step="lad">1 LAD</span><i></i><span data-step="stage">2 STAGE</span><i></i><span data-step="diff">3 DIFFICULTY</span></nav>
+      <section class="t3sel t3panel" id="t3-lad" aria-live="polite">
+        <div><h2 class="t3h t3out" id="t3-name">TIM</h2><p class="t3txt" id="t3-ltag" style="color:var(--t3grey)"></p></div>
+        <div id="t3-stats"></div>
+        <div class="t3move"><p class="t3cap">Special &middot; full bar</p><h3 class="t3h" id="t3-special"></h3><p class="t3txt" id="t3-blurb"></p></div>
+        <div class="t3move"><p class="t3cap" id="t3-minicap">Mini special</p><h3 class="t3h" id="t3-mini"></h3></div>
+        <button class="t3go" id="t3-pick" type="button">PICK</button>
+      </section>
+      <div class="t3sel" id="t3-roster" role="group" aria-label="Lads"></div>
+      <section class="t3sel t3panel" id="t3-stages"><div id="t3-tabs" role="tablist" aria-label="Chapters"></div><ol id="t3-list"></ol></section>
+      <section class="t3sel t3panel" id="t3-info" aria-live="polite">
+        <p class="t3cap" id="t3-snum"></p>
+        <h2 class="t3h t3out" id="t3-stitle"></h2>
+        <p class="t3txt" id="t3-ssub" style="color:var(--t3grey)"></p>
+        <p class="t3txt" id="t3-sboss"></p>
+        <p class="t3txt" id="t3-snote" style="color:var(--t3grey)"></p>
+        <button class="t3go" id="t3-here" type="button">START HERE</button>
+      </section>
+      <section class="t3sel t3panel" id="t3-diff">
+        <h2 class="t3h">HOW HARD?</h2>
+        <p class="t3cap" id="t3-runline"></p>
+        <div id="t3-cards"></div>
+        <div class="t3row"><button class="t3ghost" id="t3-lang" type="button" aria-pressed="false">Language</button><button class="t3go" id="t3-go" type="button">LET'S GO</button></div>
+      </section>
+      <div class="t3sel" id="t3-foot">
+        <button class="t3ghost" id="t3-back" type="button">&lsaquo; Back</button>
+        <p class="t3cap" id="t3-hint"></p>
+        <div id="t3-opts">
+          <button class="t3ghost" id="t3-sound" type="button" aria-pressed="true">Sound on</button>
+          <button class="t3ghost" id="t3-board" type="button">High scores</button>
+          <button class="t3ghost" id="t3-online" type="button" hidden>Play online</button>
+        </div>
+      </div>
+      <div id="t3-toast" aria-live="polite"></div>
+    </div>
