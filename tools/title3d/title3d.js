@@ -1,4 +1,4 @@
-// ================================================================== 3D title and select (Version 42)
+// ================================================================== 3D title and select (Version 43)
 // three.js draws the title street and the select screens on their own canvas over the game.
 // It reads the game's own input (keys, touch, the portrait pad) and starts the run with newRun.
 // If three.js or WebGL is missing, it never takes over and the 2D title and select carry on as before.
@@ -49,11 +49,11 @@ const T3 = (() => {
   const chap = () => CHAPS[FLAT[stageSel].ci];
 
   // ---------------------------------------------------------------- loading
-  const importer = (() => { try { return new Function('u', 'return import(u)'); } catch (e) { return null; } })();
+  // the module script beside the layer starts the import; wait for it (module scripts run after this one)
   async function loadThree() {
-    if (!importer) throw new Error('no modules');
-    try { return await importer('./vendor/three.module.min.js'); }
-    catch (e) { return await importer('https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.min.js'); }
+    for (let i = 0; i < 200 && !window.__threeLoad; i++) await new Promise(r => setTimeout(r, 50));
+    if (!window.__threeLoad) throw new Error('three.js did not start loading');
+    return await window.__threeLoad;
   }
   const loadImg = src => new Promise((ok, bad) => { const im = new Image(); im.onload = () => ok(im); im.onerror = () => bad(new Error(src)); im.src = src; });
   function prep(tx, mips) {

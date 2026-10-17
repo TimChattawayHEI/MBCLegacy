@@ -1,4 +1,4 @@
-"""Version 42: the 3D title and select screens, and starting a run at any stage.
+"""Version 43: the 3D title and select screens, and starting a run at any stage.
 
 Patches web/index.html in place (run from the repo root):  python3 tools/title3d_build.py
 Safe to run again: each change is skipped if it is already there.
@@ -42,7 +42,7 @@ s = read(PAGE)
 
 # ---------------------------------------------------------------- start a run at any stage
 s = swap(s, """function routeFrom(start) {
-  if (start === 'ramsden') return ['ramsden'];""", """// a chapter ('elba') or any stage ('divebar') can start a run (Version 42)
+  if (start === 'ramsden') return ['ramsden'];""", """// a chapter ('elba') or any stage ('divebar') can start a run (Version 43)
 function chapterOf(key) { const i = ROUTE.indexOf(key); return i < 0 ? null : i >= ROUTE.indexOf('arrival') ? 'carpdiem' : i >= ROUTE.indexOf('airport') ? 'elba' : '1999'; }
 // how many stages a mid-chapter start skips, so that stage keeps its place in the difficulty ramp
 function routeDepth(start) { if (!ROUTE.includes(start)) return 0; const full = routeFrom(chapterOf(start)); return Math.max(0, full.indexOf(start)); }

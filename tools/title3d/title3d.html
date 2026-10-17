@@ -38,3 +38,7 @@
       </div>
       <div id="t3-toast" aria-live="polite"></div>
     </div>
+    <script type="module">
+      // three.js for the 3D title: the app's own copy first, then jsDelivr (the classic game script never needs module syntax)
+      window.__threeLoad = import('./vendor/three.module.min.js').catch(() => import('https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.min.js'));
+    </script>

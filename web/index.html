@@ -82,7 +82,7 @@ html.phone-port .rotate{display:block;font-size:12px}
 html.phone-port .brand span{display:none}
 html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:var(--availH, 100vh);z-index:5}
 /* T3 css start */
-/* 3D title and select (Version 42): a 480x270 WebGL screen over the game canvas, menus in screen units (--t3u) */
+/* 3D title and select (Version 43): a 480x270 WebGL screen over the game canvas, menus in screen units (--t3u) */
 #t3{position:absolute;left:0;top:0;width:100%;height:100%;z-index:2;overflow:hidden;background:#000;
   --s:2;--t3m:1;--t3u:calc(var(--s) * 1px);--t3gold:#ffd23f;--t3orange:#f2a23a;--t3cream:#efe6d2;--t3grey:#93a3a1;--t3ink:#16120f;
   --t3panel:rgba(13,8,38,.86);--t3rule:#5d52b8;--t3empty:#2b3b42;--t3disp:'Pixelify Sans',Impact,'Arial Black',sans-serif;--t3body:'Rubik',system-ui,sans-serif;
@@ -216,6 +216,10 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
       </div>
       <div id="t3-toast" aria-live="polite"></div>
     </div>
+    <script type="module">
+      // three.js for the 3D title: the app's own copy first, then jsDelivr (the classic game script never needs module syntax)
+      window.__threeLoad = import('./vendor/three.module.min.js').catch(() => import('https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.min.js'));
+    </script>
 <!-- T3 html end -->
     <div class="overlay" id="nameOverlay" hidden>
       <form class="namebox" id="nameForm" autocomplete="off">
@@ -464,7 +468,21 @@ const TRACKS = {
   social: { src: 'music/last-orders.mp3', loop: 57.313424 },
   pegnine: { src: 'music/cyberpunk-street.mp3', vol: 2.6 },
   boss: { src: 'music/the-big-one.mp3', loop: 51.891882 },
+  // Version 42: a track for every Elba stage and Ramsden, and a boss theme per chapter
+  airport: { src: 'music/duty-free.mp3', loop: 60.952381, fb: 'garage' },
+  road: { src: 'music/coast-road.mp3', loop: 53.333333, fb: 'arrival' },
+  divebar: { src: 'music/che-succede.mp3', loop: 66.206893, fb: 'social' },
+  beach: { src: 'music/factor-nothing.mp3', loop: 62.950816, fb: 'arrival' },
+  club: { src: 'music/biggest-club.mp3', loop: 55.652177, fb: 'jungle' },
+  ramsden: { src: 'music/always-on-fire.mp3', loop: 54.857143 },
+  boss1999: { src: 'music/pirate-signal.mp3', loop: 54.857143, fb: 'boss' },
+  bosselba: { src: 'music/vendetta.mp3', loop: 51.2, fb: 'boss' },
+  lady: { src: 'music/rewind-selecta.mp3', loop: 44.651156, fb: 'jungle' },
 };
+// which boss theme each stage uses (anything not listed gets The Big One)
+const BOSS_MUSIC = { frequency: 'boss1999', soundz: 'boss1999', airport: 'bosselba', road: 'bosselba', divebar: 'bosselba', beach: 'bosselba', club: 'bosselba' };
+const BOSS_KEYS = new Set(['boss', 'boss1999', 'bosselba', 'lady']);
+function bossMusic() { try { return (S && BOSS_MUSIC[S.key]) || 'boss'; } catch (e) { return 'boss'; } }
 const TRACK_GAIN = 0.4, MP3_DELAY = 1105 / 44100;
 const trk = { bytes: {}, bufs: new Map(), src: null, key: null, t0: 0, len: 0, req: 0, pending: null, pos: {}, gain: null };
 function trackBytes(key) {
@@ -477,7 +495,7 @@ function trackBuffer(key) {
   const p = trackBytes(key).then(b => b ? new Promise((res, rej) => actx.decodeAudioData(b.slice(0), res, rej)) : null).catch(() => { TRACKS[key].failed = true; return null; });
   trk.bufs.set(key, p);
   // keep at most three decoded tracks in memory (the stage, the boss and one spare)
-  for (const k of [...trk.bufs.keys()]) { if (trk.bufs.size <= 3) break; if (k !== key && k !== 'boss') trk.bufs.delete(k); }
+  for (const k of [...trk.bufs.keys()]) { if (trk.bufs.size <= 3) break; if (k !== key && k !== bossMusic()) trk.bufs.delete(k); }
   return p;
 }
 function trackStop() {
@@ -513,9 +531,9 @@ function musicSet(key, keepPos) {
   mus.key = key; mus.step = 0; mus.next = actx ? actx.currentTime + 0.08 : 0;
   trackStop(); trk.req++; trk.pending = null;
   // a stage track picks up where it left off only when coming back from a mini-boss
-  if (key && from !== 'boss' && !keepPos) delete trk.pos[key];
-  if (key === 'boss' && !keepPos) delete trk.pos.boss;
-  if (key && TRACKS[key]) { trackBytes(key); if (key !== 'boss') trackBytes('boss'); }
+  if (key && !BOSS_KEYS.has(from) && !keepPos) delete trk.pos[key];
+  if (BOSS_KEYS.has(key) && !keepPos) delete trk.pos[key];
+  if (key && TRACKS[key]) { trackBytes(key); if (!BOSS_KEYS.has(key)) trackBytes(bossMusic()); }
 }
 const midi = n => 440 * Math.pow(2, (n - 69) / 12);
 function musicTick() {
@@ -1313,7 +1331,7 @@ const STAGES = {
       { at: 2560, groups: [[['warden', 'R'], ['goose', 'L'], ['goose', 'R']], [['carpbro', 'L'], ['angler', 'R'], ['angler', 'R']]] },
       { at: 'end', boss: 'gary', title: 'BIG GARY' },
     ] },
-  airport: { secret: { x: 2440, word: 'NOT MY BAG' }, n: 3, era: 2002, title: 'ARRIVALS', sub: 'Elba, Italy. August 2002.', bg: 'airport', ft: 344, fb: 506, len: 3600, music: 'garage', aggro: 2, aa: 0.3, intro: 'airport',
+  airport: { secret: { x: 2440, word: 'NOT MY BAG' }, n: 3, era: 2002, title: 'ARRIVALS', sub: 'Elba, Italy. August 2002.', bg: 'airport', ft: 344, fb: 506, len: 3600, music: 'airport', aggro: 2, aa: 0.3, intro: 'airport',
     items: [{ w: 'cone', x: 700, y: 470 }, { w: 'alcopop', x: 2100, y: 440 }],
     breakables: [{ type: 'bin', x: 1260, y: 476, drop: 'pizza' }, { type: 'bin', x: 2700, y: 450, drop: 'pizza' }],
     waves: [
@@ -1324,9 +1342,9 @@ const STAGES = {
       { at: 2520, groups: [[['handler', 'R'], ['handler', 'L'], ['sec', 'R'], ['sec', 'R']]] },
       { at: 'end', final: true, groups: [[['sec', 'R'], ['sec', 'L'], ['handler', 'R']], [['sec', 'R'], ['handler', 'L'], ['sec', 'R'], ['ragazzo', 'L']]] },
     ] },
-  road: { n: 4, era: 2002, drive: true, title: 'THE ROAD TO THE BAR', sub: "Night one. Sam's driving.", bg: 'road', ft: 344, fb: 506, len: 40000, music: 'arrival', aggro: 2, aa: 0.3, intro: 'road',
+  road: { n: 4, era: 2002, drive: true, title: 'THE ROAD TO THE BAR', sub: "Night one. Sam's driving.", bg: 'road', ft: 344, fb: 506, len: 40000, music: 'road', aggro: 2, aa: 0.3, intro: 'road',
     waves: [] },
-  divebar: { n: 5, era: 2002, title: 'THE DIVE BAR', sub: 'Night one. One drink.', bg: 'divebar', ft: 344, fb: 506, len: 3600, music: 'social', aggro: 3, aa: 0.4, intro: 'divebar',
+  divebar: { n: 5, era: 2002, title: 'THE DIVE BAR', sub: 'Night one. One drink.', bg: 'divebar', ft: 344, fb: 506, len: 3600, music: 'divebar', aggro: 3, aa: 0.4, intro: 'divebar',
     items: [{ w: 'cue', x: 900, y: 470 }, { w: 'alcopop', x: 2200, y: 450 }],
     breakables: [{ type: 'keg', x: 1100, y: 480, drop: 'pizza' }, { type: 'bin', x: 2100, y: 470, drop: 'gelato' }],
     waves: [
@@ -1336,7 +1354,7 @@ const STAGES = {
       { at: 2200, groups: [[['ragazzo', 'R'], ['ragazza', 'R'], ['ragazzo', 'L']]], food: 'gelato' },
       { at: 'end', boss: 'bros', title: 'I FRATELLI' },
     ] },
-  beach: { secret: { x: 2900, word: 'SANDCASTLE!' }, n: 6, era: 2002, title: 'LA SPIAGGIA', sub: 'Day three. Factor nothing.', bg: 'beach', ft: 350, fb: 506, len: 3600, music: 'arrival', aggro: 3, aa: 0.4, intro: 'beach', stuart: 1720,
+  beach: { secret: { x: 2900, word: 'SANDCASTLE!' }, n: 6, era: 2002, title: 'LA SPIAGGIA', sub: 'Day three. Factor nothing.', bg: 'beach', ft: 350, fb: 506, len: 3600, music: 'beach', aggro: 3, aa: 0.4, intro: 'beach', stuart: 1720,
     items: [{ w: 'ball', x: 800, y: 470 }, { w: 'cone', x: 2300, y: 460 }],
     breakables: [{ type: 'coolbox', x: 1200, y: 480, drop: 'gelato' }, { type: 'coolbox', x: 2500, y: 450, drop: 'pizza' }],
     waves: [
@@ -1346,7 +1364,7 @@ const STAGES = {
       { at: 2650, groups: [[['lifeguard', 'R'], ['beachm', 'R'], ['beachf', 'L'], ['beachm', 'L']]], food: 'pizza' },
       { at: 'end', boss: 'mafioso', title: 'DON VITO' },
     ] },
-  club: { n: 7, era: 2002, title: 'THE CLUB', sub: 'Last night. Biggest club on the island.', bg: 'club', ft: 350, fb: 506, len: 3600, music: 'soundz', aggro: 3, aa: 0.45, intro: 'club', outro: 'clubOutro',
+  club: { n: 7, era: 2002, title: 'THE CLUB', sub: 'Last night. Biggest club on the island.', bg: 'club', ft: 350, fb: 506, len: 3600, music: 'club', aggro: 3, aa: 0.45, intro: 'club', outro: 'clubOutro',
     items: [{ w: 'alcopop', x: 700, y: 470 }, { w: 'cue', x: 2400, y: 450 }],
     breakables: [{ type: 'keg', x: 1250, y: 480, drop: 'pizza' }, { type: 'bin', x: 2600, y: 470, drop: 'gelato' }],
     waves: [
@@ -1371,7 +1389,7 @@ const STAGES = {
 };
 const ROUTE = ['frequency', 'soundz', 'airport', 'road', 'divebar', 'beach', 'club', 'arrival', 'naval', 'social', 'pegnine'];
 function netUnl() { return NET.on ? NET.unlocked : settings.unlocked; }
-// a chapter ('elba') or any stage ('divebar') can start a run (Version 42)
+// a chapter ('elba') or any stage ('divebar') can start a run (Version 43)
 function chapterOf(key) { const i = ROUTE.indexOf(key); return i < 0 ? null : i >= ROUTE.indexOf('arrival') ? 'carpdiem' : i >= ROUTE.indexOf('airport') ? 'elba' : '1999'; }
 // how many stages a mid-chapter start skips, so that stage keeps its place in the difficulty ramp
 function routeDepth(start) { if (!ROUTE.includes(start)) return 0; const full = routeFrom(chapterOf(start)); return Math.max(0, full.indexOf(start)); }
@@ -4163,18 +4181,18 @@ function startWave(w) {
   S.wave = w; S.g = 0; S.mopedsLeft = w.mopeds || 0; S.mopedT = 2.5; S.bosses = []; S.bossTitle = w.title || '';
   if (w.event) { runEvent(w.event); return; }
   if (w.raid) { showBanner('RAID!', 'The DTI are shutting down pirate radio', 2.2); sfx('siren'); }
-  if (w.boss === 'gary' || w.boss === 'gaz') { const g = makeFish(w.boss); foes.push(g); S.bosses = [g]; musicSet('boss'); setTimeout0(() => ladSay('boss', 1, true), 3); return; }
-  if (w.boss === 'parkie' || w.boss === 'mc') { const b = makeHB(w.boss); foes.push(b); S.bosses = [b]; musicSet('boss'); setTimeout0(() => ladSay('boss', 1, true), 3); return; }
-  if (w.boss === 'lady') { const l = makeLady(); foes.push(l); S.bosses = [l]; musicSet('jungle'); return; }
-  if (w.fish) { const g = makeFish(w.fish); g.hp = g.maxHp = Math.round(440 * D().boss); g.poise = g.poiseMax = 60; g.mini = true; foes.push(g); S.bosses = [g]; musicSet('boss'); if (w.groups) spawnGroup(w.groups[0]); return; }
+  if (w.boss === 'gary' || w.boss === 'gaz') { const g = makeFish(w.boss); foes.push(g); S.bosses = [g]; musicSet(bossMusic()); setTimeout0(() => ladSay('boss', 1, true), 3); return; }
+  if (w.boss === 'parkie' || w.boss === 'mc') { const b = makeHB(w.boss); foes.push(b); S.bosses = [b]; musicSet(bossMusic()); setTimeout0(() => ladSay('boss', 1, true), 3); return; }
+  if (w.boss === 'lady') { const l = makeLady(); foes.push(l); S.bosses = [l]; musicSet('lady'); return; }
+  if (w.fish) { const g = makeFish(w.fish); g.hp = g.maxHp = Math.round(440 * D().boss); g.poise = g.poiseMax = 60; g.mini = true; foes.push(g); S.bosses = [g]; musicSet(bossMusic()); if (w.groups) spawnGroup(w.groups[0]); return; }
   if (w.boss === 'bros') { startCarScene(); return; }
-  if (w.boss === 'mafioso') { const m = makeEBoss('mafioso', cam.x + W + 80, laneY(1), 460, { group: 'mafia', hx: cam.x + W * 0.72, half: 26, poise: 70, poiseMax: 70 }); foes.push(m); S.bosses = [m]; musicSet('boss'); showBanner('DON VITO', 'He owns the beach. Apparently.', 2.4); setTimeout0(() => ladSay('boss', 1, true), 3); return; }
-  if (w.boss === 'duo') { const a = makeEBoss('beast', cam.x + W + 80, laneY(1), 480, { group: 'duo', hx: cam.x + W * 0.66, half: 34, poise: 110, poiseMax: 110 }), q = makeEBoss('quick', cam.x + W + 160, laneY(1) + 10, 200, { group: 'duo', hx: cam.x + W * 0.8, poise: 30, poiseMax: 30 }); foes.push(a, q); S.bosses = [a, q]; musicSet('boss'); showBanner('BIG TONY AND LITTLE NICKY', 'One wants blood. One wants a lift home.', 2.6); setTimeout0(() => ladSay('boss', 1, true), 3); return; }
+  if (w.boss === 'mafioso') { const m = makeEBoss('mafioso', cam.x + W + 80, laneY(1), 460, { group: 'mafia', hx: cam.x + W * 0.72, half: 26, poise: 70, poiseMax: 70 }); foes.push(m); S.bosses = [m]; musicSet(bossMusic()); showBanner('DON VITO', 'He owns the beach. Apparently.', 2.4); setTimeout0(() => ladSay('boss', 1, true), 3); return; }
+  if (w.boss === 'duo') { const a = makeEBoss('beast', cam.x + W + 80, laneY(1), 480, { group: 'duo', hx: cam.x + W * 0.66, half: 34, poise: 110, poiseMax: 110 }), q = makeEBoss('quick', cam.x + W + 160, laneY(1) + 10, 200, { group: 'duo', hx: cam.x + W * 0.8, poise: 30, poiseMax: 30 }); foes.push(a, q); S.bosses = [a, q]; musicSet(bossMusic()); showBanner('BIG TONY AND LITTLE NICKY', 'One wants blood. One wants a lift home.', 2.6); setTimeout0(() => ladSay('boss', 1, true), 3); return; }
   if (w.carab) { S.npcs = S.npcs || []; if (!S.npcs.some(n => n.kind === 'carabSeat')) { const n = makeNpc('carabSeat', CARAB_X, FT + 12); n.draw = drawCarabSeat; S.npcs.push(n); } }
-  if (w.boss === 'farbank') { const a = makeFarBank(0), c = makeFarBank(1); foes.push(a, c); S.bosses = [a, c]; S.fbT = 9; musicSet('boss'); setTimeout0(() => ladSay('boss', 1, true), 3.5); return; }
-  if (w.boss === 'denise') { const d = makeDenise(); foes.push(d); S.bosses = [d]; musicSet('boss'); setTimeout0(() => ladSay('boss', 1, true), 2.5); return; }
+  if (w.boss === 'farbank') { const a = makeFarBank(0), c = makeFarBank(1); foes.push(a, c); S.bosses = [a, c]; S.fbT = 9; musicSet(bossMusic()); setTimeout0(() => ladSay('boss', 1, true), 3.5); return; }
+  if (w.boss === 'denise') { const d = makeDenise(); foes.push(d); S.bosses = [d]; musicSet(bossMusic()); setTimeout0(() => ladSay('boss', 1, true), 2.5); return; }
   const out = spawnGroup(w.groups[0]);
-  if (w.boss || w.mini) { S.bosses = out.filter(f => f.kind === (w.boss || 'nozzer')); if (w.boss) musicSet('boss'); }
+  if (w.boss || w.mini) { S.bosses = out.filter(f => f.kind === (w.boss || 'nozzer')); if (w.boss) musicSet(bossMusic()); }
   if (w.boss === 'farbank') setTimeout0(() => { const fb = S.bosses[0]; if (fb && canBeHit(fb)) say(fb, 'We came for the brisket.', 2.4, true); }, 1.2);
 }
 function endWave(w) {
@@ -7631,7 +7649,7 @@ function updateCarabSeq(dt) {
     const c = makeEBoss('carab', CARAB_X, FT + 16, 330, { state: 'walkOut', face: side, half: 30, scale: 1.12, poise: 60, poiseMax: 60, group: 'carab', inv: 99 });
     foes.push(c); S.bosses = [c]; S.bossTitle = 'IL CARABINIERE';
     sfx('heavy'); sfx('scrape'); addShake(6); dust(CARAB_X, FT + 16, 8, 50);
-    musicSet('boss'); showBanner('IL CARABINIERE', 'Off duty. Not any more.', 2.4);
+    musicSet(bossMusic()); showBanner('IL CARABINIERE', 'Off duty. Not any more.', 2.4);
   }
 }
 function carabTick(b, dt, rage) {
@@ -7728,7 +7746,7 @@ function updateCarScene(dt) {
     }
     if (c.out === 4 && !c.said) { c.said = true; c.t2 = c.t; say(S.bosses[0], 'La macchina di MAMMA!', 2.4, true); }
     if (c.said && c.t - c.t2 > 1.6 && !c.go) {
-      c.go = true; showBanner('I FRATELLI', 'Four brothers. One car. One bottle.', 2.6); musicSet('boss'); addShake(6);
+      c.go = true; showBanner('I FRATELLI', 'Four brothers. One car. One bottle.', 2.6); musicSet(bossMusic()); addShake(6);
       for (const b of S.bosses) { b.state = 'enter'; b.t = 0; }
     }
     if (c.go && c.t - c.t2 > 2.6) { S.cut = null; S.cine = 0; S.carPark = { x: c.carX, y: c.carY }; if (p.state === 'cut' || p.state === 'cutThrow') setIdle(p); setTimeout0(() => ladSay('boss', 1, true), 0.5); }
@@ -8042,7 +8060,7 @@ function smashSetup() {
   const sam = d.watch.find(n => n.def.id === 'sam') || player;
   setTimeout0(() => say(sam, 'What happened?', 2.2, true), 0.6);
   setTimeout0(() => say(player, pick(["The deposit. That's what happened.", "Well. It's done now.", 'In for a penny, lads.']), 2.4, true), 2.2);
-  setTimeout0(() => { S.cine = 0; d.go = true; car.inv = 0; showBanner('SMASH THE ESPACE!', ROAD.smashT + ' seconds. Make it count.', 2.2); musicSet('boss'); sfx('whistle'); }, 4.2);
+  setTimeout0(() => { S.cine = 0; d.go = true; car.inv = 0; showBanner('SMASH THE ESPACE!', ROAD.smashT + ' seconds. Make it count.', 2.2); musicSet(bossMusic()); sfx('whistle'); }, 4.2);
 }
 function espaceTick(f, dt) {
   const d = S.drv;
@@ -9125,7 +9143,7 @@ window.__appBack = () => {
   return false;
 };
 // T3 js start
-// ================================================================== 3D title and select (Version 42)
+// ================================================================== 3D title and select (Version 43)
 // three.js draws the title street and the select screens on their own canvas over the game.
 // It reads the game's own input (keys, touch, the portrait pad) and starts the run with newRun.
 // If three.js or WebGL is missing, it never takes over and the 2D title and select carry on as before.
@@ -9176,11 +9194,11 @@ const T3 = (() => {
   const chap = () => CHAPS[FLAT[stageSel].ci];
 
   // ---------------------------------------------------------------- loading
-  const importer = (() => { try { return new Function('u', 'return import(u)'); } catch (e) { return null; } })();
+  // the module script beside the layer starts the import; wait for it (module scripts run after this one)
   async function loadThree() {
-    if (!importer) throw new Error('no modules');
-    try { return await importer('./vendor/three.module.min.js'); }
-    catch (e) { return await importer('https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.min.js'); }
+    for (let i = 0; i < 200 && !window.__threeLoad; i++) await new Promise(r => setTimeout(r, 50));
+    if (!window.__threeLoad) throw new Error('three.js did not start loading');
+    return await window.__threeLoad;
   }
   const loadImg = src => new Promise((ok, bad) => { const im = new Image(); im.onload = () => ok(im); im.onerror = () => bad(new Error(src)); im.src = src; });
   function prep(tx, mips) {
