@@ -70,8 +70,10 @@ const T3 = (() => {
   // the idle, run, mini special and special frames from a lad's sheet, packed into four rows
   // (the last two play when he's chosen and when he's picked, Version 46)
   const ROWS = 4, ROW = { idle: 0, run: 1, mini: 2, special: 3 };
-  // lads with a pick pose of their own (frames in a strip, same cell and anchor as the sheet)
-  const POSES = { tim: 1 };
+  // each lad's select-screen pose (Version 48): his own animation, drawn three-quarter on (south-east), a view the
+  // fights never show. A strip of frames in sprites/pose_<id>.png at his sheet's cell size, feet on the sheet's anchor.
+  // Frame 0 is him standing facing you (shown while he's chosen), the rest play when he's picked.
+  const POSES = { tim: 1, seb: 1, byron: 1, pearcy: 1, kelly: 1, marc: 1, sam: 1 };
   function ladAtlas(id, img, pose) {
     const m = SPRITE_META[id], c = m.cell, idle = m.rows.idle, runR = m.rows.run;
     const all = r => r ? [...Array(r[1]).keys()] : [];
@@ -85,21 +87,22 @@ const T3 = (() => {
     if (m.rows.mini) miniF.forEach((fi, f) => x.drawImage(img, fi * c, m.rows.mini[0] * c, c, c, f * c, 2 * c, c, c));
     if (pose) spF.forEach((fi, f) => x.drawImage(pose, fi * c, 0, c, c, f * c, 3 * c, c, c));
     else if (m.rows.special) spF.forEach((fi, f) => x.drawImage(img, fi * c, m.rows.special[0] * c, c, c, f * c, 3 * c, c, c));
-    return { tex: prep(new THREE.CanvasTexture(g)), cols, c, idleN: idle[1], runN: runF.length, miniN: miniF.length, spN: spF.length, ax: m.ax, ay: m.ay };
+    return { tex: prep(new THREE.CanvasTexture(g)), cols, c, idleN: idle[1], runN: runF.length, miniN: miniF.length, spN: spF.length, ax: m.ax, ay: m.ay, pose: !!pose };
   }
   // what each lad shouts and sounds like when he's picked
-  const PICK = { tim: ['RIGHT, LADS!', 'airhorn'], seb: ['ARTILLERY!', 'incoming'], byron: ['UNDER 12\u2019S!', 'whistle'],
-    pearcy: ['CARP DIEM!', 'clink'], kelly: ['MASS HEAD!', 'inflate'], marc: ['DROP BEARS!', 'cooee'], sam: ['SLEEPY SAM!', 'yawn'] };
+  const PICK = { tim: ['RIGHT, LADS!', 'airhorn'], seb: ['SIR, YES SIR!', 'incoming'], byron: ['REF\u2019S DECISION!', 'whistle'],
+    pearcy: ['CARP DIEM!', 'thud'], kelly: ['MASS HEAD!', 'ready'], marc: ['G\u2019DAY, LADS!', 'cooee'], sam: ['I\u2019M UP, I\u2019M UP!', 'yawn'] };
   // an action on the lad sprite: the frames of one row, forward, held, then back to standing
   function act(L, kind) {
     const n = kind === 'pick' ? L.a.spN : L.a.miniN; if (!n) return;
-    const fps = kind === 'pick' ? 11 : 15, hold = kind === 'pick' ? 0.55 : 0.12, back = kind === 'pick' ? 18 : 22;
-    L.act = { kind, row: kind === 'pick' ? ROW.special : ROW.mini, n, t: 0, fwd: n / fps, hold, back: n / back };
+    const own = kind === 'pick' && L.a.pose;   // his own pose plays once and holds its last frame
+    const fps = own ? 10 : kind === 'pick' ? 11 : 15, hold = own ? 0.75 : kind === 'pick' ? 0.55 : 0.12, back = own ? 0 : kind === 'pick' ? 18 : 22;
+    L.act = { kind, row: kind === 'pick' ? ROW.special : ROW.mini, n, t: 0, fwd: n / fps, hold, back: back ? n / back : 0 };
     L.act.len = L.act.fwd + hold + L.act.back;
   }
   function actFrame(A) {
     if (A.t < A.fwd) return Math.min(A.n - 1, Math.floor(A.t / A.fwd * A.n));
-    if (A.t < A.fwd + A.hold) return A.n - 1;
+    if (A.t < A.fwd + A.hold || !A.back) return A.n - 1;
     return Math.max(0, A.n - 1 - Math.floor((A.t - A.fwd - A.hold) / A.back * A.n));
   }
 
@@ -240,6 +243,7 @@ const T3 = (() => {
     const props = [['phonebox', 16], ['bin', 16], ['bench', 32], ['bin', 16]];
     for (let z = Z_NEAR - 140, i = 0; z > Z_FAR; z -= 230 + rnd() * 220, i++) {
       const [n, ax] = props[i % props.length], side = rnd() < 0.5 ? -1 : 1;
+      if (z > -260 && z < 280) continue;   // keep the kerb clear round the lads' line-up (a bin was hiding Kelly)
       addBillboard(T[n], side * (FRONT - 26), z, ax, { tint: [0.56, 0.5, 0.84] });
       addShadow(side * (FRONT - 26), z, T[n].image.width * 0.5);
     }
@@ -333,7 +337,7 @@ const T3 = (() => {
     sfx('special'); sfx(P[1]); if (P[0]) toast(P[0], 'shout');
     q('pick').textContent = CHAR_BY_ID[id].name + '!'; q('pick').disabled = true;
   }
-  function flex(L) { if (!L.act) act(L, 'mini'); }
+  function flex(L) { if (!L.act && !L.a.pose) act(L, 'mini'); }   // lads with a pose turn to face you instead
   function back() {
     if (picking) { picking = null; const L = chosen(); L.act = null; sfx('page'); renderLad(); return true; }
     if (view === 'cont') { sfx('page'); mode = 'title'; modeT = 0; lastMode = 'title'; restart(true); return true; }
@@ -513,7 +517,11 @@ const T3 = (() => {
     if (view === 'lad' || view === 'cont') {
       // picking: the camera leans in on him and swings round to centre him
       const k = picking && !reduceMotion ? easeInOut(clamp(picking.t / 0.5, 0, 1)) : 0;
-      tgt.pos.set(L.gx + 72 - 34 * k, 46 - 4 * k, L.gz + 165 - 32 * k); tgt.look.set(L.gx + 72 - 44 * k, 40 - 3 * k, L.gz - 500); tgt.fov = 50 - 4 * k;
+      // the camera sits behind and to the right of him; for the lads at the right-hand end (Kelly is on the kerb)
+      // that would put it inside the shop fronts, so it stays on the pavement and turns to frame him instead
+      const off = 72 - 34 * k, back = 165 - 32 * k, cx = Math.min(L.gx + off, FRONT - 46);
+      const yaw = Math.atan2(L.gx - cx, back) - Math.atan2(-off, back);
+      tgt.pos.set(cx, 46 - 4 * k, L.gz + back); tgt.look.set(cx + Math.sin(yaw) * 665, 40 - 3 * k, L.gz + back - Math.cos(yaw) * 665); tgt.fov = 50 - 4 * k;
     }
     else if (view === 'stage') { tgt.pos.set(Math.sin(t * 0.2) * 10 * (reduceMotion ? 0 : 1), 118, 330); tgt.look.set(0, 44, -420); tgt.fov = 50; }
     else if (view === 'diff') { tgt.pos.set(-118, 22, 186); tgt.look.set(-20, 50, -150); tgt.fov = 46; }
@@ -579,7 +587,9 @@ const T3 = (() => {
         L.act.t += dt;
         if (L.act.t >= L.act.len) { L.act = null; L.frame = 0; L.ft = 0; }
       }
+      const facing = !moving && L.a.pose && L === chosen() && (view === 'lad' || view === 'cont');
       if (L.act && !moving) { u.x = actFrame(L.act) / L.a.cols; u.y = 1 - (L.act.row + 1) / ROWS; }
+      else if (facing) { u.x = 0; u.y = 1 - (ROW.special + 1) / ROWS; }   // chosen: turned to face you
       else {
         const n = moving ? L.a.runN : L.a.idleN, fps = moving ? 14 : 7;
         L.ft += dt; if (L.ft > 1 / fps) { L.ft = 0; L.frame = (L.frame + 1) % n; }
@@ -587,6 +597,7 @@ const T3 = (() => {
       }
       L.m.visible = L.state !== 'off';
       L.m.rotation.y = Math.atan2(cam.pos.x - L.m.position.x, cam.pos.z - L.m.position.z); L.m.scale.x = L.face;
+      L.m.scale.y = facing && !L.act && !reduceMotion ? 1 + Math.sin(t * 3.1) * 0.012 : 1;   // breathing while he faces you
       L.sh.visible = L.m.visible; L.sh.position.set(L.m.position.x, KERB + 0.8, L.m.position.z);
       const pick = L === chosen() && view !== 'title';
       const tt = view === 'title' || view === 'go' ? [0.86, 0.8, 0.98] : pick ? [1, 0.95, 1.04] : view === 'lad' || view === 'cont' ? [0.42, 0.38, 0.6] : [0.62, 0.56, 0.78];
