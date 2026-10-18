@@ -21,7 +21,7 @@ KINDS = {
     'city': (STD + ['throw'], {'wind': {'throwWind': 'throw'}, 'hits': {'throwing': 'throw'}}),
     'itgirl': (STD + ['kick'], {'wind': {'kickWind': 'kick'}, 'hits': {'kick': 'kick'}}),
     'burb': (STD, {'wind': {'flurryWind': 'attack'}, 'hits': {'flurry': 'attack'}}),
-    'hoops': (STD + ['pull'], {'trim': {'idle': 4}, 'wind': {'grabWind': 'pull'}, 'hits': {'hairpull': 'pull'}}),   # her idle drifts into a step after frame 3
+    'hoops': (STD + ['pull'], {'wind': {'grabWind': 'pull'}, 'hits': {'hairpull': 'pull'}}),
     'snood': (STD, {'wind': {'counterWind': 'attack', 'guard': 'attack'}, 'hits': {'counter': 'attack'}}),
     'puffer': (STD + ['dash'], {'wind': {'dashWind': 'dash'}, 'hits': {'dashing': 'dash'}}),
     'hood': (STD, {}),
@@ -123,7 +123,7 @@ def build(key):
     if 'attack' in meta_rows: F['attack'] = mv(n('attack'))
     for r in rows:
         if r not in STD: F[r] = mv(n(r))
-    if 'hurt' in meta_rows: F['hurt'] = [min(2, n('hurt') - 1), min(3, n('hurt') - 1)]
+    if 'hurt' in meta_rows: F['hurt'] = [min(1, n('hurt') - 1), min(2, n('hurt') - 1)]   # the re-rolled hurts snap back on 1 and 2
     if 'knockdown' in meta_rows and n('knockdown') >= 16:
         F.update({'fall': [3, 4, 5, 6], 'lie': 8, 'up': [11, 12, 13, 14, 15]})
     else:
