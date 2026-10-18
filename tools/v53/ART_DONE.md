@@ -68,9 +68,62 @@ Standard set: idle 6/7, walk 8/9, attack 8/9, hurt 4/5, knockdown 16/17.
 | kebab | 32x32 | ok (could pass for a hot dog) |
 | bottle | | not generated: the brief says to reuse the game's |
 
-## Weakest items to revisit
+## Weakest items to revisit (first pass; most fixed in the re-roll pass below)
 - Hurt anims that lean or step forward instead of recoiling: burb, snood, groom, lenny, jeweller, inspector. Puffer and lookout barely react.
 - lenny attack2 (no jump) and lenny pull (doesn't reach overhead).
 - hoops idle (drifts) and hoops walk (barely moves).
 - lookout attack (no lob), dipper attack and steal, city attack, stag stagger.
 - Nothing in the brief is missing. (The bottle prop was not generated: the brief says to reuse the game's.)
+
+## Re-roll pass (requested by Tim: no weak animations kept)
+About 52 PixelLab generations for this pass, from a ~150 budget. The account balance moved more than that (1081 to 1255 used) because another session was running jobs on the same account at the same time. Every replaced sheet keeps its predecessor as `<anim>_v1.png` beside it. PixelLab animation names are `<anim>_r2`, `_r3` and `_r4` (take 1 is the original).
+
+### How the hurts were fixed (read this if you re-roll more)
+- The v3 engine can't do a sharp hurt. It eases out of the reference pose, so cells 2-3 always look almost identical to the standing frame. All ten v3 hurt re-takes (r2) failed for this reason.
+- The **pixminimax** engine (`mode: "pixminimax"`, still 4 frames, so 5 cells) produces a real backward snap in cells 2-3. However, it always adds speed lines or swoosh arcs, and sometimes the attacker's fist, whatever the prompt says.
+- Wording that worked: "stays in side profile facing right; from the very first frame he is already thrown back by a blow: head tipped back to the left, torso bent far backward, arms trailing; next frame still bent back; then slowly straightens. Feet planted. Single character only, nothing else drawn, no fists, no motion lines". It stops the fist being drawn into cell 2, but speed lines still appear.
+- **For every pixminimax hurt I kept, I erased the effect pixels with `pixelart_workbench edit`.** These were region- or colour-masked erases, clear of the body, and I checked each one at 2x. The saved PNGs are therefore cleaned versions; the clips stored on PixelLab under `hurt_rN` still have the lines.
+
+### Item by item
+| item | takes | kept | what the kept one does / anything still off |
+|---|---|---|---|
+| burb hurt | r2 v3, r3 pmx, r4 pmx | r4 (cleaned) | Cells 2-3: cap and chest thrown back, arms flung; cells 4-5 recover. r3 had a disembodied fist in cell 2. |
+| snood hurt | r2 v3, r3 pmx | r3 (cleaned) | Cells 2-4 bent far back. His face turns a touch toward 3/4 in cell 3. |
+| groom hurt | r2 v3, r3 pmx | r3 (cleaned) | Cells 2-3 head and chest thrown far back, then he straightens. |
+| lenny hurt | r2 v3, r3 pmx | r3 (cleaned) | Cells 2-4 big backward lean with fists at his waist; cell 5 eases up. |
+| jeweller hurt | r2 v3, r3 pmx, r4 pmx | r4 (cleaned) | Cells 2-5 head snapped back, shoulders hunched, arms dangling. He stays dazed rather than fully recovering. r3 had an impact blob at his face. |
+| inspector hurt | r2 v3, r3 pmx | r3 (cleaned) | Cells 2-4 cap and head thrown back, chest arched; cell 5 recovering. |
+| puffer hurt | r2 v3, r3 pmx, r4 pmx | r4 (cleaned), best of 4 | Cell 2 is a clear backward recoil. In cell 3 his head is still back, but his torso starts to hunch forward. The cleanup slightly trimmed the front edge of his snood in cell 2. The base sprite's floating debris pixels around the feet remain (they're in his reference pose). Still not perfect. |
+| lookout hurt | r2 v3, r3 pmx, r4 pmx | r4 (cleaned) | Cells 2-4 thrown back, cell 5 recovering. r3 had a yellow fist or projectile in cell 2. |
+| city hurt | r2 v3, r3 pmx, r4 pmx | r4 (cleaned) | Cells 2-5 head and chest thrown far back; a pink swoosh arc was erased. r3 drew an attacker's arm in cell 2. |
+| itgirl hurt | r2 pmx | r2 (cleaned) | Cells 2-4 arched far back. Her skirt picks up a checked pattern in the hurt frames. |
+| lenny attack2 | r2 v3 | r2 | 8/9: crouch, leaps, horizontal in the air with both boots thrust right, lands. Frames 3-4 turn slightly toward 3/4. |
+| lenny pull | r2 v3, r3 pmx, r4 pmx | r4 | A red alarm handle appears overhead. His fist goes well above his head, grabs it and hauls the cord down to his chest. **8 frames = 9 cells (was 6/7)**, because pixminimax only does multiples of 4. |
+| inspector attack | r2 v3, r3 pmx, r4 v3 | r4 | 8/9: side-on lunge with his right arm thrust fully out at head height, a hard shove or slap that reads clearly. No ticket book in his hand (every take with a book either turned to the camera or smeared). |
+| inspector block | r3 pmx (one take) | r3 | Side-on: steps in and thrusts both arms straight forward, palms out like a traffic stop, then holds. **8 frames = 9 cells (was 6/7).** |
+| hoops idle | r2 v3 | r2 | 6/7: stays planted, settles into a fists-up guard and bobs, with no drift. As with every v3 idle, cell 1 is the relaxed reference pose. |
+| hoops walk | r2 v3 | r2 | 8/9: clear alternating strides, arms swinging. |
+| lookout attack | r2 v3 | r2 | 8/9: a green bottle appears in his hand. He swings back, lobs it forward underarm, and his hand is empty after release. |
+| dipper attack | r2 v3 | r2 | 8/9: guard up, then a full-extension jab, then pulls back. |
+| dipper steal | r2 v3, r3 v3 | r3 | 6/7: his hand shoots out, clamps on a visible black wallet, pulls it in and stuffs it into his jacket. Slight 3/4 during the tuck. |
+| city attack | r2 v3 | r2 | 8/9: wind-up, then steps in with a long open-hand slap or shove held at face height. |
+| stag stagger | r2 v3, r3 v3 | r3 | 6/7: lurches with arms flailing, pitches far forward on one leg nearly falling, then rights himself. He tips forward more than backward. |
+| commuter (new sprite) | create v2; idle r1 v3, r2 v3; run r1 v3, r2 pmx | idle r2, run r2 | New colour character **a303c518-acb5-40cd-bef8-bb7c4a1aea9c**: beige trench coat, dark hair, brown handbag (pixellab_ids.md updated). The new idle (6/7) stays side-on, hugging her bag with a small nervous fidget; its take 1 turned to face the camera. The run (8/9) is a panicked sprint with both arms thrown up above her head and the coat flying. `idle_v1.png`/`run_v1.png` are the old greyscale sprite. |
+| lookout cap | | | Left as a baseball cap, as instructed. |
+
+### Still not right
+- puffer hurt: cell 3 starts hunching forward (best of 4 takes).
+- Frame-count changes the game must handle: `lenny/pull.png` and `inspector/block.png` now have 9 cells instead of 7.
+
+## Backgrounds pass (no more hard cuts, gatelines that make sense)
+Tim: "transitions just cut to a new background image", the ticket hall repeated, and the barriers sat next to the track.
+- Every stage that scrolls through scenery is now one row of pieces joined by inpainted joins (`tools/v53/seams.py`):
+  - Orpington: st_front | st_j1 | st_hall | st_jh | st_hall2 | st_j2 | st_platform (nothing repeats; 3680 px of 3300).
+  - Charing Cross: cx_platform | cx_j1 | cx_hall | cx_j2 | cx_shops | cx_j3 | cx_exit (off the train, through the gates, across the concourse, out to the Strand; the stage is now 3400 long so the way out shows).
+  - Smoking area: alley | al_j1 | alley2 | al_j2 | alley3 | al_j3 | alley.
+- How a join is made: a 256 px canvas with A's last 48 px and B's first 48 px, the middle masked; the canvas goes up on the throwaway `art-staging` branch so PixelLab can read it from raw.githubusercontent.com (the workspace can't upload to PixelLab), then mcp__PixelLab__inpaint_image fills the middle. bg_process.py pastes A's and B's exact edge pixels back, so the game overlaps them with no seam.
+- New pieces (pixflux, 1 generation each): cx_platform (re-rolled once: the first was a flat high-speed train with platform 29/33), cx_shops and alley2/alley3 (img2img from cx_hall/alley so the style matches), cx_exit, st_hall2 (ticket machines, footbridge stairs, "TRAINS TO LONDON CHARING CROSS"). Garbled signs repainted: PLAT 4, NEWS, TOILETS, SANDWICHES, FIRE EXIT, the departures sign; the ticket machine headers blanked.
+- Re-rolls: cx_j1 (the first came out in perspective with a Tube train), st_j2 (twice: PixelLab kept painting a darker sky than the platform's, so the part past the doorway is the platform's own first columns mirrored, `seams.MIRROR`). st_j3 and the first st_j2 were dropped when st_hall2 went in.
+- Bottoms cropped (`bg_process.CROP`): st_hall, st_platform, cx_*, alley* all ended in a dark band that read as a platform edge or kerb behind the fight. Tops padded or cut so a stage's pieces share a height.
+- Gatelines: `gate.png` (pixflux, a side-on gate cabinet; two earlier takes were too tall or three-quarter on) -> gate_open / gate_shut (green or red light). Five cabinets in a column across the walkway, depth-sorted with the fighters: Orpington at the doorway from the ticket hall to the platform (the Inspector's fight is right there), Charing Cross where the platforms end. Red while a fight is on screen, green when clear. On the Orpington platform the yellow line, the edge and the track are drawn in front of the walkway, nearest the camera. cx_barrier.png is no longer used.
+- Generations: about 140 (13 inpaints at 10 each, 10 pixflux).

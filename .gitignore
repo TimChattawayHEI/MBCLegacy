@@ -6,3 +6,4 @@ android/local.properties
 *.iml
 .idea/
 .notes/
+__pycache__/

@@ -33,7 +33,7 @@
    },
    "fist": {}
   },
-  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, throw: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true}"
+  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, throw: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {throwWind: \"throw\"}, hits: {throwing: \"throw\"}, fallFlip: true}"
  },
  "puffer": {
   "meta": {
@@ -69,7 +69,7 @@
    },
    "fist": {}
   },
-  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, dash: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true}"
+  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, dash: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {dashWind: \"dash\"}, hits: {dashing: \"dash\"}, fallFlip: true}"
  },
  "grappler": {
   "meta": {
@@ -105,7 +105,7 @@
    },
    "fist": {}
   },
-  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hold: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], hits: {hug: \"hold\"}, fallFlip: true}"
+  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hold: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], hits: {hug: \"hold\"}, fallFlip: true}"
  },
  "dipper": {
   "meta": {
@@ -145,7 +145,7 @@
    },
    "fist": {}
   },
-  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, dodge: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, steal: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], hits: {dodge: \"dodge\"}, fallFlip: true}"
+  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, dodge: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, steal: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], hits: {dodge: \"dodge\"}, fallFlip: true}"
  },
  "hood": {
   "meta": {
@@ -177,7 +177,7 @@
    },
    "fist": {}
   },
-  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true}"
+  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true}"
  },
  "itgirl": {
   "meta": {
@@ -213,7 +213,7 @@
    },
    "fist": {}
   },
-  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, kick: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true}"
+  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, kick: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {kickWind: \"kick\"}, hits: {kick: \"kick\"}, fallFlip: true}"
  },
  "stag": {
   "meta": {
@@ -249,7 +249,7 @@
    },
    "fist": {}
   },
-  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, stagger: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true}"
+  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, stagger: {pre: [1, 2, 3, 4, 5, 6], hit: 3, post: [5]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {stagger: \"stagger\"}, fallFlip: true}"
  },
  "lookout": {
   "meta": {
@@ -285,7 +285,7 @@
    },
    "fist": {}
   },
-  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, whistle: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], hits: {whistle: \"whistle\"}, fallFlip: true}"
+  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, whistle: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], hits: {whistle: \"whistle\"}, fallFlip: true}"
  },
  "smiler": {
   "meta": {
@@ -341,7 +341,7 @@
    },
    "fist": {}
   },
-  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true}"
+  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {flurryWind: \"attack\"}, hits: {flurry: \"attack\"}, fallFlip: true}"
  },
  "hoops": {
   "meta": {
@@ -352,7 +352,7 @@
    "rows": {
     "idle": [
      0,
-     4
+     7
     ],
     "walk": [
      1,
@@ -377,7 +377,7 @@
    },
    "fist": {}
   },
-  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, pull: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true}"
+  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, pull: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {grabWind: \"pull\"}, hits: {hairpull: \"pull\"}, fallFlip: true}"
  },
  "oldboy": {
   "meta": {
@@ -429,12 +429,12 @@
    },
    "fist": {}
   },
-  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true}"
+  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {rallyWind: \"attack\"}, fallFlip: true}"
  },
  "commuter": {
   "meta": {
    "cell": 92,
-   "ax": 46.5,
+   "ax": 45.5,
    "ay": 77,
    "h": 62,
    "rows": {
@@ -481,7 +481,7 @@
    },
    "fist": {}
   },
-  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true}"
+  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {counterWind: \"attack\", guard: \"attack\"}, hits: {counter: \"attack\"}, fallFlip: true}"
  },
  "inspector": {
   "meta": {
@@ -516,7 +516,7 @@
     ],
     "block": [
      6,
-     7
+     9
     ],
     "shout": [
      7,
@@ -525,7 +525,7 @@
    },
    "fist": {}
   },
-  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, attack2: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, block: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, shout: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {slapWind: \"attack2\", fineWind: \"shout\", blockWind: \"block\"}, hits: {slap: \"attack2\", fine: \"shout\", block: \"block\"}, fallFlip: true}"
+  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, attack2: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, block: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, shout: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {slapWind: \"attack2\", fineWind: \"shout\", blockWind: \"block\"}, hits: {slap: \"attack2\", fine: \"shout\", block: \"block\"}, fallFlip: true}"
  },
  "lenny": {
   "meta": {
@@ -560,7 +560,7 @@
     ],
     "pull": [
      6,
-     7
+     9
     ],
     "charge": [
      7,
@@ -569,7 +569,7 @@
    },
    "fist": {}
   },
-  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, attack2: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, pull: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, charge: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {alarmWind: \"pull\", doorWind: \"pull\", kneeWind: \"attack2\", chargeWind: \"charge\"}, hits: {alarm: \"pull\", doorOpen: \"pull\", knee: \"attack2\", charge: \"charge\"}, fallFlip: true}"
+  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, attack2: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, pull: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, charge: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {alarmWind: \"pull\", doorWind: \"pull\", kneeWind: \"attack2\", chargeWind: \"charge\"}, hits: {alarm: \"pull\", doorOpen: \"pull\", knee: \"attack2\", charge: \"charge\"}, fallFlip: true}"
  },
  "jeweller": {
   "meta": {
@@ -609,6 +609,6 @@
    },
    "fist": {}
   },
-  "frames": "{attack: {pre: [4, 6, 7], hit: 8, post: [7]}, glint: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, grab: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {whipWind: \"attack\", glintWind: \"glint\", grabWind: \"grab\"}, hits: {whip: \"attack\", glint: \"glint\", grabLunge: \"grab\", grabHold: \"grab\"}, fallFlip: true}"
+  "frames": "{attack: {pre: [4, 6, 7], hit: 8, post: [7]}, glint: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, grab: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {whipWind: \"attack\", glintWind: \"glint\", grabWind: \"grab\"}, hits: {whip: \"attack\", glint: \"glint\", grabLunge: \"grab\", grabHold: \"grab\"}, fallFlip: true}"
  }
 }
