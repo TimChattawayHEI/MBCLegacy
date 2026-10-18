@@ -16,7 +16,8 @@ LAB, S = 18, 2
 # key: rows in order, then which states use which rows (FOE_FRAMES wind / hits)
 STD = ['idle', 'walk', 'attack', 'hurt', 'knockdown']
 KINDS = {
-    'city': (STD + ['throw'], {}), 'itgirl': (STD + ['kick'], {}), 'burb': (STD, {}), 'hoops': (STD + ['pull'], {}),
+    'city': (STD + ['throw'], {}), 'itgirl': (STD + ['kick'], {}), 'burb': (STD, {}),
+    'hoops': (STD + ['pull'], {'trim': {'idle': 4}}),   # her idle drifts into a step after frame 3
     'snood': (STD, {}), 'puffer': (STD + ['dash'], {}), 'hood': (STD, {}),
     'grappler': (STD + ['hold'], {'hits': {'hug': 'hold'}}),
     'dipper': (STD + ['dodge', 'steal'], {'hits': {'dodge': 'dodge'}}),
@@ -106,7 +107,7 @@ def build(key):
             ys, xs = np.where(f[..., 3] > 0)
             ty, tx = ys + dy, xs + dx; ok = (ty >= 0) & (ty < cell) & (tx >= 0) & (tx < cell)
             sheet[ri * cell + ty[ok], k * cell + tx[ok]] = f[ys[ok], xs[ok]]
-        meta_rows[r] = [ri, len(fr)]
+        meta_rows[r] = [ri, min(len(fr), opts.get('trim', {}).get(r, 99))]
     Image.fromarray(sheet, 'RGBA').save(os.path.join(ROOT, 'web', 'sprites', key + '.png'), optimize=True)
     ax = round((ref[0] + ref[2]) / 2 + base_dx + 0.5, 1); ay = int(ref[3] + 1 + (cell - refc) // 2); h = int(ref[3] - ref[1] + 1)
     meta = {'cell': int(cell), 'ax': ax, 'ay': ay, 'h': h, 'rows': meta_rows, 'fist': {}}

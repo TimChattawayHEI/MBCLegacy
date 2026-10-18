@@ -421,7 +421,7 @@ function nlAlleyTick(dt) {
   if (S.done && !S.watchBack) {
     S.watchBack = true;
     const seb = (NET.on ? PL : [player]).find(q => q.def.id === 'seb') || S.sebAlly;
-    if (seb) { setTimeout0(() => { popWord(seb.x, seb.y, 200, 'WATCH RECOVERED!', true); sfx('jackpot'); S.watchFx = { who: seb, t: 0 }; say(seb, pick(['Tick tock.', 'Elba time. Back where it belongs.', "That's mine. Thank you."]), 2.4, true); }, 0.6); S.endT = Math.max(S.endT, 3.4); }
+    if (seb) { setTimeout0(() => { popWord(seb.x, seb.y, 200, 'WATCH RECOVERED!', true); sfx('jackpot'); nlWatchFx = { who: seb, t: 0 }; say(seb, pick(['Tick tock.', 'Elba time. Back where it belongs.', "That's mine. Thank you."]), 2.4, true); }, 0.6); S.endT = Math.max(S.endT, 3.4); }
   }
 }
 function nlHeldFree(f) { if (player.state === 'netted' && player.heldBy === f) freePlayer(); }
@@ -703,6 +703,7 @@ function nlBgBus() {
   pxText('N47 → ' + (S.busStop || 'TRAFALGAR SQUARE'), W / 2, 83, 12, '#ffb04a');
   return true;
 }
+let nlWatchFx = null;
 function nlDrawFore() {
   if (!ST || ST.era !== 2006) return;
   // grab poles in front of everyone on the train and the bus
@@ -718,10 +719,11 @@ function nlDrawFore() {
   }
   if (S && S.traf) nlDrawTrafalgar();
   // Seb's watch, back where it belongs: it rises over his head and catches the light
-  if (S && S.watchFx) { const w = S.watchFx, img = NLX.img('watch'); w.t += 1 / 60;
-    if (w.t > 2.6 || !img) S.watchFx = null;
-    else { const k = Math.min(1, w.t / 0.4), x = nlSnap(w.who.x - cam.x - 32), y = nlSnap(w.who.y - 190 - k * 20 + Math.sin(w.t * 5) * 3);
-      ctx.save(); ctx.imageSmoothingEnabled = false; ctx.globalAlpha = Math.min(1, (2.6 - w.t) / 0.4); ctx.drawImage(img, x, y, 64, 64);
+  // (kept out of S: it's only a picture, timed by the screen, so it can't knock online co-op out of step)
+  if (nlWatchFx) { const w = nlWatchFx, img = NLX.img('watch'); w.t += 1 / 60;
+    if (w.t > 2.6 || !img || !S) nlWatchFx = null;
+    else { const k = Math.min(1, w.t / 0.4), x = nlSnap(w.who.x - cam.x - 110), y = nlSnap(w.who.y - 150 - k * 24 + Math.sin(w.t * 5) * 3);
+      ctx.save(); ctx.imageSmoothingEnabled = false; ctx.globalAlpha = Math.min(1, (2.6 - w.t) / 0.4); ctx.filter = 'brightness(1.6)'; ctx.drawImage(img, x, y, 64, 64); ctx.filter = 'none';
       if (Math.floor(w.t * 8) % 3 === 0) { ctx.fillStyle = '#ffffff'; ctx.fillRect(x + 40, y + 14, 4, 12); ctx.fillRect(x + 36, y + 18, 12, 4); }
       ctx.restore(); } }
 }
