@@ -21,6 +21,8 @@ SIGNS = {
     'st_hall': [(1, 38, 24, 49, ['TICKET', 'OFFICE']), (130, 39, 238, 50, ['TICKET HALL'])],
     'tr_wall': [(20, 11, 139, 17, ['PLEASE OFFER YOUR SEAT']), (182, 11, 302, 17, ['NO SMOKING ON THIS TRAIN'])],
 }
+# image: boxes to paint out with the sky beside them (a moon that would repeat every tile of a scrolling strip)
+ERASE = {'sc_suburb': [(190, 6, 218, 32)]}
 # image: rectangles to make see-through (windows), or a glass colour: every blob of it (bigger than a few
 # dozen pixels) becomes tinted glass, alpha GLASS, so the scenery drawn behind shows through
 WINDOWS = {'tr_wall': (10, 12, 20)}
@@ -64,6 +66,9 @@ def process(name):
     if not os.path.exists(p): return False
     px = np.array(Image.open(p).convert('RGBA'))
     for r in SIGNS.get(name, []): repaint(px, *r)
+    for x0, y0, x1, y1 in ERASE.get(name, []):
+        # paint the sky over it, row by row, from just left of the box (the sky is in flat bands)
+        px[y0:y1 + 1, x0:x1 + 1] = px[y0:y1 + 1, x0 - 3:x0 - 2]
     win = WINDOWS.get(name)
     if win and isinstance(win[0], int): cut_glass(px, win)
     elif win:
