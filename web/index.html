@@ -1215,6 +1215,7 @@ const WEAPONS = {
   aerial: { name: 'STATION AERIAL', reach: 120, dmg: 12, kd: true, dur: 5, speed: 0.36, t0: 0.1, t1: 0.2, len: 104, col: '#c9ccd0', throwDmg: 14 },
   picker: { name: 'LITTER PICKER', reach: 130, dmg: 11, kd: true, dur: 5, speed: 0.34, t0: 0.1, t1: 0.2, len: 110, col: '#9aa1a7', throwDmg: 12 },
   pole: { name: 'BUS POLE', reach: 92, dmg: 12, kd: false, dur: 6, speed: 0.28, t0: 0.07, t1: 0.16, len: 64, col: '#e8c23a', throwDmg: 15, word: 'DING DING!' },
+  lock: { name: 'BIKE LOCK', reach: 70, dmg: 15, kd: true, dur: 5, speed: 0.36, t0: 0.1, t1: 0.2, len: 44, col: '#2a2a2e', throwDmg: 16, word: 'CLUNK!' },
   cone: { name: 'TRAFFIC CONE', reach: 74, dmg: 9, kd: true, dur: 5, speed: 0.32, t0: 0.08, t1: 0.18, len: 40, col: '#f06a24', throwDmg: 12, word: 'CONED!' },
 };
 const FOODS = {
@@ -1757,6 +1758,19 @@ Object.assign(FOES, {
     lines: ['Last night of freedom!', 'Who wants a banana?', 'I LOVE YOU, MATE.', 'Is this the bus to Ibiza?'] },
   groom: { name: 'GROOMSMAN', hp: 52, speed: 108, dmg: 8, reach: 70, windup: 0.42, score: 260, ai: 'melee', rush: true,
     lines: ['DAVE! DAVE! DAVE!', "Stag do, mate. Rules don't apply.", 'Shots! SHOTS!', 'Where are we?'] },
+  // the road crew and the shell-suit lads (V53.4)
+  noface: { name: 'NO FACE', hp: 84, speed: 84, dmg: 12, reach: 74, windup: 0.62, score: 340, ai: 'melee', kdAttack: true,
+    lines: ['...', 'Say nothing.', '...', 'Nah.'] },
+  leathers: { name: 'LEATHERS', hp: 60, speed: 112, dmg: 6, reach: 64, windup: 0.3, score: 320, ai: 'melee', combo2: true,
+    lines: ['Come then.', 'This is a lock, bruv. For bikes.', "You're not from round here.", 'Allow it.'] },
+  shades: { name: 'SHADES', hp: 96, speed: 90, dmg: 10, reach: 70, windup: 0.5, score: 340, ai: 'melee', armor: true,
+    lines: ['Big man ting.', 'Mind out.', "I'm on a diet. Of you.", 'Hold tight.'] },
+  denim: { name: 'DENIM', hp: 42, speed: 150, dmg: 7, reach: 66, windup: 0.3, score: 280, ai: 'melee',
+    lines: ['Catch me.', 'Too quick, bruv.', 'Wagwan.', 'Easy.'] },
+  shellsuit: { name: 'SHELL SUIT', hp: 50, speed: 108, dmg: 6, reach: 64, windup: 0.36, score: 260, ai: 'melee', shot: 'bottle',
+    lines: ['Have some of that!', 'Proper night, this.', 'Oi oi!', "Swear down, I'm sober."] },
+  tuba: { name: 'TUBA LAD', hp: 70, speed: 86, dmg: 10, reach: 84, windup: 0.55, score: 300, ai: 'melee', kdAttack: true,
+    lines: ['PARP.', 'Grade five, mate.', "Brass band's on tour!", 'Mind the bell.'] },
   // bosses (the Elba boss engine, each with a tick of its own)
   inspector: { name: 'THE TICKET INSPECTOR', hp: 300, speed: 92, dmg: 11, scale: 1.08, beatenWord: 'VALID!', beatenLine: '...Have a nice evening.', sub: 'Revenue protection. Zero tolerance.',
     intro: ['Tickets, please.', 'Tickets. All of you.'], lines: ['Ticket?', 'No ticket, no travel.', "I've seen your sort."], tick: (b, dt, rage) => nlInspector(b, dt, rage) },
@@ -1779,7 +1793,7 @@ Object.assign(STAGES, {
       // Orpington on a Friday: the locals first, then the lot heading into town, then a bit of everything
       { at: 360, groups: [[['burb', 'R'], ['hoops', 'R'], ['burb', 'L']]] },
       { at: 1100, groups: [[['city', 'R'], ['itgirl', 'R']], [['burb', 'R'], ['hoops', 'L'], ['city', 'R']]] },
-      { at: 1800, groups: [[['puffer', 'R'], ['burb', 'L'], ['hoops', 'R']], [['city', 'R'], ['itgirl', 'L']]], food: 'kebab' },
+      { at: 1800, groups: [[['puffer', 'R'], ['burb', 'L'], ['hoops', 'R']], [['city', 'R'], ['itgirl', 'L'], ['shellsuit', 'R']]], food: 'kebab' },
       { at: 'end', boss: 'inspector', title: 'THE TICKET INSPECTOR' },
     ] },
   nl_train: { n: 9, era: 2006, title: 'THE 21:12 TO CHARING CROSS', sub: 'Calling at Chislehurst, Hither Green, Lewisham...', bg: 'nl_train', ft: 372, fb: 506, len: 5600,
@@ -1789,8 +1803,8 @@ Object.assign(STAGES, {
     waves: [
       { at: 300, groups: [[['groom', 'R'], ['stag', 'R'], ['groom', 'L']]] },
       { at: 1150, stop: 'CHISLEHURST', groups: [[['city', 'R'], ['itgirl', 'R'], ['city', 'R']], [['itgirl', 'R'], ['city', 'L']]] },
-      { at: 2700, stop: 'HITHER GREEN', groups: [[['burb', 'R'], ['hoops', 'R'], ['burb', 'R']], [['hoops', 'R'], ['burb', 'L'], ['burb', 'R']]], food: 'sroll' },
-      { at: 3800, stop: 'LEWISHAM', groups: [[['snood', 'R'], ['puffer', 'R'], ['hood', 'R']], [['snood', 'R'], ['hood', 'L'], ['puffer', 'R'], ['puffer', 'R']]] },
+      { at: 2700, stop: 'HITHER GREEN', groups: [[['burb', 'R'], ['shellsuit', 'R'], ['hoops', 'R']], [['tuba', 'R'], ['burb', 'L'], ['shellsuit', 'R']]], food: 'sroll' },
+      { at: 3800, stop: 'LEWISHAM', groups: [[['snood', 'R'], ['leathers', 'R'], ['hood', 'R']], [['noface', 'R'], ['shades', 'L'], ['denim', 'R'], ['puffer', 'R']]] },
       { at: 'end', boss: 'lenny', title: 'LEWISHAM LENNY' },
     ] },
   nl_cx: { n: 10, era: 2006, title: 'CHARING CROSS', sub: '21:47. This train terminates here.', bg: 'nl_cx', ft: 356, fb: 506, len: 3400,
@@ -1798,10 +1812,10 @@ Object.assign(STAGES, {
     items: [{ w: 'alcopop', x: 820, y: 470 }],
     breakables: [{ type: 'bin', x: 1300, y: 470, drop: 'chips' }, { type: 'bin', x: 2300, y: 460, drop: 'w:alcopop' }],
     waves: [
-      { at: 360, groups: [[['puffer', 'R'], ['snood', 'R'], ['city', 'L']]] },
+      { at: 360, groups: [[['puffer', 'R'], ['denim', 'R'], ['city', 'L']]] },
       { at: 700, groups: [[['burb', 'R'], ['hoops', 'R']], [['itgirl', 'R'], ['city', 'R'], ['burb', 'L']]], food: 'chips' },
-      { at: 1800, groups: [[['hood', 'R'], ['snood', 'R'], ['puffer', 'L']], [['city', 'R'], ['hood', 'R']]] },
-      { at: 'end', final: true, groups: [[['snood', 'R'], ['burb', 'R'], ['puffer', 'R'], ['hoops', 'L']]] },
+      { at: 1800, groups: [[['leathers', 'R'], ['snood', 'R'], ['puffer', 'L']], [['noface', 'R'], ['denim', 'R']]] },
+      { at: 'end', final: true, groups: [[['shades', 'R'], ['leathers', 'R'], ['snood', 'R'], ['hoops', 'L']]] },
     ] },
   nl_alley: { n: 11, era: 2006, title: 'THE SMOKING AREA', sub: "Round the back. Where's Seb?", bg: 'nl_alley', ft: 356, fb: 506, len: 3200,
     music: 'smoking', aggro: 3, aa: 0.5, intro: 'nlSeb',
@@ -1811,7 +1825,7 @@ Object.assign(STAGES, {
       { at: 300, event: 'sebScene' },
       { at: 420, groups: [[['dipper', 'R'], ['grappler', 'R'], ['lookout', 'R']]] },
       { at: 1300, groups: [[['grappler', 'R'], ['dipper', 'L']], [['dipper', 'R'], ['lookout', 'R'], ['grappler', 'L']]], food: 'kebab' },
-      { at: 2000, groups: [[['dipper', 'R'], ['dipper', 'L'], ['grappler', 'R'], ['lookout', 'R']]] },
+      { at: 2000, groups: [[['dipper', 'R'], ['leathers', 'L'], ['grappler', 'R'], ['lookout', 'R']], [['noface', 'R'], ['dipper', 'L']]] },
       { at: 'end', boss: 'jeweller', title: 'THE JEWELLER' },
     ] },
   nl_bus: { n: 12, era: 2006, title: 'THE N47', sub: '01:50. Top deck. Next stop: home.', bg: 'nl_bus', fixed: true, bus: true, ft: 384, fb: 476, raft: [150, 900], len: W,
@@ -1819,13 +1833,13 @@ Object.assign(STAGES, {
     breakables: [{ type: 'pole', x: 380, y: 400, drop: 'w:pole' }, { type: 'pole', x: 640, y: 400, drop: 'w:pole' }, { type: 'pole', x: 820, y: 470, drop: 'w:pole' }],
     waves: [
       // the stag do, back from town; then whoever's left out at 2am, in bigger and bigger lots up the stairs
-      { groups: [[['stag', 'L'], ['groom', 'L'], ['groom', 'L'], ['groom', 'L']]] },
-      { groups: [[['burb', 'L'], ['hoops', 'L'], ['burb', 'L']], [['puffer', 'L'], ['hood', 'L'], ['hoops', 'L']]], food: 'kebab' },
+      { groups: [[['stag', 'L'], ['groom', 'L'], ['tuba', 'L'], ['groom', 'L']]] },
+      { groups: [[['burb', 'L'], ['shellsuit', 'L'], ['burb', 'L']], [['puffer', 'L'], ['hood', 'L'], ['hoops', 'L']]], food: 'kebab' },
       { event: 'smiler' },
-      { groups: [[['snood', 'L'], ['hood', 'L'], ['dipper', 'L']], [['grappler', 'L'], ['lookout', 'L'], ['puffer', 'L']]] },
-      { groups: [[['stag', 'L'], ['groom', 'L'], ['city', 'L'], ['itgirl', 'L']], [['burb', 'L'], ['hoops', 'L'], ['snood', 'L']]], food: 'kebab' },
+      { groups: [[['snood', 'L'], ['leathers', 'L'], ['dipper', 'L']], [['grappler', 'L'], ['denim', 'L'], ['shades', 'L']]] },
+      { groups: [[['stag', 'L'], ['tuba', 'L'], ['shellsuit', 'L'], ['itgirl', 'L']], [['burb', 'L'], ['hoops', 'L'], ['noface', 'L']]], food: 'kebab' },
       { event: 'smiler' },
-      { final: true, groups: [[['groom', 'L'], ['stag', 'L'], ['groom', 'L'], ['grappler', 'L']], [['puffer', 'L'], ['burb', 'L'], ['snood', 'L'], ['hood', 'L']]] },
+      { final: true, groups: [[['groom', 'L'], ['stag', 'L'], ['tuba', 'L'], ['grappler', 'L']], [['shades', 'L'], ['leathers', 'L'], ['snood', 'L'], ['shellsuit', 'L']]] },
     ] },
 });
 ['nl_station', 'nl_train', 'nl_cx', 'nl_alley', 'nl_bus'].forEach(k => { BOSS_MUSIC[k] = 'boss2006'; });
@@ -2235,13 +2249,13 @@ function nlOwn(f, dt, targets) {
   if (f.atk) resolveAttack(f, targets || [player]);
   return true;
 }
-const NL_OWN = new Set(['throwWind', 'throwing', 'kickWind', 'kick', 'hopback', 'flurryWind', 'flurry', 'grabWind', 'hairpull', 'guard',
+const NL_OWN = new Set(['shrug', 'lockWind', 'lockSwing', 'splashWind', 'splash', 'splashed', 'flyWind', 'flykick', 'slideWind', 'slide', 'sprayWind', 'spray', 'blastWind', 'blast', 'throwWind', 'throwing', 'kickWind', 'kick', 'hopback', 'flurryWind', 'flurry', 'grabWind', 'hairpull', 'guard',
   'counterWind', 'counter', 'dashWind', 'dashing', 'circle', 'retreat', 'stagger', 'rallyWind', 'flank']);
-const NL_TELL = new Set(['throwWind', 'kickWind', 'flurryWind', 'grabWind', 'dashWind', 'rallyWind', 'counterWind', 'whistle']);
+const NL_TELL = new Set(['lockWind', 'splashWind', 'flyWind', 'slideWind', 'sprayWind', 'blastWind', 'throwWind', 'kickWind', 'flurryWind', 'grabWind', 'dashWind', 'rallyWind', 'counterWind', 'whistle']);
 // a special can start from here (stood off, between swings)
 const nlFree = f => (f.state === 'hover' || f.state === 'approach') && canBeHit(f) && f.z <= 0;
 // one big move at a time, so each one can be read and answered
-function nlSpecialOk() { return !(S.nlSpecT > 0) && foes.filter(o => NL_TELL.has(o.state) || o.state === 'dashing' || o.state === 'kick' || o.state === 'flurry').length < 2; }
+function nlSpecialOk() { return !(S.nlSpecT > 0) && foes.filter(o => NL_TELL.has(o.state) || ['dashing', 'kick', 'flurry', 'lockSwing', 'splash', 'flykick', 'slide', 'spray', 'blast'].includes(o.state)).length < 2; }
 function nlStartSpecial(f, st, gap) { f.state = st; f.t = 0; f.vx = f.vy = 0; f.atk = null; S.nlSpecT = gap || 0.9; if (f.token) releaseToken(f, 0); if (Math.abs(player.x - f.x) > 6) f.face = Math.sign(player.x - f.x); }
 function nlStrike(f, reach, dmg, kd, kb, t1) { f.atkT = 0; f.atk = { t0: 0.02, t1: t1 || 0.14, reach: [0, reach], depth: 24, dmg, kd: !!kd, kb: kb || 180, hs: 0.07, hit: new Set(), zMax: 90 }; sfx('swing'); }
 const nlHits = f => f.atk && f.atk.hit && f.atk.hit.has(player);
@@ -2376,6 +2390,96 @@ function nlStyle(f, dt) {
       if (f.state === 'hover' && canBeHit(f) && chance(dt * 0.45)) { f.state = 'stagger'; f.t = 0; f.lurch = 0; if (chance(0.3)) say(f, pick(d.lines), 1.4, true); return nlOwn(f, dt); }
       return false;
     }
+    case 'noface': {
+      // NO FACE: doesn't flinch. The first two punches of a combo bounce off; throw him, jump-kick him or use a weapon.
+      f.shrugIdle = (f.shrugIdle || 0) + dt; if (f.shrugIdle > 1.5) f.shrugPts = 2;
+      if (f.shrugPts == null) f.shrugPts = 2;
+      if (f.state === 'shrug') { f.vx = f.vy = 0; if (f.t > 0.4) { f.state = 'hover'; f.t = 0; f.cool = 0; } return nlOwn(f, dt); }
+      if (f.state === 'hurt' || f.state === 'down') f.shrugIdle = 0;
+      if (p.atk && p.atkT < 0.06 && !p.weapon && p.z < 24 && dx < 130 && dy < 30 && canBeHit(f) && f.z <= 0 && f.shrugPts > 0 &&
+          !['down', 'getup', 'grabbed', 'thrown', 'stunned'].includes(f.state)) {
+        f.shrugPts -= 1; f.shrugIdle = 0; f.inv = 0.22; f.state = 'shrug'; f.t = 0; f.vx = f.vy = 0; f.atk = null; if (f.token) releaseToken(f, 0.2);
+        popWord(f.x, f.y, 140, f.shrugPts ? 'SHRUG.' : '...', false); sfx('thud'); return nlOwn(f, dt);
+      }
+      return false;
+    }
+    case 'leathers': {
+      // LEATHERS: a bike lock on a long, slow arc that floors you; quick jabs up close. Drop him and it's yours.
+      if (f.hp <= 0 && !f.lockDropped && (f.state === 'down' || f.state === 'dead')) { f.lockDropped = true; if (WEAPONS.lock) dropItemWeapon('lock', f.x, f.y); }
+      if (f.state === 'lockWind') { f.vx = f.vy = 0; if (f.t > 0.5) { f.state = 'lockSwing'; f.t = 0; f.vx = f.face * 120; nlStrike(f, 116, 13, true, 340, 0.24); } return nlOwn(f, dt); }
+      if (f.state === 'lockSwing') { friction(f, dt, 0.01); if (f.t > 0.42) { f.atk = null; f.state = 'recover'; f.t = 0; } return nlOwn(f, dt); }
+      if (nlFree(f) && dx > 80 && dx < 160 && dy < 24 && playerTargetable() && nlSpecialOk() && chance(dt * 2)) { nlStartSpecial(f, 'lockWind'); if (chance(0.3)) say(f, pick(['Come here.', 'Clunk.']), 1, true); return nlOwn(f, dt); }
+      return false;
+    }
+    case 'shades': {
+      // SHADES: crouches, his landing spot shows on the floor, then the body splash. Step off the mark.
+      if (f.state === 'splashWind') { f.vx = f.vy = 0; if (f.t > 0.55) { f.state = 'splash'; f.t = 0; const air = 2 * 640 / GRAV; f.vz = 640; f.z = 1; f.vx = (f.tx - f.x) / air; f.vy = (f.ty - f.y) / air; f.inv = 0.4; sfx('throw'); } return nlOwn(f, dt); }
+      if (f.state === 'splash') {
+        if (f.t > 0.1 && f.z <= 0) {
+          f.vx = f.vy = 0; f.state = 'splashed'; f.t = 0; addShake(9); sfx('heavy'); dust(f.x, f.y, 10, 70); f.mark = null;
+          for (const q of (NET.on ? PL : [player])) if (canBeHit(q) && q.z < 30 && Math.abs(q.x - f.x) < 76 && Math.abs(q.y - f.y) < 34) { applyHit(f, q, { dmg: 16, kd: true, kb: 300, hs: 0.1 }, Math.sign(q.x - f.x) || 1); popWord(q.x, q.y, 160, 'SQUASHED!', true); }
+        }
+        return nlOwn(f, dt, []);
+      }
+      if (f.state === 'splashed') { f.vx = f.vy = 0; if (f.t > 0.8) { f.state = 'recover'; f.t = 0; } return nlOwn(f, dt); }
+      if (nlFree(f) && dx > 120 && dx < 340 && playerTargetable() && nlSpecialOk() && chance(dt * 0.9)) { nlStartSpecial(f, 'splashWind'); f.tx = clampX(p.x); f.ty = p.y; f.mark = { x: f.tx, y: f.ty }; say(f, pick(['Incoming.', 'Big man coming through.']), 1.2, true); return nlOwn(f, dt); }
+      return false;
+    }
+    case 'denim': {
+      // DENIM: never still. A flying kick from across the screen, or a low slide you have to jump.
+      if (f.state === 'flyWind') { f.vx = f.vy = 0; if (f.t > 0.34) { f.state = 'flykick'; f.t = 0; f.vz = 420; f.z = 1; f.vx = f.face * clamp((Math.abs(p.x - f.x) - 30) / (2 * 420 / GRAV), 300, 900); f.atkT = 0; f.atk = { t0: 0.05, t1: 0.5, reach: [0, 62], depth: 22, dmg: d.dmg + 4, kd: true, kb: 300, hs: 0.07, hit: new Set(), zMax: 140 }; sfx('swing'); } return nlOwn(f, dt); }
+      if (f.state === 'flykick') { if ((f.t > 0.1 && f.z <= 0) || nlHits(f)) { f.atk = null; f.state = 'recover'; f.t = 0; f.vx *= 0.2; } return nlOwn(f, dt); }
+      if (f.state === 'slideWind') { f.vx = f.vy = 0; if (f.t > 0.3) { f.state = 'slide'; f.t = 0; f.vx = f.face * 480; f.atkT = 0; f.atk = { t0: 0, t1: 0.45, reach: [-6, 54], depth: 20, dmg: d.dmg, kd: true, kb: 200, hs: 0.06, hit: new Set(), zMax: 16 }; sfx('swing'); dust(f.x, f.y, 3, 30); } return nlOwn(f, dt); }
+      if (f.state === 'slide') { if (chance(0.5)) dust(f.x - f.face * 16, f.y, 1, 16); if (f.t > 0.45 || nlHits(f)) { f.atk = null; f.state = 'recover'; f.t = 0; f.vx *= 0.2; } return nlOwn(f, dt); }
+      if (nlFree(f) && dy < 20 && playerTargetable() && nlSpecialOk()) {
+        if (dx > 180 && dx < 380 && chance(dt * 1.6)) { nlStartSpecial(f, 'flyWind'); return nlOwn(f, dt); }
+        if (dx > 120 && dx < 260 && chance(dt * 1.2)) { nlStartSpecial(f, 'slideWind'); return nlOwn(f, dt); }
+      }
+      // and he won't stand in one place
+      if (f.state === 'hover' && chance(dt * 0.8)) { f.retarget = 0; }
+      return false;
+    }
+    case 'shellsuit': {
+      // SHELL SUIT: shakes the can and sprays it in your face (look away, or get out of line); lobs it from range
+      if (f.state === 'sprayWind') { f.vx = f.vy = 0; if (f.t > 0.6) { f.state = 'spray'; f.t = 0; sfx('hiss'); } return nlOwn(f, dt); }
+      if (f.state === 'spray') {
+        f.vx = f.vy = 0;
+        if (!f.sprayed && f.t > 0.08) {
+          f.sprayed = true;
+          const ahead = (p.x - f.x) * f.face, looking = p.face === -f.face;
+          if (ahead > 0 && ahead < 150 && dy < 30 && looking && pHittable(40) && !p.rage) { holdPlayer(f); f.blinded = 1.1; popWord(p.x, p.y, 170, 'LAGERED!', true); }
+          else popWord(p.x, p.y, 150, ahead > 0 && ahead < 150 && dy < 30 ? 'LOOKED AWAY!' : 'MISSED!', false);
+        }
+        if (f.blinded > 0) { f.blinded -= dt; if (f.blinded <= 0 && p.state === 'netted' && p.heldBy === f) freePlayer(); }
+        if (f.t > 0.55 && !(f.blinded > 0)) { f.state = 'recover'; f.t = 0; f.sprayed = false; }
+        return nlOwn(f, dt);
+      }
+      if (f.state === 'throwWind') { f.vx = f.vy = 0; if (f.t > 0.5) { f.state = 'throwing'; f.t = 0; fireShot(f); } return nlOwn(f, dt); }
+      if (f.state === 'throwing') { if (f.t > 0.35) { f.state = 'hover'; f.t = 0; f.cool = 0.8; } return nlOwn(f, dt); }
+      if (f.state === 'hurt' || f.state === 'down') { f.blinded = 0; nlHeldFree(f); }
+      if (nlFree(f) && dy < 26 && playerTargetable() && nlSpecialOk()) {
+        if (dx > 60 && dx < 140 && chance(dt * 1.3)) { nlStartSpecial(f, 'sprayWind'); say(f, pick(['Shaken, not stirred!', 'Have a drink!']), 1.2, true); return nlOwn(f, dt); }
+        if (dx > 220 && dx < 440 && !(f.throwCool > 0) && chance(dt * 1.0)) { f.throwCool = rand(4, 6); nlStartSpecial(f, 'throwWind'); return nlOwn(f, dt); }
+      }
+      f.throwCool = (f.throwCool || 2) - dt;
+      return false;
+    }
+    case 'tuba': {
+      // TUBA LAD: a huge breath, then a note that blows everyone in front of him back across the floor, his own lot included
+      if (f.state === 'blastWind') { f.vx = f.vy = 0; if (f.t > 0.65) { f.state = 'blast'; f.t = 0; sfx('honk'); addShake(7); popWord(f.x + f.face * 60, f.y, 170, 'PARP!', true); f.parp = 0;
+          for (const e of (NET.on ? PL : [player]).concat(foes.filter(o => o !== f && !o.boss && canBeHit(o)))) {
+            const ahead = (e.x - f.x) * f.face; if (ahead <= 0 || ahead > 380 || Math.abs(e.y - f.y) > 60 || e.z > 40) continue;
+            const mine = e === player || PL.includes(e);
+            if (mine && !pHittable(40)) continue;
+            if (ahead < 150 || !mine) { knockDown(e, f.face, 420); if (mine) popWord(e.x, e.y, 150, 'BLOWN AWAY!', false); }
+            else e.vx += f.face * 520;
+          } }
+        return nlOwn(f, dt); }
+      if (f.state === 'blast') { f.parp += dt; if (f.t > 0.7) { f.state = 'recover'; f.t = 0; } return nlOwn(f, dt); }
+      if (nlFree(f) && dx < 300 && dy < 40 && playerTargetable() && nlSpecialOk() && !(f.blastCool > 0) && chance(dt * 1.0)) { f.blastCool = rand(5, 7); nlStartSpecial(f, 'blastWind'); say(f, 'Hold on...', 1, true); return nlOwn(f, dt); }
+      f.blastCool = (f.blastCool || 2.5) - dt;
+      return false;
+    }
     case 'groom': {
       // GROOMSMAN: starts the chant and the whole lot of them speed up; drop him first
       if (f.state === 'rallyWind') {
@@ -2401,7 +2505,7 @@ function nlStyleTick(dt) {
   if (S.nlGangT > 0) S.nlGangT -= dt;
   S.t0 = (S.t0 || 0) + dt;
 }
-for (const k of ['city', 'itgirl', 'burb', 'hoops', 'snood', 'puffer', 'hood', 'stag', 'groom']) FOES[k].extra = (f, dt) => nlStyle(f, dt);
+for (const k of ['city', 'itgirl', 'burb', 'hoops', 'snood', 'puffer', 'hood', 'stag', 'groom', 'noface', 'leathers', 'shades', 'denim', 'shellsuit', 'tuba']) FOES[k].extra = (f, dt) => nlStyle(f, dt);
 // the smoking-area crew keep their own tricks and join in the group play
 for (const k of ['grappler', 'dipper', 'lookout']) { const own = FOES[k].extra; FOES[k].extra = (f, dt) => nlStyle(f, dt) || own(f, dt); }
 
@@ -2752,6 +2856,12 @@ function nlDrawFore() {
     // a dot-matrix scroll if it's long
     pxText(a.text, W / 2, y + 15, 12, '#ff9a1a');
     ctx.restore();
+  }
+  // Shades' landing spot, the lager spray and the tuba's note
+  for (const f of foes) {
+    if (f.kind === 'shades' && f.mark && (f.state === 'splashWind' || f.state === 'splash')) { const sx = f.mark.x - cam.x, k = 0.6 + 0.4 * Math.sin(time * 18); ctx.save(); ctx.globalAlpha = 0.5; ctx.fillStyle = '#000'; ctx.beginPath(); ctx.ellipse(sx, f.mark.y, 70, 22, 0, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = k; ctx.strokeStyle = '#ff3b2f'; ctx.lineWidth = 4; ctx.beginPath(); ctx.ellipse(sx, f.mark.y, 70, 22, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); }
+    if (f.kind === 'shellsuit' && f.state === 'spray' && f.t < 0.5) { const img = NLX.img('fx_spray'); if (img) { const sx = f.x - cam.x + f.face * 70; ctx.save(); ctx.imageSmoothingEnabled = false; ctx.globalAlpha = 1 - f.t * 1.6; ctx.translate(nlSnap(sx), nlSnap(f.y - 80)); ctx.scale(f.face, 1); ctx.drawImage(img, -img.width, -img.height, img.width * 2, img.height * 2); ctx.restore(); } }
+    if (f.kind === 'tuba' && f.state === 'blast') { const img = NLX.img('fx_parp'); if (img) for (let i = 0; i < 3; i++) { const t = f.t - i * 0.12; if (t < 0 || t > 0.5) continue; const sx = f.x - cam.x + f.face * (50 + t * 560); ctx.save(); ctx.imageSmoothingEnabled = false; ctx.globalAlpha = 1 - t * 2; ctx.translate(nlSnap(sx), nlSnap(f.y - 70)); ctx.scale(f.face * (1 + t * 2), 1 + t * 2); ctx.drawImage(img, -img.width / 2, -img.height / 2, img.width, img.height); ctx.restore(); } }
   }
   // the tell: a "!" over anyone winding up a big move
   for (const f of foes) if (NL_TELL.has(f.state) && !f.boss) { const sx = f.x - cam.x; if (sx > -40 && sx < W + 40) textOut('!', sx, f.y - f.z - 150, '34px ' + DISPLAY, '#ffd23f', OUT, 6); }
@@ -5764,6 +5874,12 @@ const ladSheets = {};
 // Ramsden's big lad is the same heavy as the Big Un
 const SPRITE_ALIAS = { biglad: 'chunk', doorman: 'bouncer', rider: 'clubm', biker: 'clubm' };
 // NL alias
+SPRITE_ALIAS.noface = 'hoodie'; FOE_FRAMES.noface = FOE_FRAMES['hoodie'] || FOE_FRAMES.townie;
+SPRITE_ALIAS.leathers = 'clubm'; FOE_FRAMES.leathers = FOE_FRAMES['clubm'] || FOE_FRAMES.townie;
+SPRITE_ALIAS.shades = 'chunk'; FOE_FRAMES.shades = FOE_FRAMES['chunk'] || FOE_FRAMES.townie;
+SPRITE_ALIAS.denim = 'hoodie'; FOE_FRAMES.denim = FOE_FRAMES['hoodie'] || FOE_FRAMES.townie;
+SPRITE_ALIAS.shellsuit = 'tracksuit'; FOE_FRAMES.shellsuit = FOE_FRAMES['tracksuit'] || FOE_FRAMES.townie;
+SPRITE_ALIAS.tuba = 'chunk'; FOE_FRAMES.tuba = FOE_FRAMES['chunk'] || FOE_FRAMES.townie;
 // NL alias end
 function ladSprite(id) {
   if (SPRITE_ALIAS[id]) return ladSprite(SPRITE_ALIAS[id]);
@@ -6599,6 +6715,7 @@ const WSPR = {
   guinness: { grip: [19, 3], ang: 2.39 }, rum: { grip: [21, 3], ang: 2.39 }, cue: { grip: [10, 2], ang: 0 }, lam: { grip: [3, 10], ang: 0 },
   ball: { grip: [0, 0], ang: 0, round: true },
   pole: { grip: [4, 5], ang: 0 },
+  lock: { grip: [4, 6], ang: 0 },
   aerial: { grip: [1, 15], ang: -0.31 },
   helmet: { grip: [7, 13], ang: 0, round: true },
 };

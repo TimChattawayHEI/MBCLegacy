@@ -114,6 +114,10 @@ def process(name):
     if name in TOPCUT: px = px[TOPCUT[name]:]
     if name == 'luggage':
         Image.fromarray(px, 'RGBA').save(os.path.join(ROOT, 'web', 'bg', 'props', 'luggage.png'), optimize=True); return True
+    if name == 'w_bikelock':
+        # Leathers' bike lock, the weapon he drops: trimmed to the lock itself
+        im = Image.fromarray(px, 'RGBA'); im = im.crop(im.getbbox())
+        im.save(os.path.join(ROOT, 'web', 'bg', 'weapons', 'lock.png'), optimize=True); return True
     if name == 'seat_pole':
         # the breakable pole on the bus, and the weapon it leaves: the pole and its stop button, laid flat, held by the button
         Image.fromarray(px, 'RGBA').save(os.path.join(ROOT, 'web', 'bg', 'props', 'pole.png'), optimize=True)

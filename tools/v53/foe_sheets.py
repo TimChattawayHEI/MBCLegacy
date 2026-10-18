@@ -36,6 +36,13 @@ KINDS = {
                                                      'hits': {'alarm': 'pull', 'doorOpen': 'pull', 'knee': 'attack2', 'charge': 'charge'}}),
     'jeweller': (STD + ['glint', 'grab'], {'moves': {'attack': {'pre': [4, 6, 7], 'hit': 8, 'post': [7]}}, 'wind': {'whipWind': 'attack', 'glintWind': 'glint', 'grabWind': 'grab'},
                                            'hits': {'whip': 'attack', 'glint': 'glint', 'grabLunge': 'grab', 'grabHold': 'grab'}}),
+    'noface': (STD + ['shrug'], {'hits': {'shrug': 'shrug'}}),
+    'leathers': (STD + ['jab'], {'wind': {'lockWind': 'attack'}, 'hits': {'lockSwing': 'attack'}}),
+    'shades': (STD + ['leap'], {'wind': {'splashWind': 'leap', 'splash': 'leap'}, 'hits': {'splashed': 'leap'},   # frame picks set once the art is in
+                                'moves': {'leap': {'pre': [1, 2, 3, 4, 5], 'hit': 7, 'post': [7]}}}),
+    'denim': (STD + ['flykick', 'slide'], {'wind': {'flyWind': 'flykick', 'slideWind': 'slide'}, 'hits': {'flykick': 'flykick', 'slide': 'slide'}}),
+    'shellsuit': (STD + ['spray', 'throw'], {'wind': {'sprayWind': 'spray', 'throwWind': 'throw'}, 'hits': {'spray': 'spray', 'throwing': 'throw'}}),
+    'tuba': (STD + ['blast'], {'wind': {'blastWind': 'blast'}, 'hits': {'blast': 'blast'}}),
     'commuter': (['idle', 'walk'], {'srcmap': {'walk': 'run'}}), 'oldboy': (['idle', 'walk'], {'srcmap': {'walk': 'run'}}),
     'smiler': (['idle', 'walk', 'throw'], {'srcmap': {'walk': 'idle'}, 'hits': {'throw': 'throw'}}),
 }
