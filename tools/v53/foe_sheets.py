@@ -23,7 +23,7 @@ KINDS = {
     'burb': (STD, {'wind': {'flurryWind': 'attack'}, 'hits': {'flurry': 'attack'}}),
     'hoops': (STD + ['pull'], {'wind': {'grabWind': 'pull'}, 'hits': {'hairpull': 'pull'}}),
     'snood': (STD, {'wind': {'counterWind': 'attack', 'guard': 'attack'}, 'hits': {'counter': 'attack'}}),
-    'puffer': (STD + ['dash'], {'wind': {'dashWind': 'dash'}, 'hits': {'dashing': 'dash'}}),
+    'puffer': (STD + ['dash'], {'speck': 60, 'conn': 4, 'wind': {'dashWind': 'dash'}, 'hits': {'dashing': 'dash'}}),
     'hood': (STD, {}),
     'grappler': (STD + ['hold'], {'hits': {'hug': 'hold'}}),
     'dipper': (STD + ['dodge', 'steal'], {'hits': {'dodge': 'dodge'}}),
@@ -41,7 +41,7 @@ KINDS = {
 }
 
 
-def frames_of(path):
+def frames_of(path, speck=12, conn=8):
     im = np.array(Image.open(path).convert('RGBA'))
     H, Wd = im.shape[:2]
     canvas = None
@@ -56,11 +56,11 @@ def frames_of(path):
             blk = im[r * ch + LAB: r * ch + LAB + cw, c * cw: (c + 1) * cw]
             f = blk[::S, ::S].copy(); key = (f[..., :3] == bg).all(-1)
             if key.all(): continue
-            f[key] = 0; out.append(clean(f))
+            f[key] = 0; out.append(clean(f, speck, conn))
     return out, canvas
 
 
-def clean(f):
+def clean(f, speck=12, conn=8):
     """drop specks: keep the biggest blob and anything of a dozen pixels or more"""
     a = f[..., 3] > 0; h, w = a.shape; lab = np.zeros((h, w), int); n = 0; sizes = {}
     for y in range(h):
@@ -71,13 +71,14 @@ def clean(f):
                     cy, cx = st.pop(); cnt += 1
                     for dy in (-1, 0, 1):
                         for dx in (-1, 0, 1):
+                            if conn == 4 and dy and dx: continue
                             yy, xx = cy + dy, cx + dx
                             if 0 <= yy < h and 0 <= xx < w and a[yy, xx] and not lab[yy, xx]: lab[yy, xx] = n; st.append((yy, xx))
                 sizes[n] = cnt
     if not sizes: return f
     big = max(sizes, key=sizes.get)
     for k, v in sizes.items():
-        if k != big and v < 12: f[lab == k] = 0
+        if k != big and v < speck: f[lab == k] = 0
     return f
 
 
@@ -101,7 +102,7 @@ def build(key):
             p = os.path.join(d, 'attack.png' if r not in ('idle', 'walk', 'hurt', 'knockdown') else 'idle.png')
             if not os.path.exists(p): p = os.path.join(d, 'idle.png')
         if not os.path.exists(p): return None
-        loaded[r] = frames_of(p)
+        loaded[r] = frames_of(p, opts.get('speck', 12), opts.get('conn', 8))
     canvas = max(c for _, c in loaded.values()); cell = canvas + 4 + (canvas + 4) % 2
     ref = bbox(loaded['idle'][0][0]); refc = loaded['idle'][1]
     ncol = max(len(f) for f, _ in loaded.values())
