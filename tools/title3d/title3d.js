@@ -14,12 +14,14 @@ const T3 = (() => {
   const MID = (ORDER.length - 1) / 2;
   const BOSS = { frequency: 'The Parkie', soundz: 'Master Control', airport: 'No boss. Make the taxi rank.', road: 'No boss. Wreck the Espace.',
     divebar: 'Il Carabiniere, then I Fratelli', beach: 'Don Vito', club: 'Big Tony and Little Nicky', arrival: 'The Far Bank (two of them)',
-    naval: 'No boss. Survive the night.', social: 'Nozzer, then Denise', pegnine: 'Big Gary', ramsden: 'Big Gaz, then Lady Addict' };
-  const iE = ROUTE.indexOf('airport'), iC = ROUTE.indexOf('arrival');
+    naval: 'No boss. Survive the night.', social: 'Nozzer, then Denise', pegnine: 'Big Gary', ramsden: 'Big Gaz, then Lady Addict',
+    nl_station: 'The Ticket Inspector', nl_train: 'Lewisham Lenny', nl_cx: 'No boss. Make the barriers.', nl_alley: 'The Jeweller', nl_bus: 'No boss. Hold the top deck.' };
+  const iE = ROUTE.indexOf('airport'), iN = ROUTE.indexOf('nl_station'), iC = ROUTE.indexOf('arrival');
   // each chapter tints the street while you browse it: world, sky, fog and lamp light
   const CHAPS = [
     { id: '1999', name: '1999', keys: ROUTE.slice(0, iE), mood: { world: [1, 1, 1], sky: [1, 1, 1], fog: 0x160b70, light: [1, 1, 1] } },
-    { id: 'elba', name: 'ELBA 2002', keys: ROUTE.slice(iE, iC), mood: { world: [1.22, 0.98, 0.82], sky: [1.18, 0.9, 0.72], fog: 0x34115e, light: [1.1, 1, 0.85] } },
+    { id: 'elba', name: 'ELBA 2002', keys: ROUTE.slice(iE, iN), mood: { world: [1.22, 0.98, 0.82], sky: [1.18, 0.9, 0.72], fog: 0x34115e, light: [1.1, 1, 0.85] } },
+    { id: 'nightlife', name: 'NIGHTLIFE 2006', keys: ROUTE.slice(iN, iC), mood: { world: [0.82, 0.86, 1.18], sky: [0.7, 0.78, 1.25], fog: 0x0a0a3a, light: [1.15, 0.85, 1.05] } },
     { id: 'carpdiem', name: 'CARP DIEM', keys: ROUTE.slice(iC), mood: { world: [0.86, 1.08, 1.02], sky: [0.78, 1.04, 1.12], fog: 0x0f2c55, light: [0.85, 1.05, 1] } },
     { id: 'ramsden', name: 'RAMSDEN', keys: ['ramsden'], hidden: true, mood: { world: [1.3, 0.68, 0.62], sky: [1.35, 0.58, 0.55], fog: 0x3a0620, light: [1.3, 0.55, 0.4] } },
   ];
