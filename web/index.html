@@ -4230,21 +4230,31 @@ function drawBossAir() {
     if (warn) textOut('!', sx, sy - 165 * (b.scale || 1), '30px ' + DISPLAY, '#ffd23f', OUT, 5);
     if (b.fish && /^(gulpWind|spitWind|spinWind)$/.test(b.state)) textOut('!', sx, sy - 170, '40px ' + DISPLAY, '#ffd23f', OUT, 6);
     if (b.kind === 'parkie' && b.state === 'snatch') {
-      const reach = Math.min(1, b.t / 0.12) * 250; ctx.fillStyle = OUT; ctx.fillRect(Math.round(Math.min(sx, sx + b.face * reach) / 2) * 2, Math.round((sy - 86) / 2) * 2, Math.round(reach / 2) * 2, 6);
+      const reach = Math.min(1, b.t / 0.12) * 250, pk = bgImg('fx/picker');
+      if (pk) {   // handle at his hand, jaws at the end, the pole stretched between (Version 52)
+        const H2 = pk.height * 2, y0 = Math.round((sy - 86 - pk.height) / 2) * 2, hw = 12, jw = 16, pole = Math.max(0, reach - hw - jw);
+        ctx.save(); ctx.imageSmoothingEnabled = false; ctx.translate(Math.round(sx / 2) * 2, y0); ctx.scale(b.face, 1);
+        ctx.drawImage(pk, 0, 0, 6, pk.height, 0, 0, hw, H2);
+        ctx.drawImage(pk, 6, 0, pk.width - 14, pk.height, hw, 0, pole, H2);
+        ctx.drawImage(pk, pk.width - 8, 0, 8, pk.height, hw + pole, 0, jw, H2);
+        ctx.restore();
+      } else { ctx.fillStyle = OUT; ctx.fillRect(Math.round(Math.min(sx, sx + b.face * reach) / 2) * 2, Math.round((sy - 86) / 2) * 2, Math.round(reach / 2) * 2, 6);
       ctx.fillStyle = '#c9a227'; ctx.fillRect(Math.round(Math.min(sx, sx + b.face * reach) / 2) * 2, Math.round((sy - 84) / 2) * 2, Math.round(reach / 2) * 2, 2);
-      ctx.fillStyle = '#9aa1a7'; ctx.fillRect(Math.round((sx + b.face * reach) / 2) * 2 - 6, Math.round((sy - 92) / 2) * 2, 12, 14);
+      ctx.fillStyle = '#9aa1a7'; ctx.fillRect(Math.round((sx + b.face * reach) / 2) * 2 - 6, Math.round((sy - 92) / 2) * 2, 12, 14); }
     }
     if (b.kind === 'mc' && b.state === 'onAir') { pxPanel(sx - 52, sy - 214, 104, 30, '#2a1010'); pxText('ON AIR', sx, sy - 199, 16, Math.floor(time * 3) % 2 ? '#ff3a2a' : '#8a1a14'); }
     if (b.fbk && (b.state === 'cast' || b.state === 'reelIn')) {
       const hx = sx + b.face * 24, hy = sy - 110, tx = sx + b.face * (b.tip || 0), ty = b.state === 'reelIn' ? player.y - player.z - 70 : b.y - 60;
       ctx.strokeStyle = 'rgba(240,240,240,0.85)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(hx, hy); ctx.quadraticCurveTo((hx + tx) / 2, Math.min(hy, ty) - 30, tx, ty); ctx.stroke();
-      ctx.fillStyle = '#ff5a4a'; ctx.fillRect(Math.round(tx / 2) * 2 - 4, Math.round(ty / 2) * 2 - 4, 8, 8);
+      { const fl = bgImg('fx/float'); if (fl) drawSpr(fl, tx, ty, 0, 1); else { ctx.fillStyle = '#ff5a4a'; ctx.fillRect(Math.round(tx / 2) * 2 - 4, Math.round(ty / 2) * 2 - 4, 8, 8); } }
     }
     for (const s of b.fx || []) {
       if (s.k !== 'spod' && s.k !== 'boilie') continue;
       const k = clamp(s.t / s.fall, 0, 1); if (s.t < 0) continue;
       const x = lerp(s.sx, s.x, k) - cam.x, y = lerp(s.sy, s.y, k) - (Math.sin(k * Math.PI) * 260 + (1 - k) * 80);
-      if (s.k === 'spod') { ctx.fillStyle = OUT; ctx.fillRect(Math.round(x / 2) * 2 - 8, Math.round(y / 2) * 2 - 14, 16, 28); ctx.fillStyle = '#e8b830'; ctx.fillRect(Math.round(x / 2) * 2 - 6, Math.round(y / 2) * 2 - 12, 12, 24); ctx.fillStyle = '#b23a32'; ctx.fillRect(Math.round(x / 2) * 2 - 6, Math.round(y / 2) * 2 - 12, 12, 6); }
+      const bimg = bgImg('fx/' + s.k);
+      if (bimg) drawSpr(bimg, x, y, s.k === 'spod' ? (k < 0.5 ? 0 : Math.PI) : Math.round(s.t * 12) / 2, 1);   // the spod tips over at the top
+      else if (s.k === 'spod') { ctx.fillStyle = OUT; ctx.fillRect(Math.round(x / 2) * 2 - 8, Math.round(y / 2) * 2 - 14, 16, 28); ctx.fillStyle = '#e8b830'; ctx.fillRect(Math.round(x / 2) * 2 - 6, Math.round(y / 2) * 2 - 12, 12, 24); ctx.fillStyle = '#b23a32'; ctx.fillRect(Math.round(x / 2) * 2 - 6, Math.round(y / 2) * 2 - 12, 12, 6); }
       else { pxCircle(x, y, 8, OUT); pxCircle(x, y, 6, '#e8d2a0'); }
     }
     if (b.eboss) for (const s of b.fx) {
@@ -4270,6 +4280,17 @@ function drawMower(b) {
 function drawTransmitter(b) {
   const x = Math.round((b.x - cam.x + (b.flash > 0 ? rand(-3, 3) : 0)) / 2) * 2, y = Math.round(b.y / 2) * 2;
   shadow(x, y, 34, 0);
+  { const img = bgImg('fx/transmitter');   // the PixelLab box (Version 52): the bar on its display is what's left of it
+    if (img) {
+      const L = x - img.width, T = y - img.height * 2 + 2;
+      ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(img, L, T, img.width * 2, img.height * 2);
+      if (b.flash > 0) { ctx.globalCompositeOperation = 'lighter'; ctx.drawImage(img, L, T, img.width * 2, img.height * 2); }
+      ctx.restore();
+      ctx.fillStyle = '#10261a'; ctx.fillRect(L + 14, T + 114, 38, 14);
+      ctx.fillStyle = '#7fe07a'; ctx.fillRect(L + 16, T + 116, Math.round((34 * b.hp / 7) / 2) * 2, 10);
+      if (Math.floor(time * 4) % 2) { ctx.fillStyle = '#4a1210'; ctx.fillRect(L + 20, T + 80, 8, 6); }
+      return;
+    } }
   ctx.fillStyle = OUT; ctx.fillRect(x - 34, y - 70, 68, 72); ctx.fillStyle = b.flash > 0 ? '#ffffff' : '#4a4f58'; ctx.fillRect(x - 30, y - 66, 60, 64);
   ctx.fillStyle = '#2a2e34'; ctx.fillRect(x - 24, y - 58, 48, 22); ctx.fillStyle = '#7fe07a'; ctx.fillRect(x - 20, y - 54, Math.round((40 * b.hp / 7) / 2) * 2, 14);
   pxText('104.1', x, y - 24, 12, '#efe6d2');
@@ -4545,6 +4566,13 @@ function drawBreakable(b) {
 }
 function drawFlame(x, y, sz, seed) {
   if (sz >= 12 && drawFireSprite(x, y + 2, seed)) return;
+  { const m = FX.fire, img = fxImg('fire');   // small ones too (Version 52): the same flame, scaled to the size asked for
+    if (m && img) {
+      const f = (Math.floor(time * m.fps) + Math.abs(Math.floor(seed * 7))) % m.n, k = sz / 22;
+      ctx.save(); ctx.imageSmoothingEnabled = false; ctx.translate(Math.round(x / 2) * 2, Math.round(y / 2) * 2);
+      ctx.drawImage(img, (f % m.cols) * m.fw, ((f / m.cols) | 0) * m.fh, m.fw, m.fh, -m.ax * 2 * k, -m.ay * 2 * k, m.fw * 2 * k, m.fh * 2 * k);
+      ctx.restore(); return;
+    } }
   // small flames (Big Gaz's head) as stepped tongues on the pixel grid (Version 44)
   for (let i = 0; i < 3; i++) {
     const h = sz * (1.4 + Math.sin(time * 9 + seed + i * 2) * 0.35), w = sz * (0.7 - i * 0.15), tip = Math.sin(time * 7 + seed) * 3;
@@ -4977,6 +5005,7 @@ function pxCircle(cx, cy, r, col) {
   for (let y = -r; y <= r; y += 2) { const w = Math.round(Math.sqrt(Math.max(0, r * r - y * y)) / 2) * 2; ctx.fillRect(Math.round((cx - w) / 2) * 2, Math.round((cy + y) / 2) * 2, w * 2, 2); }
 }
 function pxCloud(x, y, s) {
+  { const cl = bgImg('fx/cloud'); if (cl) { const w = Math.round(cl.width * 2 * s / 2) * 2, h = Math.round(cl.height * 2 * s / 2) * 2; ctx.save(); ctx.imageSmoothingEnabled = false; ctx.globalAlpha *= 0.92; ctx.drawImage(cl, x - w / 2, y - h + 10, w, h); ctx.restore(); return; } }
   ctx.fillStyle = 'rgba(255,255,255,0.85)';
   ctx.fillRect(x - 60 * s, y - 8, 120 * s, 16); ctx.fillRect(x - 40 * s, y - 18, 70 * s, 12); ctx.fillRect(x - 10 * s, y - 26, 40 * s, 10);
   ctx.fillStyle = 'rgba(210,225,235,0.8)'; ctx.fillRect(x - 56 * s, y + 6, 112 * s, 4);
@@ -5419,7 +5448,8 @@ function bgOrpingtonPixel() {
   const cx = cam.x, top = FT - 184;
   pxSky(['#0a0d22', '#141434', '#1f1a40', '#2a1f45', '#3e2647', '#56304a', '#6a3a4a'], 0, FT);
   for (const s of stars) if (s.y < 150) { ctx.fillStyle = 'rgba(255,255,240,0.7)'; ctx.fillRect(Math.round(s.x / 2) * 2, Math.round(s.y / 2) * 2, 2, 2); }
-  ctx.fillStyle = '#efe6c8'; circle(820, 60, 18); ctx.fill(); ctx.fillStyle = '#d8ccaa'; ctx.fillRect(812, 52, 6, 4); ctx.fillRect(824, 64, 4, 4);
+  { const mo = bgImg('fx/moon'); if (mo) { ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(mo, 820 - mo.width, 60 - mo.height, mo.width * 2, mo.height * 2); ctx.restore(); }
+    else { ctx.fillStyle = '#efe6c8'; circle(820, 60, 18); ctx.fill(); ctx.fillStyle = '#d8ccaa'; ctx.fillRect(812, 52, 6, 4); ctx.fillRect(824, 64, 4, 4); } }
   // distant rooftops, slow parallax
   for (let i = 0; i < 12; i++) {
     const x = Math.round((((i * 130 - cx * 0.3) % (W + 260) + W + 260) % (W + 260) - 130) / 2) * 2, h = Math.round((70 + hash(i) * 50) / 2) * 2;
@@ -5527,6 +5557,12 @@ function drawFireworks(n, inten) {
     const col = ['255,90,120', '255,210,90', '120,220,255', '170,255,140', '230,140,255'][seed % 5];
     if (ph < 0.15) { ctx.fillStyle = 'rgba(255,240,200,0.8)'; ctx.fillRect(x - 1, y + 80 * (1 - ph / 0.15), 2, 10); continue; }
     const al = inten * Math.min(1, (1 - ph) * 1.6);
+    { const fw = bgImg('fx/firework');   // the PixelLab burst (Version 52), grown and faded, a different colour each time
+      if (fw) {
+        const k = Math.min(1, 0.35 + ph * 1.1), w = Math.round(fw.width * 2 * k / 2) * 2, hh = Math.round(fw.height * 2 * k / 2) * 2, dy = ph * ph * 30;
+        ctx.save(); ctx.imageSmoothingEnabled = false; ctx.globalAlpha = al; ctx.filter = 'hue-rotate(' + [0, 60, 180, 100, 270][seed % 5] + 'deg)';
+        ctx.drawImage(fw, Math.round((x - w / 2) / 2) * 2, Math.round((y + dy - hh / 2) / 2) * 2, w, hh); ctx.restore(); continue;
+      } }
     if (ph < 0.3) { const g = ctx.createRadialGradient(x, y, 0, x, y, r * 1.4 + 10); g.addColorStop(0, 'rgba(' + col + ',' + (al * 0.35).toFixed(3) + ')'); g.addColorStop(1, 'rgba(' + col + ',0)'); ctx.fillStyle = g; ctx.fillRect(x - r * 1.5 - 10, y - r * 1.5 - 10, r * 3 + 20, r * 3 + 20); }
     ctx.fillStyle = 'rgba(' + col + ',' + al.toFixed(3) + ')';
     for (let k = 0; k < 20; k++) { const a = k / 20 * Math.PI * 2, dy = ph * ph * 30; ctx.fillRect(x + Math.cos(a) * r - 2.5, y + Math.sin(a) * r + dy - 2.5, 5, 5); ctx.fillRect(x + Math.cos(a) * r * 0.7 - 1.5, y + Math.sin(a) * r * 0.7 + dy - 1.5, 3, 3); }
@@ -5732,6 +5768,12 @@ function drawMopedPixel(h) {
 // Big Gary's splash waves, as stepped pixel blocks
 function drawWavePixel(h) {
   const x = Math.round((h.x - cam.x) / 2) * 2, y = Math.round(h.y / 2) * 2, d = Math.sign(h.vx) || 1;
+  { const img = bgImg(h.kind === 'wave' ? 'fx/wave' : 'fx/firewave');   // PixelLab waves (Version 52), a little bob as they roll
+    if (img) {
+      const bob = Math.round(Math.sin(time * 14 + h.x * 0.05) * 1) * 2;
+      ctx.save(); ctx.imageSmoothingEnabled = false; ctx.translate(x, y + bob); ctx.scale(d, 1);
+      ctx.drawImage(img, -img.width, -img.height * 2 + 4, img.width * 2, img.height * 2); ctx.restore(); return true;
+    } }
   const body = h.kind === 'wave' ? '#96cde6' : '#f07828', top = h.kind === 'wave' ? '#f4fbff' : '#ffd04a';
   const cols = [[-34, 4], [-28, 8], [-22, 12], [-16, 18], [-10, 24], [-4, 30], [2, 36], [8, 40], [14, 38], [20, 28]];
   for (const [cx, hh] of cols) { const xx = x + cx * d - (d < 0 ? 6 : 0); ctx.fillStyle = OUT; ctx.fillRect(xx - 1, y - hh - 2, 8, hh + 2); ctx.fillStyle = body; ctx.fillRect(xx, y - hh, 6, hh); ctx.fillStyle = top; ctx.fillRect(xx, y - hh, 6, 2); }
@@ -5879,7 +5921,7 @@ function newRun(ci, start) {
   const go = () => openChat(CHATS[STAGES[first].intro], () => startStage(first), null, STAGES[first].era);
   if (first === 'frequency') openChat(CHATS.prologue, go, null, null); else go();
 }
-const ASSET_BG = ["cutin/mortar", "cutin/pit", "elba/arch", "elba/barwall", "elba/car", "elba/carab_back", "elba/carab_nw", "elba/carab_w", "elba/carousel", "elba/carts", "elba/clubext", "elba/clubrail", "elba/clubwall", "elba/cypress", "elba/djbooth", "elba/gelato", "elba/headland", "elba/hills", "elba/lounger", "elba/mpv", "elba/palm", "elba/plane", "elba/stool", "elba/stuart", "elba/table", "elba/taxi", "elba/termext", "elba/terminal", "elba/tower", "elba/umbrella", "elba/vespa", "elba/vespa_rider", "fish/gary", "fish/gaz", "fishery/bivvy", "fishery/car_beige", "fishery/car_blue", "fishery/car_red", "fishery/goose", "fishery/smoker", "fishery/treeline", "fx/bush", "fx/koala", "naval/bbq", "naval/raft", "naval/swan", "orpington/bench", "orpington/bookies", "orpington/chippy", "orpington/goal", "orpington/kebab", "orpington/lamp", "orpington/phonebox", "orpington/phones", "orpington/pub", "orpington/tree", "orpington/underpass", "orpington/video", "portraits/byron", "portraits/denise", "portraits/jo", "portraits/kelly", "portraits/marc", "portraits/nozzer", "portraits/pearcy", "portraits/sam", "portraits/seb", "portraits/thet", "portraits/tim", "props/bin", "props/coolbox", "props/keg", "props/mower", "ramsden/moped", "ramsden/shelter", "ramsden/tower", "ramsden/wreck", "road/ape", "road/barrier", "road/fiat", "road/goat", "road/mpv_d1", "road/mpv_d2", "road/mpv_d3", "road/mpv_d4", "set/board", "set/bollard", "set/bucket", "set/chair", "set/cork", "set/cork_m", "set/cork_w", "set/dartboard", "set/fishcase", "set/gate", "set/peg", "set/plaque", "set/raffle", "set/rods", "set/smoker", "set/trolley", "set/window", "shots/bottle", "shots/case", "shots/cd", "shots/cream", "shots/dart", "shots/knife", "shots/letter", "shots/mortar", "shots/phone", "shots/pills", "shots/sroll", "shots/vinyl", "social/bar", "social/fruit", "social/wall", "soundz/corridor", "soundz/decks", "soundz/lift", "soundz/mast", "soundz/skyline", "soundz/vince", "soundz/wallA", "soundz/wallB", "title/street", "weapons/aerial", "weapons/alcopop", "weapons/ball", "weapons/cone", "weapons/cue", "weapons/guinness", "weapons/helmet", "weapons/lam", "weapons/net", "weapons/rum", "weapons/stick"];   // every background image, listed by tools/v44_build.py
+const ASSET_BG = ["cutin/mortar", "cutin/pit", "elba/arch", "elba/barwall", "elba/car", "elba/carab_back", "elba/carab_nw", "elba/carab_w", "elba/carousel", "elba/carts", "elba/clubext", "elba/clubrail", "elba/clubwall", "elba/cypress", "elba/djbooth", "elba/gelato", "elba/headland", "elba/hills", "elba/lounger", "elba/mpv", "elba/palm", "elba/plane", "elba/stool", "elba/stuart", "elba/table", "elba/taxi", "elba/termext", "elba/terminal", "elba/tower", "elba/umbrella", "elba/vespa", "elba/vespa_rider", "fish/gary", "fish/gaz", "fishery/bivvy", "fishery/car_beige", "fishery/car_blue", "fishery/car_red", "fishery/goose", "fishery/smoker", "fishery/treeline", "fx/boilie", "fx/bush", "fx/cloud", "fx/firewave", "fx/firework", "fx/float", "fx/koala", "fx/moon", "fx/picker", "fx/spod", "fx/transmitter", "fx/wave", "naval/bbq", "naval/raft", "naval/swan", "orpington/bench", "orpington/bookies", "orpington/chippy", "orpington/goal", "orpington/kebab", "orpington/lamp", "orpington/phonebox", "orpington/phones", "orpington/pub", "orpington/tree", "orpington/underpass", "orpington/video", "portraits/byron", "portraits/denise", "portraits/jo", "portraits/kelly", "portraits/marc", "portraits/nozzer", "portraits/pearcy", "portraits/sam", "portraits/seb", "portraits/thet", "portraits/tim", "props/bin", "props/coolbox", "props/keg", "props/mower", "ramsden/moped", "ramsden/shelter", "ramsden/tower", "ramsden/wreck", "road/ape", "road/barrier", "road/fiat", "road/goat", "road/mpv_d1", "road/mpv_d2", "road/mpv_d3", "road/mpv_d4", "set/board", "set/bollard", "set/bucket", "set/chair", "set/cork", "set/cork_m", "set/cork_w", "set/dartboard", "set/fishcase", "set/gate", "set/peg", "set/plaque", "set/raffle", "set/rods", "set/smoker", "set/trolley", "set/window", "shots/bottle", "shots/case", "shots/cd", "shots/cream", "shots/dart", "shots/knife", "shots/letter", "shots/mortar", "shots/phone", "shots/pills", "shots/sroll", "shots/vinyl", "social/bar", "social/fruit", "social/wall", "soundz/corridor", "soundz/decks", "soundz/lift", "soundz/mast", "soundz/skyline", "soundz/vince", "soundz/wallA", "soundz/wallB", "title/street", "weapons/aerial", "weapons/alcopop", "weapons/ball", "weapons/cone", "weapons/cue", "weapons/guinness", "weapons/helmet", "weapons/lam", "weapons/net", "weapons/rum", "weapons/stick"];   // every background image, listed by tools/v44_build.py
 // all the background art is fetched just after the title appears, so a stage never draws half loaded (Version 44)
 function preloadArt() { for (const p of ASSET_BG) bgImg(p); }
 setTimeout(preloadArt, 700);

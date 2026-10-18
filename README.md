@@ -23,6 +23,7 @@ Move with the stick (hold it right out to run), HIT to attack (tap it for your c
 - `tools/v49_build.py` (run after `v47_build.py`): boss finishes (freeze, flash, music cut, slow motion and a punch-in on the last boss of a stage), boss intro cards that take the place of the old boss banners, and S to D stage ranks on the points screen, with the best kept per stage (`carpdiem.ranks`) and shown on the 3D stage list.
 - `tools/v50_build.py` (run after `v49_build.py`): Thet, the unlockable eighth lad. His sheet `web/sprites/thet.png` and `tools/v50/thet_meta.json` come from `tools/v50/thet_sheet.py`, which lines up the PixelLab workbench sheets in `tools/v50/src/`. Also edits `tools/title3d/title3d.js` so the 3D select keeps him.
 - `tools/v51_build.py` (run after `v50_build.py`): new hand grip points for the weapons that were redrawn in PixelLab (the PNGs in `web/bg/weapons` and `web/bg/shots` are the PixelLab versions).
+- `tools/v52_build.py` (run after `v51_build.py`): draws the last code-drawn game objects from PixelLab images in `web/bg/fx` (Master Control's transmitter, the Parkie's litter picker, the far bank's spod, boilies and float, Big Gary's and Big Gaz's waves, the moon, clouds and fireworks) and Big Gaz's small head flames from the PixelLab fire effect.
 - `web/vendor/three.module.min.js` is three.js r165 (MIT, see `three.LICENSE`), used by the title screen in the app.
 - `.github/workflows/apk.yml` builds the APK on every push to `main` and publishes it as the latest release.
 
