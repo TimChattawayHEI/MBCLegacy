@@ -171,7 +171,7 @@ s = swap(s, """  cone: { name: 'TRAFFIC CONE',""", """  pole: { name: 'BUS POLE'
   cone: { name: 'TRAFFIC CONE',""", 'pole weapon')
 s = swap(s, """  ball: { grip: [0, 0], ang: 0, round: true },""", """  ball: { grip: [0, 0], ang: 0, round: true },
   pole: { grip: [4, 5], ang: 0 },
-  lock: { grip: [4, 6], ang: 0 },""", 'pole grip')
+  lock: { grip: [3, 8], ang: 0 },""", 'pole grip')
 
 # ---------------------------------------------------------------- sprites: real sheets where they exist, borrowed ones otherwise
 sheets = json.load(open(os.path.join(V53, 'sheets.json'))) if os.path.exists(os.path.join(V53, 'sheets.json')) else {}

@@ -36,13 +36,17 @@ KINDS = {
                                                      'hits': {'alarm': 'pull', 'doorOpen': 'pull', 'knee': 'attack2', 'charge': 'charge'}}),
     'jeweller': (STD + ['glint', 'grab'], {'moves': {'attack': {'pre': [4, 6, 7], 'hit': 8, 'post': [7]}}, 'wind': {'whipWind': 'attack', 'glintWind': 'glint', 'grabWind': 'grab'},
                                            'hits': {'whip': 'attack', 'glint': 'glint', 'grabLunge': 'grab', 'grabHold': 'grab'}}),
-    'noface': (STD + ['shrug'], {'hits': {'shrug': 'shrug'}}),
+    'noface': (STD + ['shrug'], {'moves': {'attack': {'pre': [2, 3, 4], 'hit': 6, 'post': [7]}}, 'hits': {'shrug': 'shrug'}}),
     'leathers': (STD + ['jab'], {'wind': {'lockWind': 'attack'}, 'hits': {'lockSwing': 'attack'}}),
-    'shades': (STD + ['leap'], {'wind': {'splashWind': 'leap', 'splash': 'leap'}, 'hits': {'splashed': 'leap'},   # frame picks set once the art is in
-                                'moves': {'leap': {'pre': [1, 2, 3, 4, 5], 'hit': 7, 'post': [7]}}}),
-    'denim': (STD + ['flykick', 'slide'], {'wind': {'flyWind': 'flykick', 'slideWind': 'slide'}, 'hits': {'flykick': 'flykick', 'slide': 'slide'}}),
-    'shellsuit': (STD + ['spray', 'throw'], {'wind': {'sprayWind': 'spray', 'throwWind': 'throw'}, 'hits': {'spray': 'spray', 'throwing': 'throw'}}),
-    'tuba': (STD + ['blast'], {'wind': {'blastWind': 'blast'}, 'hits': {'blast': 'blast'}}),
+    # 'land' is the leap row again, so the landing can have frame picks of its own
+    'shades': (STD + ['leap', 'land'], {'srcmap': {'land': 'leap'}, 'wind': {'splashWind': 'leap'}, 'hits': {'splash': 'leap', 'splashed': 'land'},
+                                        'moves': {'leap': {'pre': [1, 2], 'hit': 5, 'post': [6]}, 'land': {'pre': [7], 'hit': 8, 'post': [8]}}}),
+    'denim': (STD + ['flykick', 'slide'], {'wind': {'flyWind': 'flykick', 'slideWind': 'slide'}, 'hits': {'flykick': 'flykick', 'slide': 'slide'},
+                                           'moves': {'flykick': {'pre': [1, 2, 3], 'hit': 5, 'post': [7]}, 'slide': {'pre': [1, 2], 'hit': 5, 'post': [8]}}}),
+    'shellsuit': (STD + ['spray', 'throw'], {'wind': {'sprayWind': 'spray', 'throwWind': 'throw'}, 'hits': {'spray': 'spray', 'throwing': 'throw'},
+                                             'moves': {'spray': {'pre': [1, 2, 3, 4, 5], 'hit': 7, 'post': [8]}, 'throw': {'pre': [3, 4, 5, 6], 'hit': 7, 'post': [8]}}}),
+    'tuba': (STD + ['blast'], {'wind': {'blastWind': 'blast'}, 'hits': {'blast': 'blast'},
+                               'moves': {'blast': {'pre': [1, 2, 3, 4], 'hit': 6, 'post': [8]}, 'attack': {'pre': [2, 3, 4], 'hit': 6, 'post': [7]}}}),
     'commuter': (['idle', 'walk'], {'srcmap': {'walk': 'run'}}), 'oldboy': (['idle', 'walk'], {'srcmap': {'walk': 'run'}}),
     'smiler': (['idle', 'walk', 'throw'], {'srcmap': {'walk': 'idle'}, 'hits': {'throw': 'throw'}}),
 }
