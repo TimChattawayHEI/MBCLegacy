@@ -140,3 +140,73 @@ Tim's play-test showed both characters had no legs (the long coat or parka reach
 - **smiler** = Smiler v2 `f54ab650-be80-4bfd-8626-de9f63b5cf80`: grey beard, beanie, hip-length green parka, bedroll pack on his back, brown trousers and boots.
   - idle 6/7: stands and gives a friendly raised-hand wave.
   - throw 8/9: a gentle underarm toss. It's a small motion, and nothing is visible in his hand.
+
+## New enemies (2006 batch 2)
+Six new enemies, made with create_character v3 (side view, 64) and animated facing east. The sheets are in `src/<key>/<anim>.png`, at 2x from the workbench inspect, and the ids are in pixellab_ids.md. Generations used: about 92 (10 base characters, 5 image generations, and 77 for animations including re-rolls).
+
+Checks and process:
+- Every kept frame shows legs and feet on the ground below the jacket (the Grappler/Smiler lesson).
+- Every character stays side-on facing right, except where a frame is called out below.
+- Hurts use pixminimax with the "already thrown back" prompt. Pixminimax painted a red, blood-like spray from the face on every hurt, and each one was erased.
+- Knockdowns use the backwards-fall prompt.
+- Effects that pixminimax drew in sprites (impact stars, sparks, motion arcs, dust, sound ticks, spray bursts) were erased, so the game's fx images are the only effects.
+- Canvas size is 88x88 for all of them except No Face, which is **92x92** (184 px cells on the sheet).
+
+**Base characters**
+- The first takes of No Face, Tuba Lad and Leathers were rejected and remade:
+  - No Face: skin showed round the eyes, so it read as a balaclava rather than a blank mask.
+  - Tuba Lad: the tuba was edge-on in the side view, just a thin strip, and his cap was hidden.
+  - Leathers: stray debris pixels.
+- Denim's hood sits down behind his neck, not up. Everything else about him matches the brief, so I kept him.
+
+**noface** (No Face v2 `124fa208…`): blank glossy black head, chain, camo-stripe parka, black joggers, trainers.
+- idle 6/7, walk 8/9: 1 take each. In walk frames 6-9 his leading hand turns pale.
+- hurt 4/5: the upper body tips back to the left; red spray erased.
+- knockdown 16/17: take 2 kept. Take 1 had a green hit spark and ended crouched facing camera.
+- attack 8/9: wind-up, step in, a wide heavy right swing held at full reach for 3 frames.
+- shrug 6/7: take 2 kept. The shoulders shift and the head tilts over in frames 4-6. It's still understated, but it reads as "didn't flinch". Take 1 only lifted the hands.
+
+**leathers** (Leathers v2 `f3faa323…`): twists, leather jacket with a red sleeve badge, ripped jeans, D-lock in hand.
+- idle 6/7, walk 8/9: 1 take each.
+- hurt 4/5: head snaps back. The red spray shared its colour with the sleeve badge, so the badge was repainted where the clean-up removed it.
+- knockdown 16/17: the lock leaves his hand mid-fall and is back by the end.
+- attack 8/9: take 2 kept. A big backswing behind him, then the lock swings through forward at chest/head height. Neither take gave a true overhead chop; take 1's arc was weaker.
+- jab 6/7: take 2 kept. A short jab in frame 3, back to guard, then a full right cross in frame 7. Take 1 threw only one punch.
+
+**shades** (`a8916c62…`): hood up, gold fur collar, black puffer, shades, distressed jeans, black/gold hi-tops.
+- idle 6/7, walk 8/9, knockdown 16/17: 1 take each.
+- hurt 4/5: head and chest snap back; red spray erased.
+- attack 8/9: take 3 kept (pixminimax). Head down, he drives forward shoulder-first in frames 5-7.
+  - Takes 1-2 (v3) were just a walk-in punch.
+  - Take 3's frames 2-4 turned three-quarters to camera, so I replaced them with side-on poses from the same take: the guard from frame 9, then the crouch from frame 8 twice as the duck-in. White impact ticks erased.
+- leap 8/9 (pixminimax): crouches, jumps clear of the ground in frames 5-7, belly-flops. A light-blue splash is drawn in frames 8-9. I left it in because it is the "splash"; erase it if the game draws its own.
+
+**denim** (`929864a1…`): grey hoodie and jeans, brown hair.
+- idle 6/7, walk 8/9, attack 8/9 (straight punch), knockdown 16/17: 1 take each.
+- hurt 4/5: red spray erased.
+- flykick 8/9: take 3 kept (pixminimax). Two running steps, leaves the ground, flying side kick, lands crouched.
+  - Take 1 faced camera mid-air.
+  - Takes 2 and 3 drew a yellow impact star over the foot. In take 3, frame 5 was replaced with a copy of frame 6 (the full extension) as a held peak, and the sparks in frames 5-7 were erased.
+- slide: **8 frames, not 6** (8/9). Takes 2 and 3 (v3) were head-first dives onto his front that ended crawling. Take 4 was pixminimax, which only does multiples of 4. In it he runs two steps, drops onto his hip and slides feet-first, leaning back on one hand with the leading leg out, then starts to get up. Motion arcs and a dust puff erased.
+
+**shellsuit** (`518fbf7a…`): purple/teal shell suit, cap, lager can.
+- idle 6/7, walk 8/9: 1 take each.
+- hurt 4/5: leans back with the belly pushed out; red spray erased.
+- knockdown 16/17: the jacket falls open to show a white tee.
+- attack 8/9: take 2 kept, a wide slap at face height. The can drops out of view mid-swing. Take 1 drank from the can instead.
+- spray 8/9: take 2 kept (pixminimax). He shakes the can (only modestly up and down), thrusts it out at arm's length and cracks it open with the ring-pull showing. The drawn spray burst in frames 8-9 was erased, so fx_spray is the spray. Take 1 barely shook.
+- throw 8/9: take 2 kept (pixminimax). Swigs with his head tipped back, winds back behind his head and throws overarm; the can flies off to the right. The chest opens towards camera in the wind-up (frames 7-8), and he is side-on again for the release. Take 1 never let go of the can.
+
+**tuba** (Tuba Lad v2 `c37105dd…`): silver tuba coiled round him with the bell over his shoulder, trucker cap, beard, dark jacket with a red chest emblem, shorts, trainers.
+- idle 6/7, walk 8/9, knockdown 16/17: 1 take each.
+- hurt 4/5: take 2 kept. He hunches over the tuba, then rocks back to the left. The prompt now says the tuba stays on him; take 1 lost the tuba and had scribble lines. Red spray erased, and the chest emblem (the same red) repainted pixel by pixel.
+- blast 8/9: take 2 kept (pixminimax). The bell swings to point forward from frame 2, his cheeks puff hugely, he leans in blowing, then relaxes in frame 9.
+  - The tuba jumps from coiled to bell-forward between frames 1 and 2.
+  - Sound ticks off the bell were erased, so fx_parp is the note.
+  - Take 1 barely lifted the tuba, and its puff came from his mouth.
+- attack 8/9: take 2 kept (pixminimax). He heaves the tuba back, swings it through (the bell faces camera mid-arc) and forward bell-first, then back round his body. The tuba is drawn bigger in the swing frames than on his base sprite. Take 1 barely moved.
+
+**Images** (`img/`, transparent)
+- w_bikelock 48x24: a black rubber D-lock with a steel shackle (1 take).
+- fx_spray 64x32: droplets bursting to the right from the left edge. It's more golden than pale.
+- fx_parp 64x64: two generations failed (an audio waveform, then four mismatched blobs), so I drew it by hand with workbench brush strokes: three nested pale-gold ")))" arcs with a dark gold outline.

@@ -610,5 +610,233 @@
    "fist": {}
   },
   "frames": "{attack: {pre: [4, 6, 7], hit: 8, post: [7]}, glint: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, grab: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {whipWind: \"attack\", glintWind: \"glint\", grabWind: \"grab\"}, hits: {whip: \"attack\", glint: \"glint\", grabLunge: \"grab\", grabHold: \"grab\"}, fallFlip: true}"
+ },
+ "noface": {
+  "meta": {
+   "cell": 96,
+   "ax": 47.5,
+   "ay": 80,
+   "h": 64,
+   "rows": {
+    "idle": [
+     0,
+     7
+    ],
+    "walk": [
+     1,
+     9
+    ],
+    "attack": [
+     2,
+     9
+    ],
+    "hurt": [
+     3,
+     5
+    ],
+    "knockdown": [
+     4,
+     17
+    ],
+    "shrug": [
+     5,
+     7
+    ]
+   },
+   "fist": {}
+  },
+  "frames": "{attack: {pre: [2, 3, 4], hit: 6, post: [7]}, shrug: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], hits: {shrug: \"shrug\"}, fallFlip: true}"
+ },
+ "leathers": {
+  "meta": {
+   "cell": 92,
+   "ax": 45.5,
+   "ay": 77,
+   "h": 62,
+   "rows": {
+    "idle": [
+     0,
+     7
+    ],
+    "walk": [
+     1,
+     9
+    ],
+    "attack": [
+     2,
+     9
+    ],
+    "hurt": [
+     3,
+     5
+    ],
+    "knockdown": [
+     4,
+     17
+    ],
+    "jab": [
+     5,
+     7
+    ]
+   },
+   "fist": {}
+  },
+  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, jab: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {lockWind: \"attack\"}, hits: {lockSwing: \"attack\"}, fallFlip: true}"
+ },
+ "shades": {
+  "meta": {
+   "cell": 92,
+   "ax": 45.0,
+   "ay": 77,
+   "h": 62,
+   "rows": {
+    "idle": [
+     0,
+     7
+    ],
+    "walk": [
+     1,
+     9
+    ],
+    "attack": [
+     2,
+     9
+    ],
+    "hurt": [
+     3,
+     5
+    ],
+    "knockdown": [
+     4,
+     17
+    ],
+    "leap": [
+     5,
+     9
+    ],
+    "land": [
+     6,
+     9
+    ]
+   },
+   "fist": {}
+  },
+  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, leap: {pre: [1, 2], hit: 5, post: [6]}, land: {pre: [7], hit: 8, post: [8]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {splashWind: \"leap\"}, hits: {splash: \"leap\", splashed: \"land\"}, fallFlip: true}"
+ },
+ "denim": {
+  "meta": {
+   "cell": 92,
+   "ax": 44.5,
+   "ay": 77,
+   "h": 62,
+   "rows": {
+    "idle": [
+     0,
+     7
+    ],
+    "walk": [
+     1,
+     9
+    ],
+    "attack": [
+     2,
+     9
+    ],
+    "hurt": [
+     3,
+     5
+    ],
+    "knockdown": [
+     4,
+     17
+    ],
+    "flykick": [
+     5,
+     9
+    ],
+    "slide": [
+     6,
+     9
+    ]
+   },
+   "fist": {}
+  },
+  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, flykick: {pre: [1, 2, 3], hit: 5, post: [7]}, slide: {pre: [1, 2], hit: 5, post: [8]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {flyWind: \"flykick\", slideWind: \"slide\"}, hits: {flykick: \"flykick\", slide: \"slide\"}, fallFlip: true}"
+ },
+ "shellsuit": {
+  "meta": {
+   "cell": 92,
+   "ax": 47.0,
+   "ay": 77,
+   "h": 62,
+   "rows": {
+    "idle": [
+     0,
+     7
+    ],
+    "walk": [
+     1,
+     9
+    ],
+    "attack": [
+     2,
+     9
+    ],
+    "hurt": [
+     3,
+     5
+    ],
+    "knockdown": [
+     4,
+     17
+    ],
+    "spray": [
+     5,
+     9
+    ],
+    "throw": [
+     6,
+     9
+    ]
+   },
+   "fist": {}
+  },
+  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, spray: {pre: [1, 2, 3, 4, 5], hit: 7, post: [8]}, throw: {pre: [3, 4, 5, 6], hit: 7, post: [8]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {sprayWind: \"spray\", throwWind: \"throw\"}, hits: {spray: \"spray\", throwing: \"throw\"}, fallFlip: true}"
+ },
+ "tuba": {
+  "meta": {
+   "cell": 92,
+   "ax": 48.0,
+   "ay": 77,
+   "h": 62,
+   "rows": {
+    "idle": [
+     0,
+     7
+    ],
+    "walk": [
+     1,
+     9
+    ],
+    "attack": [
+     2,
+     9
+    ],
+    "hurt": [
+     3,
+     5
+    ],
+    "knockdown": [
+     4,
+     17
+    ],
+    "blast": [
+     5,
+     9
+    ]
+   },
+   "fist": {}
+  },
+  "frames": "{attack: {pre: [2, 3, 4], hit: 6, post: [7]}, blast: {pre: [1, 2, 3, 4], hit: 6, post: [8]}, hurt: [1, 2], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {blastWind: \"blast\"}, hits: {blast: \"blast\"}, fallFlip: true}"
  }
 }

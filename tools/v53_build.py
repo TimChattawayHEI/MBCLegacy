@@ -167,15 +167,18 @@ s = swap(s, """    const [who, raw] = chat.lines[i]; const text = clean(raw).toU
 
 # ---------------------------------------------------------------- a new weapon: the bus pole
 s = swap(s, """  cone: { name: 'TRAFFIC CONE',""", """  pole: { name: 'BUS POLE', reach: 92, dmg: 12, kd: false, dur: 6, speed: 0.28, t0: 0.07, t1: 0.16, len: 64, col: '#e8c23a', throwDmg: 15, word: 'DING DING!' },
+  lock: { name: 'BIKE LOCK', reach: 70, dmg: 15, kd: true, dur: 5, speed: 0.36, t0: 0.1, t1: 0.2, len: 44, col: '#2a2a2e', throwDmg: 16, word: 'CLUNK!' },
   cone: { name: 'TRAFFIC CONE',""", 'pole weapon')
 s = swap(s, """  ball: { grip: [0, 0], ang: 0, round: true },""", """  ball: { grip: [0, 0], ang: 0, round: true },
-  pole: { grip: [4, 5], ang: 0 },""", 'pole grip')
+  pole: { grip: [4, 5], ang: 0 },
+  lock: { grip: [3, 8], ang: 0 },""", 'pole grip')
 
 # ---------------------------------------------------------------- sprites: real sheets where they exist, borrowed ones otherwise
 sheets = json.load(open(os.path.join(V53, 'sheets.json'))) if os.path.exists(os.path.join(V53, 'sheets.json')) else {}
 BORROW = {'city': 'clubm', 'itgirl': 'clubf', 'burb': 'tracksuit', 'hoops': 'ladette', 'snood': 'hoodie', 'puffer': 'hoodie', 'hood': 'hoodie',
           'grappler': 'bouncer', 'dipper': 'clubm', 'lookout': 'townie', 'stag': 'chunk', 'groom': 'townie', 'inspector': 'sec', 'lenny': 'beast',
-          'jeweller': 'mafioso', 'commuter': 'clubf', 'oldboy': 'regular', 'smiler': 'regular'}
+          'jeweller': 'mafioso', 'commuter': 'clubf', 'oldboy': 'regular', 'smiler': 'regular',
+          'noface': 'hoodie', 'leathers': 'clubm', 'shades': 'chunk', 'denim': 'hoodie', 'shellsuit': 'tracksuit', 'tuba': 'chunk'}
 metas, frames, aliases = [], [], []
 for k, src in BORROW.items():
     if k in sheets:
@@ -198,7 +201,7 @@ s = s.replace(anchor, anchor + '// NL alias\n' + al + '// NL alias end\n')
 
 # preload the new art with the rest
 newbg = sorted('nightlife/' + f[:-4] for f in os.listdir(os.path.join(ROOT, 'web', 'bg', 'nightlife')) if f.endswith('.png')) if os.path.isdir(os.path.join(ROOT, 'web', 'bg', 'nightlife')) else []
-newbg += [p for p in ('props/luggage', 'props/pole', 'weapons/pole') if os.path.exists(os.path.join(ROOT, 'web', 'bg', p + '.png'))]
+newbg += [p for p in ('props/luggage', 'props/pole', 'weapons/pole', 'weapons/lock') if os.path.exists(os.path.join(ROOT, 'web', 'bg', p + '.png'))]
 m = re.search(r'const ASSET_BG = (\[.*?\]);', s)
 lst = json.loads(m.group(1))
 lst = sorted(set(p for p in lst if not p.startswith('nightlife/')) | set(newbg))   # the folder is the list: a dropped image drops out
