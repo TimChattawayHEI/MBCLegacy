@@ -134,7 +134,7 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
 #t3-roster button{font:700 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 5)) var(--t3disp);letter-spacing:.04em;background:rgba(13,8,38,.7);border:1px solid transparent;padding:calc(var(--t3u) * 2) calc(var(--t3u) * 3);color:var(--t3grey)}
 #t3-roster button[aria-pressed="true"]{color:var(--t3ink);background:var(--c,var(--t3gold))}
 #t3-stages{left:calc(var(--t3u) * 12);top:calc(var(--t3u) * 26);width:calc(var(--t3u) * 196);display:grid;gap:calc(var(--t3u) * 5)}
-#t3-tabs{display:grid;grid-template-columns:repeat(4,auto);gap:calc(var(--t3u) * 2)}
+#t3-tabs{display:grid;grid-template-columns:repeat(5,auto);gap:calc(var(--t3u) * 2)}
 #t3-tabs button{font:700 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 5.2)) var(--t3disp);letter-spacing:.03em;background:none;border:0;border-bottom:calc(var(--t3u) * 1.5) solid transparent;padding:calc(var(--t3u) * 1) 0 calc(var(--t3u) * 2);color:var(--t3grey);white-space:nowrap}
 #t3-tabs button[aria-selected="true"]{color:var(--t3gold);border-color:var(--t3gold)}
 #t3-list{list-style:none;margin:0;padding:0;display:grid;gap:calc(var(--t3u) * 1)}
@@ -1214,6 +1214,7 @@ const WEAPONS = {
   alcopop: { name: 'ALCOPOP', reach: 58, dmg: 13, kd: true, dur: 1, speed: 0.3, t0: 0.08, t1: 0.17, len: 30, col: '#3a8ae0', throwDmg: 16, word: 'SMASH!', bottle: true },
   aerial: { name: 'STATION AERIAL', reach: 120, dmg: 12, kd: true, dur: 5, speed: 0.36, t0: 0.1, t1: 0.2, len: 104, col: '#c9ccd0', throwDmg: 14 },
   picker: { name: 'LITTER PICKER', reach: 130, dmg: 11, kd: true, dur: 5, speed: 0.34, t0: 0.1, t1: 0.2, len: 110, col: '#9aa1a7', throwDmg: 12 },
+  pole: { name: 'BUS POLE', reach: 92, dmg: 12, kd: false, dur: 6, speed: 0.28, t0: 0.07, t1: 0.16, len: 64, col: '#e8c23a', throwDmg: 15, word: 'DING DING!' },
   cone: { name: 'TRAFFIC CONE', reach: 74, dmg: 9, kd: true, dur: 5, speed: 0.32, t0: 0.08, t1: 0.18, len: 40, col: '#f06a24', throwDmg: 12, word: 'CONED!' },
 };
 const FOODS = {
@@ -1387,7 +1388,7 @@ const STAGES = {
       { at: 2520, groups: [[['bouncer', 'R'], ['townie', 'L']], [['dti', 'R'], ['vibez', 'L'], ['chunk', 'R']]], food: 'chips' },
       { at: 'end', boss: 'mc', title: 'MASTER CONTROL' },
     ] },
-  arrival: { secret: { x: 1130, word: 'LOOSE PLANK!' }, n: 8, title: 'THE ARRANGEMENT', sub: "Friday. Denise's Fishery.", bg: 'fishery', tod: 'day', ft: 340, fb: 506, len: 3400, music: 'arrival', aggro: 2, aa: 0.22, intro: 'arrival',
+  arrival: { secret: { x: 1130, word: 'LOOSE PLANK!' }, n: 13, title: 'THE ARRANGEMENT', sub: "Friday. Denise's Fishery.", bg: 'fishery', tod: 'day', ft: 340, fb: 506, len: 3400, music: 'arrival', aggro: 2, aa: 0.22, intro: 'arrival',
     items: [{ w: 'stick', x: 880, y: 470 }, { w: 'net', x: 2160, y: 420 }],
     breakables: [{ type: 'coolbox', x: 1520, y: 400, drop: 'bacon' }, { type: 'coolbox', x: 2460, y: 478, drop: 'bacon' }],
     waves: [
@@ -1396,7 +1397,7 @@ const STAGES = {
       { at: 1900, groups: [[['carpbro', 'R'], ['angler', 'L']], [['angler', 'R'], ['goose', 'L'], ['goose', 'R']]], food: 'bacon' },
       { at: 'end', boss: 'farbank', title: 'THE FAR BANK', groups: [[['farbank', 'R'], ['farbank', 'R']]] },
     ] },
-  naval: { n: 9, title: 'NAVAL OPERATIONS', sub: 'Midnight. One dinghy. One barbecue.', bg: 'naval', fixed: true, ft: 386, fb: 468, raft: [262, 698], len: W, music: 'naval', aggro: 2, aa: 0.3, intro: 'naval', outro: 'navalOutro',
+  naval: { n: 14, title: 'NAVAL OPERATIONS', sub: 'Midnight. One dinghy. One barbecue.', bg: 'naval', fixed: true, ft: 386, fb: 468, raft: [262, 698], len: W, music: 'naval', aggro: 2, aa: 0.3, intro: 'naval', outro: 'navalOutro',
     items: [{ w: 'rum', x: 600, y: 446 }],
     waves: [
       { groups: [[['swan', 'R'], ['swan', 'L']]] },
@@ -1406,7 +1407,7 @@ const STAGES = {
       { groups: [[['swan', 'R'], ['swan', 'L'], ['carpbro', 'L', 'leap']]] },
       { event: 'fireball' },
     ] },
-  social: { n: 10, title: 'THE SOCIAL', sub: 'Saturday. Raffle. No exceptions.', bg: 'social', ft: 352, fb: 506, len: 2900, music: 'social', aggro: 3, aa: 0.4, intro: 'social',
+  social: { n: 15, title: 'THE SOCIAL', sub: 'Saturday. Raffle. No exceptions.', bg: 'social', ft: 352, fb: 506, len: 2900, music: 'social', aggro: 3, aa: 0.4, intro: 'social',
     items: [{ w: 'cue', x: 720, y: 470 }, { w: 'guinness', x: 1250, y: 436 }],
     breakables: [{ type: 'keg', x: 1120, y: 484, drop: 'sroll' }, { type: 'keg', x: 2080, y: 470, drop: 'sroll' }],
     fruit: { x: 1480 },
@@ -1417,7 +1418,7 @@ const STAGES = {
       { at: 2060, groups: [[['darts', 'L'], ['regular', 'R'], ['carpbro', 'R']]], food: 'sroll' },
       { at: 'end', boss: 'denise', title: 'DENISE' },
     ] },
-  pegnine: { secret: { x: 2820, word: 'PEG NINE PROVIDES' }, n: 11, title: 'THE BATTLE OF PEG NINE', sub: "Sunday, 6am. One rod. Nine people.", bg: 'fishery', tod: 'dawn', ft: 340, fb: 506, len: 3200, music: 'pegnine', aggro: 4, aa: 0.45, intro: 'pegnine',
+  pegnine: { secret: { x: 2820, word: 'PEG NINE PROVIDES' }, n: 16, title: 'THE BATTLE OF PEG NINE', sub: "Sunday, 6am. One rod. Nine people.", bg: 'fishery', tod: 'dawn', ft: 340, fb: 506, len: 3200, music: 'pegnine', aggro: 4, aa: 0.45, intro: 'pegnine',
     items: [{ w: 'lam', x: 560, y: 440 }, { w: 'net', x: 1660, y: 476 }],
     breakables: [{ type: 'coolbox', x: 1260, y: 470, drop: 'brisket' }, { type: 'coolbox', x: 2380, y: 410, drop: 'bacon' }],
     waves: [
@@ -1483,17 +1484,17 @@ const STAGES = {
       { at: 'end', boss: 'lady', title: 'LADY ADDICT' },
     ] },
 };
-const ROUTE = ['frequency', 'soundz', 'airport', 'road', 'divebar', 'beach', 'club', 'arrival', 'naval', 'social', 'pegnine'];
+const ROUTE = ['frequency', 'soundz', 'airport', 'road', 'divebar', 'beach', 'club', 'nl_station', 'nl_train', 'nl_cx', 'nl_alley', 'nl_bus', 'arrival', 'naval', 'social', 'pegnine'];
 function netUnl() { return NET.on ? NET.unlocked : settings.unlocked; }
 // a chapter ('elba') or any stage ('divebar') can start a run (Version 43)
-function chapterOf(key) { const i = ROUTE.indexOf(key); return i < 0 ? null : i >= ROUTE.indexOf('arrival') ? 'carpdiem' : i >= ROUTE.indexOf('airport') ? 'elba' : '1999'; }
+function chapterOf(key) { const i = ROUTE.indexOf(key); return i < 0 ? null : i >= ROUTE.indexOf('arrival') ? 'carpdiem' : i >= ROUTE.indexOf('nl_station') ? 'nightlife' : i >= ROUTE.indexOf('airport') ? 'elba' : '1999'; }
 // how many stages a mid-chapter start skips, so that stage keeps its place in the difficulty ramp
 function routeDepth(start) { if (!ROUTE.includes(start)) return 0; const full = routeFrom(chapterOf(start)); return Math.max(0, full.indexOf(start)); }
-function startLabel(start) { return ({ elba: 'ELBA 2002', carpdiem: 'CARP DIEM', ramsden: 'RAMSDEN' })[start] || (STAGES[start] && ROUTE.includes(start) ? 'STAGE ' + STAGES[start].n : '1999'); }
+function startLabel(start) { return ({ elba: 'ELBA 2002', nightlife: 'NIGHTLIFE 2006', carpdiem: 'CARP DIEM', ramsden: 'RAMSDEN' })[start] || (STAGES[start] && ROUTE.includes(start) ? 'STAGE ' + STAGES[start].n : '1999'); }
 function routeFrom(start) {
   if (start === 'ramsden') return ['ramsden'];
   if (ROUTE.includes(start)) { const full = routeFrom(chapterOf(start)); return full.slice(Math.max(0, full.indexOf(start))); }
-  const at = { elba: 'airport', carpdiem: 'arrival', fishery: 'arrival' }[start];
+  const at = { elba: 'airport', nightlife: 'nl_station', carpdiem: 'arrival', fishery: 'arrival' }[start];
   const r = at ? ROUTE.slice(ROUTE.indexOf(at)) : ROUTE.slice();
   if (!at && settings.unlocked) r.splice(r.indexOf('soundz') + 1, 0, 'ramsden');
   return r;
@@ -1706,7 +1707,7 @@ const CHATS = {
     ['byron', 'Found Stuart. Still in the sand. Still grinning.'],
     ['seb', 'Retuning to 104.1. Home time.'],
     ['sys', 'KRSSSHHHHHHHHHH'],
-    ['sys', 'Back in the present. For real this time.'],
+    ['sys', 'Nearly the present. One more night out first.'],
   ],
   ending: [
     ['sys', 'Monday. The insurance claim.'],
@@ -1721,6 +1722,737 @@ const CHATS = {
   ],
 };
 
+// NL js start
+// ================================================================== NIGHTLIFE 2006 (Version 53)
+// A Friday night out in London: Orpington station, the train to Charing Cross, Charing Cross, the smoking area, the N47.
+// Everything that moves (the train, the stops, the bus lurching) runs inside the shared game so online co-op stays in step.
+const NLX = { keys: ['nl_station', 'nl_train', 'nl_cx', 'nl_alley', 'nl_bus'], img: k => bgImg('nightlife/' + k) };
+const NL_FILES = ['st_front', 'st_hall', 'tr_wall', 'tr_door', 'tr_end', 'tr_toilet', 'toilet_guy', 'sc_suburb', 'sc_platform', 'cx_hall',
+  'cx_barrier', 'trafalgar', 'alley', 'bus_deck', 'bus_stairs', 'sc_highst'].map(k => 'nightlife/' + k);
+
+// ---------------------------------------------------------------- who's out tonight
+Object.assign(FOES, {
+  city: { name: 'CITY BOY', hp: 50, speed: 104, dmg: 7, reach: 70, windup: 0.42, score: 260, ai: 'melee', combo2: true,
+    lines: ['Do you know who my father is?', 'This shirt cost more than your car.', 'Yah. Totally.', 'I work in finance, actually.'] },
+  itgirl: { name: 'IT GIRL', hp: 44, speed: 116, dmg: 7, reach: 68, windup: 0.4, score: 240, ai: 'melee', leap: true,
+    lines: ['Ew.', 'Like, oh my God.', 'Daddy will hear about this.', 'These shoes are Italian.'] },
+  burb: { name: 'CHECK CAP', hp: 56, speed: 112, dmg: 8, reach: 72, windup: 0.4, score: 260, ai: 'melee', rush: true,
+    lines: ["What you lookin' at?", 'Wanna go, bruv?', 'Oi! Oi!', 'Mind my trainers.'] },
+  hoops: { name: 'HOOPS', hp: 46, speed: 120, dmg: 7, reach: 68, windup: 0.38, score: 240, ai: 'melee', combo2: true,
+    lines: ['Are you starting?', "Don't touch my hair!", 'Babes, hold my earrings.', 'Is it?'] },
+  snood: { name: 'SNOOD', hp: 62, speed: 118, dmg: 9, reach: 72, windup: 0.38, score: 300, ai: 'melee', combo2: true,
+    lines: ['Wrong carriage.', "You're on our train now.", 'Allow it.', 'Say nothing.'] },
+  puffer: { name: 'PUFFER', hp: 50, speed: 142, dmg: 8, reach: 70, windup: 0.34, score: 280, ai: 'melee', rush: true,
+    lines: ['Next stop, your stop.', 'Allow it.', 'What?', 'Run your pockets.'] },
+  hood: { name: 'HOOD', hp: 58, speed: 122, dmg: 9, reach: 72, windup: 0.4, score: 300, ai: 'melee', aa: true,
+    lines: ['Wrong train, bruv.', 'Say nothing.', 'Mind the gap.', 'Allow it.'] },
+  grappler: { name: 'THE GRAPPLER', hp: 84, speed: 84, dmg: 6, reach: 70, windup: 0.5, score: 360, ai: 'melee', armor: true,
+    lines: ['Come here, you.', 'Hug it out.', "Don't struggle."], extra: (f, dt) => nlGrappler(f, dt) },
+  dipper: { name: 'THE DIPPER', hp: 44, speed: 156, dmg: 6, reach: 66, windup: 0.32, score: 320, ai: 'melee',
+    lines: ['Nice watch.', "What's the time, mate?", 'Lovely.', "Don't mind me."], extra: (f, dt) => nlDipper(f, dt) },
+  lookout: { name: 'THE LOOKOUT', hp: 40, speed: 104, dmg: 7, reach: 60, windup: 0.5, score: 300, ai: 'ranged', shot: 'bottle',
+    lines: ['Oi! Over here!', 'Lads! LADS!', 'He saw us.'], extra: (f, dt) => nlLookout(f, dt) },
+  stag: { name: 'THE STAG', hp: 64, speed: 86, dmg: 9, reach: 74, windup: 0.5, score: 320, ai: 'melee',
+    lines: ['Last night of freedom!', 'Who wants a banana?', 'I LOVE YOU, MATE.', 'Is this the bus to Ibiza?'] },
+  groom: { name: 'GROOMSMAN', hp: 52, speed: 108, dmg: 8, reach: 70, windup: 0.42, score: 260, ai: 'melee', rush: true,
+    lines: ['DAVE! DAVE! DAVE!', "Stag do, mate. Rules don't apply.", 'Shots! SHOTS!', 'Where are we?'] },
+  // bosses (the Elba boss engine, each with a tick of its own)
+  inspector: { name: 'THE TICKET INSPECTOR', hp: 300, speed: 92, dmg: 11, scale: 1.08, beatenWord: 'VALID!', beatenLine: '...Have a nice evening.', sub: 'Revenue protection. Zero tolerance.',
+    intro: ['Tickets, please.', 'Tickets. All of you.'], lines: ['Ticket?', 'No ticket, no travel.', "I've seen your sort."], tick: (b, dt, rage) => nlInspector(b, dt, rage) },
+  lenny: { name: 'LEWISHAM LENNY', hp: 380, speed: 104, dmg: 13, scale: 1.12, beatenWord: 'TERMINATED!', beatenLine: '...This is my stop anyway.', sub: 'Runs this carriage. Thinks he runs the line.',
+    intro: ['This is my carriage.', "You're on the wrong train."], lines: ['Hold on to something.', 'Mind the doors.', 'Fresh air?'], tick: (b, dt, rage) => nlLenny(b, dt, rage) },
+  jeweller: { name: 'THE JEWELLER', hp: 420, speed: 100, dmg: 12, scale: 1.1, beatenWord: 'TIME UP!', beatenLine: '...Keep the watch.', sub: 'Collects watches. Never his own.',
+    intro: ['Lovely piece, that.', 'What time is it? Mine.'], lines: ['Tick tock.', 'Shiny, innit?', 'Every watch has a price.'], tick: (b, dt, rage) => nlJeweller(b, dt, rage) },
+});
+// on the night bus the lads' sheets stand in for the travellers who aren't drawn yet
+const NL_NPC = { commuter: { name: 'COMMUTER' }, oldboy: { name: 'OLD BOY' }, smiler: { name: 'SMILER' } };
+Object.assign(FOES, NL_NPC);
+
+// ---------------------------------------------------------------- the stages
+Object.assign(STAGES, {
+  nl_station: { n: 8, era: 2006, title: 'ORPINGTON STATION', sub: 'Friday. 9pm. Train to Charing Cross.', bg: 'nl_station', ft: 352, fb: 506, len: 3300,
+    music: 'platform', aggro: 3, aa: 0.4, intro: 'nlIntro',
+    items: [{ w: 'alcopop', x: 760, y: 470 }, { w: 'cone', x: 1560, y: 440 }],
+    breakables: [{ type: 'bin', x: 1180, y: 476, drop: 'kebab' }, { type: 'bin', x: 2380, y: 450, drop: 'w:alcopop' }],
+    waves: [
+      { at: 360, groups: [[['townie', 'R'], ['ladette', 'R'], ['townie', 'L']]] },
+      { at: 1100, groups: [[['tracksuit', 'R'], ['hoodie', 'R']], [['townie', 'R'], ['ladette', 'L'], ['tracksuit', 'R']]] },
+      { at: 1800, groups: [[['chunk', 'R'], ['townie', 'L'], ['ladette', 'R']], [['hoodie', 'R'], ['tracksuit', 'L']]], food: 'kebab' },
+      { at: 'end', boss: 'inspector', title: 'THE TICKET INSPECTOR' },
+    ] },
+  nl_train: { n: 9, era: 2006, title: 'THE 21:12 TO CHARING CROSS', sub: 'Calling at Chislehurst, Hither Green, Lewisham...', bg: 'nl_train', ft: 372, fb: 506, len: 5600,
+    music: 'train', aggro: 3, aa: 0.45, train: true,
+    items: [{ w: 'alcopop', x: 900, y: 480 }],
+    breakables: [{ type: 'luggage', x: 1500, y: 470, drop: 'w:alcopop' }, { type: 'luggage', x: 3100, y: 480, drop: 'sroll' }, { type: 'luggage', x: 4300, y: 460, drop: 'w:alcopop' }],
+    waves: [
+      { at: 300, groups: [[['townie', 'R'], ['ladette', 'R']]] },
+      { at: 1150, stop: 'CHISLEHURST', groups: [[['city', 'R'], ['itgirl', 'R'], ['city', 'R']], [['itgirl', 'R'], ['city', 'L']]] },
+      { at: 2700, stop: 'HITHER GREEN', groups: [[['burb', 'R'], ['hoops', 'R'], ['burb', 'R']], [['hoops', 'R'], ['burb', 'L'], ['burb', 'R']]], food: 'sroll' },
+      { at: 3800, stop: 'LEWISHAM', groups: [[['snood', 'R'], ['puffer', 'R'], ['hood', 'R']], [['snood', 'R'], ['hood', 'L'], ['puffer', 'R'], ['puffer', 'R']]] },
+      { at: 'end', boss: 'lenny', title: 'LEWISHAM LENNY' },
+    ] },
+  nl_cx: { n: 10, era: 2006, title: 'CHARING CROSS', sub: '21:47. This train terminates here.', bg: 'nl_cx', ft: 356, fb: 506, len: 3200,
+    music: 'terminus', aggro: 3, aa: 0.45,
+    items: [{ w: 'alcopop', x: 820, y: 470 }],
+    breakables: [{ type: 'bin', x: 1300, y: 470, drop: 'chips' }, { type: 'bin', x: 2300, y: 460, drop: 'w:alcopop' }],
+    waves: [
+      { at: 360, groups: [[['puffer', 'R'], ['snood', 'R'], ['city', 'L']]] },
+      { at: 1100, groups: [[['burb', 'R'], ['hoops', 'R']], [['itgirl', 'R'], ['city', 'R'], ['burb', 'L']]], food: 'chips' },
+      { at: 1800, groups: [[['hood', 'R'], ['snood', 'R'], ['puffer', 'L']], [['city', 'R'], ['hood', 'R']]] },
+      { at: 'end', final: true, groups: [[['snood', 'R'], ['burb', 'R'], ['puffer', 'R'], ['hoops', 'L']]] },
+    ] },
+  nl_alley: { n: 11, era: 2006, title: 'THE SMOKING AREA', sub: "Round the back. Where's Seb?", bg: 'nl_alley', ft: 356, fb: 506, len: 3200,
+    music: 'smoking', aggro: 3, aa: 0.5, intro: 'nlSeb',
+    items: [{ w: 'cue', x: 1200, y: 460 }],
+    breakables: [{ type: 'keg', x: 980, y: 480, drop: 'kebab' }, { type: 'bin', x: 2100, y: 460, drop: 'w:alcopop' }],
+    waves: [
+      { at: 300, event: 'sebScene' },
+      { at: 420, groups: [[['dipper', 'R'], ['grappler', 'R'], ['lookout', 'R']]] },
+      { at: 1300, groups: [[['grappler', 'R'], ['dipper', 'L']], [['dipper', 'R'], ['lookout', 'R'], ['grappler', 'L']]], food: 'kebab' },
+      { at: 2000, groups: [[['dipper', 'R'], ['dipper', 'L'], ['grappler', 'R'], ['lookout', 'R']]] },
+      { at: 'end', boss: 'jeweller', title: 'THE JEWELLER' },
+    ] },
+  nl_bus: { n: 12, era: 2006, title: 'THE N47', sub: '01:50. Top deck. Next stop: home.', bg: 'nl_bus', fixed: true, bus: true, ft: 384, fb: 476, raft: [150, 900], len: W,
+    music: 'nightbus', aggro: 3, aa: 0.4, intro: 'nlBus', outro: 'nlHome',
+    breakables: [{ type: 'pole', x: 380, y: 400, drop: 'w:pole' }, { type: 'pole', x: 640, y: 400, drop: 'w:pole' }, { type: 'pole', x: 820, y: 470, drop: 'w:pole' }],
+    waves: [
+      { groups: [[['stag', 'L'], ['groom', 'L'], ['groom', 'L']]] },
+      { groups: [[['burb', 'L'], ['hoops', 'L']], [['groom', 'L'], ['puffer', 'L']]], food: 'kebab' },
+      { event: 'smiler' },
+      { groups: [[['snood', 'L'], ['hood', 'L'], ['dipper', 'L']], [['grappler', 'L'], ['lookout', 'L']]] },
+      { groups: [[['stag', 'L'], ['groom', 'L'], ['city', 'L'], ['itgirl', 'L']]], food: 'kebab' },
+      { event: 'smiler' },
+      { final: true, groups: [[['groom', 'L'], ['stag', 'L'], ['groom', 'L']], [['puffer', 'L'], ['burb', 'L'], ['snood', 'L']]] },
+    ] },
+});
+['nl_station', 'nl_train', 'nl_cx', 'nl_alley', 'nl_bus'].forEach(k => { BOSS_MUSIC[k] = 'boss2006'; });
+BOSS_KEYS.add('boss2006');
+Object.assign(TRACKS, {
+  platform: { src: 'music/platform-zero.mp3', loop: 60, fb: 'garage' }, train: { src: 'music/mind-the-gap.mp3', loop: 55.65, fb: 'garage' },
+  terminus: { src: 'music/terminus.mp3', loop: 60.95, fb: 'arrival' }, smoking: { src: 'music/smoking-area.mp3', loop: 54.86, fb: 'ramsden' },
+  nightbus: { src: 'music/night-bus.mp3', loop: 58.18, fb: 'naval' }, boss2006: { src: 'music/last-orders-boss.mp3', loop: 51.2, fb: 'boss' },
+});
+
+// ---------------------------------------------------------------- the group chats (2006: a colour screen, texts not WhatsApp)
+Object.assign(CHATS, {
+  nlIntro: [
+    ['sys', 'October 2006. Friday night.'],
+    ['tim', "Right. Orpington station, 9pm. Train's at 21:12. I've done a plan."],
+    ['byron', "9pm means 8:55. I'll be under the clock."],
+    ['pearcy', 'wearing my good shirt'],
+    ['kelly', 'which one'],
+    ['pearcy', 'the shiny one'],
+    ['seb', 'Pre-drinks at mine. Tactical.'],
+    ['marc', "London. Proper London. Let's have it."],
+    ['tim', 'Sam?'],
+    ['sam', 'Left already. 5 mins.'],
+    ['sys', '30 minutes later.'],
+    ['byron', 'Sam.'],
+    ['sam', 'Literally 5 mins.'],
+    ['kelly', "he's not even out of bed is he"],
+    ['sam', 'I am OUT of bed.'],
+  ],
+  nlSeb: [
+    ['sys', '23:58. Somewhere off the Strand.'],
+    ['tim', 'Good night so far. Anyone seen Seb?'],
+    ['kelly', 'he went for a fag about an hour ago'],
+    ['pearcy', 'seb doesnt smoke'],
+    ['marc', 'Saw him round the back by the smoking area. With some new mates.'],
+    ['byron', 'Seb does not have new mates.'],
+    ['sam', "I'll go and look."],
+    ['tim', 'Everyone go and look.'],
+  ],
+  nlBus: [
+    ['sys', '01:41. Charing Cross.'],
+    ['seb', "Watch is back. All good. Lovely lads, actually, until they weren't."],
+    ['byron', 'The last train left at 00:38.'],
+    ['tim', 'Night bus then. N47. Trafalgar Square, all the way home.'],
+    ['marc', "I'm not paying a bus fare. I'll walk."],
+    ['kelly', 'its 14 miles mate'],
+    ['marc', 'Lovely night for it.'],
+    ['pearcy', 'top deck. front seats. called it'],
+  ],
+  nlHome: [
+    ['sys', '03:20. Orpington.'],
+    ['sam', 'Home. Bed. Best night ever.'],
+    ['seb', 'Still got the watch. Still on Elba time.'],
+    ['tim', "Marc? You home?"],
+    ['marc', 'Catford.'],
+    ['sys', '06:45.'],
+    ['marc', 'Bromley.'],
+    ['byron', 'Sunrise in Bromley. A man of principle.'],
+    ['sys', 'KRSSSHHHHHHHHHH'],
+    ['sys', 'Back in the present. For real this time.'],
+  ],
+});
+
+// ---------------------------------------------------------------- per-frame, every 2006 stage
+function updateNightlife(dt) {
+  if (!S || !ST || ST.era !== 2006) return;
+  if (!S.npcs) S.npcs = [];
+  updateNpcs(dt);
+  S.cineA = (S.cineA || 0) + ((S.cine ? 1 : 0) - (S.cineA || 0)) * Math.min(1, dt * 5);
+  if (S.ann) { S.ann.t += dt; if (S.ann.t > S.ann.life) S.ann = null; }
+  if (ST.train) { nlTrainTick(dt); nlWindTick(dt); }
+  if (ST.bus) nlBusTick(dt);
+  if (ST.bg === 'nl_cx') nlCxTick(dt);
+  if (ST.bg === 'nl_alley') nlAlleyTick(dt);
+  if (ST.bg === 'nl_station' && !S.saidSam && player.x > 520) { S.saidSam = true; if (player.def.id !== 'sam') setTimeout0(() => popWord(cam.x + W - 80, FT + 30, 120, "SAM: 'NEARLY THERE'", false), 0.2); }
+}
+function nlAnnounce(text, life) { S.ann = { text, t: 0, life: life || 3.6 }; sfx('page'); }
+// a wave can carry a train stop; the event names run their own little scripts
+function nlEvent(ev) {
+  if (ev === 'sebScene') { nlSebScene(); return true; }
+  if (ev === 'smiler') { nlSmiler(); return true; }
+  return false;
+}
+function nlStartWave(w) {
+  if (!w.stop) return false;
+  nlStop(w);
+  return true;
+}
+
+// ================================================================== the train
+// The carriage is a long repeating interior; the world behind the windows scrolls with the train's speed, not the camera.
+const TRAIN = { seg: 640, car: 2048, cruise: 960, doors: [420, 1180], stops: ['PETTS WOOD', 'CHISLEHURST', 'ELMSTEAD WOODS', 'GROVE PARK', 'HITHER GREEN', 'LEWISHAM', 'LONDON BRIDGE'] };
+const TRAIN_PASS = [{ x: 700, name: 'PETTS WOOD' }, { x: 2200, name: 'ELMSTEAD WOODS' }, { x: 2480, name: 'GROVE PARK' }, { x: 4700, name: 'LONDON BRIDGE' }];
+function trainDoorsNear(x) {
+  const out = [];
+  for (let c = 0; c * TRAIN.car < ST.len + TRAIN.car; c++) for (const d of TRAIN.doors) out.push(c * TRAIN.car + d);
+  return out.filter(d => d > cam.x + 80 && d < cam.x + W - 80).sort((a, b) => Math.abs(a - x) - Math.abs(b - x));
+}
+function nlTrainTick(dt) {
+  if (S.trainV == null) { S.trainV = TRAIN.cruise; S.doorOpen = 0; S.passIdx = 0; S.toilet = 0; nlAnnounce('THIS TRAIN IS FOR CHARING CROSS', 3.4); }
+  const st = S.stopSeq;
+  if (st) {
+    st.t += dt;
+    if (st.phase === 'brake') {
+      S.trainV = Math.max(0, TRAIN.cruise * (1 - st.t / 2.0));
+      if (st.t >= 2.0) { st.phase = 'open'; st.t = 0; S.trainV = 0; sfx('hiss'); nlAnnounce('THIS IS ' + st.name + '. MIND THE GAP.', 3); addShake(4); nlLurch(-220); }
+    } else if (st.phase === 'open') {
+      S.doorOpen = Math.min(1, st.t / 0.5);
+      if (!st.fled && st.t > 0.3) { st.fled = true; nlFleeing(2); }
+      if (!st.spawned && st.t > 0.7) {
+        st.spawned = true;
+        const ds = trainDoorsNear(cam.x + W * 0.72), g = st.wave.groups[0];
+        const out = g.map(([t], i) => { const dx = ds[i % ds.length] || cam.x + W - 120; const f = makeFoe(t, dx + rand(-20, 20), FT + 6); f.face = player.x < dx ? -1 : 1; f.vy = 120; return f; });
+        for (let n = D().extra; n > 0; n--) if (n >= 1 || chance(n)) { const [t] = pick(g); out.push(makeFoe(t, (ds[0] || cam.x + W - 120) + rand(-30, 30), FT + 6)); }
+        foes.push(...out);
+        if (st.name === 'LEWISHAM') setTimeout0(() => say(player, pick(["Lewisham. Dangerous place, this.", 'Lewisham. Keep your hands in your pockets, lads.']), 2.4, true), 0.6);
+        if (st.name === 'LEWISHAM') setTimeout0(() => say(player, 'Still. Could be worse. Could be Croydon.', 2.6, true), 3.3);
+      }
+      if (st.t > 2.4) { st.phase = 'close'; st.t = 0; nlAnnounce('MIND THE DOORS', 1.6); sfx('page'); }
+    } else if (st.phase === 'close') {
+      S.doorOpen = Math.max(0, 1 - st.t / 0.5);
+      if (st.t > 0.7) { st.phase = 'depart'; st.t = 0; nlLurch(-260); addShake(5); }
+    } else if (st.phase === 'depart') {
+      S.trainV = TRAIN.cruise * Math.min(1, st.t / 2.6);
+      if (st.t > 2.6) { S.trainV = TRAIN.cruise; S.stopSeq = null; S.hold = false; const nx = TRAIN.stops[TRAIN.stops.indexOf(st.name) + 1]; if (nx) setTimeout0(() => nlAnnounce('THE NEXT STATION IS ' + nx, 3.4), 1.5); }
+    }
+  }
+  if (S.brakeT > 0) { S.brakeT -= dt; S.trainV = Math.max(80, S.trainV - 900 * dt); if (S.brakeT <= 0 && !S.stopSeq) S.reaccel = 1; }
+  else if (S.reaccel && !S.stopSeq) { S.trainV = Math.min(TRAIN.cruise, S.trainV + 420 * dt); if (S.trainV >= TRAIN.cruise) S.reaccel = 0; }
+  S.scrollX += S.trainV * dt;
+  if (S.trainV > 600 && chance(dt * 0.25)) addShake(2.5);   // over the points
+  // passing stations: just the announcement
+  const pass = TRAIN_PASS[S.passIdx];
+  if (pass && player.x > pass.x) { S.passIdx++; nlAnnounce('THE NEXT STATION IS ' + pass.name, 3); }
+  // the toilets: out of order, out of order, out of order... and then the one that isn't
+  if (!S.toilet && player.x > 1880 && !S.wave) { S.toilet = 1; S.toiletT = 0; }
+  if (S.toilet === 1) { S.toiletT += dt; if (S.toiletT > 0.25) { S.toilet = 2; S.toiletT = 0; sfx('page'); say(player, 'Need a wee. Hang on.', 1.6, true); } }
+  else if (S.toilet === 2) { S.toiletT += dt; if (S.toiletT > 1.4) { S.toilet = 3; S.toiletT = 0; sfx('hiss'); popWord(nlToiletX() + 30, FT + 40, 150, 'OI! SHUT THE DOOR!', true); addShake(3); setTimeout0(() => say(player, 'Sorry! SORRY!', 1.6, true), 0.7); } }
+  else if (S.toilet === 3) { S.toiletT += dt; if (S.toiletT > 2.2) { S.toilet = 4; sfx('thud'); } }
+}
+function nlToiletX() { return 1960; }
+// braking throws everyone towards the front of the train, pulling away throws them back
+function nlLurch(v) {
+  const all = (NET.on ? PL : [player]).concat(foes.filter(f => !f.boss && canBeHit(f)));
+  for (const e of all) if (e.z <= 0 && e.state !== 'cut') { e.vx += v * (e.boss ? 0.2 : 1); if (e !== player && !PL.includes(e) && Math.abs(v) > 500 && chance(0.6)) knockDown(e, Math.sign(v), Math.abs(v) * 0.5); }
+}
+function nlStop(w) {
+  S.hold = true; S.stopSeq = { wave: w, name: w.stop, phase: 'brake', t: 0 };
+  nlAnnounce('THE NEXT STATION IS ' + w.stop, 2.2);
+  setTimeout0(() => { if (S.stopSeq) { nlLurch(420); addShake(6); sfx('heavy'); } }, 0.9);
+}
+// passengers leg it the other way
+function nlFleeing(n) {
+  for (let i = 0; i < n; i++) {
+    const kind = i % 2 ? 'oldboy' : 'commuter', x = cam.x + W + 60 + i * 70, y = rand(FT + 20, FB - 20);
+    const p = makeNpc(kind, x, y); p.face = -1; p.flee = true;
+    p.script = (n2, dt) => { n2.state = 'walk'; n2.walk += dt * 14; n2.x -= (n2.kind === 'oldboy' ? 210 : 300) * dt; if (n2.t > 0.2 && !n2.said) { n2.said = true; if (chance(0.7)) say(n2, pick(['Excuse me! Excuse me!', 'Not again...', 'I want to get off!', 'Every Friday.']), 1.6, true); } if (n2.x < cam.x - 120) n2.remove = true; };
+    S.npcs.push(p);
+  }
+}
+
+// ---------------------------------------------------------------- Lewisham Lenny: the passenger alarm, the doors, the charge
+function nlLenny(b, dt, rage) {
+  const p = player;
+  switch (b.state) {
+    case 'idle': case 'walk':
+      if (b.cool > 0 || !playerTargetable()) return false;
+      { const dx = Math.abs(p.x - b.x), r = Math.random();
+        if (!b.alarmUsed || (rage && r < 0.18 && !S.brakeT)) { b.alarmUsed = true; b.state = 'alarmWind'; b.t = 0; say(b, 'Hold on to something.', 1.8, true); return true; }
+        if (dx > 160 && dx < 420 && r < 0.3) { b.state = 'kneeWind'; b.t = 0; b.vx = b.vy = 0; return true; }
+        if (dx > 200 && r < 0.55) { b.state = 'chargeWind'; b.t = 0; b.vx = b.vy = 0; return true; }
+        if (r < 0.7 && !S.windT && (b.hp < b.maxHp * 0.7)) { b.state = 'doorWind'; b.t = 0; b.vx = b.vy = 0; say(b, 'Fresh air?', 1.6, true); return true; }
+      }
+      return false;
+    case 'alarmWind':
+      b.vx = b.vy = 0;
+      if (b.t > 0.8) { b.state = 'alarm'; b.t = 0; sfx('siren'); flashT = Math.max(flashT, 0.08); S.brakeT = 1.4; nlLurch(760); addShake(12); popWord(b.x, b.y, 200, 'EMERGENCY BRAKE!', true); for (const pl of (NET.on ? PL : [p])) if (pl.z <= 0 && canBeHit(pl) && !(pl.buffT > 0)) { pl.vx += 300; } }
+      return true;
+    case 'alarm':
+      b.vx = b.vy = 0;
+      if (b.t > 0.6) { b.state = 'chargeWind'; b.t = 0; }
+      return true;
+    case 'doorWind':
+      b.vx = b.vy = 0;
+      if (b.t > 0.7) { b.state = 'doorOpen'; b.t = 0; S.windX = trainDoorsNear(b.x)[0] || b.x; S.windT = 3.6; sfx('gust'); nlAnnounce('PLEASE DO NOT OBSTRUCT THE DOORS', 2.4); }
+      return true;
+    case 'doorOpen':
+      b.vx = b.vy = 0;
+      if (b.t > 0.5) { b.state = 'rest'; b.t = 0; }
+      return true;
+  }
+  return false;
+}
+// an open door at speed: everyone is pulled towards it, and the doorway itself hurts
+function nlWindTick(dt) {
+  if (!(S.windT > 0)) { S.doorWind = Math.max(0, (S.doorWind || 0) - dt * 3); return; }
+  S.windT -= dt; S.doorWind = Math.min(1, (S.doorWind || 0) + dt * 4);
+  const pull = e => {
+    if (e.z > 0 || e.boss || !canBeHit(e)) return;
+    const dx = S.windX - e.x;
+    if (Math.abs(dx) < 380) { e.vx += Math.sign(dx) * 520 * dt * 3; e.vy -= 160 * dt; }
+    if (Math.abs(dx) < 34 && e.y < FT + 50) {
+      if (e === player || PL.includes(e)) { if (pHittable(30) && !(e.windHit > 0)) { e.windHit = 1.2; hitP({ x: S.windX, face: 1, kind: 'door', def: { name: 'DOOR' } }, 10, Math.sign(e.x - S.windX) || 1, true, 380); popWord(e.x, e.y, 150, 'MIND THE GAP!', true); } }
+      else if (e.state !== 'down') { knockDown(e, Math.sign(e.x - S.windX) || 1, 260); e.hp -= 10; popWord(e.x, e.y, 120, 'WHOOSH!', false); }
+    }
+  };
+  for (const e of (NET.on ? PL : [player])) { pull(e); if (e.windHit > 0) e.windHit -= dt; }
+  for (const f of foes) pull(f);
+  if (chance(dt * 30)) parts.push({ k: 'debris', x: S.windX + rand(-200, 200), y: rand(FT, FB), z: rand(20, 120), vx: (Math.random() < 0.5 ? 1 : -1) * 40, vz: 40, t: 0, life: 0.5, r: 2, col: 'rgba(230,240,255,0.7)', rot: 0, vr: 0 });
+}
+
+// ================================================================== the station
+function nlInspector(b, dt, rage) {
+  const p = player, dx = Math.abs(p.x - b.x), dy = Math.abs(p.y - b.y);
+  switch (b.state) {
+    case 'idle': case 'walk': {
+      if (b.cool > 0 || !playerTargetable()) return false;
+      const r = Math.random();
+      if (dx < 120 && dy < 34 && r < 0.4) { b.state = 'slapWind'; b.t = 0; b.vx = b.vy = 0; return true; }
+      if (dx > 140 && dx < 320 && r < 0.4) { b.state = 'fineWind'; b.t = 0; b.vx = b.vy = 0; say(b, 'Ticket!', 1.2, true); return true; }
+      if (dx < 260 && r < 0.6 && !b.blockCool) { b.state = 'blockWind'; b.t = 0; b.vx = b.vy = 0; return true; }
+      return false;
+    }
+    case 'slapWind':
+      b.vx = b.vy = 0; if (Math.abs(p.x - b.x) > 8) b.face = Math.sign(p.x - b.x);
+      if (b.t > 0.55 * D().wind) { b.state = 'slap'; b.t = 0; b.atkT = 0; b.atk = { t0: 0.05, t1: 0.2, reach: [0, 110], depth: 30, dmg: 14, kd: true, kb: 380, hs: 0.1, hit: new Set() }; sfx('swing'); }
+      return true;
+    case 'slap': if (b.t > 0.4) { b.atk = null; b.state = 'rest'; b.t = 0; } return true;
+    case 'fineWind':
+      b.vx = b.vy = 0; if (Math.abs(p.x - b.x) > 8) b.face = Math.sign(p.x - b.x);
+      if (b.t > 0.75 * D().wind) {
+        b.state = 'fine'; b.t = 0; sfx('whistle');
+        if (pHittable(60) && Math.abs(p.x - b.x) < 340 && Math.abs(p.y - b.y) < 60 && Math.sign(p.x - b.x) === b.face) {
+          popWord(p.x, p.y, 170, 'PENALTY FARE!', true); hitP(b, 7, b.face, false, 160); addScore(-200, true);
+        } else popWord(b.x, b.y, 190, 'NO TICKET?', false);
+      }
+      return true;
+    case 'fine': if (b.t > 0.5) { b.state = 'rest'; b.t = 0; } return true;
+    case 'blockWind':
+      b.vx = b.vy = 0;
+      if (b.t > 0.2) { b.state = 'block'; b.t = 0; say(b, 'Not without a ticket.', 1.4, true); }
+      return true;
+    case 'block':
+      b.vx = b.vy = 0; if (Math.abs(p.x - b.x) > 8) b.face = Math.sign(p.x - b.x);
+      // blocks anything from the front; go round the back
+      b.inv = Math.sign(p.x - b.x) === b.face ? 0.05 : 0;
+      if (b.inv && p.atk && p.atkT < 0.05 && Math.abs(p.x - b.x) < 130 && !b.saidBlock) { b.saidBlock = true; popWord(b.x, b.y, 170, 'BLOCKED!', false); sfx('thud'); }
+      if (b.t > 1.5) { b.state = 'rest'; b.t = 0; b.inv = 0; b.saidBlock = false; b.blockCool = true; setTimeout0(() => { b.blockCool = false; }, 3); }
+      return true;
+  }
+  return false;
+}
+
+// ================================================================== Charing Cross: the barriers, then Trafalgar Square
+function nlCxTick(dt) {
+  if (S.done && !S.traf) { S.traf = { t: 0 }; S.endT = 99; S.cine = 1; for (const pl of (NET.on ? PL : [player])) if (pl.state !== 'dead') { pl.vx = pl.vy = 0; } }
+  if (S.traf) {
+    S.traf.t += dt;
+    if (S.traf.t > 0.6 && !S.traf.said) { S.traf.said = true; sfx('page'); }
+    if (S.traf.t > 6.2) { S.traf = null; S.trafDone = true; S.endT = 0.01; S.cine = 0; }
+  }
+}
+function nlDrawTrafalgar() {
+  const tr = S.traf; if (!tr) return;
+  const img = NLX.img('trafalgar'); const a = Math.min(1, tr.t / 0.8, (6.2 - tr.t) / 0.6);
+  ctx.save(); ctx.globalAlpha = Math.max(0, a); ctx.fillStyle = '#05060c'; ctx.fillRect(0, 0, W, H);
+  if (img) {
+    // a slow push in and drift across the square
+    const k = (W / img.width) * (1.12 + tr.t * 0.02), w = img.width * k, h = img.height * k;
+    const x = (W - w) / 2 - (tr.t - 3) * 6, y = (H - h) / 2 + 10;
+    ctx.imageSmoothingEnabled = false; ctx.drawImage(img, Math.round(x / 2) * 2, Math.round(y / 2) * 2, Math.round(w / 2) * 2, Math.round(h / 2) * 2);
+  }
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, 54); ctx.fillRect(0, H - 54, W, 54);
+  if (tr.t > 1.2) { const b = Math.min(1, (tr.t - 1.2) / 0.5); ctx.globalAlpha = Math.max(0, a) * b; textOut('LONDON.', W / 2, H - 92, '34px ' + DISPLAY, '#efe6d2', OUT, 7, 'center'); }
+  if (tr.t > 2.0) { ctx.font = '700 16px ' + BODY; ctx.fillStyle = '#ffd23f'; ctx.textAlign = 'center'; ctx.fillText('Trafalgar Square, 21:58', W / 2, H - 64); }
+  ctx.restore();
+}
+
+// ================================================================== the smoking area: Seb, the watch crew
+function nlSebScene() {
+  S.wave = null; S.waveIdx++;
+  const sebPlays = (NET.on ? PL : [player]).some(pl => pl.def.id === 'seb');
+  S.cine = 1; S.hold = true; for (const pl of (NET.on ? PL : [player])) { pl.vx = pl.vy = 0; if (pl.z <= 0 && !['down', 'getup', 'dead'].includes(pl.state)) { pl.state = 'cut'; pl.atk = null; } }
+  const sx = cam.x + W * 0.62, sy = FT + 30;
+  // the crew round him, chatting him up
+  const crew = [['dipper', sx + 60, sy + 20], ['grappler', sx + 120, sy + 50], ['lookout', sx + 170, sy + 10]].map(([k, x, y]) => { const n = makeNpc(k, x, y); n.face = -1; n.def = FOES[k]; S.npcs.push(n); return n; });
+  if (sebPlays) {
+    const pl = (NET.on ? PL : [player]).find(q => q.def.id === 'seb');
+    pl.x = sx; pl.y = sy; pl.face = 1; pl.state = 'cut';
+    setTimeout0(() => say(crew[0], "Lovely watch. What is it, Swiss?", 2.2, true), 0.6);
+    setTimeout0(() => say(pl, "It's Elba time, mate. Long story.", 2.2, true), 2.6);
+    setTimeout0(() => { crew[0].state = 'walk'; crew[0].x -= 30; popWord(pl.x, pl.y, 150, 'CLICK.', false); sfx('page'); }, 4.4);
+    setTimeout0(() => say(pl, '...Hang on.', 1.6, true), 5.2);
+    setTimeout0(() => { say(pl, "THAT'S MY WATCH.", 2, true); pl.rage = true; addShake(10); flashT = 0.2; sfx('special'); popWord(pl.x, pl.y, 210, 'SEB IS RAGING!', true); }, 6.4);
+  } else {
+    // Seb, sat on the back step, surrounded; you come out of the fire door
+    const seb = makeNpc('seb', sx, sy); seb.def = CHAR_BY_ID.seb; seb.look = CHAR_BY_ID.seb.look; seb.face = 1; S.npcs.push(seb);
+    setTimeout0(() => say(crew[0], "Lovely watch. What is it, Swiss?", 2.2, true), 0.6);
+    setTimeout0(() => say(seb, "It's Elba time, mate. Long story.", 2.2, true), 2.6);
+    setTimeout0(() => { crew[0].x -= 30; popWord(seb.x, seb.y, 150, 'CLICK.', false); sfx('page'); }, 4.4);
+    setTimeout0(() => say(player, 'SEB! Your watch!', 1.8, true), 5.2);
+    setTimeout0(() => { say(seb, '...OI!', 1.6, true); }, 6.2);
+    setTimeout0(() => { seb.remove = true; nlSebAlly(seb.x, seb.y); }, 7.0);
+  }
+  // the crew turn round and it kicks off
+  setTimeout0(() => {
+    for (const n of crew) { n.remove = true; const f = makeFoe(n.kind, n.x, n.y); f.face = -1; f.state = 'hover'; foes.push(f); }
+    S.cine = 0; S.hold = false;
+    for (const pl of (NET.on ? PL : [player])) if (pl.state === 'cut') setIdle(pl);
+    musicSet(ST.music);
+  }, 7.6);
+}
+function nlSebAlly(x, y) {
+  const c = CHAR_BY_ID.seb;
+  const a = { kind: 'ally', ally: true, friend: true, def: c, look: c.look, x, y, z: 0, vx: 0, vy: 0, vz: 0, face: 1, state: 'idle', t: 0, life: 9999,
+    combo: 0, comboT: 0, atk: null, atkT: 0, flash: 0, walk: 0, half: 20, scale: 1, inv: 99, landed: false, cool: 0.4, sayCool: 0 };
+  allies.push(a); S.sebAlly = a;
+}
+function nlAlleyTick(dt) {
+  // Seb's rage lasts the stage; the watch comes back when the Jeweller goes down
+  if (S.done && !S.watchBack) {
+    S.watchBack = true;
+    const seb = (NET.on ? PL : [player]).find(q => q.def.id === 'seb') || S.sebAlly;
+    if (seb) { setTimeout0(() => { popWord(seb.x, seb.y, 200, 'WATCH RECOVERED!', true); sfx('jackpot'); nlWatchFx = { who: seb, t: 0 }; say(seb, pick(['Tick tock.', 'Elba time. Back where it belongs.', "That's mine. Thank you."]), 2.4, true); }, 0.6); S.endT = Math.max(S.endT, 3.4); }
+  }
+}
+function nlHeldFree(f) { if (player.state === 'netted' && player.heldBy === f) freePlayer(); }
+// the Grappler: a bear hug from behind; mash to get out, and his mates go through your pockets meanwhile
+function nlGrappler(f, dt) {
+  const p = player;
+  if (f.state === 'hug') {
+    f.vx = f.vy = 0;
+    if (p.state !== 'netted' || p.heldBy !== f) { f.state = 'recover'; f.t = 0; return true; }
+    p.x = f.x + f.face * 34; p.y = f.y + 2; p.face = -f.face;
+    if (pressed.has('punch') || pressed.has('jump') || pressed.has('left') || pressed.has('right') || taps.length) { f.mash = (f.mash || 0) + 1; p.flash = 0.05; }
+    if (p.rage || (f.mash || 0) >= 7 || f.t > 2.6) {
+      freePlayer(); f.state = (f.mash >= 7 || p.rage) ? 'hurt' : 'recover'; f.t = 0; f.mash = 0;
+      if (p.rage) { popWord(p.x, p.y, 160, 'NOT TODAY!', true); knockDown(f, -f.face, 380); f.hp -= 12; }
+      else if (f.state === 'hurt') { popWord(p.x, p.y, 150, 'BROKE FREE!', false); f.vx = -f.face * 200; }
+    }
+    return true;
+  }
+  if (f.state === 'attack' && f.atk && !f.hugTry && f.atkT > 0.05) {
+    f.hugTry = true;
+    if (canBeHit(p) && !(p.buffT > 0) && p.z < 20 && p.state !== 'netted' && Math.abs(p.x - f.x) < 80 && Math.abs(p.y - f.y) < 26) {
+      if (p.rage) { popWord(p.x, p.y, 150, 'NOPE!', false); return false; }
+      f.atk = null; holdPlayer(f); f.state = 'hug'; f.t = 0; f.mash = 0; say(f, pick(['Got you.', 'Hug it out.', 'Shh shh shh.']), 1.4, true); sfx('grab');
+      return true;
+    }
+  }
+  if (f.state !== 'attack') f.hugTry = false;
+  if (f.state === 'hurt' || f.state === 'down' || f.state === 'thrown' || f.state === 'dead') nlHeldFree(f);
+  return false;
+}
+// the Dipper: slips your punches and lifts your weapon (or a bit of your score)
+function nlDipper(f, dt) {
+  const p = player;
+  f.dodgeCool = (f.dodgeCool || 0) - dt;
+  if (f.state === 'dodge') { f.vx = -f.face * 300 * Math.max(0, 1 - f.t * 2); f.vy = (f.dy || 0) * 160; if (f.t > 0.45) { f.state = 'hover'; f.t = 0; f.inv = 0; } return false; }
+  if (p.atk && p.atkT < 0.08 && f.dodgeCool <= 0 && canBeHit(f) && f.state !== 'down' && Math.abs(p.x - f.x) < 120 && Math.abs(p.y - f.y) < 40 && chance(0.45)) {
+    f.dodgeCool = 2.2; f.state = 'dodge'; f.t = 0; f.inv = 0.3; f.dy = chance(0.5) ? 1 : -1; f.face = Math.sign(p.x - f.x) || f.face; popWord(f.x, f.y, 140, pick(['SLIPPY!', 'NOPE!', 'TOO SLOW!']), false);
+    if (f.token) releaseToken(f, 0.4);
+    return false;
+  }
+  // a hit that lands also lifts something
+  if (f.state === 'attack' && f.atk && f.atk.hit && f.atk.hit.has(p) && !f.stole) {
+    f.stole = true;
+    if (p.weapon) { p.weapon = null; popWord(p.x, p.y, 160, 'NICKED!', true); }
+    else { addScore(-150, true); popWord(p.x, p.y, 160, 'DIPPED! -150', false); }
+    sfx('pickup');
+  }
+  if (f.state !== 'attack') f.stole = false;
+  // and when someone's holding you, he's straight in your pockets
+  if (p.state === 'netted' && p.heldBy && p.heldBy.kind === 'grappler' && canBeHit(f) && Math.abs(p.x - f.x) < 140 && !(f.dipT > 0)) {
+    f.dipT = 1.2; addScore(-100, true); popWord(p.x, p.y, 170, 'POCKETS!', false); sfx('pickup');
+  }
+  if (f.dipT > 0) f.dipT -= dt;
+  return false;
+}
+// the Lookout: hangs back, lobs bottles, whistles more of them in
+function nlLookout(f, dt) {
+  f.whistleT = (f.whistleT == null ? rand(5, 8) : f.whistleT) - dt;
+  if (f.state === 'whistle') { f.vx = f.vy = 0; if (f.t > 0.9) { f.state = 'hover'; f.t = 0; const k = pick(['dipper', 'grappler']); const n = spawnFoe(k, chance(0.5) ? 'R' : 'L'); foes.push(n); } return true; }
+  if (f.whistleT <= 0 && canBeHit(f) && foes.filter(o => canBeHit(o) && !o.boss).length < 5 && ['hover', 'idle', 'walk', 'approach'].includes(f.state)) {
+    f.whistleT = rand(8, 12); f.state = 'whistle'; f.t = 0; sfx('whistle'); popWord(f.x, f.y, 160, 'PHWEEEET!', false);
+    if (f.token) releaseToken(f, 0.4);
+    return true;
+  }
+  return false;
+}
+// the Jeweller: a chain whip with a long reach, a blinding flash off his watches, a grab and "what time is it?"
+function nlJeweller(b, dt, rage) {
+  const p = player, dx = Math.abs(p.x - b.x), dy = Math.abs(p.y - b.y);
+  if (!b.calls) b.calls = 0;
+  if (b.calls < 2 && b.hp < b.maxHp * (b.calls ? 0.35 : 0.65) && b.state !== 'beaten') { b.calls++; say(b, 'Lads! A bit of help.', 1.8, true); setTimeout0(() => { const g = [['dipper', 'R'], ['grappler', 'L']]; foes.push(...g.map(([t, s]) => spawnFoe(t, s))); }, 0.6); }
+  switch (b.state) {
+    case 'idle': case 'walk': {
+      if (b.cool > 0 || !playerTargetable()) return false;
+      const r = Math.random();
+      if (dx < 200 && dy < 34 && r < 0.45) { b.state = 'whipWind'; b.t = 0; b.vx = b.vy = 0; return true; }
+      if (dx < 120 && dy < 30 && r < 0.75) { b.state = 'grabWind'; b.t = 0; b.vx = b.vy = 0; return true; }
+      if (dx > 150 && dx < 460 && r < 0.6) { b.state = 'glintWind'; b.t = 0; b.vx = b.vy = 0; say(b, 'Look at this.', 1.2, true); return true; }
+      return false;
+    }
+    case 'whipWind':
+      b.vx = b.vy = 0; if (dx > 8) b.face = Math.sign(p.x - b.x);
+      if (b.t > 0.5 * D().wind) { b.state = 'whip'; b.t = 0; b.atkT = 0; b.atk = { t0: 0.05, t1: 0.22, reach: [0, 200], depth: 26, dmg: 12, kd: true, kb: 340, hs: 0.08, hit: new Set() }; sfx('swing'); }
+      return true;
+    case 'whip': if (b.t > 0.42) { b.atk = null; b.state = 'rest'; b.t = 0; } return true;
+    case 'glintWind':
+      b.vx = b.vy = 0; if (dx > 8) b.face = Math.sign(p.x - b.x);
+      if (chance(dt * 20)) parts.push({ k: 'sparkle', x: b.x + b.face * 20, y: b.y, z: 90 + rand(0, 30), t: 0, life: 0.4 });
+      if (b.t > 0.85 * D().wind) {
+        b.state = 'glint'; b.t = 0; flashT = Math.max(flashT, 0.14); sfx('jackpot');
+        // look away (face the other way) or be in the air to dodge it
+        const looking = Math.sign(b.x - p.x) === p.face;
+        if (looking && pHittable(40) && dx < 520 && !p.rage) { holdPlayer(b); p.blindT = 1.0; popWord(p.x, p.y, 170, 'BLINDED!', true); }
+        else popWord(p.x, p.y, 150, p.rage ? 'NOT TODAY!' : 'LOOKED AWAY!', false);
+      }
+      return true;
+    case 'glint':
+      if (p.blindT > 0) { p.blindT -= dt; if (p.blindT <= 0 && p.state === 'netted' && p.heldBy === b) freePlayer(); }
+      if (b.t > 0.4 && !(p.blindT > 0)) { b.state = 'rest'; b.t = 0; }
+      return true;
+    case 'grabWind':
+      b.vx = b.vy = 0; if (dx > 8) b.face = Math.sign(p.x - b.x);
+      if (b.t > 0.55 * D().wind) {
+        b.state = 'grabLunge'; b.t = 0; b.vx = b.face * 420; sfx('swing');
+      }
+      return true;
+    case 'grabLunge':
+      if (canBeHit(p) && !(p.buffT > 0) && p.z < 20 && p.state !== 'netted' && Math.abs(p.x - b.x) < 70 && Math.abs(p.y - b.y) < 28) {
+        b.vx = 0;
+        if (p.rage) { popWord(p.x, p.y, 160, 'NOT TODAY!', true); b.state = 'rest'; b.t = 0; bDaze(b, 0.9, 'SHOVED!'); return true; }
+        holdPlayer(b); b.state = 'grabHold'; b.t = 0; b.mash = 0; say(b, 'What time is it?', 1.4, true); sfx('grab');
+      } else if (b.t > 0.4) { b.vx = 0; b.state = 'rest'; b.t = 0; }
+      return true;
+    case 'grabHold':
+      b.vx = b.vy = 0;
+      if (p.state !== 'netted' || p.heldBy !== b) { b.state = 'rest'; b.t = 0; return true; }
+      p.x = b.x + b.face * 44; p.y = b.y + 2; p.face = -b.face;
+      if (pressed.has('punch') || pressed.has('jump') || pressed.has('left') || pressed.has('right') || taps.length) b.mash++;
+      if (b.mash >= 9) { freePlayer(); popWord(p.x, p.y, 150, 'BROKE FREE!', false); bDaze(b, 0.8, 'OI!'); return true; }
+      if (b.t > 1.2) { freePlayer(); say(b, 'Time to go.', 1.2, true); hitP(b, 13, b.face, true, 460); b.state = 'rest'; b.t = 0; }
+      return true;
+  }
+  return false;
+}
+
+// ================================================================== the N47
+function nlBusTick(dt) {
+  if (S.busT == null) { S.busT = 0; S.lurchT = rand(9, 13); S.stopN = 0; S.trainV = 520; }
+  S.busT += dt; S.scrollX += S.trainV * dt;
+  // the bus brakes and swings round corners: a warning, then everyone goes flying one way
+  S.lurchT -= dt;
+  if (S.lurchT < 1 && !S.lurchWarn) { S.lurchWarn = Math.random() < 0.5 ? 1 : -1; nlAnnounce(S.lurchWarn > 0 ? 'HOLD ON! (BRAKING)' : 'HOLD ON! (CORNER)', 1.2); sfx('honk'); }
+  if (S.lurchT <= 0) {
+    const dir = S.lurchWarn || 1; S.lurchWarn = 0; S.lurchT = rand(9, 14);
+    addShake(9); sfx('heavy');
+    for (const e of (NET.on ? PL : [player]).concat(foes.filter(f => !f.boss && canBeHit(f)))) {
+      if (e.z > 0) continue;
+      const mine = e === player || PL.includes(e);
+      e.vx += dir * (mine ? 420 : 640);
+      if (!mine && chance(0.5)) knockDown(e, dir, 260);
+    }
+    if (dir > 0) S.trainV = 160; else S.trainV = 380;
+  }
+  S.trainV += (520 - S.trainV) * Math.min(1, dt * 0.6);
+  // the stops go by at the front, one per wave
+  if (S.lastWaveIdx !== S.waveIdx) { S.lastWaveIdx = S.waveIdx; const stops = ['TRAFALGAR SQUARE', 'ELEPHANT & CASTLE', 'NEW CROSS', 'LEWISHAM', 'CATFORD', 'BROMLEY', 'PETTS WOOD', 'ORPINGTON']; S.busStop = stops[Math.min(stops.length - 1, S.waveIdx)]; if (S.waveIdx > 0) nlAnnounce(S.busStop, 2.6); }
+}
+// Smiler, on the back seat: wakes up, and looks after you
+function nlSmiler() {
+  S.wave = null; S.waveIdx++; S.waitT = 1.2;
+  let sm = S.npcs.find(n => n.kind === 'smiler');
+  if (!sm) { sm = makeNpc('smiler', 860, FT + 14); sm.face = -1; sm.def = FOES.smiler; S.npcs.push(sm); }
+  sm.wake = 0;
+  const lines = [['Here. You need this more than me.', 'Go on, son.'], ['Take it. And mind yourselves.', "They're not worth it. Here."]];
+  const which = S.smilerN = (S.smilerN || 0) + 1;
+  setTimeout0(() => { say(sm, pick(lines[(which - 1) % 2]), 2.2, true); sm.state = 'throw'; sm.t = 0; }, 0.4);
+  setTimeout0(() => {
+    const p = player, w = which === 1 ? 'pole' : 'alcopop';
+    shots.push({ kind: 'gift', w, x: sm.x - 20, y: sm.y, z: 60, vx: (p.x - sm.x) / 0.8, vy: (p.y - sm.y) / 0.8, vz: 420, t: 0, face: -1, hit: new Set(), dmg: 0 });
+    sfx('throw');
+  }, 1.0);
+  setTimeout0(() => { if (sm) sm.state = 'idle'; say(player, pick(['Cheers, mate!', 'You legend.', 'Thanks, Smiler!']), 1.8, true); }, 1.8);
+}
+// a thrown gift lands as a weapon at your feet
+function nlGiftTick(s, dt) {
+  s.t += dt; s.x += s.vx * dt; s.y += s.vy * dt; s.vz -= 1100 * dt; s.z += s.vz * dt;
+  if (s.z <= 0) { s.dead = true; dropItemWeapon(s.w, s.x, s.y); sfx('pickup'); popWord(s.x, s.y, 90, 'CATCH!', false); }
+  return true;
+}
+
+// ================================================================== drawing
+const nlSnap = v => Math.round(v / 2) * 2;
+function nlPut(k, wx, bottom, flip, k2) { const img = NLX.img(k); if (!img) return null; const s = k2 || 2, w = img.width * s, h = img.height * s, x = nlSnap(wx - cam.x); if (x > W + 20 || x + w < -20) return img; ctx.save(); ctx.imageSmoothingEnabled = false; if (flip) { ctx.translate(x + w, 0); ctx.scale(-1, 1); ctx.drawImage(img, 0, nlSnap(bottom - h), w, h); } else ctx.drawImage(img, x, nlSnap(bottom - h), w, h); ctx.restore(); return img; }
+// a strip that repeats forever, scrolled by an offset of its own (scenery past a moving window)
+function nlStrip(k, off, bottom, s) { const img = NLX.img(k); if (!img) return; const w = img.width * (s || 2), h = img.height * (s || 2); let x = -(((off % w) + w) % w); ctx.save(); ctx.imageSmoothingEnabled = false; for (; x < W; x += w) ctx.drawImage(img, nlSnap(x), nlSnap(bottom - h), w, h); ctx.restore(); }
+function nlDrawStageBg(bg) {
+  if (bg === 'nl_station') return nlBgStation();
+  if (bg === 'nl_train') return nlBgTrain();
+  if (bg === 'nl_cx') return nlBgCx();
+  if (bg === 'nl_alley') return nlBgAlley();
+  if (bg === 'nl_bus') return nlBgBus();
+  return false;
+}
+function nlBgStation() {
+  pxSky(['#0a0d22', '#121636', '#1b1a40', '#26203f', '#33263f', '#41293c'], 0, FT);
+  // Station Approach outside, the ticket hall, the barriers, then the platform under the night sky
+  for (let wx = -200; wx < 1080; wx += 640) nlPut('st_front', wx, FT + 4);
+  for (let wx = 1080; wx < 2600; wx += 640) nlPut('st_hall', wx, FT + 4);
+  for (let wx = 2600; wx < ST.len + 800; wx += 800) nlPut('st_platform', wx, FT + 4);
+  pxFloor(0, ST.len, '#3b3d44', '#34363c', 40, 80, '#44464d');
+  ctx.fillStyle = '#55575f'; ctx.fillRect(0, FT, W, 4);
+  // the yellow line on the platform: stand behind it
+  { const x = nlSnap(2600 - cam.x); if (x < W) { ctx.fillStyle = '#e8c23a'; ctx.fillRect(Math.max(0, x), FB - 18, W - Math.max(0, x), 4); } }
+  // the barrier line the Inspector guards
+  nlPut('cx_barrier', 2420, FT + 40);
+  return true;
+}
+function nlBgTrain() {
+  const sc = S.scrollX || 0, band = FT - 60;
+  ctx.fillStyle = '#060814'; ctx.fillRect(0, 0, W, FT);
+  // the world outside: suburbs at speed, a platform when we're stopped
+  nlStrip('sc_suburb', sc * 0.9, band + 10);
+  if (S.stopSeq || (S.platAt != null && S.platAt > sc - 1400)) {
+    if (S.stopSeq && S.stopSeq.phase === 'brake' && S.platAt == null) S.platAt = sc + TRAIN.cruise;
+    const pk = NLX.img('sc_platform');
+    if (pk && S.platAt != null) {
+      const w = pk.width * 2, x0 = nlSnap(S.platAt - sc - w / 2 + W / 2);
+      ctx.save(); ctx.imageSmoothingEnabled = false; for (let x = x0 - w; x < x0 + w * 2; x += w) ctx.drawImage(pk, x, nlSnap(band + 10 - pk.height * 2), w, pk.height * 2);
+      const name = S.stopSeq ? S.stopSeq.name : S.lastStop;
+      if (name) { const nx = x0 + w / 2; ctx.fillStyle = '#123a8c'; ctx.fillRect(nx - 110, band - 150, 220, 34); ctx.fillStyle = '#efe6d2'; ctx.fillRect(nx - 110, band - 150, 220, 3); pxText(name, nx, band - 133, 16, '#ffffff'); }
+      ctx.restore();
+    }
+    if (S.stopSeq) S.lastStop = S.stopSeq.name;
+  }
+  if (!S.stopSeq && S.platAt != null && S.platAt < sc - 1400) S.platAt = null;
+  // the carriage: walls with see-through windows, doors, the end wall and the toilets
+  for (let wx = Math.floor(cam.x / TRAIN.seg) * TRAIN.seg - TRAIN.seg; wx < cam.x + W + TRAIN.seg; wx += TRAIN.seg) nlPut('tr_wall', wx, FT + 6);
+  for (let c = Math.max(0, Math.floor(cam.x / TRAIN.car) - 1); c * TRAIN.car < cam.x + W + TRAIN.car; c++) {
+    for (const d of TRAIN.doors) nlDrawTrainDoor(c * TRAIN.car + d);
+    nlPut('tr_end', c * TRAIN.car + TRAIN.car - 128, FT + 6);
+  }
+  // the toilets, every one out of order... nearly
+  for (const [i, tx] of [1700, 1830, nlToiletX()].entries()) {
+    const img = nlPut('tr_toilet', tx, FT + 6);
+    if (img) { const x = nlSnap(tx - cam.x); const last = i === 2;
+      if (last && (S.toilet === 3)) { ctx.fillStyle = '#11131a'; ctx.fillRect(x + 8, FT + 6 - img.height * 2 + 16, img.width * 2 - 16, img.height * 2 - 20); nlPut('toilet_guy', tx + 2, FT + 2); }
+      else { ctx.fillStyle = '#efe6d2'; ctx.fillRect(x + 14, FT - 170, img.width * 2 - 28, 22); pxText('OUT OF ORDER', x + img.width, FT - 159, 9, '#b8231a'); } }
+  }
+  pxFloor(0, ST.len, '#2b2f3a', '#262a33', 36, 64, '#323744');
+  ctx.fillStyle = '#c9a227'; ctx.fillRect(0, FT, W, 4);
+  return true;
+}
+function nlDrawTrainDoor(wx) {
+  // a doorway in the carriage side: the frame, what's outside, and two leaves that slide apart into the wall
+  const fr = NLX.img('tr_doorframe'), img = NLX.img('tr_door'); if (!fr || !img) return;
+  const x = nlSnap(wx - cam.x), w = fr.width * 2, h = fr.height * 2, y = nlSnap(FT + 6 - h);
+  if (x > W + 10 || x + w < -10) return;
+  const open = (S.doorOpen || 0) * 0.95, wind = S.doorWind && Math.abs(S.windX - wx - w / 2) < w ? S.doorWind : 0, o = Math.max(open, wind);
+  const ox = x + 6, oy = y + 62, ow = img.width * 2, oh = img.height * 2, stopped = S.trainV < 50 && S.stopSeq;
+  ctx.save(); ctx.imageSmoothingEnabled = false;
+  ctx.fillStyle = stopped ? '#1a2340' : '#07091a'; ctx.fillRect(ox, oy, ow, oh);
+  if (stopped) { ctx.fillStyle = '#56535a'; ctx.fillRect(ox, oy + oh - 46, ow, 46); ctx.fillStyle = '#e8c23a'; ctx.fillRect(ox, oy + oh - 46, ow, 3); }
+  else if (o > 0) { ctx.fillStyle = '#0d1226'; for (let i = 0; i < 4; i++) { const sx = ox + ((i * 53 - (S.scrollX || 0) * 1.4) % ow + ow) % ow; ctx.fillRect(sx, oy + 30 + i * 37, 26, 2); } }
+  ctx.drawImage(fr, x, y, w, h);
+  ctx.beginPath(); ctx.rect(ox, oy, ow, oh); ctx.clip();
+  const half = img.width / 2, slide = Math.round(ow / 2 * o / 2) * 2;
+  ctx.drawImage(img, 0, 0, half, img.height, ox - slide, oy, ow / 2, oh);
+  ctx.drawImage(img, half, 0, half, img.height, ox + ow / 2 + slide, oy, ow / 2, oh);
+  ctx.restore();
+}
+function nlBgCx() {
+  pxSky(['#0b0d1e', '#111430', '#181a3a'], 0, FT);
+  for (let wx = -100; wx < ST.len + 640; wx += 640) nlPut('cx_hall', wx, FT + 4);
+  pxFloor(0, ST.len, '#4a4c55', '#43454d', 48, 96, '#53555e');
+  ctx.fillStyle = '#6c6e78'; ctx.fillRect(0, FT, W, 4);
+  // the ticket barriers across the end of the concourse, and the way out to the Strand
+  nlPut('cx_barrier', ST.len - 560, FT + 40); nlPut('cx_barrier', ST.len - 304, FT + 40);
+  return true;
+}
+function nlBgAlley() {
+  pxSky(['#07080f', '#0c0e1a', '#121423'], 0, FT);
+  for (let wx = -120; wx < ST.len + 640; wx += 640) nlPut('alley', wx, FT + 4);
+  pxFloor(0, ST.len, '#2c2a2c', '#262426', 32, 72, '#353234');
+  ctx.fillStyle = '#3d3a3c'; ctx.fillRect(0, FT, W, 4);
+  return true;
+}
+function nlBgBus() {
+  const sc = S.scrollX || 0, band = FT - 40;
+  ctx.fillStyle = '#05070f'; ctx.fillRect(0, 0, W, FT);
+  nlStrip('sc_highst', sc, band);
+  // Marc, walking home, now and then
+  { const per = 5200, ph = ((sc * 0.6) % per + per) % per; if (ph < 1400 && !(NET.on ? PL : [player]).some(q => q.def.id === 'marc')) { const sh = ladSprite('marc'); if (sh && sh.ready) { const m = sh.m, row = m.rows.walk, f = 1 + Math.floor(time * 10) % (row[1] - 1), x = W + 80 - ph * 0.8; ctx.save(); ctx.imageSmoothingEnabled = false; ctx.translate(nlSnap(x), band - 6); ctx.scale(-1, 1); ctx.drawImage(sh.img, f * m.cell, row[0] * m.cell, m.cell, m.cell, -m.ax, -m.ay, m.cell, m.cell); ctx.restore(); } } }
+  for (let wx = -40; wx < W + 640; wx += 640) nlPut('bus_deck', wx, FT + 6);
+  nlPut('bus_stairs', 20, FT + 6);
+  pxFloor(0, W, '#3a2c2e', '#33272a', 30, 60, '#42343a');
+  ctx.fillStyle = '#c9a227'; ctx.fillRect(0, FT, W, 4);
+  // the stops strip
+  ctx.fillStyle = '#0b0b10'; ctx.fillRect(W / 2 - 170, 70, 340, 26); ctx.fillStyle = '#c9a227'; ctx.fillRect(W / 2 - 170, 94, 340, 2);
+  pxText('N47 → ' + (S.busStop || 'TRAFALGAR SQUARE'), W / 2, 83, 12, '#ffb04a');
+  return true;
+}
+let nlWatchFx = null;
+function nlDrawFore() {
+  if (!ST || ST.era !== 2006) return;
+  // grab poles in front of everyone on the train and the bus
+  if (ST.train) for (let wx = Math.floor(cam.x / 320) * 320 + 160; wx < cam.x + W + 320; wx += 320) { const x = nlSnap(wx - cam.x); if (wx % TRAIN.car < 1800) { ctx.fillStyle = '#1b1606'; ctx.fillRect(x - 3, 0, 8, H); ctx.fillStyle = '#e8c23a'; ctx.fillRect(x - 2, 0, 5, H); ctx.fillStyle = '#fff2a0'; ctx.fillRect(x - 1, 0, 1, H); } }
+  if (S && S.ann) {
+    const a = S.ann, k = Math.min(1, a.t / 0.15, (a.life - a.t) / 0.25);
+    ctx.save(); ctx.globalAlpha = Math.max(0, k);
+    const w = Math.max(320, a.text.length * 12 + 60), x = W / 2 - w / 2, y = 112;
+    ctx.fillStyle = '#050505'; ctx.fillRect(x, y, w, 30); ctx.fillStyle = '#2a2a2a'; ctx.fillRect(x, y, w, 2); ctx.fillRect(x, y + 28, w, 2);
+    // a dot-matrix scroll if it's long
+    pxText(a.text, W / 2, y + 15, 12, '#ff9a1a');
+    ctx.restore();
+  }
+  if (S && S.traf) nlDrawTrafalgar();
+  // Seb's watch, back where it belongs: it rises over his head and catches the light
+  // (kept out of S: it's only a picture, timed by the screen, so it can't knock online co-op out of step)
+  if (nlWatchFx) { const w = nlWatchFx, img = NLX.img('watch'); w.t += 1 / 60;
+    if (w.t > 2.6 || !img || !S) nlWatchFx = null;
+    else { const k = Math.min(1, w.t / 0.4), x = nlSnap(w.who.x - cam.x - 110), y = nlSnap(w.who.y - 150 - k * 24 + Math.sin(w.t * 5) * 3);
+      ctx.save(); ctx.imageSmoothingEnabled = false; ctx.globalAlpha = Math.min(1, (2.6 - w.t) / 0.4); ctx.filter = 'brightness(1.6)'; ctx.drawImage(img, x, y, 64, 64); ctx.filter = 'none';
+      if (Math.floor(w.t * 8) % 3 === 0) { ctx.fillStyle = '#ffffff'; ctx.fillRect(x + 40, y + 14, 4, 12); ctx.fillRect(x + 36, y + 18, 12, 4); }
+      ctx.restore(); } }
+}
+// NL js end
 // ================================================================== state
 let mode = 'title', modeT = 0, time = 0, hitstop = 0, shake = 0, flashT = 0;
 let sel = 0, startAt = '1999';
@@ -1749,7 +2481,7 @@ function D() {
     for (const k of ['hp', 'boss', 'dmg', 'wind', 'aa']) o[k] = 1 + (base[k] - 1) * ramp;
     o.extra = base.extra * ramp;
     // deeper into a run, the same stage is tougher: from the third stage on, a little more health, damage and company each stage
-    const ri = vr.indexOf('road'), deep = Math.max(0, i - 2 - (ri >= 0 && ri < i ? 1 : 0));
+    const ri = vr.indexOf('road'), deep = Math.min(9, Math.max(0, i - 2 - (ri >= 0 && ri < i ? 1 : 0)));
     o.hp *= 1 + 0.035 * deep; o.boss *= 1 + 0.03 * deep; o.dmg *= 1 + 0.025 * deep; o.extra += 0.06 * deep;
     if (netCoop()) { o.hp *= 1.25; o.boss *= 1.4; o.extra += 0.5; }
     dCache[key] = o;
@@ -1949,7 +2681,8 @@ function makeFoe(type, x, y, entry) {
 }
 function spawnFoe(type, side, entry) {
   let f;
-  if (ST.fixed) {
+  if (ST.fixed && ST.bus) { f = makeFoe(type, 70 + rand(0, 50), FT + rand(8, 40)); f.vx = 140; }
+  else if (ST.fixed) {
     const [L, R] = ST.raft;
     const y = rand(FT + 8, FB - 8);
     if (entry === 'fly') { f = makeFoe(type, side === 'R' ? W + 60 : -60, y, 'fly'); f.z = 200; f.tx = rand(L + 50, R - 50); }
@@ -2115,6 +2848,7 @@ const BOSS_BANNER = {
   'THE PARKIE': ['parkie'], 'MASTER CONTROL': ['mc'], 'DENISE': ['denise'], 'LADY ADDICT': ['lady'],
   'BIG GARY': ['fish/gary'], 'BIG GAZ': ['fish/gaz'], 'DON VITO': ['mafioso'], 'BIG TONY AND LITTLE NICKY': ['beast', 'quick'],
   'IL CARABINIERE': ['carab'], 'I FRATELLI': ['gianni', 'marco', 'luca', 'paolo'],
+  'THE TICKET INSPECTOR': ['inspector'], 'LEWISHAM LENNY': ['lenny'], 'THE JEWELLER': ['jeweller'],
 };
 function bossCardFor(w) {
   const key = w.boss || (w.mini && !w.fish ? 'nozzer' : null), c = key && BOSS_CARD[key];
@@ -2276,6 +3010,7 @@ function raftRules(e) {
   e.x = clamp(e.x, L + e.half * 0.6, R - e.half * 0.6);
 }
 function splashOut(f) {
+  if (ST.bus) { f.state = 'dead'; f.t = 0; f.remove = true; f.hp = 0; sfx('thud'); popWord(f.x, f.y, 90, 'DOWN THE STAIRS!', true); addScore(300 + f.def.score); run.kills++; noteKO(f); if (f.token) releaseToken(f, 0); ladSay('ko', 0.4); return; }
   f.state = 'dead'; f.t = 0; f.remove = true; f.hp = 0;
   droplets(f.x, f.y, 26); sfx('splash'); popWord(f.x, f.y, 90, 'SPLASH!', true);
   addScore(300 + f.def.score); run.kills++; noteKO(f);
@@ -2284,7 +3019,7 @@ function splashOut(f) {
   ladSay('ko', 0.4);
 }
 function bbqHazard(e) {
-  if (!ST.fixed || S.fire > 0.8) return;
+  if (!ST.fixed || ST.bg !== 'naval' || S.fire > 0.8) return;
   if (e.burnT > 0 || e.z > 18 || e.state === 'dead') return;
   if (Math.abs(e.x - BBQ.x) < 20 + e.half * 0.5 && Math.abs(e.y - BBQ.y) < 14) {
     e.burnT = 1;
@@ -2302,7 +3037,7 @@ function bbqHazard(e) {
 
 // ------------------------------------------------------------------ player
 const BUFF_TIME = 5, CRASH_TIME = 2.5;
-function pwr(p) { return p.def.power * (p.buffT > 0 ? 1.5 : 1); }
+function pwr(p) { return p.def.power * (p.buffT > 0 ? 1.5 : 1) * (p.rage ? 1.35 : 1); }
 function setIdle(p) { p.state = 'idle'; p.t = 0; p.atk = null; }
 function readInput() {
   return { ix: (isHeld('right') ? 1 : 0) - (isHeld('left') ? 1 : 0), iy: (isHeld('down') ? 1 : 0) - (isHeld('up') ? 1 : 0) };
@@ -2797,6 +3532,7 @@ function updateFoe(f, dt) {
   if (f.car) { espaceTick(f, dt); return; }
   if (f.boss) { if (f.poiseCd > 0) f.poiseCd -= dt; (f.eboss ? updateEBoss : f.fish ? updateFish2 : f.fbk ? updateFarBank : f.kind === 'lady' ? updateLady2 : f.kind === 'denise' ? updateDenise2 : f.kind === 'parkie' ? updateParkie : f.kind === 'mc' ? updateMC : updateHB)(f, dt); return; }
   if (f.kind === 'nozzer' && nozzerExtra(f, dt)) return;
+  if (f.def.extra && f.def.extra(f, dt)) return;
   if ((f.def.charge || f.def.leap) && foeExtra(f, dt)) return;
   if (f.def.biker && bikerTick(f, dt)) return;
   f.t += dt; if (f.atk) f.atkT += dt;
@@ -4303,6 +5039,7 @@ function updateShots(dt) {
   for (const s of shots) {
     if (NET.on) player = s.own || netNear(s.x, s.y);
     s.t += dt;
+    if (s.kind === 'gift') { nlGiftTick(s, dt); continue; }
     if (s.kind === 'boomerang') {
       if (!s.back) { s.vx -= s.face * 1400 * dt; if (Math.sign(s.vx) !== s.face || s.t > 0.8) { s.back = true; s.hit = new Set(); } }
       else {
@@ -4402,6 +5139,11 @@ function updateHazards(dt) {
 function startWave(w) {
   S.wave = w; S.g = 0; S.mopedsLeft = w.mopeds || 0; S.mopedT = 2.5; S.bosses = []; S.bossTitle = w.title || '';
   if (w.event) { runEvent(w.event); return; }
+  if (nlStartWave(w)) return;
+  if (w.boss === 'inspector' || w.boss === 'lenny' || w.boss === 'jeweller') {   // Nightlife 2006 bosses (Version 53)
+    const d = FOES[w.boss], b = makeEBoss(w.boss, cam.x + W + 80, laneY(1), d.hp, { group: w.boss, hx: cam.x + W * 0.68, half: 28, poise: 70, poiseMax: 70 });
+    foes.push(b); S.bosses = [b]; musicSet(bossMusic()); showBanner(d.name, d.sub || '', 2.4); setTimeout0(() => ladSay('boss', 1, true), 3); return;
+  }
   if (w.raid) { showBanner('RAID!', 'The DTI are shutting down pirate radio', 2.2); sfx('siren'); }
   if (w.boss === 'gary' || w.boss === 'gaz') { const g = makeFish(w.boss); foes.push(g); S.bosses = [g]; musicSet(bossMusic()); setTimeout0(() => ladSay('boss', 1, true), 3); return; }
   if (w.boss === 'parkie' || w.boss === 'mc') { const b = makeHB(w.boss); foes.push(b); S.bosses = [b]; musicSet(bossMusic()); setTimeout0(() => ladSay('boss', 1, true), 3); return; }
@@ -4424,7 +5166,7 @@ function endWave(w) {
   if (w.mini) musicSet(ST.music);
 }
 function runEvent(ev) {
-  if (elbaEvent(ev)) return;
+  if (elbaEvent(ev) || nlEvent(ev)) return;
   if (ev === 'tow') {
     S.tow = 1; showBanner("GARY'S GOT THE LINE!", 'He is towing the dinghy', 2.2); sfx('special'); addShake(9);
     say(player, 'Is that... Gary?', 2.2, true);
@@ -4466,7 +5208,7 @@ function updateWaves(dt) {
   if (w.event) return;
   if (S.mopedsLeft > 0) { S.mopedT -= dt; if (S.mopedT <= 0) { spawnMoped(); S.mopedsLeft--; S.mopedT = rand(4, 6.5); } }
   const alive = foes.filter(f => f.state !== 'dead' && !f.remove && f.state !== 'beaten').length;
-  if (S.cut || S.carabSeq) return;
+  if (S.cut || S.carabSeq || S.hold) return;
   if (w.carab && !S.carabUp && S.g >= w.groups.length - 1 && alive === 0) { carabStand(); return; }
   if (w.boss) {
     const bossAlive = S.bosses.some(b => !(b.state === 'dead' || b.remove || b.state === 'beaten'));
@@ -4589,7 +5331,7 @@ function drawFlame(x, y, sz, seed) {
 // ================================================================== PixelLab sprites for the four main lads
 // Tim, Seb, Byron and Pearcy are drawn from sprite sheets (sprites/<id>.png, one row per animation).
 // Everyone else, and any lad whose sheet hasn't loaded, uses the hand-drawn drawHuman below.
-const SPRITE_META = {"thet":{"cell":64,"ax":32.0,"ay":53,"h":42,"rows":{"idle":[0,7],"walk":[1,9],"jab":[2,7],"hook":[3,7],"kick":[4,7],"jumpkick":[5,7],"hurt":[6,5],"knockdown":[7,17],"special":[8,9],"run":[9,9],"grab":[10,5],"knee":[11,7],"throw":[12,9],"backkick":[13,7],"pickup":[14,7],"swing":[15,7],"mini":[16,9]},"fist":{"idle":[[37,23],[40,31],[38,26],[40,30],[39,29],[40,30],[38,26]],"walk":[[37,23],[36,22],[38,24],[42,35],[43,33],[43,32],[43,32],[43,33],[43,33]],"jab":[[37,23],[38,23],[38,24],[40,32],[39,34],[38,34],[39,34]],"hook":[[37,23],[37,23],[36,23],[45,31],[43,26],[42,26],[44,31]],"kick":[[37,23],[38,24],[37,24],[37,28],[41,25],[37,29],[38,34]],"jumpkick":[[37,23],[36,26],[39,37],[42,26],[41,22],[42,24],[43,27]],"hurt":[[37,23],[36,23],[43,30],[41,28],[40,29]],"knockdown":[[37,23],[35,24],[38,24],[40,24],[44,27],[45,28],[47,37],[48,39],[48,47],[47,45],[47,46],[47,44],[47,43],[46,41],[44,36],[43,31],[40,24]],"special":[[37,23],[36,25],[40,25],[42,35],[43,34],[40,27],[43,22],[44,24],[41,28]],"run":[[37,23],[36,22],[38,34],[40,33],[37,24],[37,23],[39,32],[42,30],[42,32]],"grab":[[37,23],[37,24],[37,23],[42,27],[38,22]],"knee":[[37,23],[38,24],[38,25],[36,24],[32,25],[38,24],[40,23]],"throw":[[37,23],[38,23],[39,24],[42,34],[44,27],[39,27],[21,25],[38,24],[46,44]],"backkick":[[37,23],[34,33],[37,32],[40,31],[45,39],[41,38],[38,31]],"pickup":[[37,23],[39,24],[39,25],[40,29],[42,33],[41,44],[37,39]],"swing":[[37,23],[37,23],[36,23],[45,31],[43,26],[42,26],[44,31]],"mini":[[37,23],[38,23],[39,37],[38,26],[40,37],[39,28],[38,29],[44,33],[43,32]]}},"tim":{"cell":88,"ax":42.8,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"jab":[2,7],"hook":[3,7],"kick":[4,7],"jumpkick":[5,7],"hurt":[6,5],"knockdown":[7,17],"special":[8,9],"run":[9,9],"grab":[10,5],"knee":[11,7],"throw":[12,9],"backkick":[13,7],"pickup":[14,7],"swing":[15,9],"mini":[16,9]},"fist":{"idle":[[68,39],[69,37],[67,37],[63,36],[61,30],[62,29],[62,32]],"walk":[[68,39],[69,37],[68,37],[66,38],[64,39],[62,39],[62,30],[63,30],[64,31]],"jab":[[68,39],[70,37],[69,33],[74,35],[56,36],[69,33],[74,34]],"hook":[[68,39],[70,37],[62,38],[72,34],[70,35],[72,35],[63,35]],"kick":[[68,39],[66,41],[57,40],[59,44],[72,37],[72,40],[52,32]],"jumpkick":[[68,39],[63,42],[57,33],[57,44],[73,28],[61,45],[54,32]],"hurt":[[68,39],[67,36],[62,36],[60,36],[57,37]],"knockdown":[[68,39],[67,37],[65,35],[63,31],[60,31],[58,31],[70,42],[72,54],[74,60],[75,62],[75,60],[75,60],[74,59],[73,59],[71,59],[60,49],[57,45]],"special":[[68,39],[64,44],[64,32],[70,45],[74,50],[74,49],[73,52],[75,55],[75,57]],"run":[[68,39],[68,33],[68,30],[69,36],[65,41],[59,42],[63,34],[64,30],[62,34]],"grab":[[68,39],[67,35],[67,35],[65,35],[63,36]],"knee":[[68,39],[69,37],[67,36],[63,36],[64,46],[63,37],[66,40]],"throw":[[68,39],[66,37],[62,37],[61,41],[59,46],[59,34],[58,25],[58,22],[74,53]],"backkick":[[68,39],[66,36],[65,33],[70,34],[74,34],[69,35],[66,38]],"pickup":[[68,39],[68,45],[61,26],[62,31],[63,35],[62,28],[64,40]],"swing":[[68,39],[66,36],[55,27],[28,18],[14,25],[21,21],[59,27],[73,45],[66,47]],"mini":[[68,39],[67,36],[66,36],[59,34],[63,33],[63,34],[62,35],[70,39],[67,28]]}},"pearcy":{"cell":88,"ax":42.8,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"jab":[2,7],"hook":[3,7],"kick":[4,7],"jumpkick":[5,7],"hurt":[6,5],"knockdown":[7,17],"special":[8,9],"run":[9,9],"grab":[10,5],"knee":[11,7],"throw":[12,9],"backkick":[13,7],"pickup":[14,7],"swing":[15,9],"mini":[16,9]},"fist":{"idle":[[62,36],[62,36],[60,34],[59,33],[62,34],[61,36],[59,34]],"walk":[[62,36],[62,36],[59,39],[58,33],[60,31],[59,33],[58,35],[58,33],[57,34]],"jab":[[62,36],[69,33],[78,32],[72,32],[78,31],[73,32],[62,36]],"hook":[[62,36],[60,35],[56,37],[56,36],[58,35],[56,36],[78,31]],"kick":[[62,36],[59,38],[57,32],[57,30],[71,38],[74,42],[57,30]],"jumpkick":[[62,36],[65,38],[59,35],[61,43],[74,38],[60,43],[55,31]],"hurt":[[62,36],[62,36],[59,37],[72,34],[64,36]],"knockdown":[[62,36],[66,35],[66,33],[63,38],[59,40],[61,37],[54,50],[54,54],[73,61],[72,63],[72,63],[71,62],[71,63],[69,60],[61,58],[55,56],[54,49]],"special":[[62,36],[62,31],[58,27],[57,27],[55,27],[59,41],[60,42],[66,43],[68,34]],"run":[[62,36],[64,33],[63,31],[62,35],[60,41],[58,36],[61,32],[62,30],[62,35]],"grab":[[62,36],[62,36],[61,35],[59,32],[58,32]],"knee":[[62,36],[63,36],[59,36],[62,30],[68,46],[58,34],[55,37]],"throw":[[62,36],[57,36],[57,37],[56,40],[55,41],[55,30],[48,24],[55,28],[76,39]],"backkick":[[62,36],[61,38],[65,33],[72,36],[76,38],[71,35],[65,32]],"pickup":[[62,36],[64,43],[60,48],[61,32],[62,38],[59,33],[65,45]],"swing":[[62,36],[62,39],[56,24],[45,31],[48,24],[46,22],[45,23],[64,31],[62,39]],"mini":[[62,36],[60,32],[59,32],[59,32],[60,34],[60,34],[60,32],[64,38],[61,43]]}},"seb":{"cell":88,"ax":43.9,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"jab":[2,7],"hook":[3,7],"kick":[4,7],"jumpkick":[5,7],"hurt":[6,5],"knockdown":[7,17],"special":[8,9],"run":[9,9],"grab":[10,5],"knee":[11,7],"throw":[12,9],"backkick":[13,7],"pickup":[14,7],"swing":[15,9],"mini":[16,9]},"fist":{"idle":[[65,32],[63,33],[62,31],[60,28],[60,30],[61,31],[62,32]],"walk":[[65,32],[65,29],[66,30],[67,33],[65,35],[61,36],[61,30],[62,30],[62,32]],"jab":[[65,32],[66,29],[68,29],[73,32],[61,31],[70,32],[76,32]],"hook":[[65,32],[66,31],[67,31],[74,31],[77,30],[76,30],[71,33]],"kick":[[65,32],[62,36],[55,31],[59,44],[72,33],[72,34],[59,45]],"jumpkick":[[65,32],[64,34],[60,36],[58,44],[73,28],[61,45],[60,26]],"hurt":[[65,32],[62,32],[61,30],[62,31],[60,39]],"knockdown":[[65,32],[68,34],[70,37],[73,25],[71,38],[63,34],[63,42],[75,58],[76,64],[76,64],[76,64],[75,59],[74,59],[71,58],[66,58],[55,52],[53,48]],"special":[[65,32],[63,27],[58,24],[60,25],[60,35],[62,28],[65,26],[77,25],[77,28]],"run":[[65,32],[66,30],[66,26],[66,29],[64,37],[60,35],[62,30],[66,30],[67,35]],"grab":[[65,32],[64,32],[64,32],[64,34],[64,35]],"knee":[[65,32],[67,34],[61,35],[59,46],[69,39],[58,32],[62,34]],"throw":[[65,32],[62,34],[59,35],[59,46],[57,36],[55,28],[53,31],[60,30],[76,42]],"backkick":[[65,32],[67,32],[71,34],[74,39],[76,39],[76,36],[72,37]],"pickup":[[65,32],[66,36],[66,44],[62,36],[63,39],[61,34],[61,44]],"swing":[[65,32],[57,28],[39,23],[33,26],[24,23],[23,19],[29,20],[73,38],[71,40]],"mini":[[65,32],[60,32],[61,27],[64,30],[60,30],[64,28],[67,25],[75,32],[74,39]]}},"byron":{"cell":88,"ax":42.9,"ay":75,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"jab":[2,7],"hook":[3,7],"kick":[4,7],"jumpkick":[5,7],"hurt":[6,5],"knockdown":[7,17],"special":[8,9],"run":[9,9],"grab":[10,5],"knee":[11,7],"throw":[12,9],"backkick":[13,7],"pickup":[14,7],"swing":[15,3],"mini":[16,9]},"fist":{"idle":[[60,44],[61,42],[62,40],[62,42],[61,43],[59,42],[58,41]],"walk":[[60,44],[62,42],[63,41],[63,42],[62,44],[59,45],[57,44],[59,43],[60,43]],"jab":[[60,44],[59,45],[58,40],[69,35],[74,34],[72,37],[60,35]],"hook":[[60,44],[58,44],[55,44],[60,38],[65,34],[65,37],[67,38]],"kick":[[60,44],[57,46],[55,40],[53,45],[69,36],[73,42],[54,46]],"jumpkick":[[60,44],[61,47],[56,41],[60,35],[65,45],[60,34],[58,40]],"hurt":[[60,44],[61,44],[62,42],[62,38],[61,40]],"knockdown":[[60,44],[60,47],[58,22],[58,43],[62,37],[60,47],[63,59],[67,58],[74,63],[74,62],[72,62],[52,60],[51,57],[53,55],[55,51],[53,46],[56,44]],"special":[[60,44],[62,44],[60,33],[58,32],[57,32],[58,34],[60,35],[75,35],[75,37]],"run":[[60,44],[63,42],[64,41],[65,42],[62,44],[56,21],[59,40],[62,39],[63,40]],"grab":[[60,44],[61,44],[61,42],[60,41],[59,41]],"knee":[[60,44],[61,43],[59,44],[54,46],[63,45],[55,46],[54,23]],"throw":[[60,44],[58,45],[58,43],[59,26],[60,48],[62,29],[49,41],[58,22],[76,52]],"backkick":[[60,44],[62,44],[65,42],[68,43],[69,44],[68,44],[65,43]],"pickup":[[60,44],[59,47],[61,24],[62,29],[62,31],[60,26],[62,46]],"swing":[[60,44],[42,21],[67,38]],"mini":[[60,44],[59,22],[61,43],[65,40],[50,47],[70,55],[67,53],[36,36],[38,37]]}},"bouncer":{"cell":88,"ax":43.5,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[52,20],[52,20],[53,21],[58,47],[60,47],[58,47],[54,21]],"walk":[[52,20],[52,20],[52,21],[52,22],[52,21],[52,20],[54,45],[57,46],[54,46]],"attack":[[52,20],[52,20],[55,45],[60,45],[62,41],[61,45],[74,34],[75,40],[60,41]],"hurt":[[52,20],[54,22],[57,47],[60,46],[62,46]],"knockdown":[[52,20],[53,20],[56,21],[60,23],[62,25],[67,31],[70,43],[71,51],[73,58],[73,59],[73,58],[70,53],[67,45],[65,38],[62,30],[59,48],[59,46]]}},"townie":{"cell":84,"ax":41.3,"ay":72,"h":60,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[52,35],[52,34],[53,35],[54,37],[55,40],[55,40],[54,37]],"walk":[[52,35],[52,38],[49,20],[49,20],[49,19],[49,19],[49,19],[53,44],[54,42]],"attack":[[52,35],[53,33],[53,32],[54,31],[53,30],[53,34],[57,36],[73,29],[52,37]],"hurt":[[52,35],[52,33],[53,25],[54,24],[54,41]],"knockdown":[[52,35],[54,37],[55,39],[54,44],[56,22],[63,30],[67,41],[69,52],[69,54],[69,54],[68,53],[66,50],[63,43],[62,39],[59,32],[55,27],[50,20]]}},"vibez":{"cell":84,"ax":42.1,"ay":72,"h":60,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[51,19],[52,19],[52,20],[55,44],[56,43],[55,44],[52,20]],"walk":[[51,19],[51,19],[51,20],[52,20],[51,20],[51,19],[51,18],[52,43],[52,44]],"attack":[[51,19],[51,19],[51,19],[53,38],[55,32],[53,20],[56,31],[64,32],[59,35]],"hurt":[[51,19],[52,20],[54,22],[55,41],[54,20]],"knockdown":[[51,19],[53,20],[56,21],[59,24],[63,28],[67,33],[71,44],[70,60],[71,62],[73,61],[72,55],[69,47],[66,42],[62,39],[61,33],[56,25],[55,42]]}},"parkie":{"cell":108,"ax":55.4,"ay":92,"h":76,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"close":[5,7]},"fist":{"idle":[[67,35],[68,34],[68,34],[69,29],[70,28],[68,27],[67,27]],"walk":[[67,35],[66,34],[66,30],[67,46],[67,37],[67,25],[67,24],[69,53],[69,56]],"attack":[[67,35],[69,31],[74,35],[80,46],[74,52],[78,50],[91,51],[77,50],[78,37]],"hurt":[[67,35],[70,31],[69,31],[67,26],[66,38]],"knockdown":[[67,35],[69,25],[74,27],[77,34],[78,40],[79,45],[84,56],[87,56],[90,70],[92,76],[92,77],[91,68],[88,64],[86,62],[77,49],[78,53],[73,40]],"close":[[67,35],[70,35],[77,38],[73,28],[80,38],[84,38],[83,37]]}},"dti":{"cell":88,"ax":43.7,"ay":75,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[59,39],[59,39],[59,38],[60,38],[60,37],[60,37],[60,38]],"walk":[[59,39],[57,38],[56,39],[56,40],[57,40],[59,39],[60,38],[62,39],[62,40]],"attack":[[59,39],[60,39],[61,39],[62,39],[62,38],[63,38],[62,39],[70,44],[66,42]],"hurt":[[59,39],[62,36],[61,34],[62,33],[62,35]],"knockdown":[[59,39],[62,39],[64,40],[65,39],[68,42],[69,46],[74,57],[74,53],[76,56],[74,52],[72,56],[69,56],[64,36],[64,32],[60,26],[56,23],[60,44]]}},"mc":{"cell":108,"ax":53.0,"ay":91,"h":75,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"close":[5,7],"far":[6,7]},"fist":{"idle":[[64,28],[65,29],[66,29],[66,29],[64,28],[63,28],[62,28]],"walk":[[64,28],[64,29],[64,30],[64,31],[64,30],[64,28],[68,56],[71,56],[69,58]],"attack":[[64,28],[64,27],[64,28],[70,49],[70,49],[71,53],[70,49],[72,52],[69,57]],"hurt":[[64,28],[63,25],[64,56],[67,57],[63,26]],"knockdown":[[64,28],[65,28],[67,29],[70,31],[74,35],[79,43],[80,54],[85,63],[87,69],[86,67],[84,63],[82,62],[78,53],[76,47],[72,41],[68,35],[61,27]],"close":[[64,28],[63,27],[74,56],[82,35],[67,49],[68,30],[77,56]],"far":[[64,28],[63,27],[62,26],[61,56],[61,28],[92,43],[95,36]]}},"chunk":{"cell":88,"ax":43.5,"ay":75,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[57,44],[57,45],[60,45],[63,43],[62,45],[63,43],[62,46]],"walk":[[57,44],[57,44],[57,45],[58,45],[58,43],[58,41],[58,43],[58,45],[57,45]],"attack":[[57,44],[58,45],[55,45],[53,44],[57,44],[70,35],[73,34],[72,37],[65,40]],"hurt":[[57,44],[66,28],[57,37],[61,41],[58,46]],"knockdown":[[57,44],[56,44],[53,41],[55,41],[59,29],[62,39],[68,51],[73,59],[73,59],[73,59],[72,55],[71,50],[69,45],[65,39],[61,34],[67,45],[60,47]]}},"ladette":{"cell":88,"ax":43.9,"ay":75,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[51,21],[53,32],[56,32],[60,33],[56,32],[60,33],[56,32]],"walk":[[51,21],[51,20],[55,46],[57,45],[54,47],[51,21],[52,45],[56,44],[59,42]],"attack":[[51,21],[51,21],[52,21],[59,31],[70,33],[71,34],[69,34],[63,34],[54,38]],"hurt":[[51,21],[77,28],[55,24],[53,33],[54,23]],"knockdown":[[51,21],[54,22],[57,24],[61,29],[64,37],[67,50],[69,57],[68,57],[69,58],[69,56],[65,49],[62,46],[60,46],[58,42],[56,35],[54,31],[52,24]]}},"angler":{"cell":84,"ax":42.5,"ay":72,"h":60,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[57,41],[57,41],[57,41],[56,41],[55,42],[55,42],[57,41]],"walk":[[57,41],[56,41],[56,42],[56,43],[57,43],[58,42],[58,41],[58,41],[58,42]],"attack":[[57,41],[56,42],[55,42],[54,41],[52,41],[69,36],[67,34],[59,40],[53,21]],"hurt":[[57,41],[65,35],[55,40],[55,41],[57,40]],"knockdown":[[57,41],[57,43],[59,43],[60,24],[64,31],[67,43],[69,53],[70,53],[71,54],[71,53],[70,49],[68,51],[65,45],[63,43],[60,34],[58,26],[56,44]]}},"warden":{"cell":84,"ax":43.0,"ay":72,"h":60,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[53,44],[54,44],[54,41],[56,43],[56,43],[55,43],[55,44]],"walk":[[53,44],[51,42],[49,37],[49,38],[49,37],[51,43],[52,41],[54,42],[56,44]],"attack":[[53,44],[53,44],[52,44],[61,38],[69,37],[67,38],[58,38],[67,38],[64,40]],"hurt":[[53,44],[55,42],[56,41],[57,40],[56,42]],"knockdown":[[53,44],[51,43],[52,20],[60,45],[58,26],[62,38],[68,47],[69,54],[70,56],[70,55],[70,55],[70,56],[68,48],[63,41],[61,36],[55,26],[52,42]]}},"farbank":{"cell":88,"ax":45.3,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[59,27],[59,27],[60,46],[62,43],[62,44],[60,46],[59,27]],"walk":[[59,27],[59,27],[60,43],[62,47],[59,28],[59,27],[59,27],[59,28],[59,29]],"attack":[[59,27],[60,28],[66,32],[66,41],[65,44],[65,43],[65,42],[64,39],[59,27]],"hurt":[[59,27],[59,31],[67,46],[59,31],[59,29]],"knockdown":[[59,27],[60,28],[61,28],[63,30],[66,32],[70,40],[74,55],[75,58],[75,57],[75,56],[75,57],[74,57],[72,56],[70,50],[65,39],[62,33],[59,28]]}},"carpbro":{"cell":88,"ax":42.5,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[50,20],[50,20],[53,45],[54,42],[55,38],[55,40],[54,42]],"walk":[[50,20],[50,20],[52,46],[52,47],[50,21],[50,20],[50,20],[54,46],[56,46]],"attack":[[50,20],[50,20],[51,20],[53,39],[60,35],[52,22],[76,28],[70,29],[55,30]],"hurt":[[50,20],[61,35],[63,29],[58,32],[54,42]],"knockdown":[[50,20],[52,21],[58,22],[66,30],[66,39],[70,55],[73,58],[74,63],[74,63],[71,56],[68,49],[68,50],[63,46],[60,40],[58,31],[55,24],[51,20]]}},"regular":{"cell":88,"ax":43.0,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[58,23],[58,24],[58,25],[59,28],[59,29],[59,27],[59,26]],"walk":[[58,23],[58,23],[58,25],[58,26],[58,24],[58,23],[58,23],[58,24],[58,26]],"attack":[[58,23],[58,23],[59,24],[60,24],[72,43],[74,43],[74,43],[70,43],[61,24]],"hurt":[[58,23],[62,25],[64,36],[55,23],[57,22]],"knockdown":[[58,23],[61,25],[63,27],[67,31],[69,38],[73,49],[74,57],[74,57],[74,57],[74,57],[74,54],[73,51],[70,42],[67,38],[59,26],[57,23],[57,23]]}},"darts":{"cell":88,"ax":43.7,"ay":75,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[54,24],[56,26],[55,24],[56,45],[58,46],[57,47],[55,24]],"walk":[[54,24],[54,23],[54,25],[54,26],[54,25],[54,24],[56,46],[61,44],[61,45]],"attack":[[54,24],[54,24],[53,24],[53,24],[54,24],[61,29],[77,35],[82,35],[64,39]],"hurt":[[54,24],[56,23],[63,39],[63,33],[62,43]],"knockdown":[[54,24],[56,25],[57,27],[63,35],[67,41],[71,53],[73,58],[73,58],[73,58],[73,58],[71,59],[67,49],[63,40],[59,39],[58,27],[57,27],[55,45]]}},"nozzer":{"cell":84,"ax":41.4,"ay":72,"h":60,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[53,19],[54,42],[62,36],[65,42],[63,37],[62,39],[57,41]],"walk":[[53,19],[52,19],[51,20],[52,44],[51,20],[52,19],[53,18],[54,19],[54,20]],"attack":[[53,19],[58,37],[66,36],[61,36],[53,34],[65,36],[68,36],[65,36],[53,19]],"hurt":[[53,19],[51,43],[51,44],[52,44],[52,44]],"knockdown":[[53,19],[54,20],[55,20],[64,23],[66,27],[71,38],[74,50],[66,48],[66,47],[65,46],[73,55],[71,49],[64,38],[60,34],[53,23],[55,44],[55,18]]}},"denise":{"cell":108,"ax":52.8,"ay":92,"h":75,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[66,47],[66,47],[66,26],[68,28],[68,28],[67,27],[67,26]],"walk":[[66,47],[66,48],[66,50],[67,50],[67,49],[66,25],[67,52],[74,57],[77,58]],"attack":[[66,47],[66,48],[66,48],[78,53],[77,47],[76,47],[76,47],[78,46],[79,48]],"hurt":[[66,47],[68,27],[98,29],[69,47],[67,57]],"knockdown":[[66,47],[68,26],[70,29],[76,57],[82,57],[84,46],[86,65],[91,69],[92,71],[91,69],[88,63],[84,58],[80,54],[77,49],[73,40],[71,32],[76,57]]}},"hoodie":{"cell":92,"ax":45.0,"ay":78,"h":64,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[56,21],[56,21],[59,47],[60,45],[61,42],[61,42],[62,45]],"walk":[[56,21],[56,22],[56,23],[56,22],[58,47],[61,48],[59,48],[56,21],[55,22]],"attack":[[56,21],[55,21],[55,21],[55,21],[57,21],[59,23],[77,37],[70,46],[57,22]],"hurt":[[56,21],[60,46],[60,45],[62,29],[58,23]],"knockdown":[[56,21],[58,21],[60,22],[64,25],[70,34],[75,50],[76,59],[77,60],[76,63],[76,61],[75,60],[72,56],[68,50],[67,42],[67,36],[66,28],[62,22]]}},"tracksuit":{"cell":88,"ax":43.3,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[50,43],[50,43],[54,46],[57,46],[58,47],[57,46],[56,45]],"walk":[[50,43],[50,43],[50,44],[51,47],[50,44],[50,43],[50,42],[54,46],[55,47]],"attack":[[50,43],[50,43],[52,46],[60,39],[57,32],[59,30],[71,33],[60,31],[56,29]],"hurt":[[50,43],[57,31],[53,41],[53,43],[53,47]],"knockdown":[[50,43],[51,21],[55,47],[63,46],[64,49],[69,55],[70,57],[70,57],[70,58],[68,54],[63,45],[60,42],[58,41],[58,40],[56,30],[60,48],[55,46]]}},"lady":{"cell":108,"ax":54.0,"ay":92,"h":74,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[68,33],[70,34],[71,33],[70,30],[68,30],[65,32],[67,32]],"walk":[[68,33],[68,31],[71,28],[72,29],[71,31],[68,33],[68,31],[71,29],[72,29]],"attack":[[68,33],[68,27],[72,54],[79,49],[80,48],[80,48],[79,46],[75,49],[72,31]],"hurt":[[68,33],[76,39],[106,38],[66,55],[69,27]],"knockdown":[[68,33],[70,35],[72,37],[75,36],[79,56],[82,61],[87,74],[89,68],[89,69],[89,68],[89,70],[87,66],[81,63],[78,64],[78,54],[77,48],[75,37]]}},"sec":{"cell":88,"ax":44.8,"ay":75,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[51,21],[51,21],[51,22],[54,47],[55,46],[51,22],[51,21]],"walk":[[51,21],[51,21],[51,22],[51,23],[51,22],[51,21],[51,21],[53,46],[52,46]],"attack":[[51,21],[51,21],[52,22],[57,42],[57,39],[55,39],[67,40],[57,26],[69,41]],"hurt":[[51,21],[51,23],[51,23],[56,42],[57,26]],"knockdown":[[51,21],[53,21],[54,23],[58,26],[62,31],[71,44],[71,65],[73,63],[73,59],[71,64],[71,66],[72,57],[68,46],[63,42],[58,37],[57,31],[55,48]]}},"handler":{"cell":88,"ax":42.7,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[51,23],[51,23],[51,24],[53,46],[54,46],[53,46],[51,23]],"walk":[[51,23],[51,23],[51,24],[51,25],[51,24],[51,23],[51,23],[54,45],[54,46]],"attack":[[51,23],[51,23],[58,46],[62,39],[59,35],[59,37],[61,40],[69,37],[64,36]],"hurt":[[51,23],[53,23],[54,46],[60,45],[59,47]],"knockdown":[[51,23],[52,23],[53,23],[55,22],[58,25],[66,41],[71,53],[72,58],[73,60],[71,56],[70,51],[67,42],[61,34],[57,29],[53,23],[53,25],[51,23]]}},"ragazzo":{"cell":88,"ax":42.2,"ay":75,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[49,21],[52,46],[55,41],[57,36],[56,34],[57,35],[58,39]],"walk":[[49,21],[49,21],[52,47],[50,47],[49,22],[49,21],[52,45],[56,45],[56,45]],"attack":[[49,21],[52,46],[54,42],[55,38],[56,37],[62,32],[62,34],[63,29],[58,37]],"hurt":[[49,21],[50,23],[53,45],[55,44],[55,40]],"knockdown":[[49,21],[51,22],[55,23],[60,26],[61,33],[66,44],[68,56],[70,62],[75,67],[71,59],[69,53],[65,47],[61,45],[61,41],[59,35],[57,27],[54,23]]}},"ragazza":{"cell":88,"ax":44.2,"ay":75,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[51,22],[51,22],[52,22],[54,41],[54,38],[54,40],[54,41]],"walk":[[51,22],[51,21],[52,22],[53,47],[51,21],[51,22],[51,21],[54,44],[54,47]],"attack":[[51,22],[51,22],[54,46],[65,39],[66,38],[67,37],[57,26],[57,27],[56,39]],"hurt":[[51,22],[52,22],[54,23],[56,24],[57,27]],"knockdown":[[51,22],[53,23],[55,24],[57,26],[60,31],[64,44],[65,50],[69,56],[70,58],[69,57],[69,54],[66,48],[62,43],[59,38],[56,33],[55,28],[53,24]]}},"carab":{"cell":108,"ax":53.6,"ay":92,"h":76,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"close":[5,7],"far":[6,9]},"fist":{"idle":[[63,42],[63,41],[65,56],[65,56],[64,57],[63,42],[63,41]],"walk":[[63,42],[63,43],[63,45],[63,46],[63,44],[63,43],[65,56],[68,56],[69,57]],"attack":[[63,42],[63,42],[63,27],[70,50],[67,46],[65,51],[89,47],[82,48],[77,48]],"hurt":[[63,42],[63,42],[63,43],[74,54],[77,46]],"knockdown":[[63,42],[64,27],[65,28],[71,59],[80,63],[89,70],[87,76],[90,78],[88,73],[90,78],[85,62],[83,57],[78,54],[74,49],[68,38],[67,32],[65,28]],"close":[[63,42],[63,42],[67,56],[74,49],[79,39],[80,39],[75,42]],"far":[[63,42],[63,42],[63,26],[64,27],[65,55],[63,26],[73,56],[93,35],[92,30]]}},"luca":{"cell":108,"ax":54.2,"ay":92,"h":76,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"far":[5,7]},"fist":{"idle":[[63,28],[63,25],[64,30],[65,29],[66,31],[66,32],[65,30]],"walk":[[63,28],[63,27],[63,29],[63,30],[63,29],[63,28],[63,27],[66,57],[64,57]],"attack":[[63,28],[64,28],[73,52],[72,39],[72,48],[96,46],[83,47],[74,38],[77,39]],"hurt":[[63,28],[65,26],[67,27],[69,26],[66,26]],"knockdown":[[63,28],[65,28],[67,29],[71,31],[75,38],[82,47],[87,63],[90,72],[91,74],[91,69],[88,64],[83,58],[78,52],[78,50],[74,42],[71,33],[67,28]],"far":[[63,28],[64,29],[66,30],[68,32],[76,51],[76,45],[76,51]]}},"gianni":{"cell":112,"ax":56.8,"ay":95,"h":77,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"close":[5,7]},"fist":{"idle":[[64,27],[64,27],[66,59],[68,59],[68,59],[68,56],[68,57]],"walk":[[64,27],[64,26],[64,28],[65,30],[65,29],[64,27],[66,58],[74,59],[71,60]],"attack":[[64,27],[64,27],[69,55],[72,40],[69,46],[89,44],[64,30],[68,47],[72,52]],"hurt":[[64,27],[66,60],[72,61],[76,49],[82,45]],"knockdown":[[64,27],[64,28],[67,31],[72,37],[75,41],[81,57],[86,74],[90,80],[92,86],[90,79],[88,72],[85,65],[79,58],[76,55],[75,45],[74,36],[69,32]],"close":[[64,27],[64,29],[75,58],[76,49],[81,37],[79,34],[81,46]]}},"marco":{"cell":112,"ax":55.1,"ay":95,"h":77,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"close":[5,7]},"fist":{"idle":[[63,28],[64,28],[66,59],[70,58],[73,55],[68,58],[64,58]],"walk":[[63,28],[63,27],[66,59],[63,31],[63,30],[63,28],[65,57],[71,58],[71,59]],"attack":[[63,28],[63,28],[65,59],[69,59],[72,51],[84,61],[78,46],[75,56],[63,47]],"hurt":[[63,28],[64,27],[72,51],[72,47],[72,51]],"knockdown":[[63,28],[65,29],[67,32],[70,33],[75,38],[80,56],[84,75],[87,74],[87,75],[87,74],[86,72],[81,63],[73,55],[74,44],[73,35],[71,29],[67,28]],"close":[[63,28],[65,54],[76,46],[90,57],[84,50],[76,40],[68,58]]}},"paolo":{"cell":112,"ax":56.5,"ay":95,"h":76,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"close":[5,9]},"fist":{"idle":[[63,32],[63,32],[63,33],[65,59],[67,59],[71,60],[68,61]],"walk":[[63,32],[63,31],[63,31],[64,59],[65,28],[64,32],[64,31],[66,58],[68,59]],"attack":[[63,32],[63,32],[67,58],[75,54],[74,43],[75,40],[79,43],[78,46],[76,51]],"hurt":[[63,32],[66,30],[70,61],[72,57],[66,59]],"knockdown":[[63,32],[64,28],[66,29],[68,32],[75,36],[80,42],[86,53],[90,72],[92,80],[91,74],[90,70],[85,63],[78,57],[77,54],[73,53],[72,42],[71,59]],"close":[[63,32],[66,32],[70,30],[77,58],[81,61],[81,59],[81,62],[78,59],[75,55]]}},"beachm":{"cell":92,"ax":45.4,"ay":78,"h":64,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[52,22],[52,22],[53,23],[58,43],[59,39],[58,38],[59,39]],"walk":[[52,22],[52,23],[52,24],[52,24],[52,22],[52,21],[53,46],[56,47],[56,49]],"attack":[[52,22],[52,22],[53,23],[59,34],[55,42],[78,32],[61,29],[69,34],[76,29]],"hurt":[[52,22],[54,25],[56,48],[60,39],[58,43]],"knockdown":[[52,22],[53,22],[56,24],[59,28],[62,33],[66,44],[69,54],[74,61],[76,64],[76,66],[73,61],[71,56],[68,49],[66,43],[54,25],[51,22],[53,47]]}},"beachf":{"cell":88,"ax":43.0,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[49,43],[49,44],[51,21],[56,21],[55,22],[55,21],[57,22]],"walk":[[49,43],[48,19],[48,21],[49,47],[48,21],[48,20],[48,19],[52,45],[56,47]],"attack":[[49,43],[51,40],[53,38],[68,33],[69,33],[63,33],[59,35],[54,39],[50,44]],"hurt":[[49,43],[54,43],[55,28],[57,25],[67,29]],"knockdown":[[49,43],[49,43],[53,23],[62,24],[66,41],[71,52],[72,54],[73,55],[73,56],[73,57],[73,56],[71,50],[67,46],[64,41],[61,31],[59,25],[50,46]]}},"lifeguard":{"cell":88,"ax":44.1,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[51,35],[52,35],[53,35],[55,36],[56,37],[54,36],[52,35]],"walk":[[51,35],[50,31],[50,30],[50,32],[51,37],[52,36],[54,34],[55,32],[55,32]],"attack":[[51,35],[52,35],[52,46],[59,38],[68,27],[68,28],[68,29],[70,28],[56,44]],"hurt":[[51,35],[51,22],[53,23],[53,46],[54,46]],"knockdown":[[51,35],[51,20],[54,21],[57,25],[62,32],[66,43],[69,51],[68,54],[70,57],[70,55],[68,49],[66,46],[63,45],[61,41],[58,30],[59,45],[63,39]]}},"clubm":{"cell":88,"ax":43.7,"ay":75,"h":59,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[50,23],[49,38],[54,46],[58,39],[57,35],[58,39],[57,46]],"walk":[[50,23],[50,22],[50,23],[50,23],[50,24],[50,22],[50,22],[50,22],[50,23]],"attack":[[50,23],[50,23],[55,44],[58,34],[55,32],[55,33],[60,35],[71,32],[68,35]],"hurt":[[50,23],[51,23],[54,24],[57,40],[58,35]],"knockdown":[[50,23],[52,23],[54,23],[58,26],[63,31],[66,44],[74,63],[69,57],[73,65],[73,65],[67,53],[64,47],[62,46],[61,45],[59,32],[57,28],[53,28]]}},"clubf":{"cell":88,"ax":43.7,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[50,30],[50,29],[51,42],[54,42],[55,41],[54,42],[52,44]],"walk":[[50,30],[53,45],[56,43],[55,45],[50,31],[50,30],[53,43],[57,42],[56,44]],"attack":[[50,30],[54,42],[57,40],[55,43],[57,43],[62,34],[65,18],[67,33],[56,41]],"hurt":[[50,30],[50,44],[50,43],[54,35],[55,32]],"knockdown":[[50,30],[50,22],[53,22],[57,25],[62,46],[65,54],[71,65],[71,66],[72,68],[70,63],[68,58],[65,52],[61,48],[61,51],[60,45],[57,36],[50,23]]}},"mafioso":{"cell":112,"ax":54.8,"ay":95,"h":77,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"close":[5,7],"far":[6,7]},"fist":{"idle":[[65,27],[65,46],[66,57],[72,59],[76,58],[76,54],[74,59]],"walk":[[65,27],[65,27],[65,29],[65,29],[65,26],[65,26],[67,58],[69,57],[69,58]],"attack":[[65,27],[65,27],[65,27],[66,59],[72,59],[80,47],[91,42],[80,51],[74,57]],"hurt":[[65,27],[65,29],[70,56],[73,48],[75,49]],"knockdown":[[65,27],[67,28],[70,30],[74,33],[77,36],[80,50],[86,64],[90,70],[91,73],[89,66],[87,64],[82,60],[78,59],[76,57],[72,40],[72,61],[71,59]],"close":[[65,27],[66,28],[75,60],[83,53],[81,50],[83,52],[82,59]],"far":[[65,27],[66,58],[79,44],[71,30],[70,31],[79,49],[65,27]]}},"beast":{"cell":112,"ax":52.2,"ay":95,"h":78,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"close":[5,9],"far":[6,9]},"fist":{"idle":[[69,26],[70,27],[71,28],[71,29],[71,28],[70,27],[69,26]],"walk":[[69,26],[69,27],[69,28],[69,28],[69,27],[69,25],[69,26],[69,27],[69,29]],"attack":[[69,26],[70,26],[70,27],[78,60],[80,55],[97,40],[96,49],[80,58],[72,58]],"hurt":[[69,26],[70,27],[69,32],[67,26],[66,25]],"knockdown":[[69,26],[71,27],[74,29],[80,32],[83,36],[90,57],[93,75],[95,77],[94,76],[94,76],[94,71],[90,60],[82,44],[78,42],[74,31],[70,27],[68,26]],"close":[[69,26],[68,27],[67,25],[73,56],[88,50],[72,28],[75,29],[72,27],[71,26]],"far":[[69,26],[70,26],[71,27],[73,28],[73,29],[85,57],[83,48],[85,49],[84,54]]}},"quick":{"cell":88,"ax":44.1,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"close":[5,7],"far":[6,7]},"fist":{"idle":[[50,44],[53,46],[56,46],[57,43],[58,43],[57,43],[56,45]],"walk":[[50,44],[49,20],[49,22],[49,21],[49,20],[53,46],[56,47],[54,46],[51,44]],"attack":[[50,44],[50,44],[52,46],[58,41],[58,38],[59,36],[60,39],[75,36],[59,42]],"hurt":[[50,44],[53,47],[54,46],[56,38],[62,46]],"knockdown":[[50,44],[51,21],[53,22],[57,24],[59,31],[63,43],[74,66],[68,57],[67,54],[67,54],[67,56],[67,56],[68,57],[65,52],[59,42],[57,30],[63,46]],"close":[[50,44],[49,21],[53,47],[60,37],[60,32],[59,33],[60,41]],"far":[[50,44],[50,24],[55,45],[64,41],[65,43],[65,45],[70,43]]}},"marc02":{"cell":88,"ax":43.4,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9]},"fist":{"idle":[[49,26],[50,26],[56,39],[54,30],[55,27],[54,32],[54,34]],"walk":[[49,26],[49,26],[55,45],[57,40],[55,32],[56,27],[55,24],[55,22],[56,26]]}},"kelly":{"cell":88,"ax":43.3,"ay":75,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"jab":[2,7],"hook":[3,7],"kick":[4,7],"jumpkick":[5,7],"hurt":[6,5],"knockdown":[7,17],"special":[8,9],"run":[9,9],"grab":[10,5],"knee":[11,7],"throw":[12,9],"backkick":[13,7],"pickup":[14,7],"swing":[15,9],"mini":[16,9]},"fist":{"idle":[[47,44],[47,44],[50,50],[53,47],[53,46],[53,47],[54,48]],"walk":[[47,44],[47,54],[49,54],[49,54],[46,55],[44,44],[51,51],[54,50],[55,51]],"jab":[[47,44],[50,50],[57,43],[65,35],[70,36],[70,36],[62,38]],"hook":[[47,44],[47,44],[47,51],[63,43],[63,42],[63,42],[54,43]],"kick":[[47,44],[48,52],[48,50],[45,44],[31,42],[56,38],[55,40]],"jumpkick":[[47,44],[51,50],[55,39],[56,43],[56,28],[51,30],[51,36]],"hurt":[[47,44],[47,43],[47,40],[52,43],[55,41]],"knockdown":[[47,44],[47,38],[47,38],[47,43],[56,60],[65,57],[74,72],[74,72],[74,72],[69,62],[67,57],[62,56],[63,51],[59,46],[47,55],[52,53],[56,48]],"special":[[47,44],[54,47],[55,35],[54,36],[54,35],[50,34],[55,36],[59,39],[50,52]],"run":[[47,44],[47,53],[51,52],[52,51],[51,55],[48,40],[53,48],[57,46],[57,45]],"grab":[[47,44],[45,54],[57,49],[67,37],[67,34]],"knee":[[47,44],[48,46],[53,48],[58,40],[56,35],[55,36],[58,43]],"throw":[[47,44],[50,52],[52,48],[52,41],[48,36],[48,36],[47,36],[58,40],[72,47]],"backkick":[[47,44],[50,52],[48,46],[62,40],[55,43],[51,44],[48,52]],"pickup":[[47,44],[45,54],[51,55],[54,58],[53,59],[55,61],[52,55]],"swing":[[47,44],[53,47],[58,31],[45,36],[32,21],[34,21],[47,38],[63,34],[60,41]],"mini":[[47,44],[79,39],[59,35],[50,35],[43,37],[47,36],[48,37],[52,43],[52,48]]}},"sam":{"cell":84,"ax":41.6,"ay":72,"h":60,"rows":{"idle":[0,7],"walk":[1,9],"jab":[2,7],"hook":[3,7],"kick":[4,7],"jumpkick":[5,7],"hurt":[6,5],"knockdown":[7,17],"special":[8,9],"run":[9,9],"grab":[10,5],"knee":[11,7],"throw":[12,9],"backkick":[13,7],"pickup":[14,7],"swing":[15,9],"mini":[16,9]},"fist":{"idle":[[49,47],[50,47],[52,46],[53,46],[54,45],[53,46],[51,48]],"walk":[[49,47],[44,50],[48,49],[48,51],[46,51],[47,49],[51,47],[54,45],[56,50]],"jab":[[49,47],[50,47],[57,44],[62,35],[45,32],[46,37],[43,34]],"hook":[[49,47],[44,51],[52,47],[59,34],[28,44],[59,33],[56,37]],"kick":[[49,47],[43,50],[51,47],[56,36],[56,33],[55,34],[54,41]],"jumpkick":[[49,47],[53,47],[55,42],[57,30],[20,48],[41,30],[58,36]],"hurt":[[49,47],[48,48],[49,46],[53,37],[54,38]],"knockdown":[[49,47],[39,51],[38,52],[51,50],[57,54],[65,60],[68,62],[70,65],[67,62],[66,61],[65,56],[62,51],[59,46],[58,45],[55,39],[53,33],[36,50]],"special":[[49,47],[56,42],[58,32],[34,50],[29,48],[29,48],[28,47],[31,49],[54,29]],"run":[[49,47],[45,51],[49,49],[50,49],[47,49],[42,50],[52,46],[56,43],[54,45]],"grab":[[49,47],[54,45],[62,39],[66,30],[63,31]],"knee":[[49,47],[49,46],[52,42],[52,36],[51,36],[52,39],[51,47]],"throw":[[49,47],[52,46],[55,41],[53,37],[49,38],[48,36],[48,35],[59,40],[40,37]],"backkick":[[49,47],[50,46],[50,46],[52,44],[55,41],[59,38],[59,34]],"pickup":[[49,47],[48,48],[49,49],[53,56],[54,48],[53,41],[53,52]],"swing":[[49,47],[51,47],[55,44],[49,19],[42,25],[39,22],[21,21],[69,38],[64,42]],"mini":[[49,47],[55,42],[58,31],[56,31],[56,31],[56,31],[59,31],[57,38],[52,44]]}},"ranger":{"cell":88,"ax":44.0,"ay":75,"h":62,"rows":{"idle":[0,7],"attack":[1,7]},"fist":{"idle":[[56,21],[57,20],[58,22],[58,23],[59,23],[57,22],[56,21]],"attack":[[56,21],[55,20],[54,43],[53,39],[53,42],[71,37],[71,38]]}},"marc":{"cell":88,"ax":43.8,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"jab":[2,7],"hook":[3,7],"kick":[4,7],"jumpkick":[5,7],"hurt":[6,5],"knockdown":[7,17],"special":[8,9],"run":[9,9],"grab":[10,5],"knee":[11,7],"throw":[12,9],"backkick":[13,7],"pickup":[14,7],"swing":[15,9],"mini":[16,9]},"fist":{"idle":[[45,56],[45,57],[47,55],[53,50],[56,48],[54,50],[48,53]],"walk":[[45,56],[47,55],[50,55],[52,54],[52,56],[46,56],[50,52],[56,51],[55,51]],"jab":[[45,56],[44,56],[42,56],[58,40],[73,35],[63,41],[43,56]],"hook":[[45,56],[51,44],[53,41],[65,34],[71,35],[65,34],[54,43]],"kick":[[45,56],[44,56],[41,56],[38,57],[33,56],[36,56],[41,56]],"jumpkick":[[45,56],[47,55],[49,55],[56,38],[24,51],[61,32],[59,40]],"hurt":[[45,56],[47,55],[50,50],[57,43],[58,47]],"knockdown":[[45,56],[44,56],[49,55],[53,56],[58,57],[53,41],[66,54],[68,60],[69,63],[69,61],[66,55],[65,50],[63,48],[59,45],[58,51],[43,60],[49,54]],"special":[[45,56],[53,53],[58,40],[56,32],[54,30],[54,30],[55,36],[71,38],[73,35]],"run":[[45,56],[48,56],[52,55],[51,56],[47,57],[44,57],[40,55],[55,54],[53,55]],"grab":[[45,56],[55,53],[63,42],[65,39],[64,35]],"knee":[[45,56],[43,56],[38,56],[35,55],[29,55],[33,55],[37,56]],"throw":[[45,56],[44,55],[53,52],[47,43],[42,38],[35,41],[42,38],[68,38],[73,40]],"backkick":[[45,56],[46,55],[48,57],[53,52],[56,49],[53,54],[49,56]],"pickup":[[45,56],[47,57],[49,56],[52,56],[53,61],[52,60],[51,54]],"swing":[[45,56],[51,53],[59,41],[37,24],[45,24],[46,24],[39,25],[62,44],[64,42]],"mini":[[45,56],[45,56],[48,52],[45,44],[59,41],[58,45],[56,46],[57,41],[49,53]]}}};
+const SPRITE_META = {/* NL meta */"city":{"cell":88,"ax":44.5,"ay":74,"h":60,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"throw":[5,9]},"fist":{}},"itgirl":{"cell":92,"ax":45.0,"ay":77,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"kick":[5,7]},"fist":{}},"burb":{"cell":92,"ax":47.5,"ay":77,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{}},"hoops":{"cell":96,"ax":45.0,"ay":79,"h":63,"rows":{"idle":[0,4],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"pull":[5,7]},"fist":{}},"snood":{"cell":92,"ax":46.0,"ay":77,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{}},"puffer":{"cell":92,"ax":46.5,"ay":77,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"dash":[5,7]},"fist":{}},"hood":{"cell":92,"ax":46.5,"ay":77,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{}},"grappler":{"cell":96,"ax":47.5,"ay":80,"h":63,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"hold":[5,7]},"fist":{}},"dipper":{"cell":88,"ax":44.5,"ay":74,"h":60,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"dodge":[5,7],"steal":[6,7]},"fist":{}},"lookout":{"cell":88,"ax":44.5,"ay":73,"h":59,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"whistle":[5,7]},"fist":{}},"stag":{"cell":92,"ax":43.0,"ay":77,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"stagger":[5,7]},"fist":{}},"groom":{"cell":92,"ax":45.0,"ay":77,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{}},"inspector":{"cell":112,"ax":57.0,"ay":94,"h":76,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"attack2":[5,9],"block":[6,7],"shout":[7,7]},"fist":{}},"lenny":{"cell":112,"ax":55.0,"ay":94,"h":75,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"attack2":[5,9],"pull":[6,7],"charge":[7,9]},"fist":{}},"jeweller":{"cell":116,"ax":57.5,"ay":97,"h":78,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"glint":[5,7],"grab":[6,9]},"fist":{}},"commuter":{"cell":92,"ax":46.5,"ay":77,"h":62,"rows":{"idle":[0,7],"walk":[1,9]},"fist":{}},"oldboy":{"cell":92,"ax":49.0,"ay":77,"h":62,"rows":{"idle":[0,7],"walk":[1,9]},"fist":{}},"smiler":{"cell":96,"ax":45.0,"ay":80,"h":63,"rows":{"idle":[0,7],"walk":[1,7],"throw":[2,9]},"fist":{}},/* NL meta end */"thet":{"cell":64,"ax":32.0,"ay":53,"h":42,"rows":{"idle":[0,7],"walk":[1,9],"jab":[2,7],"hook":[3,7],"kick":[4,7],"jumpkick":[5,7],"hurt":[6,5],"knockdown":[7,17],"special":[8,9],"run":[9,9],"grab":[10,5],"knee":[11,7],"throw":[12,9],"backkick":[13,7],"pickup":[14,7],"swing":[15,7],"mini":[16,9]},"fist":{"idle":[[37,23],[40,31],[38,26],[40,30],[39,29],[40,30],[38,26]],"walk":[[37,23],[36,22],[38,24],[42,35],[43,33],[43,32],[43,32],[43,33],[43,33]],"jab":[[37,23],[38,23],[38,24],[40,32],[39,34],[38,34],[39,34]],"hook":[[37,23],[37,23],[36,23],[45,31],[43,26],[42,26],[44,31]],"kick":[[37,23],[38,24],[37,24],[37,28],[41,25],[37,29],[38,34]],"jumpkick":[[37,23],[36,26],[39,37],[42,26],[41,22],[42,24],[43,27]],"hurt":[[37,23],[36,23],[43,30],[41,28],[40,29]],"knockdown":[[37,23],[35,24],[38,24],[40,24],[44,27],[45,28],[47,37],[48,39],[48,47],[47,45],[47,46],[47,44],[47,43],[46,41],[44,36],[43,31],[40,24]],"special":[[37,23],[36,25],[40,25],[42,35],[43,34],[40,27],[43,22],[44,24],[41,28]],"run":[[37,23],[36,22],[38,34],[40,33],[37,24],[37,23],[39,32],[42,30],[42,32]],"grab":[[37,23],[37,24],[37,23],[42,27],[38,22]],"knee":[[37,23],[38,24],[38,25],[36,24],[32,25],[38,24],[40,23]],"throw":[[37,23],[38,23],[39,24],[42,34],[44,27],[39,27],[21,25],[38,24],[46,44]],"backkick":[[37,23],[34,33],[37,32],[40,31],[45,39],[41,38],[38,31]],"pickup":[[37,23],[39,24],[39,25],[40,29],[42,33],[41,44],[37,39]],"swing":[[37,23],[37,23],[36,23],[45,31],[43,26],[42,26],[44,31]],"mini":[[37,23],[38,23],[39,37],[38,26],[40,37],[39,28],[38,29],[44,33],[43,32]]}},"tim":{"cell":88,"ax":42.8,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"jab":[2,7],"hook":[3,7],"kick":[4,7],"jumpkick":[5,7],"hurt":[6,5],"knockdown":[7,17],"special":[8,9],"run":[9,9],"grab":[10,5],"knee":[11,7],"throw":[12,9],"backkick":[13,7],"pickup":[14,7],"swing":[15,9],"mini":[16,9]},"fist":{"idle":[[68,39],[69,37],[67,37],[63,36],[61,30],[62,29],[62,32]],"walk":[[68,39],[69,37],[68,37],[66,38],[64,39],[62,39],[62,30],[63,30],[64,31]],"jab":[[68,39],[70,37],[69,33],[74,35],[56,36],[69,33],[74,34]],"hook":[[68,39],[70,37],[62,38],[72,34],[70,35],[72,35],[63,35]],"kick":[[68,39],[66,41],[57,40],[59,44],[72,37],[72,40],[52,32]],"jumpkick":[[68,39],[63,42],[57,33],[57,44],[73,28],[61,45],[54,32]],"hurt":[[68,39],[67,36],[62,36],[60,36],[57,37]],"knockdown":[[68,39],[67,37],[65,35],[63,31],[60,31],[58,31],[70,42],[72,54],[74,60],[75,62],[75,60],[75,60],[74,59],[73,59],[71,59],[60,49],[57,45]],"special":[[68,39],[64,44],[64,32],[70,45],[74,50],[74,49],[73,52],[75,55],[75,57]],"run":[[68,39],[68,33],[68,30],[69,36],[65,41],[59,42],[63,34],[64,30],[62,34]],"grab":[[68,39],[67,35],[67,35],[65,35],[63,36]],"knee":[[68,39],[69,37],[67,36],[63,36],[64,46],[63,37],[66,40]],"throw":[[68,39],[66,37],[62,37],[61,41],[59,46],[59,34],[58,25],[58,22],[74,53]],"backkick":[[68,39],[66,36],[65,33],[70,34],[74,34],[69,35],[66,38]],"pickup":[[68,39],[68,45],[61,26],[62,31],[63,35],[62,28],[64,40]],"swing":[[68,39],[66,36],[55,27],[28,18],[14,25],[21,21],[59,27],[73,45],[66,47]],"mini":[[68,39],[67,36],[66,36],[59,34],[63,33],[63,34],[62,35],[70,39],[67,28]]}},"pearcy":{"cell":88,"ax":42.8,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"jab":[2,7],"hook":[3,7],"kick":[4,7],"jumpkick":[5,7],"hurt":[6,5],"knockdown":[7,17],"special":[8,9],"run":[9,9],"grab":[10,5],"knee":[11,7],"throw":[12,9],"backkick":[13,7],"pickup":[14,7],"swing":[15,9],"mini":[16,9]},"fist":{"idle":[[62,36],[62,36],[60,34],[59,33],[62,34],[61,36],[59,34]],"walk":[[62,36],[62,36],[59,39],[58,33],[60,31],[59,33],[58,35],[58,33],[57,34]],"jab":[[62,36],[69,33],[78,32],[72,32],[78,31],[73,32],[62,36]],"hook":[[62,36],[60,35],[56,37],[56,36],[58,35],[56,36],[78,31]],"kick":[[62,36],[59,38],[57,32],[57,30],[71,38],[74,42],[57,30]],"jumpkick":[[62,36],[65,38],[59,35],[61,43],[74,38],[60,43],[55,31]],"hurt":[[62,36],[62,36],[59,37],[72,34],[64,36]],"knockdown":[[62,36],[66,35],[66,33],[63,38],[59,40],[61,37],[54,50],[54,54],[73,61],[72,63],[72,63],[71,62],[71,63],[69,60],[61,58],[55,56],[54,49]],"special":[[62,36],[62,31],[58,27],[57,27],[55,27],[59,41],[60,42],[66,43],[68,34]],"run":[[62,36],[64,33],[63,31],[62,35],[60,41],[58,36],[61,32],[62,30],[62,35]],"grab":[[62,36],[62,36],[61,35],[59,32],[58,32]],"knee":[[62,36],[63,36],[59,36],[62,30],[68,46],[58,34],[55,37]],"throw":[[62,36],[57,36],[57,37],[56,40],[55,41],[55,30],[48,24],[55,28],[76,39]],"backkick":[[62,36],[61,38],[65,33],[72,36],[76,38],[71,35],[65,32]],"pickup":[[62,36],[64,43],[60,48],[61,32],[62,38],[59,33],[65,45]],"swing":[[62,36],[62,39],[56,24],[45,31],[48,24],[46,22],[45,23],[64,31],[62,39]],"mini":[[62,36],[60,32],[59,32],[59,32],[60,34],[60,34],[60,32],[64,38],[61,43]]}},"seb":{"cell":88,"ax":43.9,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"jab":[2,7],"hook":[3,7],"kick":[4,7],"jumpkick":[5,7],"hurt":[6,5],"knockdown":[7,17],"special":[8,9],"run":[9,9],"grab":[10,5],"knee":[11,7],"throw":[12,9],"backkick":[13,7],"pickup":[14,7],"swing":[15,9],"mini":[16,9]},"fist":{"idle":[[65,32],[63,33],[62,31],[60,28],[60,30],[61,31],[62,32]],"walk":[[65,32],[65,29],[66,30],[67,33],[65,35],[61,36],[61,30],[62,30],[62,32]],"jab":[[65,32],[66,29],[68,29],[73,32],[61,31],[70,32],[76,32]],"hook":[[65,32],[66,31],[67,31],[74,31],[77,30],[76,30],[71,33]],"kick":[[65,32],[62,36],[55,31],[59,44],[72,33],[72,34],[59,45]],"jumpkick":[[65,32],[64,34],[60,36],[58,44],[73,28],[61,45],[60,26]],"hurt":[[65,32],[62,32],[61,30],[62,31],[60,39]],"knockdown":[[65,32],[68,34],[70,37],[73,25],[71,38],[63,34],[63,42],[75,58],[76,64],[76,64],[76,64],[75,59],[74,59],[71,58],[66,58],[55,52],[53,48]],"special":[[65,32],[63,27],[58,24],[60,25],[60,35],[62,28],[65,26],[77,25],[77,28]],"run":[[65,32],[66,30],[66,26],[66,29],[64,37],[60,35],[62,30],[66,30],[67,35]],"grab":[[65,32],[64,32],[64,32],[64,34],[64,35]],"knee":[[65,32],[67,34],[61,35],[59,46],[69,39],[58,32],[62,34]],"throw":[[65,32],[62,34],[59,35],[59,46],[57,36],[55,28],[53,31],[60,30],[76,42]],"backkick":[[65,32],[67,32],[71,34],[74,39],[76,39],[76,36],[72,37]],"pickup":[[65,32],[66,36],[66,44],[62,36],[63,39],[61,34],[61,44]],"swing":[[65,32],[57,28],[39,23],[33,26],[24,23],[23,19],[29,20],[73,38],[71,40]],"mini":[[65,32],[60,32],[61,27],[64,30],[60,30],[64,28],[67,25],[75,32],[74,39]]}},"byron":{"cell":88,"ax":42.9,"ay":75,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"jab":[2,7],"hook":[3,7],"kick":[4,7],"jumpkick":[5,7],"hurt":[6,5],"knockdown":[7,17],"special":[8,9],"run":[9,9],"grab":[10,5],"knee":[11,7],"throw":[12,9],"backkick":[13,7],"pickup":[14,7],"swing":[15,3],"mini":[16,9]},"fist":{"idle":[[60,44],[61,42],[62,40],[62,42],[61,43],[59,42],[58,41]],"walk":[[60,44],[62,42],[63,41],[63,42],[62,44],[59,45],[57,44],[59,43],[60,43]],"jab":[[60,44],[59,45],[58,40],[69,35],[74,34],[72,37],[60,35]],"hook":[[60,44],[58,44],[55,44],[60,38],[65,34],[65,37],[67,38]],"kick":[[60,44],[57,46],[55,40],[53,45],[69,36],[73,42],[54,46]],"jumpkick":[[60,44],[61,47],[56,41],[60,35],[65,45],[60,34],[58,40]],"hurt":[[60,44],[61,44],[62,42],[62,38],[61,40]],"knockdown":[[60,44],[60,47],[58,22],[58,43],[62,37],[60,47],[63,59],[67,58],[74,63],[74,62],[72,62],[52,60],[51,57],[53,55],[55,51],[53,46],[56,44]],"special":[[60,44],[62,44],[60,33],[58,32],[57,32],[58,34],[60,35],[75,35],[75,37]],"run":[[60,44],[63,42],[64,41],[65,42],[62,44],[56,21],[59,40],[62,39],[63,40]],"grab":[[60,44],[61,44],[61,42],[60,41],[59,41]],"knee":[[60,44],[61,43],[59,44],[54,46],[63,45],[55,46],[54,23]],"throw":[[60,44],[58,45],[58,43],[59,26],[60,48],[62,29],[49,41],[58,22],[76,52]],"backkick":[[60,44],[62,44],[65,42],[68,43],[69,44],[68,44],[65,43]],"pickup":[[60,44],[59,47],[61,24],[62,29],[62,31],[60,26],[62,46]],"swing":[[60,44],[42,21],[67,38]],"mini":[[60,44],[59,22],[61,43],[65,40],[50,47],[70,55],[67,53],[36,36],[38,37]]}},"bouncer":{"cell":88,"ax":43.5,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[52,20],[52,20],[53,21],[58,47],[60,47],[58,47],[54,21]],"walk":[[52,20],[52,20],[52,21],[52,22],[52,21],[52,20],[54,45],[57,46],[54,46]],"attack":[[52,20],[52,20],[55,45],[60,45],[62,41],[61,45],[74,34],[75,40],[60,41]],"hurt":[[52,20],[54,22],[57,47],[60,46],[62,46]],"knockdown":[[52,20],[53,20],[56,21],[60,23],[62,25],[67,31],[70,43],[71,51],[73,58],[73,59],[73,58],[70,53],[67,45],[65,38],[62,30],[59,48],[59,46]]}},"townie":{"cell":84,"ax":41.3,"ay":72,"h":60,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[52,35],[52,34],[53,35],[54,37],[55,40],[55,40],[54,37]],"walk":[[52,35],[52,38],[49,20],[49,20],[49,19],[49,19],[49,19],[53,44],[54,42]],"attack":[[52,35],[53,33],[53,32],[54,31],[53,30],[53,34],[57,36],[73,29],[52,37]],"hurt":[[52,35],[52,33],[53,25],[54,24],[54,41]],"knockdown":[[52,35],[54,37],[55,39],[54,44],[56,22],[63,30],[67,41],[69,52],[69,54],[69,54],[68,53],[66,50],[63,43],[62,39],[59,32],[55,27],[50,20]]}},"vibez":{"cell":84,"ax":42.1,"ay":72,"h":60,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[51,19],[52,19],[52,20],[55,44],[56,43],[55,44],[52,20]],"walk":[[51,19],[51,19],[51,20],[52,20],[51,20],[51,19],[51,18],[52,43],[52,44]],"attack":[[51,19],[51,19],[51,19],[53,38],[55,32],[53,20],[56,31],[64,32],[59,35]],"hurt":[[51,19],[52,20],[54,22],[55,41],[54,20]],"knockdown":[[51,19],[53,20],[56,21],[59,24],[63,28],[67,33],[71,44],[70,60],[71,62],[73,61],[72,55],[69,47],[66,42],[62,39],[61,33],[56,25],[55,42]]}},"parkie":{"cell":108,"ax":55.4,"ay":92,"h":76,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"close":[5,7]},"fist":{"idle":[[67,35],[68,34],[68,34],[69,29],[70,28],[68,27],[67,27]],"walk":[[67,35],[66,34],[66,30],[67,46],[67,37],[67,25],[67,24],[69,53],[69,56]],"attack":[[67,35],[69,31],[74,35],[80,46],[74,52],[78,50],[91,51],[77,50],[78,37]],"hurt":[[67,35],[70,31],[69,31],[67,26],[66,38]],"knockdown":[[67,35],[69,25],[74,27],[77,34],[78,40],[79,45],[84,56],[87,56],[90,70],[92,76],[92,77],[91,68],[88,64],[86,62],[77,49],[78,53],[73,40]],"close":[[67,35],[70,35],[77,38],[73,28],[80,38],[84,38],[83,37]]}},"dti":{"cell":88,"ax":43.7,"ay":75,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[59,39],[59,39],[59,38],[60,38],[60,37],[60,37],[60,38]],"walk":[[59,39],[57,38],[56,39],[56,40],[57,40],[59,39],[60,38],[62,39],[62,40]],"attack":[[59,39],[60,39],[61,39],[62,39],[62,38],[63,38],[62,39],[70,44],[66,42]],"hurt":[[59,39],[62,36],[61,34],[62,33],[62,35]],"knockdown":[[59,39],[62,39],[64,40],[65,39],[68,42],[69,46],[74,57],[74,53],[76,56],[74,52],[72,56],[69,56],[64,36],[64,32],[60,26],[56,23],[60,44]]}},"mc":{"cell":108,"ax":53.0,"ay":91,"h":75,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"close":[5,7],"far":[6,7]},"fist":{"idle":[[64,28],[65,29],[66,29],[66,29],[64,28],[63,28],[62,28]],"walk":[[64,28],[64,29],[64,30],[64,31],[64,30],[64,28],[68,56],[71,56],[69,58]],"attack":[[64,28],[64,27],[64,28],[70,49],[70,49],[71,53],[70,49],[72,52],[69,57]],"hurt":[[64,28],[63,25],[64,56],[67,57],[63,26]],"knockdown":[[64,28],[65,28],[67,29],[70,31],[74,35],[79,43],[80,54],[85,63],[87,69],[86,67],[84,63],[82,62],[78,53],[76,47],[72,41],[68,35],[61,27]],"close":[[64,28],[63,27],[74,56],[82,35],[67,49],[68,30],[77,56]],"far":[[64,28],[63,27],[62,26],[61,56],[61,28],[92,43],[95,36]]}},"chunk":{"cell":88,"ax":43.5,"ay":75,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[57,44],[57,45],[60,45],[63,43],[62,45],[63,43],[62,46]],"walk":[[57,44],[57,44],[57,45],[58,45],[58,43],[58,41],[58,43],[58,45],[57,45]],"attack":[[57,44],[58,45],[55,45],[53,44],[57,44],[70,35],[73,34],[72,37],[65,40]],"hurt":[[57,44],[66,28],[57,37],[61,41],[58,46]],"knockdown":[[57,44],[56,44],[53,41],[55,41],[59,29],[62,39],[68,51],[73,59],[73,59],[73,59],[72,55],[71,50],[69,45],[65,39],[61,34],[67,45],[60,47]]}},"ladette":{"cell":88,"ax":43.9,"ay":75,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[51,21],[53,32],[56,32],[60,33],[56,32],[60,33],[56,32]],"walk":[[51,21],[51,20],[55,46],[57,45],[54,47],[51,21],[52,45],[56,44],[59,42]],"attack":[[51,21],[51,21],[52,21],[59,31],[70,33],[71,34],[69,34],[63,34],[54,38]],"hurt":[[51,21],[77,28],[55,24],[53,33],[54,23]],"knockdown":[[51,21],[54,22],[57,24],[61,29],[64,37],[67,50],[69,57],[68,57],[69,58],[69,56],[65,49],[62,46],[60,46],[58,42],[56,35],[54,31],[52,24]]}},"angler":{"cell":84,"ax":42.5,"ay":72,"h":60,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[57,41],[57,41],[57,41],[56,41],[55,42],[55,42],[57,41]],"walk":[[57,41],[56,41],[56,42],[56,43],[57,43],[58,42],[58,41],[58,41],[58,42]],"attack":[[57,41],[56,42],[55,42],[54,41],[52,41],[69,36],[67,34],[59,40],[53,21]],"hurt":[[57,41],[65,35],[55,40],[55,41],[57,40]],"knockdown":[[57,41],[57,43],[59,43],[60,24],[64,31],[67,43],[69,53],[70,53],[71,54],[71,53],[70,49],[68,51],[65,45],[63,43],[60,34],[58,26],[56,44]]}},"warden":{"cell":84,"ax":43.0,"ay":72,"h":60,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[53,44],[54,44],[54,41],[56,43],[56,43],[55,43],[55,44]],"walk":[[53,44],[51,42],[49,37],[49,38],[49,37],[51,43],[52,41],[54,42],[56,44]],"attack":[[53,44],[53,44],[52,44],[61,38],[69,37],[67,38],[58,38],[67,38],[64,40]],"hurt":[[53,44],[55,42],[56,41],[57,40],[56,42]],"knockdown":[[53,44],[51,43],[52,20],[60,45],[58,26],[62,38],[68,47],[69,54],[70,56],[70,55],[70,55],[70,56],[68,48],[63,41],[61,36],[55,26],[52,42]]}},"farbank":{"cell":88,"ax":45.3,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[59,27],[59,27],[60,46],[62,43],[62,44],[60,46],[59,27]],"walk":[[59,27],[59,27],[60,43],[62,47],[59,28],[59,27],[59,27],[59,28],[59,29]],"attack":[[59,27],[60,28],[66,32],[66,41],[65,44],[65,43],[65,42],[64,39],[59,27]],"hurt":[[59,27],[59,31],[67,46],[59,31],[59,29]],"knockdown":[[59,27],[60,28],[61,28],[63,30],[66,32],[70,40],[74,55],[75,58],[75,57],[75,56],[75,57],[74,57],[72,56],[70,50],[65,39],[62,33],[59,28]]}},"carpbro":{"cell":88,"ax":42.5,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[50,20],[50,20],[53,45],[54,42],[55,38],[55,40],[54,42]],"walk":[[50,20],[50,20],[52,46],[52,47],[50,21],[50,20],[50,20],[54,46],[56,46]],"attack":[[50,20],[50,20],[51,20],[53,39],[60,35],[52,22],[76,28],[70,29],[55,30]],"hurt":[[50,20],[61,35],[63,29],[58,32],[54,42]],"knockdown":[[50,20],[52,21],[58,22],[66,30],[66,39],[70,55],[73,58],[74,63],[74,63],[71,56],[68,49],[68,50],[63,46],[60,40],[58,31],[55,24],[51,20]]}},"regular":{"cell":88,"ax":43.0,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[58,23],[58,24],[58,25],[59,28],[59,29],[59,27],[59,26]],"walk":[[58,23],[58,23],[58,25],[58,26],[58,24],[58,23],[58,23],[58,24],[58,26]],"attack":[[58,23],[58,23],[59,24],[60,24],[72,43],[74,43],[74,43],[70,43],[61,24]],"hurt":[[58,23],[62,25],[64,36],[55,23],[57,22]],"knockdown":[[58,23],[61,25],[63,27],[67,31],[69,38],[73,49],[74,57],[74,57],[74,57],[74,57],[74,54],[73,51],[70,42],[67,38],[59,26],[57,23],[57,23]]}},"darts":{"cell":88,"ax":43.7,"ay":75,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[54,24],[56,26],[55,24],[56,45],[58,46],[57,47],[55,24]],"walk":[[54,24],[54,23],[54,25],[54,26],[54,25],[54,24],[56,46],[61,44],[61,45]],"attack":[[54,24],[54,24],[53,24],[53,24],[54,24],[61,29],[77,35],[82,35],[64,39]],"hurt":[[54,24],[56,23],[63,39],[63,33],[62,43]],"knockdown":[[54,24],[56,25],[57,27],[63,35],[67,41],[71,53],[73,58],[73,58],[73,58],[73,58],[71,59],[67,49],[63,40],[59,39],[58,27],[57,27],[55,45]]}},"nozzer":{"cell":84,"ax":41.4,"ay":72,"h":60,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[53,19],[54,42],[62,36],[65,42],[63,37],[62,39],[57,41]],"walk":[[53,19],[52,19],[51,20],[52,44],[51,20],[52,19],[53,18],[54,19],[54,20]],"attack":[[53,19],[58,37],[66,36],[61,36],[53,34],[65,36],[68,36],[65,36],[53,19]],"hurt":[[53,19],[51,43],[51,44],[52,44],[52,44]],"knockdown":[[53,19],[54,20],[55,20],[64,23],[66,27],[71,38],[74,50],[66,48],[66,47],[65,46],[73,55],[71,49],[64,38],[60,34],[53,23],[55,44],[55,18]]}},"denise":{"cell":108,"ax":52.8,"ay":92,"h":75,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[66,47],[66,47],[66,26],[68,28],[68,28],[67,27],[67,26]],"walk":[[66,47],[66,48],[66,50],[67,50],[67,49],[66,25],[67,52],[74,57],[77,58]],"attack":[[66,47],[66,48],[66,48],[78,53],[77,47],[76,47],[76,47],[78,46],[79,48]],"hurt":[[66,47],[68,27],[98,29],[69,47],[67,57]],"knockdown":[[66,47],[68,26],[70,29],[76,57],[82,57],[84,46],[86,65],[91,69],[92,71],[91,69],[88,63],[84,58],[80,54],[77,49],[73,40],[71,32],[76,57]]}},"hoodie":{"cell":92,"ax":45.0,"ay":78,"h":64,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[56,21],[56,21],[59,47],[60,45],[61,42],[61,42],[62,45]],"walk":[[56,21],[56,22],[56,23],[56,22],[58,47],[61,48],[59,48],[56,21],[55,22]],"attack":[[56,21],[55,21],[55,21],[55,21],[57,21],[59,23],[77,37],[70,46],[57,22]],"hurt":[[56,21],[60,46],[60,45],[62,29],[58,23]],"knockdown":[[56,21],[58,21],[60,22],[64,25],[70,34],[75,50],[76,59],[77,60],[76,63],[76,61],[75,60],[72,56],[68,50],[67,42],[67,36],[66,28],[62,22]]}},"tracksuit":{"cell":88,"ax":43.3,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[50,43],[50,43],[54,46],[57,46],[58,47],[57,46],[56,45]],"walk":[[50,43],[50,43],[50,44],[51,47],[50,44],[50,43],[50,42],[54,46],[55,47]],"attack":[[50,43],[50,43],[52,46],[60,39],[57,32],[59,30],[71,33],[60,31],[56,29]],"hurt":[[50,43],[57,31],[53,41],[53,43],[53,47]],"knockdown":[[50,43],[51,21],[55,47],[63,46],[64,49],[69,55],[70,57],[70,57],[70,58],[68,54],[63,45],[60,42],[58,41],[58,40],[56,30],[60,48],[55,46]]}},"lady":{"cell":108,"ax":54.0,"ay":92,"h":74,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[68,33],[70,34],[71,33],[70,30],[68,30],[65,32],[67,32]],"walk":[[68,33],[68,31],[71,28],[72,29],[71,31],[68,33],[68,31],[71,29],[72,29]],"attack":[[68,33],[68,27],[72,54],[79,49],[80,48],[80,48],[79,46],[75,49],[72,31]],"hurt":[[68,33],[76,39],[106,38],[66,55],[69,27]],"knockdown":[[68,33],[70,35],[72,37],[75,36],[79,56],[82,61],[87,74],[89,68],[89,69],[89,68],[89,70],[87,66],[81,63],[78,64],[78,54],[77,48],[75,37]]}},"sec":{"cell":88,"ax":44.8,"ay":75,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[51,21],[51,21],[51,22],[54,47],[55,46],[51,22],[51,21]],"walk":[[51,21],[51,21],[51,22],[51,23],[51,22],[51,21],[51,21],[53,46],[52,46]],"attack":[[51,21],[51,21],[52,22],[57,42],[57,39],[55,39],[67,40],[57,26],[69,41]],"hurt":[[51,21],[51,23],[51,23],[56,42],[57,26]],"knockdown":[[51,21],[53,21],[54,23],[58,26],[62,31],[71,44],[71,65],[73,63],[73,59],[71,64],[71,66],[72,57],[68,46],[63,42],[58,37],[57,31],[55,48]]}},"handler":{"cell":88,"ax":42.7,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[51,23],[51,23],[51,24],[53,46],[54,46],[53,46],[51,23]],"walk":[[51,23],[51,23],[51,24],[51,25],[51,24],[51,23],[51,23],[54,45],[54,46]],"attack":[[51,23],[51,23],[58,46],[62,39],[59,35],[59,37],[61,40],[69,37],[64,36]],"hurt":[[51,23],[53,23],[54,46],[60,45],[59,47]],"knockdown":[[51,23],[52,23],[53,23],[55,22],[58,25],[66,41],[71,53],[72,58],[73,60],[71,56],[70,51],[67,42],[61,34],[57,29],[53,23],[53,25],[51,23]]}},"ragazzo":{"cell":88,"ax":42.2,"ay":75,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[49,21],[52,46],[55,41],[57,36],[56,34],[57,35],[58,39]],"walk":[[49,21],[49,21],[52,47],[50,47],[49,22],[49,21],[52,45],[56,45],[56,45]],"attack":[[49,21],[52,46],[54,42],[55,38],[56,37],[62,32],[62,34],[63,29],[58,37]],"hurt":[[49,21],[50,23],[53,45],[55,44],[55,40]],"knockdown":[[49,21],[51,22],[55,23],[60,26],[61,33],[66,44],[68,56],[70,62],[75,67],[71,59],[69,53],[65,47],[61,45],[61,41],[59,35],[57,27],[54,23]]}},"ragazza":{"cell":88,"ax":44.2,"ay":75,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[51,22],[51,22],[52,22],[54,41],[54,38],[54,40],[54,41]],"walk":[[51,22],[51,21],[52,22],[53,47],[51,21],[51,22],[51,21],[54,44],[54,47]],"attack":[[51,22],[51,22],[54,46],[65,39],[66,38],[67,37],[57,26],[57,27],[56,39]],"hurt":[[51,22],[52,22],[54,23],[56,24],[57,27]],"knockdown":[[51,22],[53,23],[55,24],[57,26],[60,31],[64,44],[65,50],[69,56],[70,58],[69,57],[69,54],[66,48],[62,43],[59,38],[56,33],[55,28],[53,24]]}},"carab":{"cell":108,"ax":53.6,"ay":92,"h":76,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"close":[5,7],"far":[6,9]},"fist":{"idle":[[63,42],[63,41],[65,56],[65,56],[64,57],[63,42],[63,41]],"walk":[[63,42],[63,43],[63,45],[63,46],[63,44],[63,43],[65,56],[68,56],[69,57]],"attack":[[63,42],[63,42],[63,27],[70,50],[67,46],[65,51],[89,47],[82,48],[77,48]],"hurt":[[63,42],[63,42],[63,43],[74,54],[77,46]],"knockdown":[[63,42],[64,27],[65,28],[71,59],[80,63],[89,70],[87,76],[90,78],[88,73],[90,78],[85,62],[83,57],[78,54],[74,49],[68,38],[67,32],[65,28]],"close":[[63,42],[63,42],[67,56],[74,49],[79,39],[80,39],[75,42]],"far":[[63,42],[63,42],[63,26],[64,27],[65,55],[63,26],[73,56],[93,35],[92,30]]}},"luca":{"cell":108,"ax":54.2,"ay":92,"h":76,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"far":[5,7]},"fist":{"idle":[[63,28],[63,25],[64,30],[65,29],[66,31],[66,32],[65,30]],"walk":[[63,28],[63,27],[63,29],[63,30],[63,29],[63,28],[63,27],[66,57],[64,57]],"attack":[[63,28],[64,28],[73,52],[72,39],[72,48],[96,46],[83,47],[74,38],[77,39]],"hurt":[[63,28],[65,26],[67,27],[69,26],[66,26]],"knockdown":[[63,28],[65,28],[67,29],[71,31],[75,38],[82,47],[87,63],[90,72],[91,74],[91,69],[88,64],[83,58],[78,52],[78,50],[74,42],[71,33],[67,28]],"far":[[63,28],[64,29],[66,30],[68,32],[76,51],[76,45],[76,51]]}},"gianni":{"cell":112,"ax":56.8,"ay":95,"h":77,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"close":[5,7]},"fist":{"idle":[[64,27],[64,27],[66,59],[68,59],[68,59],[68,56],[68,57]],"walk":[[64,27],[64,26],[64,28],[65,30],[65,29],[64,27],[66,58],[74,59],[71,60]],"attack":[[64,27],[64,27],[69,55],[72,40],[69,46],[89,44],[64,30],[68,47],[72,52]],"hurt":[[64,27],[66,60],[72,61],[76,49],[82,45]],"knockdown":[[64,27],[64,28],[67,31],[72,37],[75,41],[81,57],[86,74],[90,80],[92,86],[90,79],[88,72],[85,65],[79,58],[76,55],[75,45],[74,36],[69,32]],"close":[[64,27],[64,29],[75,58],[76,49],[81,37],[79,34],[81,46]]}},"marco":{"cell":112,"ax":55.1,"ay":95,"h":77,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"close":[5,7]},"fist":{"idle":[[63,28],[64,28],[66,59],[70,58],[73,55],[68,58],[64,58]],"walk":[[63,28],[63,27],[66,59],[63,31],[63,30],[63,28],[65,57],[71,58],[71,59]],"attack":[[63,28],[63,28],[65,59],[69,59],[72,51],[84,61],[78,46],[75,56],[63,47]],"hurt":[[63,28],[64,27],[72,51],[72,47],[72,51]],"knockdown":[[63,28],[65,29],[67,32],[70,33],[75,38],[80,56],[84,75],[87,74],[87,75],[87,74],[86,72],[81,63],[73,55],[74,44],[73,35],[71,29],[67,28]],"close":[[63,28],[65,54],[76,46],[90,57],[84,50],[76,40],[68,58]]}},"paolo":{"cell":112,"ax":56.5,"ay":95,"h":76,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"close":[5,9]},"fist":{"idle":[[63,32],[63,32],[63,33],[65,59],[67,59],[71,60],[68,61]],"walk":[[63,32],[63,31],[63,31],[64,59],[65,28],[64,32],[64,31],[66,58],[68,59]],"attack":[[63,32],[63,32],[67,58],[75,54],[74,43],[75,40],[79,43],[78,46],[76,51]],"hurt":[[63,32],[66,30],[70,61],[72,57],[66,59]],"knockdown":[[63,32],[64,28],[66,29],[68,32],[75,36],[80,42],[86,53],[90,72],[92,80],[91,74],[90,70],[85,63],[78,57],[77,54],[73,53],[72,42],[71,59]],"close":[[63,32],[66,32],[70,30],[77,58],[81,61],[81,59],[81,62],[78,59],[75,55]]}},"beachm":{"cell":92,"ax":45.4,"ay":78,"h":64,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[52,22],[52,22],[53,23],[58,43],[59,39],[58,38],[59,39]],"walk":[[52,22],[52,23],[52,24],[52,24],[52,22],[52,21],[53,46],[56,47],[56,49]],"attack":[[52,22],[52,22],[53,23],[59,34],[55,42],[78,32],[61,29],[69,34],[76,29]],"hurt":[[52,22],[54,25],[56,48],[60,39],[58,43]],"knockdown":[[52,22],[53,22],[56,24],[59,28],[62,33],[66,44],[69,54],[74,61],[76,64],[76,66],[73,61],[71,56],[68,49],[66,43],[54,25],[51,22],[53,47]]}},"beachf":{"cell":88,"ax":43.0,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[49,43],[49,44],[51,21],[56,21],[55,22],[55,21],[57,22]],"walk":[[49,43],[48,19],[48,21],[49,47],[48,21],[48,20],[48,19],[52,45],[56,47]],"attack":[[49,43],[51,40],[53,38],[68,33],[69,33],[63,33],[59,35],[54,39],[50,44]],"hurt":[[49,43],[54,43],[55,28],[57,25],[67,29]],"knockdown":[[49,43],[49,43],[53,23],[62,24],[66,41],[71,52],[72,54],[73,55],[73,56],[73,57],[73,56],[71,50],[67,46],[64,41],[61,31],[59,25],[50,46]]}},"lifeguard":{"cell":88,"ax":44.1,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[51,35],[52,35],[53,35],[55,36],[56,37],[54,36],[52,35]],"walk":[[51,35],[50,31],[50,30],[50,32],[51,37],[52,36],[54,34],[55,32],[55,32]],"attack":[[51,35],[52,35],[52,46],[59,38],[68,27],[68,28],[68,29],[70,28],[56,44]],"hurt":[[51,35],[51,22],[53,23],[53,46],[54,46]],"knockdown":[[51,35],[51,20],[54,21],[57,25],[62,32],[66,43],[69,51],[68,54],[70,57],[70,55],[68,49],[66,46],[63,45],[61,41],[58,30],[59,45],[63,39]]}},"clubm":{"cell":88,"ax":43.7,"ay":75,"h":59,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[50,23],[49,38],[54,46],[58,39],[57,35],[58,39],[57,46]],"walk":[[50,23],[50,22],[50,23],[50,23],[50,24],[50,22],[50,22],[50,22],[50,23]],"attack":[[50,23],[50,23],[55,44],[58,34],[55,32],[55,33],[60,35],[71,32],[68,35]],"hurt":[[50,23],[51,23],[54,24],[57,40],[58,35]],"knockdown":[[50,23],[52,23],[54,23],[58,26],[63,31],[66,44],[74,63],[69,57],[73,65],[73,65],[67,53],[64,47],[62,46],[61,45],[59,32],[57,28],[53,28]]}},"clubf":{"cell":88,"ax":43.7,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17]},"fist":{"idle":[[50,30],[50,29],[51,42],[54,42],[55,41],[54,42],[52,44]],"walk":[[50,30],[53,45],[56,43],[55,45],[50,31],[50,30],[53,43],[57,42],[56,44]],"attack":[[50,30],[54,42],[57,40],[55,43],[57,43],[62,34],[65,18],[67,33],[56,41]],"hurt":[[50,30],[50,44],[50,43],[54,35],[55,32]],"knockdown":[[50,30],[50,22],[53,22],[57,25],[62,46],[65,54],[71,65],[71,66],[72,68],[70,63],[68,58],[65,52],[61,48],[61,51],[60,45],[57,36],[50,23]]}},"mafioso":{"cell":112,"ax":54.8,"ay":95,"h":77,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"close":[5,7],"far":[6,7]},"fist":{"idle":[[65,27],[65,46],[66,57],[72,59],[76,58],[76,54],[74,59]],"walk":[[65,27],[65,27],[65,29],[65,29],[65,26],[65,26],[67,58],[69,57],[69,58]],"attack":[[65,27],[65,27],[65,27],[66,59],[72,59],[80,47],[91,42],[80,51],[74,57]],"hurt":[[65,27],[65,29],[70,56],[73,48],[75,49]],"knockdown":[[65,27],[67,28],[70,30],[74,33],[77,36],[80,50],[86,64],[90,70],[91,73],[89,66],[87,64],[82,60],[78,59],[76,57],[72,40],[72,61],[71,59]],"close":[[65,27],[66,28],[75,60],[83,53],[81,50],[83,52],[82,59]],"far":[[65,27],[66,58],[79,44],[71,30],[70,31],[79,49],[65,27]]}},"beast":{"cell":112,"ax":52.2,"ay":95,"h":78,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"close":[5,9],"far":[6,9]},"fist":{"idle":[[69,26],[70,27],[71,28],[71,29],[71,28],[70,27],[69,26]],"walk":[[69,26],[69,27],[69,28],[69,28],[69,27],[69,25],[69,26],[69,27],[69,29]],"attack":[[69,26],[70,26],[70,27],[78,60],[80,55],[97,40],[96,49],[80,58],[72,58]],"hurt":[[69,26],[70,27],[69,32],[67,26],[66,25]],"knockdown":[[69,26],[71,27],[74,29],[80,32],[83,36],[90,57],[93,75],[95,77],[94,76],[94,76],[94,71],[90,60],[82,44],[78,42],[74,31],[70,27],[68,26]],"close":[[69,26],[68,27],[67,25],[73,56],[88,50],[72,28],[75,29],[72,27],[71,26]],"far":[[69,26],[70,26],[71,27],[73,28],[73,29],[85,57],[83,48],[85,49],[84,54]]}},"quick":{"cell":88,"ax":44.1,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"attack":[2,9],"hurt":[3,5],"knockdown":[4,17],"close":[5,7],"far":[6,7]},"fist":{"idle":[[50,44],[53,46],[56,46],[57,43],[58,43],[57,43],[56,45]],"walk":[[50,44],[49,20],[49,22],[49,21],[49,20],[53,46],[56,47],[54,46],[51,44]],"attack":[[50,44],[50,44],[52,46],[58,41],[58,38],[59,36],[60,39],[75,36],[59,42]],"hurt":[[50,44],[53,47],[54,46],[56,38],[62,46]],"knockdown":[[50,44],[51,21],[53,22],[57,24],[59,31],[63,43],[74,66],[68,57],[67,54],[67,54],[67,56],[67,56],[68,57],[65,52],[59,42],[57,30],[63,46]],"close":[[50,44],[49,21],[53,47],[60,37],[60,32],[59,33],[60,41]],"far":[[50,44],[50,24],[55,45],[64,41],[65,43],[65,45],[70,43]]}},"marc02":{"cell":88,"ax":43.4,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9]},"fist":{"idle":[[49,26],[50,26],[56,39],[54,30],[55,27],[54,32],[54,34]],"walk":[[49,26],[49,26],[55,45],[57,40],[55,32],[56,27],[55,24],[55,22],[56,26]]}},"kelly":{"cell":88,"ax":43.3,"ay":75,"h":61,"rows":{"idle":[0,7],"walk":[1,9],"jab":[2,7],"hook":[3,7],"kick":[4,7],"jumpkick":[5,7],"hurt":[6,5],"knockdown":[7,17],"special":[8,9],"run":[9,9],"grab":[10,5],"knee":[11,7],"throw":[12,9],"backkick":[13,7],"pickup":[14,7],"swing":[15,9],"mini":[16,9]},"fist":{"idle":[[47,44],[47,44],[50,50],[53,47],[53,46],[53,47],[54,48]],"walk":[[47,44],[47,54],[49,54],[49,54],[46,55],[44,44],[51,51],[54,50],[55,51]],"jab":[[47,44],[50,50],[57,43],[65,35],[70,36],[70,36],[62,38]],"hook":[[47,44],[47,44],[47,51],[63,43],[63,42],[63,42],[54,43]],"kick":[[47,44],[48,52],[48,50],[45,44],[31,42],[56,38],[55,40]],"jumpkick":[[47,44],[51,50],[55,39],[56,43],[56,28],[51,30],[51,36]],"hurt":[[47,44],[47,43],[47,40],[52,43],[55,41]],"knockdown":[[47,44],[47,38],[47,38],[47,43],[56,60],[65,57],[74,72],[74,72],[74,72],[69,62],[67,57],[62,56],[63,51],[59,46],[47,55],[52,53],[56,48]],"special":[[47,44],[54,47],[55,35],[54,36],[54,35],[50,34],[55,36],[59,39],[50,52]],"run":[[47,44],[47,53],[51,52],[52,51],[51,55],[48,40],[53,48],[57,46],[57,45]],"grab":[[47,44],[45,54],[57,49],[67,37],[67,34]],"knee":[[47,44],[48,46],[53,48],[58,40],[56,35],[55,36],[58,43]],"throw":[[47,44],[50,52],[52,48],[52,41],[48,36],[48,36],[47,36],[58,40],[72,47]],"backkick":[[47,44],[50,52],[48,46],[62,40],[55,43],[51,44],[48,52]],"pickup":[[47,44],[45,54],[51,55],[54,58],[53,59],[55,61],[52,55]],"swing":[[47,44],[53,47],[58,31],[45,36],[32,21],[34,21],[47,38],[63,34],[60,41]],"mini":[[47,44],[79,39],[59,35],[50,35],[43,37],[47,36],[48,37],[52,43],[52,48]]}},"sam":{"cell":84,"ax":41.6,"ay":72,"h":60,"rows":{"idle":[0,7],"walk":[1,9],"jab":[2,7],"hook":[3,7],"kick":[4,7],"jumpkick":[5,7],"hurt":[6,5],"knockdown":[7,17],"special":[8,9],"run":[9,9],"grab":[10,5],"knee":[11,7],"throw":[12,9],"backkick":[13,7],"pickup":[14,7],"swing":[15,9],"mini":[16,9]},"fist":{"idle":[[49,47],[50,47],[52,46],[53,46],[54,45],[53,46],[51,48]],"walk":[[49,47],[44,50],[48,49],[48,51],[46,51],[47,49],[51,47],[54,45],[56,50]],"jab":[[49,47],[50,47],[57,44],[62,35],[45,32],[46,37],[43,34]],"hook":[[49,47],[44,51],[52,47],[59,34],[28,44],[59,33],[56,37]],"kick":[[49,47],[43,50],[51,47],[56,36],[56,33],[55,34],[54,41]],"jumpkick":[[49,47],[53,47],[55,42],[57,30],[20,48],[41,30],[58,36]],"hurt":[[49,47],[48,48],[49,46],[53,37],[54,38]],"knockdown":[[49,47],[39,51],[38,52],[51,50],[57,54],[65,60],[68,62],[70,65],[67,62],[66,61],[65,56],[62,51],[59,46],[58,45],[55,39],[53,33],[36,50]],"special":[[49,47],[56,42],[58,32],[34,50],[29,48],[29,48],[28,47],[31,49],[54,29]],"run":[[49,47],[45,51],[49,49],[50,49],[47,49],[42,50],[52,46],[56,43],[54,45]],"grab":[[49,47],[54,45],[62,39],[66,30],[63,31]],"knee":[[49,47],[49,46],[52,42],[52,36],[51,36],[52,39],[51,47]],"throw":[[49,47],[52,46],[55,41],[53,37],[49,38],[48,36],[48,35],[59,40],[40,37]],"backkick":[[49,47],[50,46],[50,46],[52,44],[55,41],[59,38],[59,34]],"pickup":[[49,47],[48,48],[49,49],[53,56],[54,48],[53,41],[53,52]],"swing":[[49,47],[51,47],[55,44],[49,19],[42,25],[39,22],[21,21],[69,38],[64,42]],"mini":[[49,47],[55,42],[58,31],[56,31],[56,31],[56,31],[59,31],[57,38],[52,44]]}},"ranger":{"cell":88,"ax":44.0,"ay":75,"h":62,"rows":{"idle":[0,7],"attack":[1,7]},"fist":{"idle":[[56,21],[57,20],[58,22],[58,23],[59,23],[57,22],[56,21]],"attack":[[56,21],[55,20],[54,43],[53,39],[53,42],[71,37],[71,38]]}},"marc":{"cell":88,"ax":43.8,"ay":75,"h":62,"rows":{"idle":[0,7],"walk":[1,9],"jab":[2,7],"hook":[3,7],"kick":[4,7],"jumpkick":[5,7],"hurt":[6,5],"knockdown":[7,17],"special":[8,9],"run":[9,9],"grab":[10,5],"knee":[11,7],"throw":[12,9],"backkick":[13,7],"pickup":[14,7],"swing":[15,9],"mini":[16,9]},"fist":{"idle":[[45,56],[45,57],[47,55],[53,50],[56,48],[54,50],[48,53]],"walk":[[45,56],[47,55],[50,55],[52,54],[52,56],[46,56],[50,52],[56,51],[55,51]],"jab":[[45,56],[44,56],[42,56],[58,40],[73,35],[63,41],[43,56]],"hook":[[45,56],[51,44],[53,41],[65,34],[71,35],[65,34],[54,43]],"kick":[[45,56],[44,56],[41,56],[38,57],[33,56],[36,56],[41,56]],"jumpkick":[[45,56],[47,55],[49,55],[56,38],[24,51],[61,32],[59,40]],"hurt":[[45,56],[47,55],[50,50],[57,43],[58,47]],"knockdown":[[45,56],[44,56],[49,55],[53,56],[58,57],[53,41],[66,54],[68,60],[69,63],[69,61],[66,55],[65,50],[63,48],[59,45],[58,51],[43,60],[49,54]],"special":[[45,56],[53,53],[58,40],[56,32],[54,30],[54,30],[55,36],[71,38],[73,35]],"run":[[45,56],[48,56],[52,55],[51,56],[47,57],[44,57],[40,55],[55,54],[53,55]],"grab":[[45,56],[55,53],[63,42],[65,39],[64,35]],"knee":[[45,56],[43,56],[38,56],[35,55],[29,55],[33,55],[37,56]],"throw":[[45,56],[44,55],[53,52],[47,43],[42,38],[35,41],[42,38],[68,38],[73,40]],"backkick":[[45,56],[46,55],[48,57],[53,52],[56,49],[53,54],[49,56]],"pickup":[[45,56],[47,57],[49,56],[52,56],[53,61],[52,60],[51,54]],"swing":[[45,56],[51,53],[59,41],[37,24],[45,24],[46,24],[39,25],[62,44],[64,42]],"mini":[[45,56],[45,56],[48,52],[45,44],[59,41],[58,45],[56,46],[57,41],[49,53]]}}};
 const SPR_K = 2; // sprite pixels to game units: the world is drawn at half size, so one sprite pixel is one screen pixel
 // frame picks per lad, 0-based within each animation row (frame 0 is the shared reference pose)
 const LAD_FRAMES = {
@@ -4640,6 +5382,26 @@ Object.assign(LAD_FRAMES.marc, { mini: [2, 3, 4, 5, 6, 7, 8] });
 Object.assign(LAD_FRAMES.sam, { mini: [1, 2, 3, 4, 5, 6, 7] });
 // enemies: same sheets and renderer, their own state map (foeFrame). walk/idle default to 1-8 / 1-6.
 const FOE_FRAMES = {
+  // NL frames
+  city: {attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, throw: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true},
+  itgirl: {attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, kick: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true},
+  burb: {attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true},
+  hoops: {attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, pull: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true},
+  snood: {attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true},
+  puffer: {attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, dash: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true},
+  hood: {attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true},
+  grappler: {attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hold: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], hits: {hug: "hold"}, fallFlip: true},
+  dipper: {attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, dodge: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, steal: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], hits: {dodge: "dodge"}, fallFlip: true},
+  lookout: {attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, whistle: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], hits: {whistle: "whistle"}, fallFlip: true},
+  stag: {attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, stagger: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true},
+  groom: {attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true},
+  inspector: {attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, attack2: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, block: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, shout: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {slapWind: "attack2", fineWind: "shout", blockWind: "block"}, hits: {slap: "attack2", fine: "shout", block: "block"}, fallFlip: true},
+  lenny: {attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, attack2: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, pull: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, charge: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {alarmWind: "pull", doorWind: "pull", kneeWind: "attack2", chargeWind: "charge"}, hits: {alarm: "pull", doorOpen: "pull", knee: "attack2", charge: "charge"}, fallFlip: true},
+  jeweller: {attack: {pre: [4, 6, 7], hit: 8, post: [7]}, glint: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, grab: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {whipWind: "attack", glintWind: "glint", grabWind: "grab"}, hits: {whip: "attack", glint: "glint", grabLunge: "grab", grabHold: "grab"}, fallFlip: true},
+  commuter: {fall: [1], lie: 1, up: [1], hurt: [1, 1], attack: {pre: [1], hit: 1, post: [1]}, fallFlip: true},
+  oldboy: {fall: [1], lie: 1, up: [1], hurt: [1, 1], attack: {pre: [1], hit: 1, post: [1]}, fallFlip: true},
+  smiler: {throw: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, fall: [1], lie: 1, up: [1], hurt: [1, 1], attack: {pre: [1], hit: 1, post: [1]}, hits: {throw: "throw"}, fallFlip: true},
+  // NL frames end
   sec: { attack: { pre: [3, 4, 5], hit: 6, post: [7, 8] }, hurt: [3, 4], fall: [3, 4, 5], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true },
   handler: { attack: { pre: [3, 4, 5, 6], hit: 7, post: [8] }, hurt: [2, 3], fall: [3, 4, 5], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true },
   ranger: { attack: { pre: [1, 2], hit: 3, post: [4] }, hurt: [0], fall: [0], lie: 0, up: [0] },
@@ -4688,6 +5450,8 @@ const LAD_IDLE = [1, 2, 3, 4, 5, 6], LAD_WALK = [1, 2, 3, 4, 5, 6, 7, 8];
 const ladSheets = {};
 // Ramsden's big lad is the same heavy as the Big Un
 const SPRITE_ALIAS = { biglad: 'chunk', doorman: 'bouncer', rider: 'clubm', biker: 'clubm' };
+// NL alias
+// NL alias end
 function ladSprite(id) {
   if (SPRITE_ALIAS[id]) return ladSprite(SPRITE_ALIAS[id]);
   const m = SPRITE_META[id];
@@ -4833,7 +5597,7 @@ function drawLad(e, sx, sy, s, sh) {
   const dir = e.face * (flip ? -1 : 1);
   ctx.scale(dir, 1);
   if (st === 'dash') ctx.rotate(0.12);
-  const crazed = e.buffT > 0;
+  const crazed = e.buffT > 0 || e.rage;
   if (crazed && !reduceMotion) ctx.translate(rand(-1.5, 1.5), rand(-1, 1));
   else if (st === 'drowsy') ctx.rotate(0.06 + Math.sin(time * 2) * 0.04);
   else if (st === 'netted') ctx.rotate(0.3);
@@ -4841,8 +5605,8 @@ function drawLad(e, sx, sy, s, sh) {
   const smooth = ctx.imageSmoothingEnabled;
   ctx.imageSmoothingEnabled = false;
   // Duck and Cover backup: angry red, with a ring at their feet and a marker overhead (drawn after)
-  if (e.ally) { ctx.save(); ctx.scale(1 / dir, 1); ctx.fillStyle = 'rgba(255,40,30,' + (0.35 + Math.sin(time * 8) * 0.15).toFixed(2) + ')'; ctx.beginPath(); ctx.ellipse(0, e.z, 34, 9, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
-  const tint = e.flash > 0 ? 'white' : (e.ally || (crazed && Math.floor(time * 10) % 2)) ? 'red' : null;
+  if (e.ally && !e.friend) { ctx.save(); ctx.scale(1 / dir, 1); ctx.fillStyle = 'rgba(255,40,30,' + (0.35 + Math.sin(time * 8) * 0.15).toFixed(2) + ')'; ctx.beginPath(); ctx.ellipse(0, e.z, 34, 9, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
+  const tint = e.flash > 0 ? 'white' : ((e.ally && !e.friend) || (crazed && Math.floor(time * 10) % 2)) ? 'red' : null;
   drawSprCell(sh, idx * m.cell, row[0] * m.cell, m.cell, tint, -m.ax * k, -m.ay * k, m.cell * k, m.cell * k);
   // a moped helmet stays on his head until he takes it off to swing it
   const wkH = typeof e.weapon === 'string' ? e.weapon : (e.weapon ? e.weapon.k : null);
@@ -5521,6 +6285,7 @@ const WSPR = {
   stick: { grip: [3, 4], ang: 0 }, net: { grip: [2, 4], ang: 0 },   // grips for the PixelLab versions (Version 51)
   guinness: { grip: [19, 3], ang: 2.39 }, rum: { grip: [21, 3], ang: 2.39 }, cue: { grip: [10, 2], ang: 0 }, lam: { grip: [3, 10], ang: 0 },
   ball: { grip: [0, 0], ang: 0, round: true },
+  pole: { grip: [4, 5], ang: 0 },
   aerial: { grip: [1, 15], ang: -0.31 },
   helmet: { grip: [7, 13], ang: 0, round: true },
 };
@@ -5669,6 +6434,7 @@ function bgSoundzPixel() {
 }
 
 function drawStageBg() {
+  if (ST.era === 2006 && nlDrawStageBg(ST.bg)) return;
   if (ST.bg === 'fishery') bgFisheryPixel();
   else if (ST.bg === 'orpington') bgOrpingtonPixel();
   else if (ST.bg === 'soundz') bgSoundzPixel();
@@ -5685,6 +6451,7 @@ function drawStageFore() {
   if (ST.bg === 'fishery') { if (bgReady(FSH_FILES)) drawFisheryForePixel(); }
   else if (ST.bg === 'naval') { if (bgReady(NAV_FILES)) drawNavalForePixel(); }
   else if (ST.bg === 'ramsden') { if (bgReady(RAM_FILES)) drawRamsdenForePixel(); }
+  nlDrawFore();
 }
 
 // ================================================================== particles, shots, bubbles
@@ -5782,6 +6549,7 @@ function drawWavePixel(h) {
 }
 
 function drawShot(sh) {
+  if (sh.kind === 'gift') { shadow(sh.x - cam.x, sh.y, 10, sh.z); drawWeaponFloor(sh.w, sh.x - cam.x, sh.y - sh.z); return; }
   if (drawShotPixel(sh)) return;
   if (sh.kind !== 'wthrow') return;
   const x = sh.x - cam.x, y = sh.y - sh.z;
@@ -5860,8 +6628,8 @@ function drawEntity(e) {
     ctx.restore();
     drawHuman(e, sx - e.face * 10, e.y - 26); return;
   }
-  if (e === player && e.buffT > 0) {
-    const pulse = 0.5 + Math.sin(time * 10) * 0.2, fade = Math.min(1, e.buffT / 1.5);
+  if (e === player && (e.buffT > 0 || e.rage)) {
+    const pulse = 0.5 + Math.sin(time * 10) * 0.2, fade = e.rage ? 0.8 : Math.min(1, e.buffT / 1.5);
     const ay = e.y - e.z - 70, g = ctx.createRadialGradient(sx, ay, 10, sx, ay, 110);
     g.addColorStop(0, 'rgba(255,70,40,' + (0.5 * pulse * fade).toFixed(3) + ')'); g.addColorStop(1, 'rgba(255,70,40,0)');
     ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(sx, ay, 80, 110, 0, 0, Math.PI * 2); ctx.fill();
@@ -5869,7 +6637,7 @@ function drawEntity(e) {
   if (e === player && e.inv > 0 && e.inv < 90 && e.state !== 'mini' && Math.floor(time * 20) % 2) ctx.globalAlpha = 0.45;
   drawHuman(e, sx, e.y);
   ctx.globalAlpha = 1;
-  if (e === player && e.state === 'netted' && e.heldBy !== 'lady') {
+  if (e === player && e.state === 'netted' && e.heldBy !== 'lady' && !(e.heldBy && e.heldBy.kind)) {
     const ny = e.y - e.z - 62;
     ctx.save(); ctx.beginPath(); ctx.ellipse(sx, ny, 46, 72, 0, 0, Math.PI * 2); ctx.fillStyle = 'rgba(200,225,200,0.12)'; ctx.fill(); ctx.clip();
     ctx.strokeStyle = 'rgba(230,240,230,0.7)'; ctx.lineWidth = 1.5;
@@ -5921,7 +6689,7 @@ function newRun(ci, start) {
   const go = () => openChat(CHATS[STAGES[first].intro], () => startStage(first), null, STAGES[first].era);
   if (first === 'frequency') openChat(CHATS.prologue, go, null, null); else go();
 }
-const ASSET_BG = ["cutin/mortar", "cutin/pit", "elba/arch", "elba/barwall", "elba/car", "elba/carab_back", "elba/carab_nw", "elba/carab_w", "elba/carousel", "elba/carts", "elba/clubext", "elba/clubrail", "elba/clubwall", "elba/cypress", "elba/djbooth", "elba/gelato", "elba/headland", "elba/hills", "elba/lounger", "elba/mpv", "elba/palm", "elba/plane", "elba/stool", "elba/stuart", "elba/table", "elba/taxi", "elba/termext", "elba/terminal", "elba/tower", "elba/umbrella", "elba/vespa", "elba/vespa_rider", "fish/gary", "fish/gaz", "fishery/bivvy", "fishery/car_beige", "fishery/car_blue", "fishery/car_red", "fishery/goose", "fishery/smoker", "fishery/treeline", "fx/boilie", "fx/bush", "fx/cloud", "fx/firewave", "fx/firework", "fx/float", "fx/koala", "fx/moon", "fx/picker", "fx/spod", "fx/transmitter", "fx/wave", "naval/bbq", "naval/raft", "naval/swan", "orpington/bench", "orpington/bookies", "orpington/chippy", "orpington/goal", "orpington/kebab", "orpington/lamp", "orpington/phonebox", "orpington/phones", "orpington/pub", "orpington/tree", "orpington/underpass", "orpington/video", "portraits/byron", "portraits/denise", "portraits/jo", "portraits/kelly", "portraits/marc", "portraits/nozzer", "portraits/pearcy", "portraits/sam", "portraits/seb", "portraits/thet", "portraits/tim", "props/bin", "props/coolbox", "props/keg", "props/mower", "ramsden/moped", "ramsden/shelter", "ramsden/tower", "ramsden/wreck", "road/ape", "road/barrier", "road/fiat", "road/goat", "road/mpv_d1", "road/mpv_d2", "road/mpv_d3", "road/mpv_d4", "set/board", "set/bollard", "set/bucket", "set/chair", "set/cork", "set/cork_m", "set/cork_w", "set/dartboard", "set/fishcase", "set/gate", "set/peg", "set/plaque", "set/raffle", "set/rods", "set/smoker", "set/trolley", "set/window", "shots/bottle", "shots/case", "shots/cd", "shots/cream", "shots/dart", "shots/knife", "shots/letter", "shots/mortar", "shots/phone", "shots/pills", "shots/sroll", "shots/vinyl", "social/bar", "social/fruit", "social/wall", "soundz/corridor", "soundz/decks", "soundz/lift", "soundz/mast", "soundz/skyline", "soundz/vince", "soundz/wallA", "soundz/wallB", "title/street", "weapons/aerial", "weapons/alcopop", "weapons/ball", "weapons/cone", "weapons/cue", "weapons/guinness", "weapons/helmet", "weapons/lam", "weapons/net", "weapons/rum", "weapons/stick"];   // every background image, listed by tools/v44_build.py
+const ASSET_BG = ["cutin/mortar", "cutin/pit", "elba/arch", "elba/barwall", "elba/car", "elba/carab_back", "elba/carab_nw", "elba/carab_w", "elba/carousel", "elba/carts", "elba/clubext", "elba/clubrail", "elba/clubwall", "elba/cypress", "elba/djbooth", "elba/gelato", "elba/headland", "elba/hills", "elba/lounger", "elba/mpv", "elba/palm", "elba/plane", "elba/stool", "elba/stuart", "elba/table", "elba/taxi", "elba/termext", "elba/terminal", "elba/tower", "elba/umbrella", "elba/vespa", "elba/vespa_rider", "fish/gary", "fish/gaz", "fishery/bivvy", "fishery/car_beige", "fishery/car_blue", "fishery/car_red", "fishery/goose", "fishery/smoker", "fishery/treeline", "fx/boilie", "fx/bush", "fx/cloud", "fx/firewave", "fx/firework", "fx/float", "fx/koala", "fx/moon", "fx/picker", "fx/spod", "fx/transmitter", "fx/wave", "naval/bbq", "naval/raft", "naval/swan", "nightlife/alley", "nightlife/bus_deck", "nightlife/bus_stairs", "nightlife/cx_barrier", "nightlife/cx_hall", "nightlife/sc_highst", "nightlife/sc_platform", "nightlife/sc_suburb", "nightlife/st_front", "nightlife/st_hall", "nightlife/st_platform", "nightlife/toilet_guy", "nightlife/tr_door", "nightlife/tr_doorframe", "nightlife/tr_end", "nightlife/tr_toilet", "nightlife/tr_wall", "nightlife/trafalgar", "nightlife/watch", "orpington/bench", "orpington/bookies", "orpington/chippy", "orpington/goal", "orpington/kebab", "orpington/lamp", "orpington/phonebox", "orpington/phones", "orpington/pub", "orpington/tree", "orpington/underpass", "orpington/video", "portraits/byron", "portraits/denise", "portraits/jo", "portraits/kelly", "portraits/marc", "portraits/nozzer", "portraits/pearcy", "portraits/sam", "portraits/seb", "portraits/thet", "portraits/tim", "props/bin", "props/coolbox", "props/keg", "props/luggage", "props/mower", "props/pole", "ramsden/moped", "ramsden/shelter", "ramsden/tower", "ramsden/wreck", "road/ape", "road/barrier", "road/fiat", "road/goat", "road/mpv_d1", "road/mpv_d2", "road/mpv_d3", "road/mpv_d4", "set/board", "set/bollard", "set/bucket", "set/chair", "set/cork", "set/cork_m", "set/cork_w", "set/dartboard", "set/fishcase", "set/gate", "set/peg", "set/plaque", "set/raffle", "set/rods", "set/smoker", "set/trolley", "set/window", "shots/bottle", "shots/case", "shots/cd", "shots/cream", "shots/dart", "shots/knife", "shots/letter", "shots/mortar", "shots/phone", "shots/pills", "shots/sroll", "shots/vinyl", "social/bar", "social/fruit", "social/wall", "soundz/corridor", "soundz/decks", "soundz/lift", "soundz/mast", "soundz/skyline", "soundz/vince", "soundz/wallA", "soundz/wallB", "title/street", "weapons/aerial", "weapons/alcopop", "weapons/ball", "weapons/cone", "weapons/cue", "weapons/guinness", "weapons/helmet", "weapons/lam", "weapons/net", "weapons/pole", "weapons/rum", "weapons/stick"];   // every background image, listed by tools/v44_build.py
 // all the background art is fetched just after the title appears, so a stage never draws half loaded (Version 44)
 function preloadArt() { for (const p of ASSET_BG) bgImg(p); }
 setTimeout(preloadArt, 700);
@@ -5968,7 +6736,7 @@ function startStageNow(key) {
   cam.x = 0; lastFoe = null; lastFoeT = 0;
   const p = player;
   p.look = lookFor(p.def, ST.era);
-  p.hp = p.maxHp; p.z = 0; p.vx = p.vy = p.vz = 0; p.inv = 1; p.atk = null; p.grab = null; p.weapon = null; p.running = false; p.face = 1; p.buffT = 0; p.crashT = 0; p.scale = 1; p.meter = 100; meterNopeT = 0;
+  p.hp = p.maxHp; p.z = 0; p.vx = p.vy = p.vz = 0; p.inv = 1; p.atk = null; p.grab = null; p.weapon = null; p.running = false; p.face = 1; p.buffT = 0; p.crashT = 0; p.scale = 1; p.meter = 100; meterNopeT = 0; p.rage = false; p.heldBy = null;
   if (ST.fixed) { p.x = 350; p.y = FB - 14; setIdle(p); }
   else { p.x = 40; p.y = (FT + FB) / 2 + 20; p.state = 'walkin'; p.t = 0; }
   mode = 'play'; modeT = 0;
@@ -6091,12 +6859,13 @@ function drawNokia() {
   const bx = W / 2 - 200, by = 14, bw = 400, bh = H - 28;
   rrect(bx, by, bw, bh, 60); fillOut('#2c3236', 4);
   rrect(bx + 14, by + 14, bw - 28, bh - 28, 50); ctx.fillStyle = '#3a4146'; ctx.fill();
-  ctx.fillStyle = '#c9ccd0'; ctx.font = '800 13px ' + BODY; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('N O K I A', W / 2, by + 40);
+  const v6 = chat.era == 2006;   // 2006: a slim silver flip phone with a colour screen (Version 53)
+  ctx.fillStyle = '#c9ccd0'; ctx.font = '800 13px ' + BODY; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(v6 ? '' : 'N O K I A', W / 2, by + 40);
   const sx = bx + 46, sy = by + 62, sw = bw - 92, sh = bh - 150;
   rrect(sx - 8, sy - 8, sw + 16, sh + 16, 10); ctx.fillStyle = '#1c2124'; ctx.fill();
-  const g = ctx.createLinearGradient(0, sy, 0, sy + sh); g.addColorStop(0, '#a9c27a'); g.addColorStop(1, '#8fab62');
+  const g = ctx.createLinearGradient(0, sy, 0, sy + sh); g.addColorStop(0, v6 ? '#1e4a8e' : '#a9c27a'); g.addColorStop(1, v6 ? '#0d2350' : '#8fab62');
   ctx.fillStyle = g; ctx.fillRect(sx, sy, sw, sh);
-  const ink = '#1f2a14';
+  const ink = v6 ? '#eaf2ff' : '#1f2a14';
   ctx.fillStyle = ink; ctx.font = '700 12px "Courier New", ui-monospace, monospace'; ctx.textAlign = 'left';
   ctx.fillText('MESSAGES', sx + 10, sy + 14); ctx.textAlign = 'right'; ctx.fillText('\u2709 ' + chat.shown, sx + sw - 10, sy + 14);
   ctx.fillRect(sx + 6, sy + 24, sw - 12, 2);
@@ -6105,7 +6874,7 @@ function drawNokia() {
   ctx.font = '700 13px "Courier New", ui-monospace, monospace';
   const blocks = [];
   for (let i = 0; i < chat.shown; i++) {
-    const [who, raw] = chat.lines[i]; const text = clean(raw).toUpperCase();
+    const [who, raw] = chat.lines[i]; const text = v6 ? clean(raw) : clean(raw).toUpperCase();
     const ls = wrapLines(text, sw - 24);
     blocks.push({ who, ls, h: ls.length * 16 + (who === 'sys' ? 8 : 24) });
   }
@@ -6130,7 +6899,7 @@ function drawNokia() {
   for (let i = 0; i < 3; i++) { rrect(W / 2 - 64 + i * 46, by + bh - 36, 36, 14, 6); ctx.fillStyle = '#4a5156'; ctx.fill(); }
 }
 function drawChat() {
-  if (chat.era == 1999 || chat.era == 2002) { drawNokia(); return; }
+  if (chat.era == 1999 || chat.era == 2002 || chat.era == 2006) { drawNokia(); return; }
   const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#0d1417'); g.addColorStop(1, '#14211f');
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   ctx.globalAlpha = 0.06; for (let i = 0; i < 18; i++) { ctx.save(); ctx.translate((i * 157) % W, (i * 89) % H); ctx.rotate(i); ctx.fillStyle = '#efe6d2'; ctx.beginPath(); ctx.ellipse(0, 0, 22, 9, 0, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.moveTo(-20, 0); ctx.lineTo(-32, -8); ctx.lineTo(-32, 8); ctx.closePath(); ctx.fill(); ctx.restore(); }
@@ -6295,7 +7064,7 @@ function toggleOption(id) {
   else if (id === 'board') openBoard(null, 'select');
   else if (id === 'online') openNetLobby();
   else if (id === 'cont') { audioInit(); sfx('start'); continueRun(); }
-  else if (id === 'route') { const opts = settings.unlocked ? ['1999', 'elba', 'carpdiem', 'ramsden'] : ['1999', 'elba', 'carpdiem']; startAt = opts[(opts.indexOf(startAt) + 1) % opts.length]; }
+  else if (id === 'route') { const opts = settings.unlocked ? ['1999', 'elba', 'nightlife', 'carpdiem', 'ramsden'] : ['1999', 'elba', 'nightlife', 'carpdiem']; startAt = opts[(opts.indexOf(startAt) + 1) % opts.length]; }
   else if (id === 'diff') { settings.diff = DIFF_ORDER[(DIFF_ORDER.indexOf(settings.diff) + 1) % DIFF_ORDER.length]; saveSettings(); }
 }
 function updateSelect() {
@@ -7191,6 +7960,7 @@ function updateEBoss(b, dt) {
   const rage = b.mad || b.hp < b.maxHp * 0.4, sp = (rage ? 1.25 : 1) * (1 + 0.1 * (b.lostMates || 0));
   const faceP = () => { if (Math.abs(p.x - b.x) > 8) b.face = Math.sign(p.x - b.x); };
   updateEFx(b, dt);
+  if (d.tick && b.state !== 'beaten' && d.tick(b, dt, rage)) { physics(b, dt); b.x = clamp(b.x, cam.x + 40, cam.x + W - 40); if (b.atk) resolveAttack(b, [player]); return; }
   if (d.sig === 'shoot' && b.state !== 'beaten' && carabTick(b, dt, rage)) { physics(b, dt); return; }
   if (d.sig === 'knife' && mafiaTick(b, dt, rage)) { physics(b, dt); b.x = clamp(b.x, cam.x + 40, cam.x + W - 40); if (b.atk) resolveAttack(b, [player]); return; }
   if (d.sig === 'blood' || d.sig === 'dart') { if (duoTick(b, dt, rage)) { physics(b, dt); b.x = clamp(b.x, cam.x + 40, cam.x + W - 40); if (b.atk) resolveAttack(b, [player]); return; } }
@@ -8292,7 +9062,7 @@ function updateNetLobby() {
     if (netLadTaken(NL.lad) && !NL.ready) step(1);
     if (NET.role === 'h' && !NL.ready) {
       if (pressed.has('diff') || hit('diff')) { NL.diff = DIFF_ORDER[(DIFF_ORDER.indexOf(NL.diff) + 1) % DIFF_ORDER.length]; sfx('page'); netLobbyPublish(); }
-      if (pressed.has('route') || hit('route')) { const o = settings.unlocked ? ['1999', 'elba', 'carpdiem', 'ramsden'] : ['1999', 'elba', 'carpdiem']; NL.start = o[(o.indexOf(NL.start) + 1) % o.length]; sfx('page'); netLobbyPublish(); }
+      if (pressed.has('route') || hit('route')) { const o = settings.unlocked ? ['1999', 'elba', 'nightlife', 'carpdiem', 'ramsden'] : ['1999', 'elba', 'nightlife', 'carpdiem']; NL.start = o[(o.indexOf(NL.start) + 1) % o.length]; sfx('page'); netLobbyPublish(); }
     }
     if (((pressed.has('punch') || pressed.has('start')) && modeT > 0.3) || hit('ready')) { NL.ready = !NL.ready; sfx(NL.ready ? 'start' : 'page'); netLobbyPublish(); }
     // the host starts it once both are ready
@@ -8673,6 +9443,7 @@ function step(dt) {
   if (ST.drive) { let own = false; try { own = driveTick(dt); } catch (e) { glitch('drive', e); } if (own) { updateParts(dt); updateBubbles(dt); updateWaves(dt); shake = Math.max(0, shake - dt * 30); return true; } }
   if (NET.on) netEachPlayer(dt); else try { updatePlayer(player, dt); } catch (e) { glitch('player ' + player.state, e); setIdle(player); player.z = 0; player.vz = 0; player.grab = null; }
   try { updateElba(dt); } catch (e) { glitch('elba', e); }
+  try { updateNightlife(dt); } catch (e) { glitch('nightlife', e); }
   try { updateLadFx(dt); } catch (e) { glitch('ladfx', e); }
   try { updateAllies(dt); updateBarrages(dt); } catch (e) { glitch('allies', e); allies = []; barrages = []; }
   for (const f of foes) { if (NET.on) player = netTarget(f); try { updateFoe(f, dt); } catch (e) { glitch(f.kind + ' ' + f.state, e); f.remove = true; if (f.token) f.token = false; } }
@@ -8683,7 +9454,7 @@ function step(dt) {
   separate();
   try { updateShots(dt); } catch (e) { glitch('shots', e); shots = []; }
   try { updateHazards(dt); } catch (e) { glitch('hazards', e); hazards = []; }
-  if (ST.fixed) { S.scrollX += dt * (S.tow ? 300 : 40); updateNaval(dt); }
+  if (ST.fixed && ST.bg === 'naval') { S.scrollX += dt * (S.tow ? 300 : 40); updateNaval(dt); }
   if (NET.on) player = netLead();
   updateWaves(dt);
   updateCam(dt);
@@ -8700,7 +9471,8 @@ function drawWorld(pix) {
   const sh = shake > 0.2 ? shake : 0;
   ctx.save();
   if (sh) ctx.translate(rand(-sh, sh), rand(-sh, sh));
-  if (ST.fixed) ctx.translate(0, Math.sin(time * 2) * 2 + (S.tow ? Math.sin(time * 9) * 1.5 : 0));
+  if (ST.fixed && ST.bg === 'naval') ctx.translate(0, Math.sin(time * 2) * 2 + (S.tow ? Math.sin(time * 9) * 1.5 : 0));
+  else if ((ST.train || ST.bus) && !reduceMotion) ctx.translate(0, Math.round(Math.sin(time * 17) * ((S.trainV || 0) > 300 ? 1 : 0.4)) * 2);   // the rumble
   drawStageBg();
   { const sc = S.secret; if (sc && !S.secretFound) { const ph = (time + 1.3) % 4.5; if (ph < 0.5) { const x = sc.x - cam.x, y = FT - 46, r = 4 + Math.sin(ph / 0.5 * Math.PI) * 9; ctx.save(); ctx.globalAlpha = Math.sin(ph / 0.5 * Math.PI); ctx.fillStyle = '#fffbe0'; ctx.beginPath(); ctx.moveTo(x, y - r * 1.6); ctx.lineTo(x + r * 0.35, y - r * 0.35); ctx.lineTo(x + r * 1.6, y); ctx.lineTo(x + r * 0.35, y + r * 0.35); ctx.lineTo(x, y + r * 1.6); ctx.lineTo(x - r * 0.35, y + r * 0.35); ctx.lineTo(x - r * 1.6, y); ctx.lineTo(x - r * 0.35, y - r * 0.35); ctx.closePath(); ctx.fill(); ctx.restore(); } } }
   const g = S.bosses && S.bosses[0];
@@ -8721,7 +9493,7 @@ function drawWorld(pix) {
   if (S.cut || S.carPark) list.push({ y: (S.cut ? S.cut.carY : S.carPark.y) - 1, f: drawCarScene });
   for (const f of foes) if (f.mower || f.mowerPark > 0) list.push({ y: (f.mower ? f.y : f.mowerY) - 0.5, f: () => drawMower(f) });
   for (const h of hazards) if (h.kind === 'moped' && h.phase === 'ride') list.push({ y: h.y, f: () => drawMoped(h) });
-  if (ST.fixed) list.push({ y: BBQ.y, f: drawBBQ });
+  if (ST.fixed && ST.bg === 'naval') list.push({ y: BBQ.y, f: drawBBQ });
   list.sort((a, b) => a.y - b.y);
   for (const o of list) { try { o.f(); } catch (e) { glitch('draw', e); for (let i = 0; i < 6; i++) ctx.restore(); ctx.setTransform(passScale, 0, 0, passScale, 0, 0); } }
   for (const h of hazards) if (h.kind === 'moped' && h.phase === 'warn') drawMoped(h);
@@ -8843,12 +9615,14 @@ const T3 = (() => {
   const MID = (ORDER.length - 1) / 2;
   const BOSS = { frequency: 'The Parkie', soundz: 'Master Control', airport: 'No boss. Make the taxi rank.', road: 'No boss. Wreck the Espace.',
     divebar: 'Il Carabiniere, then I Fratelli', beach: 'Don Vito', club: 'Big Tony and Little Nicky', arrival: 'The Far Bank (two of them)',
-    naval: 'No boss. Survive the night.', social: 'Nozzer, then Denise', pegnine: 'Big Gary', ramsden: 'Big Gaz, then Lady Addict' };
-  const iE = ROUTE.indexOf('airport'), iC = ROUTE.indexOf('arrival');
+    naval: 'No boss. Survive the night.', social: 'Nozzer, then Denise', pegnine: 'Big Gary', ramsden: 'Big Gaz, then Lady Addict',
+    nl_station: 'The Ticket Inspector', nl_train: 'Lewisham Lenny', nl_cx: 'No boss. Make the barriers.', nl_alley: 'The Jeweller', nl_bus: 'No boss. Hold the top deck.' };
+  const iE = ROUTE.indexOf('airport'), iN = ROUTE.indexOf('nl_station'), iC = ROUTE.indexOf('arrival');
   // each chapter tints the street while you browse it: world, sky, fog and lamp light
   const CHAPS = [
     { id: '1999', name: '1999', keys: ROUTE.slice(0, iE), mood: { world: [1, 1, 1], sky: [1, 1, 1], fog: 0x160b70, light: [1, 1, 1] } },
-    { id: 'elba', name: 'ELBA 2002', keys: ROUTE.slice(iE, iC), mood: { world: [1.22, 0.98, 0.82], sky: [1.18, 0.9, 0.72], fog: 0x34115e, light: [1.1, 1, 0.85] } },
+    { id: 'elba', name: 'ELBA 2002', keys: ROUTE.slice(iE, iN), mood: { world: [1.22, 0.98, 0.82], sky: [1.18, 0.9, 0.72], fog: 0x34115e, light: [1.1, 1, 0.85] } },
+    { id: 'nightlife', name: 'NIGHTLIFE 2006', keys: ROUTE.slice(iN, iC), mood: { world: [0.82, 0.86, 1.18], sky: [0.7, 0.78, 1.25], fog: 0x0a0a3a, light: [1.15, 0.85, 1.05] } },
     { id: 'carpdiem', name: 'CARP DIEM', keys: ROUTE.slice(iC), mood: { world: [0.86, 1.08, 1.02], sky: [0.78, 1.04, 1.12], fog: 0x0f2c55, light: [0.85, 1.05, 1] } },
     { id: 'ramsden', name: 'RAMSDEN', keys: ['ramsden'], hidden: true, mood: { world: [1.3, 0.68, 0.62], sky: [1.35, 0.58, 0.55], fog: 0x3a0620, light: [1.3, 0.55, 0.4] } },
   ];

@@ -1,6 +1,6 @@
 # MBC Legacies
 
-The lads vs everybody. A 16-bit beat 'em up, Orpington 1999 to Elba 2002 to Denise's Fishery.
+The lads vs everybody. A 16-bit beat 'em up, Orpington 1999 to Elba 2002, a night out in London in 2006, then Denise's Fishery.
 
 ## Get the game (Android)
 
@@ -24,6 +24,7 @@ Move with the stick (hold it right out to run), HIT to attack (tap it for your c
 - `tools/v50_build.py` (run after `v49_build.py`): Thet, the unlockable eighth lad. His sheet `web/sprites/thet.png` and `tools/v50/thet_meta.json` come from `tools/v50/thet_sheet.py`, which lines up the PixelLab workbench sheets in `tools/v50/src/`. Also edits `tools/title3d/title3d.js` so the 3D select keeps him.
 - `tools/v51_build.py` (run after `v50_build.py`): new hand grip points for the weapons that were redrawn in PixelLab (the PNGs in `web/bg/weapons` and `web/bg/shots` are the PixelLab versions).
 - `tools/v52_build.py` (run after `v51_build.py`): draws the last code-drawn game objects from PixelLab images in `web/bg/fx` (Master Control's transmitter, the Parkie's litter picker, the far bank's spod, boilies and float, Big Gary's and Big Gaz's waves, the moon, clouds and fireworks) and Big Gaz's small head flames from the PixelLab fire effect.
+- `tools/v53_build.py` (run after `v52_build.py`; it also edits `tools/title3d/title3d.js` and `.css`): the Nightlife 2006 chapter, five stages between Elba and Carp Diem. The chapter's code is `tools/v53/nightlife.js`, injected whole between `// NL js start` and `// NL js end`. Art: `tools/v53/foe_sheets.py` lines up the PixelLab workbench sheets in `tools/v53/src/` into `web/sprites/<key>.png` plus `tools/v53/sheets.json` (layout and frame picks); `tools/v53/bg_process.py` turns the raw images in `tools/v53/img/` into `web/bg/nightlife/` (repainting garbled signs with `pxfont.py`, cutting the train and bus windows into glass) and the bus pole prop and weapon. Design notes: `tools/v53/DESIGN.md`, `ART_BRIEF.md`, `ART_DONE.md`, `pixellab_ids.md`. Music sources: `tools/v53/music/`.
 - `web/vendor/three.module.min.js` is three.js r165 (MIT, see `three.LICENSE`), used by the title screen in the app.
 - `.github/workflows/apk.yml` builds the APK on every push to `main` and publishes it as the latest release.
 
