@@ -19,9 +19,27 @@ OUT = os.path.join(ROOT, 'web', 'bg', 'nightlife')
 SIGNS = {
     'st_front': [(135, 39, 187, 44, ['ORPINGTON'])],
     'st_hall': [(1, 38, 24, 49, ['TICKET', 'OFFICE']), (130, 39, 238, 50, ['TICKET HALL'])],
+    'tr_wall': [(20, 11, 139, 17, ['PLEASE OFFER YOUR SEAT']), (182, 11, 302, 17, ['NO SMOKING ON THIS TRAIN'])],
 }
-# image: rectangles to make see-through (windows), or 'auto' to cut the darkest night-blue panes
-WINDOWS = {}
+# image: rectangles to make see-through (windows), or a glass colour: every blob of it (bigger than a few
+# dozen pixels) becomes tinted glass, alpha GLASS, so the scenery drawn behind shows through
+WINDOWS = {'tr_wall': (10, 12, 20)}
+GLASS = 60
+
+
+def cut_glass(px, col, tol=10, min_area=60):
+    near = (np.abs(px[..., :3].astype(int) - np.array(col)).sum(-1) <= tol) & (px[..., 3] > 0)
+    h, w = near.shape; seen = np.zeros_like(near)
+    for y in range(h):
+        for x in range(w):
+            if near[y, x] and not seen[y, x]:
+                st = [(y, x)]; seen[y, x] = True; pts = []
+                while st:
+                    cy, cx = st.pop(); pts.append((cy, cx))
+                    for yy, xx in ((cy + 1, cx), (cy - 1, cx), (cy, cx + 1), (cy, cx - 1)):
+                        if 0 <= yy < h and 0 <= xx < w and near[yy, xx] and not seen[yy, xx]: seen[yy, xx] = True; st.append((yy, xx))
+                if len(pts) >= min_area:
+                    ys, xs = zip(*pts); px[list(ys), list(xs), 3] = GLASS
 
 
 def repaint(px, x0, y0, x1, y1, lines):
@@ -45,7 +63,10 @@ def process(name):
     if not os.path.exists(p): return False
     px = np.array(Image.open(p).convert('RGBA'))
     for r in SIGNS.get(name, []): repaint(px, *r)
-    for x0, y0, x1, y1 in WINDOWS.get(name, []): px[y0:y1 + 1, x0:x1 + 1, 3] = 0
+    win = WINDOWS.get(name)
+    if win and isinstance(win[0], int): cut_glass(px, win)
+    elif win:
+        for x0, y0, x1, y1 in win: px[y0:y1 + 1, x0:x1 + 1, 3] = 0
     os.makedirs(OUT, exist_ok=True)
     Image.fromarray(px, 'RGBA').save(os.path.join(OUT, name + '.png'), optimize=True)
     return True

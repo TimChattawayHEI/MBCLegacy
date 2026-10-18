@@ -608,14 +608,16 @@ function nlDrawStageBg(bg) {
 function nlFloor(col, line) { ctx.fillStyle = col; ctx.fillRect(0, FT, W, H - FT); if (line) { ctx.fillStyle = line; ctx.fillRect(0, FT, W, 4); } }
 function nlBgStation() {
   pxSky(['#0a0d22', '#121636', '#1b1a40', '#26203f', '#33263f', '#41293c'], 0, FT);
-  // Station Approach outside, then the ticket hall
-  for (let wx = -200; wx < 1100; wx += 640) nlPut('st_front', wx, FT + 4);
-  for (let wx = 1060; wx < ST.len + 640; wx += 640) nlPut('st_hall', wx, FT + 4);
+  // Station Approach outside, the ticket hall, the barriers, then the platform under the night sky
+  for (let wx = -200; wx < 1080; wx += 640) nlPut('st_front', wx, FT + 4);
+  for (let wx = 1080; wx < 2600; wx += 640) nlPut('st_hall', wx, FT + 4);
+  for (let wx = 2600; wx < ST.len + 800; wx += 800) nlPut('st_platform', wx, FT + 4);
   nlFloor('#3b3d44', '#55575f');
   pxFloor(0, ST.len, null, '#34363c', 40, 80, '#44464d');
-  for (let wx = 1060; wx < ST.len; wx += 640) { const x = nlSnap(wx - cam.x); if (x > -30 && x < W + 30) { ctx.fillStyle = '#ffd23f'; ctx.fillRect(x, FT, 4, H - FT); } }
+  // the yellow line on the platform: stand behind it
+  { const x = nlSnap(2600 - cam.x); if (x < W) { ctx.fillStyle = '#e8c23a'; ctx.fillRect(Math.max(0, x), FB - 18, W - Math.max(0, x), 4); } }
   // the barrier line the Inspector guards
-  for (let i = 0; i < 4; i++) nlPut('cx_barrier', 3020 + i * 120, FT + 30);
+  for (let i = 0; i < 3; i++) nlPut('cx_barrier', 2560 + i * 60, FT + 30);
   return true;
 }
 function nlBgTrain() {
