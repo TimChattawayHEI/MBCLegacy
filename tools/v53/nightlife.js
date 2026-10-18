@@ -7,7 +7,7 @@ const NL_FILES = ['st_front', 'st_hall', 'tr_wall', 'tr_door', 'tr_end', 'tr_toi
 
 // ---------------------------------------------------------------- who's out tonight
 Object.assign(FOES, {
-  city: { name: 'CITY BOY', hp: 50, speed: 104, dmg: 7, reach: 70, windup: 0.42, score: 260, ai: 'melee', combo2: true,
+  city: { name: 'CITY BOY', hp: 50, speed: 104, dmg: 7, reach: 70, windup: 0.42, score: 260, ai: 'melee', combo2: true, shot: 'bottle',
     lines: ['Do you know who my father is?', 'This shirt cost more than your car.', 'Yah. Totally.', 'I work in finance, actually.'] },
   itgirl: { name: 'IT GIRL', hp: 44, speed: 116, dmg: 7, reach: 68, windup: 0.4, score: 240, ai: 'melee', leap: true,
     lines: ['Ew.', 'Like, oh my God.', 'Daddy will hear about this.', 'These shoes are Italian.'] },
@@ -17,7 +17,7 @@ Object.assign(FOES, {
     lines: ['Are you starting?', "Don't touch my hair!", 'Babes, hold my earrings.', 'Is it?'] },
   snood: { name: 'SNOOD', hp: 62, speed: 118, dmg: 9, reach: 72, windup: 0.38, score: 300, ai: 'melee', combo2: true,
     lines: ['Wrong carriage.', "You're on our train now.", 'Allow it.', 'Say nothing.'] },
-  puffer: { name: 'PUFFER', hp: 50, speed: 142, dmg: 8, reach: 70, windup: 0.34, score: 280, ai: 'melee', rush: true,
+  puffer: { name: 'PUFFER', hp: 50, speed: 142, dmg: 8, reach: 70, windup: 0.34, score: 280, ai: 'melee',
     lines: ['Next stop, your stop.', 'Allow it.', 'What?', 'Run your pockets.'] },
   hood: { name: 'HOOD', hp: 58, speed: 122, dmg: 9, reach: 72, windup: 0.4, score: 300, ai: 'melee', aa: true,
     lines: ['Wrong train, bruv.', 'Say nothing.', 'Mind the gap.', 'Allow it.'] },
@@ -60,7 +60,7 @@ Object.assign(STAGES, {
     items: [{ w: 'alcopop', x: 900, y: 480 }],
     breakables: [{ type: 'luggage', x: 1500, y: 470, drop: 'w:alcopop' }, { type: 'luggage', x: 3100, y: 480, drop: 'sroll' }, { type: 'luggage', x: 4300, y: 460, drop: 'w:alcopop' }],
     waves: [
-      { at: 300, groups: [[['townie', 'R'], ['ladette', 'R']]] },
+      { at: 300, groups: [[['groom', 'R'], ['stag', 'R'], ['groom', 'L']]] },
       { at: 1150, stop: 'CHISLEHURST', groups: [[['city', 'R'], ['itgirl', 'R'], ['city', 'R']], [['itgirl', 'R'], ['city', 'L']]] },
       { at: 2700, stop: 'HITHER GREEN', groups: [[['burb', 'R'], ['hoops', 'R'], ['burb', 'R']], [['hoops', 'R'], ['burb', 'L'], ['burb', 'R']]], food: 'sroll' },
       { at: 3800, stop: 'LEWISHAM', groups: [[['snood', 'R'], ['puffer', 'R'], ['hood', 'R']], [['snood', 'R'], ['hood', 'L'], ['puffer', 'R'], ['puffer', 'R']]] },
@@ -168,7 +168,8 @@ function updateNightlife(dt) {
   updateNpcs(dt);
   S.cineA = (S.cineA || 0) + ((S.cine ? 1 : 0) - (S.cineA || 0)) * Math.min(1, dt * 5);
   if (S.ann) { S.ann.t += dt; if (S.ann.t > S.ann.life) S.ann = null; }
-  if (ST.train) { nlTrainTick(dt); nlWindTick(dt); }
+  nlStyleTick(dt);
+  if (ST.train) { nlTrainTick(dt); nlWindTick(dt); nlPassengers(dt); }
   if (ST.bus) nlBusTick(dt);
   if (ST.bg === 'nl_cx') nlCxTick(dt);
   if (ST.bg === 'nl_alley') nlAlleyTick(dt);
@@ -206,7 +207,7 @@ function nlTrainTick(dt) {
       if (st.t >= 2.0) { st.phase = 'open'; st.t = 0; S.trainV = 0; sfx('hiss'); nlAnnounce('THIS IS ' + st.name + '. MIND THE GAP.', 3); addShake(4); nlLurch(-220); }
     } else if (st.phase === 'open') {
       S.doorOpen = Math.min(1, st.t / 0.5);
-      if (!st.fled && st.t > 0.3) { st.fled = true; nlFleeing(2); }
+      if (!st.fled && st.t > 0.3) { st.fled = true; nlFleeing(st.name === 'LEWISHAM' ? 6 : 4); }
       if (!st.spawned && st.t > 0.7) {
         st.spawned = true;
         const ds = trainDoorsNear(cam.x + W * 0.72), g = st.wave.groups[0];
@@ -250,12 +251,47 @@ function nlStop(w) {
   setTimeout0(() => { if (S.stopSeq) { nlLurch(420); addShake(6); sfx('heavy'); } }, 0.9);
 }
 // passengers leg it the other way
+const NL_FLEE = ['Excuse me! Excuse me!', 'Not again...', 'I want to get off!', 'Every Friday.', 'Driver! DRIVER!', "I'm getting the bus.", 'Mind my bag!'];
+function nlRunner(kind, x, y, dir, wait) {
+  const p = makeNpc(kind, x, y); p.face = dir; p.flee = true; p.wait = wait || 0;
+  const sp = kind === 'oldboy' ? 170 : 250;
+  p.script = (n2, dt) => {
+    if (n2.wait > 0) { n2.wait -= dt; n2.vx = 0; n2.state = 'idle'; return; }
+    n2.state = 'walk'; n2.vx = n2.face * sp; n2.walk += dt * (kind === 'oldboy' ? 11 : 15); n2.x += n2.vx * dt;
+    n2.vy = (n2.ty != null ? (n2.ty - n2.y) * 2 : 0); n2.y += n2.vy * dt;
+    if (!n2.said && n2.t > 0.25) { n2.said = true; if (chance(0.6)) say(n2, pick(NL_FLEE), 1.6, true); }
+    if (n2.x < cam.x - 140 || n2.x > cam.x + W + 140) n2.remove = true;
+  };
+  S.npcs.push(p); return p;
+}
 function nlFleeing(n) {
+  // they pour out of the doors nearest the gang and run for the far end
+  const ds = trainDoorsNear(cam.x + W * 0.72);
   for (let i = 0; i < n; i++) {
-    const kind = i % 2 ? 'oldboy' : 'commuter', x = cam.x + W + 60 + i * 70, y = rand(FT + 20, FB - 20);
-    const p = makeNpc(kind, x, y); p.face = -1; p.flee = true;
-    p.script = (n2, dt) => { n2.state = 'walk'; n2.walk += dt * 14; n2.x -= (n2.kind === 'oldboy' ? 210 : 300) * dt; if (n2.t > 0.2 && !n2.said) { n2.said = true; if (chance(0.7)) say(n2, pick(['Excuse me! Excuse me!', 'Not again...', 'I want to get off!', 'Every Friday.']), 1.6, true); } if (n2.x < cam.x - 120) n2.remove = true; };
-    S.npcs.push(p);
+    const kind = i % 3 === 1 ? 'oldboy' : 'commuter', dx = (ds[i % Math.max(1, ds.length)] || cam.x + W + 60) + rand(-24, 24);
+    const r = nlRunner(kind, dx, FT + 8, -1, i * 0.22); r.ty = rand(FT + 20, FB - 20);
+  }
+}
+// people already in the carriage: stood about, until it kicks off near them
+function nlPassengers(dt) {
+  const marks = [520, 1500, 2300, 3300, 4500];
+  S.paxIdx = S.paxIdx || 0;
+  if (S.paxIdx < marks.length && cam.x + W > marks[S.paxIdx] + 200) {
+    const base = marks[S.paxIdx++] + 260;
+    for (let i = 0; i < 2 + (S.paxIdx % 2); i++) {
+      const p = makeNpc(i % 2 ? 'oldboy' : 'commuter', base + i * 90 + rand(-20, 20), rand(FT + 14, FT + 70));
+      p.face = chance(0.5) ? 1 : -1; p.pax = true;
+      p.script = (n2, dt2) => {
+        if (n2.flee) return;
+        n2.vx = 0; n2.state = 'idle';
+        const near = foes.some(f => canBeHit(f) && Math.abs(f.x - n2.x) < 360) || (S.stopSeq && S.stopSeq.phase === 'open' && Math.abs(n2.x - player.x) < 700);
+        if (near || (player.atk && Math.abs(player.x - n2.x) < 140)) {
+          const away = foes.filter(f => canBeHit(f)).reduce((a, f) => a + Math.sign(n2.x - f.x), 0) || Math.sign(n2.x - player.x) || -1;
+          const r = nlRunner(n2.kind, n2.x, n2.y, Math.sign(away), rand(0, 0.3)); r.ty = n2.y; n2.remove = true;
+        }
+      };
+      S.npcs.push(p);
+    }
   }
 }
 
@@ -353,11 +389,19 @@ function nlInspector(b, dt, rage) {
 
 // ================================================================== Charing Cross: the barriers, then Trafalgar Square
 function nlCxTick(dt) {
-  if (S.done && !S.traf) { S.traf = { t: 0 }; S.endT = 99; S.cine = 1; for (const pl of (NET.on ? PL : [player])) if (pl.state !== 'dead') { pl.vx = pl.vy = 0; } }
+  // once the last wave is down: out of the station and a look at Trafalgar Square, once, with everyone stood still
+  if (S.done && !S.traf && !S.trafDone) {
+    S.traf = { t: 0 }; S.endT = 99; S.cine = 1; S.hold = true;
+    for (const pl of (NET.on ? PL : [player])) { pl.vx = pl.vy = 0; if (pl.grab) releaseGrab(pl); if (pl.state !== 'dead' && pl.z <= 0 && !['down', 'getup'].includes(pl.state)) { pl.state = 'cut'; pl.t = 0; pl.atk = null; } }
+  }
   if (S.traf) {
     S.traf.t += dt;
+    for (const pl of (NET.on ? PL : [player])) { pl.vx = pl.vy = 0; if (pl.state === 'idle' || pl.state === 'walk' || pl.state === 'run') { pl.state = 'cut'; pl.atk = null; } }
     if (S.traf.t > 0.6 && !S.traf.said) { S.traf.said = true; sfx('page'); }
-    if (S.traf.t > 6.2) { S.traf = null; S.trafDone = true; S.endT = 0.01; S.cine = 0; }
+    if (S.traf.t > 6.2) {
+      S.traf = null; S.trafDone = true; S.endT = 0.01; S.cine = 0;
+      for (const pl of (NET.on ? PL : [player])) if (pl.state === 'cut') setIdle(pl);
+    }
   }
 }
 function nlDrawTrafalgar() {
@@ -424,6 +468,190 @@ function nlAlleyTick(dt) {
     if (seb) { setTimeout0(() => { popWord(seb.x, seb.y, 200, 'WATCH RECOVERED!', true); sfx('jackpot'); nlWatchFx = { who: seb, t: 0 }; say(seb, pick(['Tick tock.', 'Elba time. Back where it belongs.', "That's mine. Thank you."]), 2.4, true); }, 0.6); S.endT = Math.max(S.endT, 3.4); }
   }
 }
+// ================================================================== how each of them fights
+// Every 2006 regular has a move of their own with a tell you can read (a wind-up pose and a "!"), something to do about
+// it, and the group plays as a group: they spread round you, rush in when one of them has hold of you, and the
+// groomsman's chanting gees the rest up. All of it runs on the shared clock so online co-op stays in step.
+//
+// A kind's own state runs through nlOwn: the base AI skips its clock, physics and hits whenever `extra` returns true.
+function nlOwn(f, dt, targets) {
+  f.t += dt; if (f.atk) f.atkT += dt;
+  if (f.inv > 0) f.inv -= dt; if (f.flash > 0) f.flash -= dt; if (f.cool > 0) f.cool -= dt; if (f.sayCool > 0) f.sayCool -= dt;
+  physics(f, dt);
+  if (ST.fixed) raftRules(f); else f.x = clamp(f.x, cam.x + 16, cam.x + W - 16);
+  if (f.atk) resolveAttack(f, targets || [player]);
+  return true;
+}
+const NL_OWN = new Set(['throwWind', 'throwing', 'kickWind', 'kick', 'hopback', 'flurryWind', 'flurry', 'grabWind', 'hairpull', 'guard',
+  'counterWind', 'counter', 'dashWind', 'dashing', 'circle', 'retreat', 'stagger', 'rallyWind', 'flank']);
+const NL_TELL = new Set(['throwWind', 'kickWind', 'flurryWind', 'grabWind', 'dashWind', 'rallyWind', 'counterWind', 'whistle']);
+// a special can start from here (stood off, between swings)
+const nlFree = f => (f.state === 'hover' || f.state === 'approach') && canBeHit(f) && f.z <= 0;
+// one big move at a time, so each one can be read and answered
+function nlSpecialOk() { return !(S.nlSpecT > 0) && foes.filter(o => NL_TELL.has(o.state) || o.state === 'dashing' || o.state === 'kick' || o.state === 'flurry').length < 2; }
+function nlStartSpecial(f, st, gap) { f.state = st; f.t = 0; f.vx = f.vy = 0; f.atk = null; S.nlSpecT = gap || 0.9; if (f.token) releaseToken(f, 0); if (Math.abs(player.x - f.x) > 6) f.face = Math.sign(player.x - f.x); }
+function nlStrike(f, reach, dmg, kd, kb, t1) { f.atkT = 0; f.atk = { t0: 0.02, t1: t1 || 0.14, reach: [0, reach], depth: 24, dmg, kd: !!kd, kb: kb || 180, hs: 0.07, hit: new Set(), zMax: 90 }; sfx('swing'); }
+const nlHits = f => f.atk && f.atk.hit && f.atk.hit.has(player);
+
+function nlStyle(f, dt) {
+  const p = player, d = f.def, dx = Math.abs(p.x - f.x), dy = Math.abs(p.y - f.y), side = Math.sign(f.x - p.x) || 1;
+  // ---- shared: the groomsman's chant speeds them up
+  if (f.rallyT > 0) { f.rallyT -= dt; f.buffT = f.rallyT; if (f.state === 'windup') f.t += dt * 0.7; if (f.state === 'hover' && f.cool > 0) f.cool -= dt; }
+  // ---- shared: someone's got hold of you, everyone piles in
+  if (S.nlGangT > 0 && f.state === 'hover' && canBeHit(f) && dx < 420) { f.cool = 0; f.retarget = 0; }
+  // ---- shared: don't all queue up on one side; walk round to the open side
+  if (f.state === 'hover' && !f.token && f.t > 0.6 && canBeHit(f) && !ST.fixed) {
+    const mine = foes.filter(o => o !== f && canBeHit(o) && !o.boss && Math.sign(o.x - p.x) === side).length;
+    const other = foes.filter(o => o !== f && canBeHit(o) && !o.boss && Math.sign(o.x - p.x) === -side).length;
+    if (mine >= other + 2 && chance(dt * 1.5)) { f.state = 'flank'; f.t = 0; f.flankSide = -side; f.flankY = p.y < (FT + FB) / 2 ? FB - 14 : FT + 14; }
+  }
+  if (f.state === 'flank') {
+    // a wide arc round you, not straight through you
+    const tx = clampX(p.x + f.flankSide * 190), arcing = Math.sign(f.x - p.x) !== f.flankSide;
+    moveToward(f, tx, arcing ? f.flankY : p.y, d.speed * 1.05, dt);
+    if (f.vx) f.face = Math.sign(p.x - f.x) || f.face;
+    if ((!arcing && Math.abs(f.x - tx) < 30) || f.t > 3) { f.state = 'hover'; f.t = 0; f.hoverSide = f.flankSide; }
+    return nlOwn(f, dt);
+  }
+  switch (f.kind) {
+    case 'city': {
+      // CITY BOY: lobs his drink from range, slaps up close
+      if (f.state === 'throwWind') { f.vx = f.vy = 0; if (f.t > 0.55) { f.state = 'throwing'; f.t = 0; fireShot(f); if (chance(0.4)) say(f, pick(['Have a drink!', 'On me!', 'Cheers!']), 1.2, true); } return nlOwn(f, dt); }
+      if (f.state === 'throwing') { if (f.t > 0.35) { f.state = 'hover'; f.t = 0; f.cool = rand(0.6, 1.2); } return nlOwn(f, dt); }
+      if (nlFree(f) && !(f.throwCool > 0) && dx > 180 && dx < 430 && dy < 60 && playerTargetable() && nlSpecialOk() && chance(dt * 1.6)) { f.throwCool = rand(3.5, 5.5); nlStartSpecial(f, 'throwWind'); return nlOwn(f, dt); }
+      f.throwCool = (f.throwCool || 2) - dt;
+      return false;
+    }
+    case 'itgirl': {
+      // IT GIRL: a stepping high kick with real reach; take two hits and she hops back out of it
+      if (f.state === 'kickWind') { f.vx = f.vy = 0; if (f.t > 0.42) { f.state = 'kick'; f.t = 0; f.vx = f.face * 280; nlStrike(f, 108, d.dmg + 3, true, 300, 0.22); } return nlOwn(f, dt); }
+      if (f.state === 'kick') { friction(f, dt, 0.002); if (f.t > 0.4) { f.atk = null; f.state = 'recover'; f.t = 0; } return nlOwn(f, dt); }
+      if (f.state === 'hopback') { if (f.t > 0.5 && f.z <= 0) { f.state = 'hover'; f.t = 0; f.cool = 0.4; } return nlOwn(f, dt); }
+      if (f.state === 'hurt' && f._was !== 'hurt') { f.hurts = (f.hurts || []).filter(t => S.t0 - t < 1.6); f.hurts.push(S.t0 || 0); }
+      f._was = f.state;
+      if (f.state === 'hover' && (f.hurts || []).length >= 2 && canBeHit(f)) { f.hurts = []; f.state = 'hopback'; f.t = 0; f.vz = 380; f.z = 1; f.vx = side * 300; f.vy = 0; f.inv = 0.3; popWord(f.x, f.y, 140, pick(['EW!', 'AS IF!']), false); return nlOwn(f, dt); }
+      if (nlFree(f) && dx > 90 && dx < 175 && dy < 22 && playerTargetable() && nlSpecialOk() && chance(dt * 2.2)) { nlStartSpecial(f, 'kickWind'); return nlOwn(f, dt); }
+      return false;
+    }
+    case 'burb': {
+      // CHECK CAP: a three-punch flurry, the last one puts you down (and the shoulder charge from range)
+      if (f.state === 'windup' && !f.flurryTried) { f.flurryTried = true; if (chance(0.5)) { nlStartSpecial(f, 'flurryWind', 0.5); return nlOwn(f, dt); } }
+      if (f.state !== 'windup') f.flurryTried = false;
+      if (f.state === 'flurryWind') { f.vx = f.vy = 0; if (f.t > 0.32) { f.state = 'flurry'; f.t = 0; f.n = 0; nlStrike(f, d.reach, d.dmg - 2, false, 90); } return nlOwn(f, dt); }
+      if (f.state === 'flurry') {
+        const step = Math.floor(f.t / 0.2);
+        if (step > f.n && step < 3) { f.n = step; f.vx = f.face * 60; nlStrike(f, d.reach + 6, step === 2 ? d.dmg + 2 : d.dmg - 2, step === 2, step === 2 ? 320 : 90); }
+        friction(f, dt, 0.01);
+        if (f.t > 0.75) { f.atk = null; f.state = 'recover'; f.t = 0; }
+        return nlOwn(f, dt);
+      }
+      return false;
+    }
+    case 'hoops': {
+      // HOOPS: grabs a fistful of hair and drags you about while her mates pile in; mash to get loose
+      if (f.state === 'grabWind') {
+        f.vx = f.vy = 0;
+        if (f.t > 0.36) {
+          if (pHittable(20) && !p.rage && dx < 86 && dy < 26) { holdPlayer(f); f.state = 'hairpull'; f.t = 0; f.mash = 0; S.nlGangT = 2.0; sfx('grab'); popWord(p.x, p.y, 160, 'HAIR PULL!', true); say(f, pick(['Come here!', 'Got you now!', 'Is it?!']), 1.4, true); }
+          else { f.state = 'recover'; f.t = 0; if (p.rage) popWord(p.x, p.y, 150, 'NOPE!', false); }
+        }
+        return nlOwn(f, dt);
+      }
+      if (f.state === 'hairpull') {
+        if (p.state !== 'netted' || p.heldBy !== f) { f.state = 'recover'; f.t = 0; return nlOwn(f, dt); }
+        f.vx = -f.face * 70; f.vy = 0; p.x = f.x + f.face * 40; p.y = f.y; p.face = -f.face;
+        if (pressed.has('punch') || pressed.has('jump') || pressed.has('left') || pressed.has('right') || taps.length) { f.mash = (f.mash || 0) + 1; p.flash = 0.05; }
+        if (f.mash >= 6) { freePlayer(); f.state = 'hurt'; f.t = 0; f.vx = -f.face * 220; popWord(p.x, p.y, 150, 'LET GO!', false); }
+        else if (f.t > 1.7) { freePlayer(); f.state = 'recover'; f.t = 0; hitP(f, d.dmg + 2, f.face, true, 300); popWord(p.x, p.y, 150, 'SLAMMED!', true); }
+        return nlOwn(f, dt);
+      }
+      if (nlFree(f) && dx < 120 && dy < 26 && playerTargetable() && nlSpecialOk() && chance(dt * 1.4)) { nlStartSpecial(f, 'grabWind'); f.vx = 0; return nlOwn(f, dt); }
+      if (f.state === 'hurt' || f.state === 'down') nlHeldFree(f);
+      return false;
+    }
+    case 'snood': {
+      // SNOOD: keeps his guard up. Punches from the front bounce off (and he answers with a jab);
+      // hit him from behind, from a jump, with a weapon, or throw him. Three blocks and the guard drops.
+      f.guardPts = Math.min(3, (f.guardPts == null ? 3 : f.guardPts) + dt / 3);
+      if (f.state === 'guard') { f.vx = f.vy = 0; if (f.t > 0.26) { f.state = 'counterWind'; f.t = 0; } return nlOwn(f, dt); }
+      if (f.state === 'counterWind') { f.vx = f.vy = 0; if (f.t > 0.14) { f.state = 'counter'; f.t = 0; nlStrike(f, d.reach + 8, d.dmg - 1, false, 160); } return nlOwn(f, dt); }
+      if (f.state === 'counter') { if (f.t > 0.24) { f.atk = null; f.state = 'recover'; f.t = 0; if (nlHits(f) && chance(0.4)) popWord(f.x, f.y, 140, 'COUNTER!', false); } return nlOwn(f, dt); }
+      const facing = Math.sign(p.x - f.x) === f.face;
+      if (p.atk && p.atkT < 0.06 && !p.weapon && p.z < 24 && facing && dx < 130 && dy < 30 && canBeHit(f) && f.z <= 0 &&
+          ['hover', 'approach', 'recover', 'idle', 'walk'].includes(f.state)) {
+        if (f.guardPts >= 1) { f.guardPts -= 1; f.inv = 0.24; f.state = 'guard'; f.t = 0; f.vx = f.vy = 0; f.atk = null; popWord(f.x, f.y, 140, 'BLOCKED!', false); sfx('thud'); dust(f.x + f.face * 18, f.y, 2, 40); if (f.token) releaseToken(f, 0.3); return nlOwn(f, dt); }
+        if (!f.broke) { f.broke = true; popWord(f.x, f.y, 150, 'GUARD BROKEN!', true); setTimeout0(() => { f.broke = false; }, 2.5); }
+      }
+      return false;
+    }
+    case 'puffer': {
+      // PUFFER: crouches, then a flat-out dash across the carriage; step out of the line
+      if (f.state === 'dashWind') { f.vx = f.vy = 0; if (Math.abs(p.x - f.x) > 6 && f.t < 0.25) f.face = Math.sign(p.x - f.x); if (f.t > 0.5) { f.state = 'dashing'; f.t = 0; f.atkT = 0; f.atk = { t0: 0, t1: 0.5, reach: [-10, 58], depth: 22, dmg: d.dmg + 3, kd: true, kb: 340, hs: 0.07, hit: new Set() }; sfx('throw'); } return nlOwn(f, dt); }
+      if (f.state === 'dashing') { f.vx = f.face * 640; f.vy = 0; if (chance(0.4)) dust(f.x - f.face * 20, f.y, 1, 20); if (f.t > 0.5 || nlHits(f)) { f.atk = null; f.state = 'recover'; f.t = 0; f.vx *= 0.3; } return nlOwn(f, dt); }
+      if (nlFree(f) && !(f.dashCool > 0) && dx > 200 && dx < 470 && dy < 18 && playerTargetable() && nlSpecialOk() && chance(dt * 2)) { f.dashCool = rand(3, 5); nlStartSpecial(f, 'dashWind'); return nlOwn(f, dt); }
+      f.dashCool = (f.dashCool || 1.5) - dt;
+      // line up first, then go
+      if (f.state === 'hover' && !(f.dashCool > 0) && dx > 200 && dy >= 18 && chance(dt * 2)) { f.hoverY = p.y; f.retarget = 1.2; }
+      return false;
+    }
+    case 'hood': {
+      // HOOD: works his way round behind you, hits and runs
+      if (f.state === 'circle') {
+        const behind = clampX(p.x - p.face * 110);
+        moveToward(f, behind, Math.sign(f.x - p.x) === -p.face ? p.y : (p.y < (FT + FB) / 2 ? FB - 16 : FT + 16), d.speed * 1.2, dt);
+        f.face = Math.sign(p.x - f.x) || f.face;
+        if ((Math.abs(f.x - behind) < 26 && Math.abs(f.y - p.y) < 16) || f.t > 2.6) { f.state = 'windup'; f.t = 0; f.vx = f.vy = 0; f.uppercut = false; }
+        return nlOwn(f, dt);
+      }
+      if (f.state === 'retreat') { f.vx = f.face * -300; if (f.t > 0.45) { f.state = 'hover'; f.t = 0; f.cool = rand(0.8, 1.4); } return nlOwn(f, dt); }
+      if (f.state === 'approach' && Math.sign(f.x - p.x) === p.face && playerTargetable() && !f.circled) { f.circled = true; f.state = 'circle'; f.t = 0; return nlOwn(f, dt); }
+      if (f.state === 'recover' && f._hit) { f._hit = false; f.state = 'retreat'; f.t = 0; if (f.token) releaseToken(f, 0.8); return nlOwn(f, dt); }
+      if (f.state === 'attack' && nlHits(f)) f._hit = true;
+      if (f.state === 'hover') f.circled = false;
+      return false;
+    }
+    case 'stag': {
+      // THE STAG: lurches about, swings at anyone (his own mates included), and now and then goes over on his own
+      if (f.state === 'stagger') {
+        if (f.t > (f.lurch || 0)) { f.lurch = f.t + rand(0.18, 0.34); f.vx = rand(-1, 1) * 170; f.vy = rand(-1, 1) * 70; }
+        if (f.t > 1.1) { f.state = 'hover'; f.t = 0; f.vx = f.vy = 0; if (chance(0.2)) { knockDown(f, f.face, 120); popWord(f.x, f.y, 150, 'TIMBER!', false); } }
+        return nlOwn(f, dt);
+      }
+      if (f.state === 'attack' && f.atk) resolveAttack(f, foes.filter(o => o !== f && !o.boss));
+      if (f.state === 'attack' && f.atk && f.atk.hit && [...f.atk.hit].some(o => o !== player && foes.includes(o)) && !f.oops) { f.oops = true; popWord(f.x, f.y, 140, 'OOPS!', false); }
+      if (f.state !== 'attack') f.oops = false;
+      if (f.state === 'hover' && canBeHit(f) && chance(dt * 0.45)) { f.state = 'stagger'; f.t = 0; f.lurch = 0; if (chance(0.3)) say(f, pick(d.lines), 1.4, true); return nlOwn(f, dt); }
+      return false;
+    }
+    case 'groom': {
+      // GROOMSMAN: starts the chant and the whole lot of them speed up; drop him first
+      if (f.state === 'rallyWind') {
+        f.vx = f.vy = 0;
+        if (f.t > 0.8) {
+          f.state = 'hover'; f.t = 0; f.cool = 0.5;
+          let n = 0;
+          for (const o of foes) if (o !== f && canBeHit(o) && !o.boss && Math.abs(o.x - f.x) < 460) { o.rallyT = 6; o.buffT = 6; n++; }
+          if (n) { popWord(f.x, f.y, 170, 'DAVE! DAVE! DAVE!', true); sfx('whistle'); }
+        }
+        return nlOwn(f, dt);
+      }
+      f.rallyCool = (f.rallyCool == null ? rand(3, 5) : f.rallyCool) - dt;
+      if (nlFree(f) && f.rallyCool <= 0 && foes.filter(o => o !== f && canBeHit(o) && !o.boss).length >= 2 && nlSpecialOk()) { f.rallyCool = rand(8, 11); nlStartSpecial(f, 'rallyWind', 0.6); say(f, pick(['LADS! LADS!', 'Come on, boys!', 'For Dave!']), 1.2, true); return nlOwn(f, dt); }
+      return false;
+    }
+  }
+  return false;
+}
+// the stage clock the specials share
+function nlStyleTick(dt) {
+  if (S.nlSpecT > 0) S.nlSpecT -= dt;
+  if (S.nlGangT > 0) S.nlGangT -= dt;
+  S.t0 = (S.t0 || 0) + dt;
+}
+for (const k of ['city', 'itgirl', 'burb', 'hoops', 'snood', 'puffer', 'hood', 'stag', 'groom']) FOES[k].extra = (f, dt) => nlStyle(f, dt);
+// the smoking-area crew keep their own tricks and join in the group play
+for (const k of ['grappler', 'dipper', 'lookout']) { const own = FOES[k].extra; FOES[k].extra = (f, dt) => nlStyle(f, dt) || own(f, dt); }
+
 function nlHeldFree(f) { if (player.state === 'netted' && player.heldBy === f) freePlayer(); }
 // the Grappler: a bear hug from behind; mash to get out, and his mates go through your pockets meanwhile
 function nlGrappler(f, dt) {
@@ -438,14 +666,14 @@ function nlGrappler(f, dt) {
       if (p.rage) { popWord(p.x, p.y, 160, 'NOT TODAY!', true); knockDown(f, -f.face, 380); f.hp -= 12; }
       else if (f.state === 'hurt') { popWord(p.x, p.y, 150, 'BROKE FREE!', false); f.vx = -f.face * 200; }
     }
-    return true;
+    return nlOwn(f, dt);
   }
   if (f.state === 'attack' && f.atk && !f.hugTry && f.atkT > 0.05) {
     f.hugTry = true;
     if (canBeHit(p) && !(p.buffT > 0) && p.z < 20 && p.state !== 'netted' && Math.abs(p.x - f.x) < 80 && Math.abs(p.y - f.y) < 26) {
       if (p.rage) { popWord(p.x, p.y, 150, 'NOPE!', false); return false; }
       f.atk = null; holdPlayer(f); f.state = 'hug'; f.t = 0; f.mash = 0; say(f, pick(['Got you.', 'Hug it out.', 'Shh shh shh.']), 1.4, true); sfx('grab');
-      return true;
+      S.nlGangT = 2.2; return true;
     }
   }
   if (f.state !== 'attack') f.hugTry = false;
@@ -480,11 +708,11 @@ function nlDipper(f, dt) {
 // the Lookout: hangs back, lobs bottles, whistles more of them in
 function nlLookout(f, dt) {
   f.whistleT = (f.whistleT == null ? rand(5, 8) : f.whistleT) - dt;
-  if (f.state === 'whistle') { f.vx = f.vy = 0; if (f.t > 0.9) { f.state = 'hover'; f.t = 0; const k = pick(['dipper', 'grappler']); const n = spawnFoe(k, chance(0.5) ? 'R' : 'L'); foes.push(n); } return true; }
+  if (f.state === 'whistle') { f.vx = f.vy = 0; if (f.t > 0.9) { f.state = 'hover'; f.t = 0; const k = pick(['dipper', 'grappler']); const n = spawnFoe(k, chance(0.5) ? 'R' : 'L'); foes.push(n); } return nlOwn(f, dt); }
   if (f.whistleT <= 0 && canBeHit(f) && foes.filter(o => canBeHit(o) && !o.boss).length < 5 && ['hover', 'idle', 'walk', 'approach'].includes(f.state)) {
     f.whistleT = rand(8, 12); f.state = 'whistle'; f.t = 0; sfx('whistle'); popWord(f.x, f.y, 160, 'PHWEEEET!', false);
     if (f.token) releaseToken(f, 0.4);
-    return true;
+    return nlOwn(f, dt);
   }
   return false;
 }
@@ -706,8 +934,6 @@ function nlBgBus() {
 let nlWatchFx = null;
 function nlDrawFore() {
   if (!ST || ST.era !== 2006) return;
-  // grab poles in front of everyone on the train and the bus
-  if (ST.train) for (let wx = Math.floor(cam.x / 320) * 320 + 160; wx < cam.x + W + 320; wx += 320) { const x = nlSnap(wx - cam.x); if (wx % TRAIN.car < 1800) { ctx.fillStyle = '#1b1606'; ctx.fillRect(x - 3, 0, 8, H); ctx.fillStyle = '#e8c23a'; ctx.fillRect(x - 2, 0, 5, H); ctx.fillStyle = '#fff2a0'; ctx.fillRect(x - 1, 0, 1, H); } }
   if (S && S.ann) {
     const a = S.ann, k = Math.min(1, a.t / 0.15, (a.life - a.t) / 0.25);
     ctx.save(); ctx.globalAlpha = Math.max(0, k);
@@ -717,6 +943,8 @@ function nlDrawFore() {
     pxText(a.text, W / 2, y + 15, 12, '#ff9a1a');
     ctx.restore();
   }
+  // the tell: a "!" over anyone winding up a big move
+  for (const f of foes) if (NL_TELL.has(f.state) && !f.boss) { const sx = f.x - cam.x; if (sx > -40 && sx < W + 40) textOut('!', sx, f.y - f.z - 150, '34px ' + DISPLAY, '#ffd23f', OUT, 6); }
   if (S && S.traf) nlDrawTrafalgar();
   // Seb's watch, back where it belongs: it rises over his head and catches the light
   // (kept out of S: it's only a picture, timed by the screen, so it can't knock online co-op out of step)

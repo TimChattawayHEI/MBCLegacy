@@ -16,5 +16,5 @@
 - stag: The Stag 5cfe5fba-0397-4541-9793-959f8d6442b6 (64)
 - groom: Groomsman v3 49977129-d3e6-4e98-8c56-6eb658ddef71 (64) (replaces 98618ac5-ce26-4611-9434-a081a1c11182 and 15a94c10-94b2-4b2b-bd49-365cd5585512, both drew a stray "stag" tail in side view; do not use)
 - smiler: Smiler 63f9cf10-a32d-4c19-afe1-adaecdfd21be (64, friendly NPC)
-- commuter: Commuter d01761e4-04eb-4b39-bc48-d9e13a1650ac (64, fleeing passenger)
+- commuter: Commuter v2 a303c518-acb5-40cd-bef8-bb7c4a1aea9c (64, fleeing passenger; colour re-make) (replaces d01761e4-04eb-4b39-bc48-d9e13a1650ac, which came out greyscale)
 - oldboy: Old Boy 7ca61462-0ec6-4e88-837c-3670f3bee1de (64, fleeing passenger)

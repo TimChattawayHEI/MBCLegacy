@@ -16,13 +16,20 @@ LAB, S = 18, 2
 # key: rows in order, then which states use which rows (FOE_FRAMES wind / hits)
 STD = ['idle', 'walk', 'attack', 'hurt', 'knockdown']
 KINDS = {
-    'city': (STD + ['throw'], {}), 'itgirl': (STD + ['kick'], {}), 'burb': (STD, {}),
-    'hoops': (STD + ['pull'], {'trim': {'idle': 4}}),   # her idle drifts into a step after frame 3
-    'snood': (STD, {}), 'puffer': (STD + ['dash'], {}), 'hood': (STD, {}),
+    # each kind's own moves (tools/v53/nightlife.js, "how each of them fights") show on its own rows:
+    # wind = the build-up (the row's pre frames), hits = the strike (the row's hit frame)
+    'city': (STD + ['throw'], {'wind': {'throwWind': 'throw'}, 'hits': {'throwing': 'throw'}}),
+    'itgirl': (STD + ['kick'], {'wind': {'kickWind': 'kick'}, 'hits': {'kick': 'kick'}}),
+    'burb': (STD, {'wind': {'flurryWind': 'attack'}, 'hits': {'flurry': 'attack'}}),
+    'hoops': (STD + ['pull'], {'trim': {'idle': 4}, 'wind': {'grabWind': 'pull'}, 'hits': {'hairpull': 'pull'}}),   # her idle drifts into a step after frame 3
+    'snood': (STD, {'wind': {'counterWind': 'attack', 'guard': 'attack'}, 'hits': {'counter': 'attack'}}),
+    'puffer': (STD + ['dash'], {'wind': {'dashWind': 'dash'}, 'hits': {'dashing': 'dash'}}),
+    'hood': (STD, {}),
     'grappler': (STD + ['hold'], {'hits': {'hug': 'hold'}}),
     'dipper': (STD + ['dodge', 'steal'], {'hits': {'dodge': 'dodge'}}),
     'lookout': (STD + ['whistle'], {'hits': {'whistle': 'whistle'}}),
-    'stag': (STD + ['stagger'], {}), 'groom': (STD, {}),
+    'stag': (STD + ['stagger'], {'moves': {'stagger': {'pre': [1, 2, 3, 4, 5, 6], 'hit': 3, 'post': [5]}}, 'wind': {'stagger': 'stagger'}}),
+    'groom': (STD, {'wind': {'rallyWind': 'attack'}}),
     'inspector': (STD + ['attack2', 'block', 'shout'], {'wind': {'slapWind': 'attack2', 'fineWind': 'shout', 'blockWind': 'block'},
                                                           'hits': {'slap': 'attack2', 'fine': 'shout', 'block': 'block'}}),
     'lenny': (STD + ['attack2', 'pull', 'charge'], {'wind': {'alarmWind': 'pull', 'doorWind': 'pull', 'kneeWind': 'attack2', 'chargeWind': 'charge'},
