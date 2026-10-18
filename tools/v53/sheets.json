@@ -482,5 +482,49 @@
    "fist": {}
   },
   "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], fallFlip: true}"
+ },
+ "inspector": {
+  "meta": {
+   "cell": 112,
+   "ax": 57.0,
+   "ay": 94,
+   "h": 76,
+   "rows": {
+    "idle": [
+     0,
+     7
+    ],
+    "walk": [
+     1,
+     9
+    ],
+    "attack": [
+     2,
+     9
+    ],
+    "hurt": [
+     3,
+     5
+    ],
+    "knockdown": [
+     4,
+     17
+    ],
+    "attack2": [
+     5,
+     9
+    ],
+    "block": [
+     6,
+     7
+    ],
+    "shout": [
+     7,
+     7
+    ]
+   },
+   "fist": {}
+  },
+  "frames": "{attack: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, attack2: {pre: [2, 3, 4], hit: 5, post: [6, 7]}, block: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, shout: {pre: [1, 2, 3], hit: 4, post: [5, 6]}, hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15], wind: {slapWind: \"attack2\", fineWind: \"shout\", blockWind: \"block\"}, hits: {slap: \"attack2\", fine: \"shout\", block: \"block\"}, fallFlip: true}"
  }
 }
