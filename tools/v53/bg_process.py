@@ -19,6 +19,9 @@ OUT = os.path.join(ROOT, 'web', 'bg', 'nightlife')
 SIGNS = {
     'st_front': [(135, 39, 187, 44, ['ORPINGTON'])],
     'st_hall': [(1, 38, 24, 49, ['TICKET', 'OFFICE']), (130, 39, 238, 50, ['TICKET HALL'])],
+    'cx_hall': [(2, 72, 63, 84, ['ORPINGTON 2345', 'SEVENOAKS 2350']), (70, 72, 123, 84, ['HAYES 2348', 'DARTFORD 2352']),
+                (138, 72, 179, 84, ['CANCELLED', 'DELAYED']), (186, 72, 248, 84, ['GROVE PARK 0003', 'BROMLEY S 2358']),
+                (251, 72, 314, 84, ['ASHFORD 0020', 'GILLINGHAM 0015'])],
     'tr_wall': [(20, 11, 139, 17, ['PLEASE OFFER YOUR SEAT']), (182, 11, 302, 17, ['NO SMOKING ON THIS TRAIN'])],
 }
 # image: boxes to paint out with the sky beside them (a moon that would repeat every tile of a scrolling strip)

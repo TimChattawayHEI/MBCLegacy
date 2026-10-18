@@ -66,7 +66,7 @@ Object.assign(STAGES, {
       { at: 3800, stop: 'LEWISHAM', groups: [[['snood', 'R'], ['puffer', 'R'], ['hood', 'R']], [['snood', 'R'], ['hood', 'L'], ['puffer', 'R'], ['puffer', 'R']]] },
       { at: 'end', boss: 'lenny', title: 'LEWISHAM LENNY' },
     ] },
-  nl_cx: { n: 10, era: 2006, title: 'CHARING CROSS', sub: '22:41. This train terminates here.', bg: 'nl_cx', ft: 356, fb: 506, len: 3200,
+  nl_cx: { n: 10, era: 2006, title: 'CHARING CROSS', sub: '21:47. This train terminates here.', bg: 'nl_cx', ft: 356, fb: 506, len: 3200,
     music: 'terminus', aggro: 3, aa: 0.45,
     items: [{ w: 'alcopop', x: 820, y: 470 }],
     breakables: [{ type: 'bin', x: 1300, y: 470, drop: 'chips' }, { type: 'bin', x: 2300, y: 460, drop: 'w:alcopop' }],
@@ -616,7 +616,7 @@ function nlBgStation() {
   // the yellow line on the platform: stand behind it
   { const x = nlSnap(2600 - cam.x); if (x < W) { ctx.fillStyle = '#e8c23a'; ctx.fillRect(Math.max(0, x), FB - 18, W - Math.max(0, x), 4); } }
   // the barrier line the Inspector guards
-  for (let i = 0; i < 3; i++) nlPut('cx_barrier', 2560 + i * 60, FT + 30);
+  nlPut('cx_barrier', 2420, FT + 40);
   return true;
 }
 function nlBgTrain() {
@@ -677,7 +677,8 @@ function nlBgCx() {
   for (let wx = -100; wx < ST.len + 640; wx += 640) nlPut('cx_hall', wx, FT + 4);
   pxFloor(0, ST.len, '#4a4c55', '#43454d', 48, 96, '#53555e');
   ctx.fillStyle = '#6c6e78'; ctx.fillRect(0, FT, W, 4);
-  for (let i = 0; i < 6; i++) nlPut('cx_barrier', ST.len - 330 + i * 0, FT + 30);
+  // the ticket barriers across the end of the concourse, and the way out to the Strand
+  nlPut('cx_barrier', ST.len - 560, FT + 40); nlPut('cx_barrier', ST.len - 304, FT + 40);
   return true;
 }
 function nlBgAlley() {
