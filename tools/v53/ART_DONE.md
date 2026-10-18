@@ -114,3 +114,16 @@ About 52 PixelLab generations for this pass, from a ~150 budget. The account bal
 ### Still not right
 - puffer hurt: cell 3 starts hunching forward (best of 4 takes).
 - Frame-count changes the game must handle: `lenny/pull.png` and `inspector/block.png` now have 9 cells instead of 7.
+
+## Backgrounds pass (no more hard cuts, gatelines that make sense)
+Tim: "transitions just cut to a new background image", the ticket hall repeated, and the barriers sat next to the track.
+- Every stage that scrolls through scenery is now one row of pieces joined by inpainted joins (`tools/v53/seams.py`):
+  - Orpington: st_front | st_j1 | st_hall | st_jh | st_hall2 | st_j2 | st_platform (nothing repeats; 3680 px of 3300).
+  - Charing Cross: cx_platform | cx_j1 | cx_hall | cx_j2 | cx_shops | cx_j3 | cx_exit (off the train, through the gates, across the concourse, out to the Strand; the stage is now 3400 long so the way out shows).
+  - Smoking area: alley | al_j1 | alley2 | al_j2 | alley3 | al_j3 | alley.
+- How a join is made: a 256 px canvas with A's last 48 px and B's first 48 px, the middle masked; the canvas goes up on the throwaway `art-staging` branch so PixelLab can read it from raw.githubusercontent.com (the workspace can't upload to PixelLab), then mcp__PixelLab__inpaint_image fills the middle. bg_process.py pastes A's and B's exact edge pixels back, so the game overlaps them with no seam.
+- New pieces (pixflux, 1 generation each): cx_platform (re-rolled once: the first was a flat high-speed train with platform 29/33), cx_shops and alley2/alley3 (img2img from cx_hall/alley so the style matches), cx_exit, st_hall2 (ticket machines, footbridge stairs, "TRAINS TO LONDON CHARING CROSS"). Garbled signs repainted: PLAT 4, NEWS, TOILETS, SANDWICHES, FIRE EXIT, the departures sign; the ticket machine headers blanked.
+- Re-rolls: cx_j1 (the first came out in perspective with a Tube train), st_j2 (twice: PixelLab kept painting a darker sky than the platform's, so the part past the doorway is the platform's own first columns mirrored, `seams.MIRROR`). st_j3 and the first st_j2 were dropped when st_hall2 went in.
+- Bottoms cropped (`bg_process.CROP`): st_hall, st_platform, cx_*, alley* all ended in a dark band that read as a platform edge or kerb behind the fight. Tops padded or cut so a stage's pieces share a height.
+- Gatelines: `gate.png` (pixflux, a side-on gate cabinet; two earlier takes were too tall or three-quarter on) -> gate_open / gate_shut (green or red light). Five cabinets in a column across the walkway, depth-sorted with the fighters: Orpington at the doorway from the ticket hall to the platform (the Inspector's fight is right there), Charing Cross where the platforms end. Red while a fight is on screen, green when clear. On the Orpington platform the yellow line, the edge and the track are drawn in front of the walkway, nearest the camera. cx_barrier.png is no longer used.
+- Generations: about 140 (13 inpaints at 10 each, 10 pixflux).

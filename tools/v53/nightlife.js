@@ -3,7 +3,8 @@
 // Everything that moves (the train, the stops, the bus lurching) runs inside the shared game so online co-op stays in step.
 const NLX = { keys: ['nl_station', 'nl_train', 'nl_cx', 'nl_alley', 'nl_bus'], img: k => bgImg('nightlife/' + k) };
 const NL_FILES = ['st_front', 'st_hall', 'tr_wall', 'tr_door', 'tr_end', 'tr_toilet', 'toilet_guy', 'sc_suburb', 'sc_platform', 'cx_hall',
-  'cx_barrier', 'trafalgar', 'alley', 'bus_deck', 'bus_stairs', 'sc_highst'].map(k => 'nightlife/' + k);
+  'trafalgar', 'alley', 'bus_deck', 'bus_stairs', 'sc_highst', 'st_hall2', 'st_platform', 'cx_platform', 'cx_shops', 'cx_exit', 'alley2', 'alley3',
+  'st_j1', 'st_jh', 'st_j2', 'cx_j1', 'cx_j2', 'cx_j3', 'al_j1', 'al_j2', 'al_j3', 'gate_open', 'gate_shut'].map(k => 'nightlife/' + k);
 
 // ---------------------------------------------------------------- who's out tonight
 Object.assign(FOES, {
@@ -50,9 +51,10 @@ Object.assign(STAGES, {
     items: [{ w: 'alcopop', x: 760, y: 470 }, { w: 'cone', x: 1560, y: 440 }],
     breakables: [{ type: 'bin', x: 1180, y: 476, drop: 'kebab' }, { type: 'bin', x: 2380, y: 450, drop: 'w:alcopop' }],
     waves: [
-      { at: 360, groups: [[['townie', 'R'], ['ladette', 'R'], ['townie', 'L']]] },
-      { at: 1100, groups: [[['tracksuit', 'R'], ['hoodie', 'R']], [['townie', 'R'], ['ladette', 'L'], ['tracksuit', 'R']]] },
-      { at: 1800, groups: [[['chunk', 'R'], ['townie', 'L'], ['ladette', 'R']], [['hoodie', 'R'], ['tracksuit', 'L']]], food: 'kebab' },
+      // Orpington on a Friday: the locals first, then the lot heading into town, then a bit of everything
+      { at: 360, groups: [[['burb', 'R'], ['hoops', 'R'], ['burb', 'L']]] },
+      { at: 1100, groups: [[['city', 'R'], ['itgirl', 'R']], [['burb', 'R'], ['hoops', 'L'], ['city', 'R']]] },
+      { at: 1800, groups: [[['puffer', 'R'], ['burb', 'L'], ['hoops', 'R']], [['city', 'R'], ['itgirl', 'L']]], food: 'kebab' },
       { at: 'end', boss: 'inspector', title: 'THE TICKET INSPECTOR' },
     ] },
   nl_train: { n: 9, era: 2006, title: 'THE 21:12 TO CHARING CROSS', sub: 'Calling at Chislehurst, Hither Green, Lewisham...', bg: 'nl_train', ft: 372, fb: 506, len: 5600,
@@ -66,13 +68,13 @@ Object.assign(STAGES, {
       { at: 3800, stop: 'LEWISHAM', groups: [[['snood', 'R'], ['puffer', 'R'], ['hood', 'R']], [['snood', 'R'], ['hood', 'L'], ['puffer', 'R'], ['puffer', 'R']]] },
       { at: 'end', boss: 'lenny', title: 'LEWISHAM LENNY' },
     ] },
-  nl_cx: { n: 10, era: 2006, title: 'CHARING CROSS', sub: '21:47. This train terminates here.', bg: 'nl_cx', ft: 356, fb: 506, len: 3200,
+  nl_cx: { n: 10, era: 2006, title: 'CHARING CROSS', sub: '21:47. This train terminates here.', bg: 'nl_cx', ft: 356, fb: 506, len: 3400,
     music: 'terminus', aggro: 3, aa: 0.45,
     items: [{ w: 'alcopop', x: 820, y: 470 }],
     breakables: [{ type: 'bin', x: 1300, y: 470, drop: 'chips' }, { type: 'bin', x: 2300, y: 460, drop: 'w:alcopop' }],
     waves: [
       { at: 360, groups: [[['puffer', 'R'], ['snood', 'R'], ['city', 'L']]] },
-      { at: 1100, groups: [[['burb', 'R'], ['hoops', 'R']], [['itgirl', 'R'], ['city', 'R'], ['burb', 'L']]], food: 'chips' },
+      { at: 700, groups: [[['burb', 'R'], ['hoops', 'R']], [['itgirl', 'R'], ['city', 'R'], ['burb', 'L']]], food: 'chips' },
       { at: 1800, groups: [[['hood', 'R'], ['snood', 'R'], ['puffer', 'L']], [['city', 'R'], ['hood', 'R']]] },
       { at: 'end', final: true, groups: [[['snood', 'R'], ['burb', 'R'], ['puffer', 'R'], ['hoops', 'L']]] },
     ] },
@@ -833,18 +835,70 @@ function nlDrawStageBg(bg) {
   if (bg === 'nl_bus') return nlBgBus();
   return false;
 }
+// ---------------------------------------------------------------- backgrounds that run on without a cut (Version 53 backgrounds pass)
+// Each stage is one row of pieces; a join (key with '_j') was inpainted between its neighbours and overlaps each of them by
+// NL_EDGE native pixels, so the row reads as one long picture. tools/v53/seams.py makes the joins.
+const NL_EDGE = 48;
+const NL_ROWS = {
+  nl_station: ['st_front', 'st_j1', 'st_hall', 'st_jh', 'st_hall2', 'st_j2', 'st_platform'],
+  nl_cx: ['cx_platform', 'cx_j1', 'cx_hall', 'cx_j2', 'cx_shops', 'cx_j3', 'cx_exit'],
+  nl_alley: ['alley', 'al_j1', 'alley2', 'al_j2', 'alley3', 'al_j3', 'alley'],
+};
+// where each piece starts in the world (2x scale); widths are known up front so nothing jumps while images load
+function nlRowAt(key) {
+  const out = []; let x = 0;
+  for (const k of NL_ROWS[key]) { const j = k.includes('_j'), w = (j ? 256 : k === 'st_platform' ? 400 : 320) * 2; if (j) x -= NL_EDGE * 2; out.push([k, x, w]); x += w; if (j) x -= NL_EDGE * 2; }
+  return out;
+}
+const NL_ROW_AT = {}; for (const k in NL_ROWS) NL_ROW_AT[k] = nlRowAt(k);
+function nlDrawRow(key, bottom) { for (const [k, x, w] of NL_ROW_AT[key]) if (x < cam.x + W + 20 && x + w > cam.x - 20) nlPut(k, x, bottom); }
+// the walkway: a floor per stretch, and where one meets the next they dither into each other over 96 px instead of cutting
+const NL_BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+function nlFloors(parts) {
+  for (const [x0, x1, col, line, rh, cw, sp] of parts) pxFloor(x0, x1, col, line, rh, cw, sp);
+  for (let i = 1; i < parts.length; i++) {
+    const b = parts[i][0], a0 = nlSnap(b - 48 - cam.x); if (a0 > W || a0 + 96 < 0) continue;
+    for (let cx = 0; cx < 96; cx += 8) for (let cy = 0, r = 0; FT + cy < H; cy += 8, r++) {
+      const k = cx / 96, th = (NL_BAYER[((r & 3) << 2) | ((cx / 8) & 3)] + 0.5) / 16;
+      ctx.fillStyle = k < th ? parts[i - 1][2] : parts[i][2]; ctx.fillRect(a0 + cx, FT + cy, 8, 8);
+    }
+  }
+}
+// the gateline: ticket gate cabinets, side-on, in a column across the walkway at one x, drawn in depth with the fighters.
+// Red lights while there's a fight on screen, green when it's clear. Picture only; nobody is stopped by it.
+function nlGateline(x) {
+  if (!S.npcs) S.npcs = [];
+  if (S.npcs.some(n => n.kind === 'gate')) return;
+  const n = 5;
+  for (let i = 0; i < n; i++) { const g = makeNpc('gate', x + (i % 2) * 2, FT + 14 + (FB - FT - 14) * i / (n - 1)); g.draw = nlDrawGate; g.hp = 0; S.npcs.push(g); }
+}
+function nlDrawGate(g) {
+  const shut = !!(S.wave && !S.wave.event && Math.abs(g.x - (cam.x + W / 2)) < W * 0.6);
+  const img = NLX.img(shut ? 'gate_shut' : 'gate_open'); if (!img) return;
+  const x = nlSnap(g.x - cam.x - img.width), y = nlSnap(g.y - img.height * 2 + 2);
+  if (x > W + 40 || x < -60) return;
+  ctx.save(); ctx.imageSmoothingEnabled = false;
+  ctx.fillStyle = 'rgba(0,0,0,0.35)'; ctx.beginPath(); ctx.ellipse(x + img.width, g.y, img.width + 4, 5, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.drawImage(img, x, y, img.width * 2, img.height * 2); ctx.restore();
+}
+// the platform edge and the track in front of the walkway, from x to the end of the stage
+function nlTrackFront(x0) {
+  const a = Math.max(0, nlSnap(x0 - cam.x)); if (a >= W) return;
+  ctx.fillStyle = '#e8c23a'; ctx.fillRect(a, FB + 4, W - a, 4);
+  ctx.fillStyle = '#b9b2a4'; ctx.fillRect(a, FB + 8, W - a, 6); ctx.fillStyle = '#7d776d'; ctx.fillRect(a, FB + 14, W - a, 2);
+  ctx.fillStyle = '#16141c'; ctx.fillRect(a, FB + 16, W - a, H - FB - 16);
+  for (let sx = a - (((cam.x + a) % 24) + 24) % 24; sx < W; sx += 24) { if (sx + 14 < a) continue; ctx.fillStyle = '#2b2620'; ctx.fillRect(Math.max(a, sx), FB + 24, 14, 6); }
+  ctx.fillStyle = '#8b8e98'; ctx.fillRect(a, FB + 22, W - a, 2); ctx.fillRect(a, FB + 30, W - a, 2);
+}
+const NL_ST_GATE = 2722, NL_CX_GATE = 820;
 function nlBgStation() {
   pxSky(['#0a0d22', '#121636', '#1b1a40', '#26203f', '#33263f', '#41293c'], 0, FT);
-  // Station Approach outside, the ticket hall, the barriers, then the platform under the night sky
-  for (let wx = -200; wx < 1080; wx += 640) nlPut('st_front', wx, FT + 4);
-  for (let wx = 1080; wx < 2600; wx += 640) nlPut('st_hall', wx, FT + 4);
-  for (let wx = 2600; wx < ST.len + 800; wx += 800) nlPut('st_platform', wx, FT + 4);
-  pxFloor(0, ST.len, '#3b3d44', '#34363c', 40, 80, '#44464d');
-  ctx.fillStyle = '#55575f'; ctx.fillRect(0, FT, W, 4);
-  // the yellow line on the platform: stand behind it
-  { const x = nlSnap(2600 - cam.x); if (x < W) { ctx.fillStyle = '#e8c23a'; ctx.fillRect(Math.max(0, x), FB - 18, W - Math.max(0, x), 4); } }
-  // the barrier line the Inspector guards
-  nlPut('cx_barrier', 2420, FT + 40);
+  // Station Approach, into the ticket hall, past the ticket machines, through the gates and out onto the platform
+  nlDrawRow('nl_station', FT + 4);
+  nlFloors([[0, NL_ST_GATE, '#4a4d5c', '#424553', 40, 80, '#545767'], [NL_ST_GATE, ST.len + W, '#3a3746', '#33303e', 40, 80, '#44404f']]);
+  ctx.fillStyle = '#2c2a33'; ctx.fillRect(0, FT, W, 2);
+  nlTrackFront(NL_ST_GATE + 40);
+  nlGateline(NL_ST_GATE);
   return true;
 }
 function nlBgTrain() {
@@ -902,18 +956,18 @@ function nlDrawTrainDoor(wx) {
 }
 function nlBgCx() {
   pxSky(['#0b0d1e', '#111430', '#181a3a'], 0, FT);
-  for (let wx = -100; wx < ST.len + 640; wx += 640) nlPut('cx_hall', wx, FT + 4);
-  pxFloor(0, ST.len, '#4a4c55', '#43454d', 48, 96, '#53555e');
-  ctx.fillStyle = '#6c6e78'; ctx.fillRect(0, FT, W, 4);
-  // the ticket barriers across the end of the concourse, and the way out to the Strand
-  nlPut('cx_barrier', ST.len - 560, FT + 40); nlPut('cx_barrier', ST.len - 304, FT + 40);
+  // off the train under the glass roof, through the gates, across the concourse past the shops, out to the Strand
+  nlDrawRow('nl_cx', FT + 4);
+  nlFloors([[0, ST.len + W, '#5a5b6b', '#515262', 48, 96, '#646576']]);
+  ctx.fillStyle = '#3a3846'; ctx.fillRect(0, FT, W, 2);
+  nlGateline(NL_CX_GATE);
   return true;
 }
 function nlBgAlley() {
   pxSky(['#07080f', '#0c0e1a', '#121423'], 0, FT);
-  for (let wx = -120; wx < ST.len + 640; wx += 640) nlPut('alley', wx, FT + 4);
-  pxFloor(0, ST.len, '#2c2a2c', '#262426', 32, 72, '#353234');
-  ctx.fillStyle = '#3d3a3c'; ctx.fillRect(0, FT, W, 4);
+  nlDrawRow('nl_alley', FT + 4);
+  pxFloor(0, ST.len + W, '#2c2a33', '#25232b', 32, 72, '#36343d');
+  ctx.fillStyle = '#1c1a22'; ctx.fillRect(0, FT, W, 2);
   return true;
 }
 function nlBgBus() {
