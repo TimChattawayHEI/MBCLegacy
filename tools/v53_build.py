@@ -155,7 +155,7 @@ s = swap(s, """    const [who, raw] = chat.lines[i]; const text = clean(raw).toU
 s = swap(s, """  cone: { name: 'TRAFFIC CONE',""", """  pole: { name: 'BUS POLE', reach: 92, dmg: 12, kd: false, dur: 6, speed: 0.28, t0: 0.07, t1: 0.16, len: 64, col: '#e8c23a', throwDmg: 15, word: 'DING DING!' },
   cone: { name: 'TRAFFIC CONE',""", 'pole weapon')
 s = swap(s, """  ball: { grip: [0, 0], ang: 0, round: true },""", """  ball: { grip: [0, 0], ang: 0, round: true },
-  pole: { grip: [3, 2], ang: 0 },""", 'pole grip')
+  pole: { grip: [4, 5], ang: 0 },""", 'pole grip')
 
 # ---------------------------------------------------------------- sprites: real sheets where they exist, borrowed ones otherwise
 sheets = json.load(open(os.path.join(V53, 'sheets.json'))) if os.path.exists(os.path.join(V53, 'sheets.json')) else {}

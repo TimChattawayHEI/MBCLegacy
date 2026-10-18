@@ -372,7 +372,7 @@ function nlDrawTrafalgar() {
   }
   ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, 54); ctx.fillRect(0, H - 54, W, 54);
   if (tr.t > 1.2) { const b = Math.min(1, (tr.t - 1.2) / 0.5); ctx.globalAlpha = Math.max(0, a) * b; textOut('LONDON.', W / 2, H - 92, '34px ' + DISPLAY, '#efe6d2', OUT, 7, 'center'); }
-  if (tr.t > 2.0) { ctx.font = '700 16px ' + BODY; ctx.fillStyle = '#ffd23f'; ctx.textAlign = 'center'; ctx.fillText('Trafalgar Square, 22:47', W / 2, H - 64); }
+  if (tr.t > 2.0) { ctx.font = '700 16px ' + BODY; ctx.fillStyle = '#ffd23f'; ctx.textAlign = 'center'; ctx.fillText('Trafalgar Square, 21:58', W / 2, H - 64); }
   ctx.restore();
 }
 
@@ -421,7 +421,7 @@ function nlAlleyTick(dt) {
   if (S.done && !S.watchBack) {
     S.watchBack = true;
     const seb = (NET.on ? PL : [player]).find(q => q.def.id === 'seb') || S.sebAlly;
-    if (seb) { setTimeout0(() => { popWord(seb.x, seb.y, 200, 'WATCH RECOVERED!', true); sfx('jackpot'); say(seb, pick(['Tick tock.', 'Elba time. Back where it belongs.', "That's mine. Thank you."]), 2.4, true); }, 0.6); S.endT = Math.max(S.endT, 3.4); }
+    if (seb) { setTimeout0(() => { popWord(seb.x, seb.y, 200, 'WATCH RECOVERED!', true); sfx('jackpot'); S.watchFx = { who: seb, t: 0 }; say(seb, pick(['Tick tock.', 'Elba time. Back where it belongs.', "That's mine. Thank you."]), 2.4, true); }, 0.6); S.endT = Math.max(S.endT, 3.4); }
   }
 }
 function nlHeldFree(f) { if (player.state === 'netted' && player.heldBy === f) freePlayer(); }
@@ -717,4 +717,11 @@ function nlDrawFore() {
     ctx.restore();
   }
   if (S && S.traf) nlDrawTrafalgar();
+  // Seb's watch, back where it belongs: it rises over his head and catches the light
+  if (S && S.watchFx) { const w = S.watchFx, img = NLX.img('watch'); w.t += 1 / 60;
+    if (w.t > 2.6 || !img) S.watchFx = null;
+    else { const k = Math.min(1, w.t / 0.4), x = nlSnap(w.who.x - cam.x - 32), y = nlSnap(w.who.y - 190 - k * 20 + Math.sin(w.t * 5) * 3);
+      ctx.save(); ctx.imageSmoothingEnabled = false; ctx.globalAlpha = Math.min(1, (2.6 - w.t) / 0.4); ctx.drawImage(img, x, y, 64, 64);
+      if (Math.floor(w.t * 8) % 3 === 0) { ctx.fillStyle = '#ffffff'; ctx.fillRect(x + 40, y + 14, 4, 12); ctx.fillRect(x + 36, y + 18, 12, 4); }
+      ctx.restore(); } }
 }

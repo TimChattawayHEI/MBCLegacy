@@ -26,7 +26,7 @@ KINDS = {
                                                           'hits': {'slap': 'attack2', 'fine': 'shout', 'block': 'block'}}),
     'lenny': (STD + ['attack2', 'pull', 'charge'], {'wind': {'alarmWind': 'pull', 'doorWind': 'pull', 'kneeWind': 'attack2', 'chargeWind': 'charge'},
                                                      'hits': {'alarm': 'pull', 'doorOpen': 'pull', 'knee': 'attack2', 'charge': 'charge'}}),
-    'jeweller': (STD + ['glint', 'grab'], {'wind': {'whipWind': 'attack', 'glintWind': 'glint', 'grabWind': 'grab'},
+    'jeweller': (STD + ['glint', 'grab'], {'moves': {'attack': {'pre': [4, 6, 7], 'hit': 8, 'post': [7]}}, 'wind': {'whipWind': 'attack', 'glintWind': 'glint', 'grabWind': 'grab'},
                                            'hits': {'whip': 'attack', 'glint': 'glint', 'grabLunge': 'grab', 'grabHold': 'grab'}}),
     'commuter': (['idle', 'walk'], {'srcmap': {'walk': 'run'}}), 'oldboy': (['idle', 'walk'], {'srcmap': {'walk': 'run'}}),
     'smiler': (['idle', 'walk', 'throw'], {'srcmap': {'walk': 'idle'}, 'hits': {'throw': 'throw'}}),
@@ -121,6 +121,7 @@ def build(key):
     else:
         F.update({'fall': [1], 'lie': 1, 'up': [1]})
         F.setdefault('hurt', [1, 1]); F.setdefault('attack', {'pre': [1], 'hit': 1, 'post': [1]})
+    F.update(opts.get('moves', {}))   # picks for strikes whose best frame isn't where it usually is
     if opts.get('wind'): F['wind'] = opts['wind']
     if opts.get('hits'): F['hits'] = opts['hits']
     F['fallFlip'] = True
