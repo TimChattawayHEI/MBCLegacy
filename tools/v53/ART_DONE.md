@@ -127,3 +127,16 @@ Tim: "transitions just cut to a new background image", the ticket hall repeated,
 - Bottoms cropped (`bg_process.CROP`): st_hall, st_platform, cx_*, alley* all ended in a dark band that read as a platform edge or kerb behind the fight. Tops padded or cut so a stage's pieces share a height.
 - Gatelines: `gate.png` (pixflux, a side-on gate cabinet; two earlier takes were too tall or three-quarter on) -> gate_open / gate_shut (green or red light). Five cabinets in a column across the walkway, depth-sorted with the fighters: Orpington at the doorway from the ticket hall to the platform (the Inspector's fight is right there), Charing Cross where the platforms end. Red while a fight is on screen, green when clear. On the Orpington platform the yellow line, the edge and the track are drawn in front of the walkway, nearest the camera. cx_barrier.png is no longer used.
 - Generations: about 140 (13 inpaints at 10 each, 10 pixflux).
+
+## Legs fix: Grappler and Smiler remade
+Tim's play-test showed both characters had no legs (the long coat or parka reached the floor), so in game they looked like they were sinking into the floor. I recreated both base characters with jackets that stop at the thigh, keeping the same look otherwise, and re-animated them east with the same names and frame counts. About 13 generations. Every saved frame shows trousers and boots on the ground. The old sheets are kept as `*_v1.png`, and the new ids are in pixellab_ids.md.
+- **grappler** = The Grappler v2 `f3cfcd78-5cd1-4403-a19c-2d46a2d70105`: shaved head, short black leather jacket, dark jeans, black boots. His legs are short for his bulk, but they show in every frame.
+  - idle 6/7: a crouched grab-ready stance.
+  - walk 8/9: lumbering strides.
+  - attack 8/9: a lunge with arms wide into a grab. His jacket swings open to show a white t-shirt.
+  - hurt 4/5: pixminimax, with speed lines erased. Cells 2-3 throw his head and chest back. A red lining shows inside the jacket in cells 4-5.
+  - knockdown 16/17: lands flat on his back, sits up and stands.
+  - hold 6/7: side-on, arms wrapped round, squeezing.
+- **smiler** = Smiler v2 `f54ab650-be80-4bfd-8626-de9f63b5cf80`: grey beard, beanie, hip-length green parka, bedroll pack on his back, brown trousers and boots.
+  - idle 6/7: stands and gives a friendly raised-hand wave.
+  - throw 8/9: a gentle underarm toss. It's a small motion, and nothing is visible in his hand.

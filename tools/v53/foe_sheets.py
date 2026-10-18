@@ -25,7 +25,7 @@ KINDS = {
     'snood': (STD, {'wind': {'counterWind': 'attack', 'guard': 'attack'}, 'hits': {'counter': 'attack'}}),
     'puffer': (STD + ['dash'], {'speck': 60, 'conn': 4, 'wind': {'dashWind': 'dash'}, 'hits': {'dashing': 'dash'}}),
     'hood': (STD, {}),
-    'grappler': (STD + ['hold'], {'hits': {'hug': 'hold'}}),
+    'grappler': (STD + ['hold'], {'trim': {'idle': 3}, 'hits': {'hug': 'hold'}}),   # his idle reaches into a lunge after frame 2
     'dipper': (STD + ['dodge', 'steal'], {'hits': {'dodge': 'dodge'}}),
     'lookout': (STD + ['whistle'], {'hits': {'whistle': 'whistle'}}),
     'stag': (STD + ['stagger'], {'moves': {'stagger': {'pre': [1, 2, 3, 4, 5, 6], 'hit': 3, 'post': [5]}}, 'wind': {'stagger': 'stagger'}}),
