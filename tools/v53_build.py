@@ -187,7 +187,7 @@ newbg = sorted('nightlife/' + f[:-4] for f in os.listdir(os.path.join(ROOT, 'web
 newbg += [p for p in ('props/luggage', 'props/pole', 'weapons/pole') if os.path.exists(os.path.join(ROOT, 'web', 'bg', p + '.png'))]
 m = re.search(r'const ASSET_BG = (\[.*?\]);', s)
 lst = json.loads(m.group(1))
-lst = sorted(set(lst) | set(newbg))
+lst = sorted(set(p for p in lst if not p.startswith('nightlife/')) | set(newbg))   # the folder is the list: a dropped image drops out
 s = s[:m.start(1)] + json.dumps(lst).replace('","', '", "') + s[m.end(1):]
 
 # ---------------------------------------------------------------- the 3D stage list (also in tools/title3d/)
