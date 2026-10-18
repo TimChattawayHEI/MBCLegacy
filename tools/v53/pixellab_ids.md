@@ -14,5 +14,7 @@
 - lookout: The Lookout e635e5f6-6918-44c4-bedb-c04d07d033cc (64)
 - jeweller: The Jeweller 8ae7fa8a-b8ec-4276-9e30-a5126b6948d4 (80, boss)
 - stag: The Stag 5cfe5fba-0397-4541-9793-959f8d6442b6 (64)
-- groom: Groomsman v2 15a94c10-94b2-4b2b-bd49-365cd5585512 (64) (replaces 98618ac5-ce26-4611-9434-a081a1c11182, whose side view had a stray tail)
+- groom: Groomsman v3 49977129-d3e6-4e98-8c56-6eb658ddef71 (64) (replaces 98618ac5-ce26-4611-9434-a081a1c11182 and 15a94c10-94b2-4b2b-bd49-365cd5585512, both drew a stray "stag" tail in side view; do not use)
 - smiler: Smiler 63f9cf10-a32d-4c19-afe1-adaecdfd21be (64, friendly NPC)
+- commuter: Commuter d01761e4-04eb-4b39-bc48-d9e13a1650ac (64, fleeing passenger)
+- oldboy: Old Boy 7ca61462-0ec6-4e88-837c-3670f3bee1de (64, fleeing passenger)

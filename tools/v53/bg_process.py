@@ -25,6 +25,7 @@ SIGNS = {
 # dozen pixels) becomes tinted glass, alpha GLASS, so the scenery drawn behind shows through
 WINDOWS = {'tr_wall': (10, 12, 20)}
 GLASS = 60
+DOORWAY = (3, 31, 60, 124)   # tr_door: where the leaves sit in the frame
 
 
 def cut_glass(px, col, tol=10, min_area=60):
@@ -68,6 +69,16 @@ def process(name):
     elif win:
         for x0, y0, x1, y1 in win: px[y0:y1 + 1, x0:x1 + 1, 3] = 0
     os.makedirs(OUT, exist_ok=True)
+    if name == 'tr_door':
+        # the frame with an empty doorway, and the two leaves on their own so the game can slide them apart
+        x0, y0, x1, y1 = DOORWAY
+        leaves = px[y0:y1 + 1, x0:x1 + 1].copy()
+        for gx0, gy0, gx1, gy1 in ((6, 13, 21, 52), (36, 13, 51, 52)):
+            g = leaves[gy0:gy1 + 1, gx0:gx1 + 1]; dark = g[..., :3].astype(int).sum(-1) < 120; g[dark, 3] = GLASS
+        frame = px.copy(); frame[y0:y1 + 1, x0:x1 + 1, 3] = 0
+        Image.fromarray(leaves, 'RGBA').save(os.path.join(OUT, 'tr_door.png'), optimize=True)
+        Image.fromarray(frame, 'RGBA').save(os.path.join(OUT, 'tr_doorframe.png'), optimize=True)
+        return True
     Image.fromarray(px, 'RGBA').save(os.path.join(OUT, name + '.png'), optimize=True)
     return True
 

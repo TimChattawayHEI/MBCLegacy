@@ -605,15 +605,14 @@ function nlDrawStageBg(bg) {
   if (bg === 'nl_bus') return nlBgBus();
   return false;
 }
-function nlFloor(col, line) { ctx.fillStyle = col; ctx.fillRect(0, FT, W, H - FT); if (line) { ctx.fillStyle = line; ctx.fillRect(0, FT, W, 4); } }
 function nlBgStation() {
   pxSky(['#0a0d22', '#121636', '#1b1a40', '#26203f', '#33263f', '#41293c'], 0, FT);
   // Station Approach outside, the ticket hall, the barriers, then the platform under the night sky
   for (let wx = -200; wx < 1080; wx += 640) nlPut('st_front', wx, FT + 4);
   for (let wx = 1080; wx < 2600; wx += 640) nlPut('st_hall', wx, FT + 4);
   for (let wx = 2600; wx < ST.len + 800; wx += 800) nlPut('st_platform', wx, FT + 4);
-  nlFloor('#3b3d44', '#55575f');
-  pxFloor(0, ST.len, null, '#34363c', 40, 80, '#44464d');
+  pxFloor(0, ST.len, '#3b3d44', '#34363c', 40, 80, '#44464d');
+  ctx.fillStyle = '#55575f'; ctx.fillRect(0, FT, W, 4);
   // the yellow line on the platform: stand behind it
   { const x = nlSnap(2600 - cam.x); if (x < W) { ctx.fillStyle = '#e8c23a'; ctx.fillRect(Math.max(0, x), FB - 18, W - Math.max(0, x), 4); } }
   // the barrier line the Inspector guards
@@ -651,35 +650,41 @@ function nlBgTrain() {
       if (last && (S.toilet === 3)) { ctx.fillStyle = '#11131a'; ctx.fillRect(x + 8, FT + 6 - img.height * 2 + 16, img.width * 2 - 16, img.height * 2 - 20); nlPut('toilet_guy', tx + 2, FT + 2); }
       else { ctx.fillStyle = '#efe6d2'; ctx.fillRect(x + 14, FT - 170, img.width * 2 - 28, 22); pxText('OUT OF ORDER', x + img.width, FT - 159, 9, '#b8231a'); } }
   }
-  nlFloor('#2b2f3a', '#c9a227');
-  pxFloor(0, ST.len, null, '#262a33', 36, 64, '#323744');
+  pxFloor(0, ST.len, '#2b2f3a', '#262a33', 36, 64, '#323744');
+  ctx.fillStyle = '#c9a227'; ctx.fillRect(0, FT, W, 4);
   return true;
 }
 function nlDrawTrainDoor(wx) {
-  const img = NLX.img('tr_door'); if (!img) return;
-  const x = nlSnap(wx - cam.x), w = img.width * 2, h = img.height * 2, y = nlSnap(FT + 6 - h);
+  // a doorway in the carriage side: the frame, what's outside, and two leaves that slide apart into the wall
+  const fr = NLX.img('tr_doorframe'), img = NLX.img('tr_door'); if (!fr || !img) return;
+  const x = nlSnap(wx - cam.x), w = fr.width * 2, h = fr.height * 2, y = nlSnap(FT + 6 - h);
   if (x > W + 10 || x + w < -10) return;
   const open = (S.doorOpen || 0) * 0.95, wind = S.doorWind && Math.abs(S.windX - wx - w / 2) < w ? S.doorWind : 0, o = Math.max(open, wind);
+  const ox = x + 6, oy = y + 62, ow = img.width * 2, oh = img.height * 2, stopped = S.trainV < 50 && S.stopSeq;
   ctx.save(); ctx.imageSmoothingEnabled = false;
-  if (o > 0) { ctx.fillStyle = S.trainV > 50 ? '#0a0c18' : '#1a2340'; ctx.fillRect(x + 6, y + 6, w - 12, h - 6); if (S.trainV < 50 && (S.stopSeq)) { ctx.fillStyle = '#56535a'; ctx.fillRect(x + 6, y + h - 40, w - 12, 34); } }
-  const half = w / 2, slide = Math.round(half * o / 2) * 2;
-  ctx.drawImage(img, 0, 0, img.width / 2, img.height, x - slide, y, half, h);
-  ctx.drawImage(img, img.width / 2, 0, img.width / 2, img.height, x + half + slide, y, half, h);
+  ctx.fillStyle = stopped ? '#1a2340' : '#07091a'; ctx.fillRect(ox, oy, ow, oh);
+  if (stopped) { ctx.fillStyle = '#56535a'; ctx.fillRect(ox, oy + oh - 46, ow, 46); ctx.fillStyle = '#e8c23a'; ctx.fillRect(ox, oy + oh - 46, ow, 3); }
+  else if (o > 0) { ctx.fillStyle = '#0d1226'; for (let i = 0; i < 4; i++) { const sx = ox + ((i * 53 - (S.scrollX || 0) * 1.4) % ow + ow) % ow; ctx.fillRect(sx, oy + 30 + i * 37, 26, 2); } }
+  ctx.drawImage(fr, x, y, w, h);
+  ctx.beginPath(); ctx.rect(ox, oy, ow, oh); ctx.clip();
+  const half = img.width / 2, slide = Math.round(ow / 2 * o / 2) * 2;
+  ctx.drawImage(img, 0, 0, half, img.height, ox - slide, oy, ow / 2, oh);
+  ctx.drawImage(img, half, 0, half, img.height, ox + ow / 2 + slide, oy, ow / 2, oh);
   ctx.restore();
 }
 function nlBgCx() {
   pxSky(['#0b0d1e', '#111430', '#181a3a'], 0, FT);
   for (let wx = -100; wx < ST.len + 640; wx += 640) nlPut('cx_hall', wx, FT + 4);
-  nlFloor('#4a4c55', '#6c6e78');
-  pxFloor(0, ST.len, null, '#43454d', 48, 96, '#53555e');
+  pxFloor(0, ST.len, '#4a4c55', '#43454d', 48, 96, '#53555e');
+  ctx.fillStyle = '#6c6e78'; ctx.fillRect(0, FT, W, 4);
   for (let i = 0; i < 6; i++) nlPut('cx_barrier', ST.len - 330 + i * 0, FT + 30);
   return true;
 }
 function nlBgAlley() {
   pxSky(['#07080f', '#0c0e1a', '#121423'], 0, FT);
   for (let wx = -120; wx < ST.len + 640; wx += 640) nlPut('alley', wx, FT + 4);
-  nlFloor('#2c2a2c', '#3d3a3c');
-  pxFloor(0, ST.len, null, '#262426', 32, 72, '#353234');
+  pxFloor(0, ST.len, '#2c2a2c', '#262426', 32, 72, '#353234');
+  ctx.fillStyle = '#3d3a3c'; ctx.fillRect(0, FT, W, 4);
   return true;
 }
 function nlBgBus() {
@@ -690,8 +695,8 @@ function nlBgBus() {
   { const per = 5200, ph = ((sc * 0.6) % per + per) % per; if (ph < 1400 && !(NET.on ? PL : [player]).some(q => q.def.id === 'marc')) { const sh = ladSprite('marc'); if (sh && sh.ready) { const m = sh.m, row = m.rows.walk, f = 1 + Math.floor(time * 10) % (row[1] - 1), x = W + 80 - ph * 0.8; ctx.save(); ctx.imageSmoothingEnabled = false; ctx.translate(nlSnap(x), band - 6); ctx.scale(-1, 1); ctx.drawImage(sh.img, f * m.cell, row[0] * m.cell, m.cell, m.cell, -m.ax, -m.ay, m.cell, m.cell); ctx.restore(); } } }
   for (let wx = -40; wx < W + 640; wx += 640) nlPut('bus_deck', wx, FT + 6);
   nlPut('bus_stairs', 20, FT + 6);
-  nlFloor('#3a2c2e', '#c9a227');
-  pxFloor(0, W, null, '#33272a', 30, 60, '#42343a');
+  pxFloor(0, W, '#3a2c2e', '#33272a', 30, 60, '#42343a');
+  ctx.fillStyle = '#c9a227'; ctx.fillRect(0, FT, W, 4);
   // the stops strip
   ctx.fillStyle = '#0b0b10'; ctx.fillRect(W / 2 - 170, 70, 340, 26); ctx.fillStyle = '#c9a227'; ctx.fillRect(W / 2 - 170, 94, 340, 2);
   pxText('N47 → ' + (S.busStop || 'TRAFALGAR SQUARE'), W / 2, 83, 12, '#ffb04a');
