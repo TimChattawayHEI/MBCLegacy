@@ -90,16 +90,17 @@ Object.assign(STAGES, {
       { at: 'end', boss: 'jeweller', title: 'THE JEWELLER' },
     ] },
   nl_bus: { n: 12, era: 2006, title: 'THE N47', sub: '01:50. Top deck. Next stop: home.', bg: 'nl_bus', fixed: true, bus: true, ft: 384, fb: 476, raft: [150, 900], len: W,
-    music: 'nightbus', aggro: 3, aa: 0.4, intro: 'nlBus', outro: 'nlHome',
+    music: 'nightbus', aggro: 4, aa: 0.45, intro: 'nlBus', outro: 'nlHome',
     breakables: [{ type: 'pole', x: 380, y: 400, drop: 'w:pole' }, { type: 'pole', x: 640, y: 400, drop: 'w:pole' }, { type: 'pole', x: 820, y: 470, drop: 'w:pole' }],
     waves: [
-      { groups: [[['stag', 'L'], ['groom', 'L'], ['groom', 'L']]] },
-      { groups: [[['burb', 'L'], ['hoops', 'L']], [['groom', 'L'], ['puffer', 'L']]], food: 'kebab' },
+      // the stag do, back from town; then whoever's left out at 2am, in bigger and bigger lots up the stairs
+      { groups: [[['stag', 'L'], ['groom', 'L'], ['groom', 'L'], ['groom', 'L']]] },
+      { groups: [[['burb', 'L'], ['hoops', 'L'], ['burb', 'L']], [['puffer', 'L'], ['hood', 'L'], ['hoops', 'L']]], food: 'kebab' },
       { event: 'smiler' },
-      { groups: [[['snood', 'L'], ['hood', 'L'], ['dipper', 'L']], [['grappler', 'L'], ['lookout', 'L']]] },
-      { groups: [[['stag', 'L'], ['groom', 'L'], ['city', 'L'], ['itgirl', 'L']]], food: 'kebab' },
+      { groups: [[['snood', 'L'], ['hood', 'L'], ['dipper', 'L']], [['grappler', 'L'], ['lookout', 'L'], ['puffer', 'L']]] },
+      { groups: [[['stag', 'L'], ['groom', 'L'], ['city', 'L'], ['itgirl', 'L']], [['burb', 'L'], ['hoops', 'L'], ['snood', 'L']]], food: 'kebab' },
       { event: 'smiler' },
-      { final: true, groups: [[['groom', 'L'], ['stag', 'L'], ['groom', 'L']], [['puffer', 'L'], ['burb', 'L'], ['snood', 'L']]] },
+      { final: true, groups: [[['groom', 'L'], ['stag', 'L'], ['groom', 'L'], ['grappler', 'L']], [['puffer', 'L'], ['burb', 'L'], ['snood', 'L'], ['hood', 'L']]] },
     ] },
 });
 ['nl_station', 'nl_train', 'nl_cx', 'nl_alley', 'nl_bus'].forEach(k => { BOSS_MUSIC[k] = 'boss2006'; });
@@ -804,19 +805,20 @@ function nlJeweller(b, dt, rage) {
 
 // ================================================================== the N47
 function nlBusTick(dt) {
-  if (S.busT == null) { S.busT = 0; S.lurchT = rand(9, 13); S.stopN = 0; S.trainV = 520; }
+  if (S.busT == null) { S.busT = 0; S.lurchT = rand(8, 11); S.stopN = 0; S.trainV = 520; nlSmilerSeat(); }
   S.busT += dt; S.scrollX += S.trainV * dt;
   // the bus brakes and swings round corners: a warning, then everyone goes flying one way
   S.lurchT -= dt;
-  if (S.lurchT < 1 && !S.lurchWarn) { S.lurchWarn = Math.random() < 0.5 ? 1 : -1; nlAnnounce(S.lurchWarn > 0 ? 'HOLD ON! (BRAKING)' : 'HOLD ON! (CORNER)', 1.2); sfx('honk'); }
+  if (S.lurchT < 1 && !S.lurchWarn) { S.lurchWarn = Math.random() < 0.5 ? 1 : -1; nlAnnounce(S.lurchWarn > 0 ? 'HOLD TIGHT! BRAKING' : 'HOLD TIGHT! CORNER', 1.2); sfx('honk'); for (const q of (NET.on ? PL : [player])) popWord(q.x, q.y, 170, 'JUMP!', true); }
   if (S.lurchT <= 0) {
-    const dir = S.lurchWarn || 1; S.lurchWarn = 0; S.lurchT = rand(9, 14);
+    const dir = S.lurchWarn || 1; S.lurchWarn = 0; S.lurchT = rand(8, 12);
     addShake(9); sfx('heavy');
     for (const e of (NET.on ? PL : [player]).concat(foes.filter(f => !f.boss && canBeHit(f)))) {
       if (e.z > 0) continue;
       const mine = e === player || PL.includes(e);
-      e.vx += dir * (mine ? 420 : 640);
-      if (!mine && chance(0.5)) knockDown(e, dir, 260);
+      e.vx += dir * (mine ? 440 : 240);
+      if (!mine && chance(0.15)) knockDown(e, dir, 200);
+      if (mine && !['down', 'getup', 'netted', 'dead'].includes(e.state)) { knockDown(e, dir, 220); popWord(e.x, e.y, 150, 'WHOA!', false); }   // stood on the deck: over you go (jump it)
     }
     if (dir > 0) S.trainV = 160; else S.trainV = 380;
   }
@@ -824,11 +826,15 @@ function nlBusTick(dt) {
   // the stops go by at the front, one per wave
   if (S.lastWaveIdx !== S.waveIdx) { S.lastWaveIdx = S.waveIdx; const stops = ['TRAFALGAR SQUARE', 'ELEPHANT & CASTLE', 'NEW CROSS', 'LEWISHAM', 'CATFORD', 'BROMLEY', 'PETTS WOOD', 'ORPINGTON']; S.busStop = stops[Math.min(stops.length - 1, S.waveIdx)]; if (S.waveIdx > 0) nlAnnounce(S.busStop, 2.6); }
 }
-// Smiler, on the back seat: wakes up, and looks after you
+// Smiler, at the back of the top deck from the start: wakes up when it gets bad, and looks after you
+function nlSmilerSeat() {
+  let sm = S.npcs.find(n => n.kind === 'smiler');
+  if (!sm) { sm = makeNpc('smiler', 872, FB - 34); sm.face = -1; sm.def = FOES.smiler; S.npcs.push(sm); }
+  return sm;
+}
 function nlSmiler() {
   S.wave = null; S.waveIdx++; S.waitT = 1.2;
-  let sm = S.npcs.find(n => n.kind === 'smiler');
-  if (!sm) { sm = makeNpc('smiler', 860, FT + 14); sm.face = -1; sm.def = FOES.smiler; S.npcs.push(sm); }
+  const sm = nlSmilerSeat();
   sm.wake = 0;
   const lines = [['Here. You need this more than me.', 'Go on, son.'], ['Take it. And mind yourselves.', "They're not worth it. Here."]];
   const which = S.smilerN = (S.smilerN || 0) + 1;

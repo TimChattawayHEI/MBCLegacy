@@ -1,4 +1,5 @@
-"""Version 53: Nightlife 2006, a new chapter between Elba 2002 and Carp Diem.
+"""Run it on the Version 52 page (git show 62b1933:web/index.html and tools/title3d/*): its swaps expect that text.
+Version 53: Nightlife 2006, a new chapter between Elba 2002 and Carp Diem.
 
 Patches web/index.html in place (run from the repo root, after tools/v52_build.py):  python3 tools/v53_build.py
 Safe to run again (the module is replaced between its markers; every other change is a swap that skips when done).
@@ -105,13 +106,26 @@ s = swap(s, """  if (ST.fixed) ctx.translate(0, Math.sin(time * 2) * 2 + (S.tow 
 s = swap(s, """  if (ST.fixed) list.push({ y: BBQ.y, f: drawBBQ });""", """  if (ST.fixed && ST.bg === 'naval') list.push({ y: BBQ.y, f: drawBBQ });""", 'bbq draw')
 # on the bus, they come up the stairs; knocked off the end, they go back down them
 s = swap(s, """  if (ST.fixed) {
-    const [L, R] = ST.raft;""", """  if (ST.fixed && ST.bus) { f = makeFoe(type, 70 + rand(0, 50), FT + rand(8, 40)); f.vx = 140; }
+    const [L, R] = ST.raft;""", """  if (ST.fixed && ST.bus) { f = makeFoe(type, -30 - rand(0, 70), FT + rand(8, 40)); f.state = 'enter'; f.hoverY = rand(FT + 10, FB - 10); }   // up the stairs, off the left edge, and in
   else if (ST.fixed) {
     const [L, R] = ST.raft;""", 'bus spawns')
+# they walk in from the stairwell (no clamping while they come in), and only the stairs end throws you out: the front end is a window
+s = swap(s, """  if (['leap', 'fly', 'swim', 'dead'].includes(e.state)) return;
+  if (e !== player && (e.state === 'down' || e.state === 'thrown') && (e.x < L - 4 || e.x > R + 4)) { splashOut(e); return; }""",
+         """  if (['leap', 'fly', 'swim', 'dead'].includes(e.state) || (ST.bus && e.state === 'enter')) return;
+  if (e !== player && (e.state === 'down' || e.state === 'thrown') && (e.x < L - 4 || (e.x > R + 4 && !ST.bus))) { splashOut(e); return; }""", 'bus ends')
 s = swap(s, """function splashOut(f) {
   f.state = 'dead'; f.t = 0; f.remove = true; f.hp = 0;""", """function splashOut(f) {
   if (ST.bus) { f.state = 'dead'; f.t = 0; f.remove = true; f.hp = 0; sfx('thud'); popWord(f.x, f.y, 90, 'DOWN THE STAIRS!', true); addScore(300 + f.def.score); run.kills++; noteKO(f); if (f.token) releaseToken(f, 0); ladSay('ko', 0.4); return; }
   f.state = 'dead'; f.t = 0; f.remove = true; f.hp = 0;""", 'bus knockout')
+
+# ---------------------------------------------------------------- Thet: type THET as an online join code to unlock him (a way in on a phone)
+s = swap(s, """async function netJoin(code) {
+  if (NL.busy) return;""", """async function netJoin(code) {
+  if (NL.busy) return;
+  if (code === 'THET') { NL.code = ''; if (NL.input) NL.input.value = ''; if (unlockThet()) { sfx('jackpot'); NL.msg = 'THET UNLOCKED. He was there the whole time.'; } else NL.msg = 'Thet is already in. You just never look down.'; return; }""", 'thet join code')
+s = swap(s, """for (let i = 0; i < 4; i++) s += A[Math.floor(nativeRandom() * A.length)]; return s; }""",
+         """for (let i = 0; i < 4; i++) s += A[Math.floor(nativeRandom() * A.length)]; return s === 'THET' ? netRoomCode() : s; }""", 'no THET rooms')
 
 # ---------------------------------------------------------------- drawing
 s = swap(s, """function drawStageBg() {
