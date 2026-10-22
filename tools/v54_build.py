@@ -39,12 +39,12 @@ s = swap(s, """      respawn: ['Back in the long grass.'], boss: ['Big lad. Bigg
     stats: [3, 3, 4], blurb: 'Stands up very straight. Then the Ashinator walks in: leather jacket, shades, nine shots, all of them into the boss if there is one. Then he walks off. He\\u2019ll be back.',
     look: { shirt: '#bfcde6', shirt2: '#e6f0fa', legs: '#c5ab80', skin: '#f8cab2', hair: '#ee791a', hairStyle: 'short', build: 0.9, tall: 1.22 },
     lines: {
-      start: ['Mind your heads, lads.', 'Alright down there?', "I'm not lanky. I'm long.", 'Been ducking under door frames since 1999.'],
+      start: ['Mind your heads, lads.', 'Alright down there?', "I'm not lanky. I'm long.", 'Never needed my hands.', 'Kickboxing club, under 11s. Undefeated.'],
       special: ['Hold my coat.', 'One moment, lads.', 'Stand back.'],
       morph: ['Target acquired.', 'Ginger mode. Engaged.', 'Scanning. Nine targets.', 'Systems online.'],
       leave: ["Ash'll be back.", "Ash'll be back.", "Ash'll be back.", "Ash'll be back. Probably."],
       back: ['Told you.', 'Back.', 'Did I miss anything?', 'Told you I would.'],
-      ko: ['Long arms, mate.', 'Reach.', 'Saw you coming. From up here.', 'Down you go.', 'Lights out.'],
+      ko: ['Long legs, mate.', 'Reach.', 'Saw you coming. From up here.', 'Down you go.', 'Lights out.', 'Feet first.'],
       hurt: ['Oi! Up here!', 'Mind the hair!', 'How did you even reach?', 'That was a cheap shot.'],
       weapon: ['Long reach, longer stick.'], food: ['Growing lad.'],
       respawn: ["Told you I'd be back."], boss: ["Big lad. I'm taller though."] } },
@@ -60,7 +60,7 @@ s = swap(s, """const COMBO_OF = { tim: 'quick', marc: 'quick', byron: 'quick', s
          """const COMBO_OF = { tim: 'quick', marc: 'quick', byron: 'quick', seb: 'heavy', pearcy: 'heavy', kelly: 'kelly', sam: 'sam', thet: 'quick', ash: 'ash' };""", 'Ash combo')
 s = swap(s, """  std: [{ a: 'jab', d: 8 }, { a: 'hook', d: 8 }, { a: 'kick', d: 13, fin: true }],
 };""", """  std: [{ a: 'jab', d: 8 }, { a: 'hook', d: 8 }, { a: 'kick', d: 13, fin: true }],
-  ash: [{ a: 'jab', d: 8 }, { a: 'jab', d: 8 }, { a: 'kick', d: 15, fin: true, kb: 380 }],
+  ash: [{ a: 'jab', d: 8 }, { a: 'hook', d: 10 }, { a: 'kick', d: 15, fin: true, kb: 380 }],   // all kicks: his jab and hook rows are a low kick and a roundhouse
 };""", 'Ash combo moves')
 # long arms: a lad's own reach on top of everyone's
 s = swap(s, """reach: [6, (fin ? 80 : 68) + (brute ? 6 : 0)], depth: 24,""", """reach: [6, (fin ? 80 : 68) + (brute ? 6 : 0) + (p.def.reach || 0)], depth: 24,""", 'punch reach')

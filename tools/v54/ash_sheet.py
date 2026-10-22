@@ -21,12 +21,14 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 SRC = os.path.join(HERE, 'src')
 S, LAB = 2, 18
 
-# Ash. Row order matches the other lads' sheets (no swing: like Kelly and Marc he falls back to his hook).
+# Ash. Row order matches the other lads' sheets. He was a kickboxer as a kid and never throws a punch (Version 54.1):
+# the 'jab' row is a quick low kick and the 'hook' row his high roundhouse, so every move that borrows a lad's jab or
+# hook (the combo, the dash, the Duck and Cover helpers) is a kick. 'swing' is the old arm thrust, for weapons only.
 # PICK reorders or trims a generated animation (frame 0 is always the standing reference).
 ASH_ROWS = ['idle', 'walk', 'jab', 'hook', 'kick', 'jumpkick', 'hurt', 'knockdown', 'special', 'run', 'grab', 'knee', 'throw',
-            'backkick', 'pickup', 'mini']
+            'backkick', 'pickup', 'swing', 'mini']
 ASH_PICK = {}
-ASH_SRC = {'hook': 'jab'}   # his combo never uses a hook; the row is there for weapon swings and dashes, so it's his jab
+ASH_SRC = {'jab': 'lowkick', 'hook': 'mini', 'swing': 'jab'}
 # the Ashinator: the stiff idle (the frames that stay side on), the march, the pistol
 ASHN_ROWS = ['idle', 'walk', 'shoot']
 ASHN_PICK = {'idle': [0, 1, 2]}   # the later frames turned to face the camera
@@ -139,11 +141,11 @@ if fr: Image.fromarray(pose, 'RGBA').save(os.path.join(ROOT, 'web', 'sprites', '
 n = {k: v[1] for k, v in ash['rows'].items()}
 seq = lambda a, b: ', '.join(str(i) for i in range(a, b))
 # hit frames picked by eye from each run (frame 0 is the standing reference)
-ash_frames = ("{ jab: { pre: [1, 2, 3], hit: 4, post: [5, 6] }, hook: { pre: [1, 2, 3], hit: 4, post: [5, 6] }, kick: { pre: [1, 2, 3], hit: 4, post: [5, 6] },"
+ash_frames = ("{ jab: { pre: [2, 3], hit: 4, post: [5, 6] }, hook: { pre: [2, 3, 4], hit: 5, post: [6, 7, 8] }, kick: { pre: [1, 2, 3], hit: 4, post: [5, 6] },"
               " tuck: ['jumpkick', 3], air: ['jumpkick', 5], crouch: ['jumpkick', 1], hurt: [2, 3], fall: [3, 4, 5, 6], lie: 8, up: [11, 12, 13, 14, 15, 16],"
               f" special: [{seq(1, n['special'])}], run: [{seq(1, n['run'])}], grab: [1, 2, 3, 4],"
               " knee: { pre: [2, 3], hit: 4, post: [5, 6] }, throw: { pre: [3, 5], hit: 7, post: [8] }, backkick: { pre: [1, 2, 3], hit: 4, post: [5, 6] },"
-              f" pickup: [3, 4], mini: [{seq(1, n['mini'])}], fallFlip: true }}")
+              f" pickup: [3, 4], swing: {{ pre: [1, 2, 3], hit: 4, post: [5, 6] }}, mini: [{seq(1, n['mini'])}], fallFlip: true }}")
 ashn_frames = "{ idle: [0, 1, 2], walk: [1, 2, 3, 4, 5, 6, 7, 8], aim: 5, fire: [6, 7], raise: [2, 3], hurt: [0], fall: [0], lie: 0, up: [0], tuck: ['idle', 0], air: ['idle', 0], crouch: ['idle', 0], jab: { pre: [], hit: 0, post: [] } }"
 json.dump({'ash': ash, 'ashn': ashn, 'frames': {'ash': ash_frames, 'ashn': ashn_frames}}, open(os.path.join(HERE, 'ash_meta.json'), 'w'), indent=1)
 print('ash sheet', ash['cell'], 'anchor', ash['ax'], ash['ay'], 'height', ash['h'], 'rows', n)
