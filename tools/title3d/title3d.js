@@ -10,7 +10,7 @@ const T3 = (() => {
   if (!root || !cv) return api;
 
   // ---------------------------------------------------------------- data from the game
-  const ORDER = ['marc', 'sam', 'seb', 'tim', 'byron', 'pearcy', 'kelly', 'thet'];   // Thet on the end (Version 50), a silhouette until unlocked
+  const ORDER = ['ash', 'marc', 'sam', 'seb', 'tim', 'byron', 'pearcy', 'kelly', 'thet'];   // the tallest and the shortest at either end (Thet, Version 50; Ash, Version 54), silhouettes until unlocked
   const MID = (ORDER.length - 1) / 2;
   const BOSS = { frequency: 'The Parkie', soundz: 'Master Control', airport: 'No boss. Make the taxi rank.', road: 'No boss. Wreck the Espace.',
     divebar: 'Il Carabiniere, then I Fratelli', beach: 'Don Vito', club: 'Big Tony and Little Nicky', arrival: 'The Far Bank (two of them)',
@@ -76,7 +76,7 @@ const T3 = (() => {
   // each lad's select-screen pose (Version 48): his own animation, drawn three-quarter on (south-east), a view the
   // fights never show. A strip of frames in sprites/pose_<id>.png at his sheet's cell size, feet on the sheet's anchor.
   // Frame 0 is him standing facing you (shown while he's chosen), the rest play when he's picked.
-  const POSES = { tim: 1, seb: 1, byron: 1, pearcy: 1, kelly: 1, marc: 1, sam: 1, thet: 1 };
+  const POSES = { tim: 1, seb: 1, byron: 1, pearcy: 1, kelly: 1, marc: 1, sam: 1, thet: 1, ash: 1 };
   function ladAtlas(id, img, pose) {
     const m = SPRITE_META[id], c = m.cell, idle = m.rows.idle, runR = m.rows.run;
     const all = r => r ? [...Array(r[1]).keys()] : [];
@@ -94,7 +94,7 @@ const T3 = (() => {
   }
   // what each lad shouts and sounds like when he's picked
   const PICK = { tim: ['RIGHT, LADS!', 'airhorn'], seb: ['SIR, YES SIR!', 'incoming'], byron: ['REF\u2019S DECISION!', 'whistle'],
-    pearcy: ['CARP DIEM!', 'thud'], kelly: ['MASS HEAD!', 'ready'], marc: ['G\u2019DAY, LADS!', 'cooee'], sam: ['I\u2019M UP, I\u2019M UP!', 'yawn'], thet: ['CAN\u2019T SEE ME!', 'incoming'] };
+    pearcy: ['CARP DIEM!', 'thud'], kelly: ['MASS HEAD!', 'ready'], marc: ['G\u2019DAY, LADS!', 'cooee'], sam: ['I\u2019M UP, I\u2019M UP!', 'yawn'], thet: ['CAN\u2019T SEE ME!', 'incoming'], ash: ['MIND YOUR HEADS!', 'servo'] };
   // an action on the lad sprite: the frames of one row, forward, held, then back to standing
   function act(L, kind) {
     const n = kind === 'pick' ? L.a.spN : L.a.miniN; if (!n) return;
@@ -264,7 +264,7 @@ const T3 = (() => {
       const g = new THREE.PlaneGeometry(a.c, a.c); g.translate(a.c / 2 - a.ax, a.ay - a.c / 2, 0);
       const m = new THREE.Mesh(g, mat(a.tex, { tint: [0.86, 0.8, 0.98], glow: 0.6, rect: [0, 1 - 1 / ROWS, 1 / a.cols, 1 / ROWS] }));
       m.position.set(-330, KERB - 1, 0); m.visible = false; scene.add(m);
-      lads.push({ id, a, m, sh: addShadow(0, 0, 24), i, tx: (i - MID) * 50, tz: 24 - depth * 18, delay: (ORDER.length - 1 - i) * 0.13,
+      lads.push({ id, a, m, sh: addShadow(0, 0, 24), i, tx: (i - MID) * 44, tz: 24 - depth * 16, delay: (ORDER.length - 1 - i) * 0.13,
         frame: 0, ft: 0, state: 'off', gx: 0, gz: 0, face: 1, wait: 0, moving: false, act: null, tint: V3(0.86, 0.8, 0.98) });
     });
 
@@ -305,10 +305,10 @@ const T3 = (() => {
     if (v === 'lad' || v === 'cont') for (const o of lads) { o.gx = o.tx; o.gz = o.tz + (o === L ? 30 : 0); }
     if (v === 'lad') flex(L);
     else if (v === 'stage') {
-      const spots = [[-124, -40], [124, -60], [-140, -130], [140, -150], [-118, -220], [118, -240], [0, -290]];
+      const spots = [[-124, -40], [124, -60], [-140, -130], [140, -150], [-118, -220], [118, -240], [0, -290], [-60, -330]];
       let k = 0; for (const o of lads) { if (o === L) { o.gx = 0; o.gz = 40; } else [o.gx, o.gz] = spots[k++]; }
     } else if (v === 'diff') {
-      const spots = [[44, -26], [-40, -38], [88, -56], [-82, -70], [130, -86], [-124, -102], [170, -118]];
+      const spots = [[44, -26], [-40, -38], [88, -56], [-82, -70], [130, -86], [-124, -102], [170, -118], [-166, -134]];
       let k = 0; for (const o of lads) { if (o === L) { o.gx = 0; o.gz = 40; } else [o.gx, o.gz] = spots[k++]; }
     } else if (v === 'go') {
       let k = 0; for (const o of lads) { o.gx = 900; o.wait = o === L ? 0 : 0.12 + 0.09 * k++; }
@@ -414,7 +414,7 @@ const T3 = (() => {
   function renderLad() {
     const c = CHAR_BY_ID[chosen().id], mm = MINI[c.id], lk = ladLocked(c);
     q('name').textContent = lk ? '???' : c.name; q('name').style.color = lk ? 'var(--t3grey)' : c.color;
-    q('ltag').textContent = lk ? 'Someone is hiding in the bushes. Finish the campaign to find out who.' : c.tag;
+    q('ltag').textContent = lk ? lockHint(c) : c.tag;
     q('stats').innerHTML = ['Speed', 'Power', 'Grit'].map((l, j) =>
       `<span class="t3cap">${l}</span><span class="t3bar" role="img" aria-label="${l} ${c.stats[j]} of 5">${[0, 1, 2, 3, 4].map(k => `<b class="${k < (lk ? 0 : c.stats[j]) ? 'f' : ''}"></b>`).join('')}</span>`).join('');
     q('special').textContent = lk ? '???' : c.special; q('blurb').textContent = lk ? '' : c.blurb;
@@ -459,6 +459,7 @@ const T3 = (() => {
       if (view === 'stage') renderStage();
     }
     if (typed.endsWith('THET') && unlockThet()) { typed = ''; sfx('jackpot'); toast('THET UNLOCKED'); if (view === 'lad') renderLad(); }
+    if (typed.endsWith('ASH') && unlockAsh()) { typed = ''; sfx('jackpot'); toast('ASH UNLOCKED'); if (view === 'lad') renderLad(); }
     if (view === 'title') { if (P('punch') || P('start') || P('jump') || P('special')) next(); return; }
     if (view === 'go') return;
     if (P('mute')) toggleSound();
