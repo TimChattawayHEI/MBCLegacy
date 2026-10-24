@@ -32,7 +32,7 @@ const MINI_AFTER = { frequency: 'pens', soundz: 'kiss', club: 'awake', arrival: 
 const MINI_DEF = {
   darts: { title: 'NINE DARTS', short: 'DARTS', price: 1500, unit: '', board: 'BEST NINE DARTS', music: 'social', pay: s => s * 15,
     how: ['Nine darts. Score as many as you can.', 'Your hand sways. Throw when it lines up.', 'Every pint you have makes it sway more.'],
-    keys: 'Stick or arrows to aim, HIT to throw', touch: 'Drag to aim, let go to throw' },
+    keys: 'Stick or arrows to aim, HIT to throw', touch: 'Stick to aim, HIT to throw' },
   fruit: { title: 'FRUIT MACHINE', short: 'FRUITS', price: 0, unit: '', board: 'BIGGEST WINS', music: 'social', pay: () => 0,
     how: ['500 a spin, off your tab.', 'HOLDS and NUDGES come up after a losing spin.', 'Three Marcs is the jackpot.'],
     keys: 'HIT to spin, arrows hold or nudge a reel', touch: 'SPIN to spin, tap a reel to hold or nudge it' },
@@ -41,10 +41,10 @@ const MINI_DEF = {
     keys: 'HIT to stop the arrow, JUMP for the whistle', touch: 'Tap to stop the arrow, WHISTLE once' },
   kiss: { title: 'KISS CHASE', short: 'KISS', lad: 'seb', price: 1000, unit: '', board: 'TOP SCORES', music: 'soundz', pay: s => s * 0.3,
     after: 'Soundz FM', how: ["New Year's Eve, 11:59. Seb's it.", 'Catch as many girls as you can before midnight. Quick kisses chain.', 'Mind the boyfriends. JUMP once: SIR, YES SIR! A sprint.'],
-    keys: 'Stick or arrows to run, JUMP to sprint', touch: 'Hold where you want him to run, SPRINT once' },
+    keys: 'Stick or arrows to run, JUMP to sprint', touch: 'Stick to run, JUMP once to sprint' },
   awake: { title: 'STAY AWAKE', short: 'AWAKE', lad: 'sam', price: 1000, unit: 'm', board: 'FURTHEST', music: 'road', pay: s => s * 1.5,
     after: 'The Club', how: ['4am, the drive back to the villa. Sam is fading.', 'Grab energy drinks to keep his eyes open.', 'A crash wakes him up, but four and the car’s done.'],
-    keys: 'Up and down to change lanes', touch: 'Tap above or below the car to change lanes' },
+    keys: 'Up and down to change lanes', touch: 'Stick up and down to change lanes' },
   golf: { title: 'THE LONG DRIVE', short: 'DRIVE', lad: 'pearcy', price: 1000, unit: 'yds', board: 'LONGEST DRIVES', music: 'naval', pay: s => s * 8,
     after: 'The Arrangement', how: ['Three balls into the lake. Longest one counts.', 'HIT to swing, HIT for power, HIT on the line.', 'JUMP once first: CARP DIEM. More power, less control.'],
     keys: 'HIT three times to swing, JUMP for the pills', touch: 'Tap three times to swing, PILLS once' },
@@ -148,6 +148,9 @@ canvas.addEventListener('pointermove', e => { const q = pubPtr.get(e.pointerId);
 const pubUp = e => { const q = pubPtr.get(e.pointerId); if (q && (mode === 'pub' || mode === 'mini')) pubReleases.push(q); pubPtr.delete(e.pointerId); };
 canvas.addEventListener('pointerup', pubUp); canvas.addEventListener('pointercancel', pubUp);
 let pubReleases = [], pubRel = [], PUI = [], pubHits = new Set(), pubFree = [];
+// the pub and the moving games use the same stick and buttons as a fight (Version 55.2)
+function pubStick() { return (mode === 'pub' && !PUB.view) || (mode === 'mini' && !!MG && MG.phase === 'play' && ['kiss', 'awake', 'darts'].includes(MG.id)); }
+const pubPadTouch = () => touchUI && !padOn();
 function pubFinger() { for (const q of pubPtr.values()) if (!PUI.some(b => q.ox > b.x && q.ox < b.x + b.w && q.oy > b.y && q.oy < b.y + b.h)) return q; return null; }
 // at the start of each update: which drawn buttons were tapped, and the taps that weren't on one
 function pubTapsIn() {
@@ -258,12 +261,10 @@ function updatePub(dt) {
   if (near && (pressed.has('punch') || pressed.has('start') || pubHits.has('act'))) { PUB.target = null; pubAct(near); return; }
   if (near && (pressed.has('jump') || pubHits.has('board')) && MINI_DEF[near.id]) { PUB.view = 'board'; PUB.boardGame = near.id; modeT = 0; sfx('page'); return; }
   // walking: the stick or arrows, or tap where to go
-  const inp = readInput(); let ix = inp.ix, iy = inp.iy;
-  for (const t of pubFree) if (t.y > 90) { PUB.target = clamp(t.x + cam.x, 40, PUB_W - 60); }
-  if (ix) PUB.target = null;
-  if (PUB.target != null) { const d = PUB.target - PUB.x; ix = Math.abs(d) < 8 ? 0 : Math.sign(d); if (!ix) PUB.target = null; }
+  const inp = readInput(); let ix = inp.ix, iy = inp.iy; PUB.target = null;
+  const runK = (held.has('run') || (pubPadTouch() && stickRun())) ? 1.6 : 1;
   const sway = PUB.pints > 1 ? Math.sin(PUB.t * 1.7) * Math.min(4, PUB.pints) * 12 : 0;
-  PUB.x = clamp(PUB.x + ix * 270 * dt + sway * dt, 30, PUB_W - 40);
+  PUB.x = clamp(PUB.x + ix * 270 * runK * dt + sway * dt, 30, PUB_W - 40);
   PUB.y = clamp(PUB.y + iy * 150 * dt, 436, 500);
   PUB.moving = !!(ix || iy);
   if (ix) PUB.face = ix;
@@ -352,16 +353,14 @@ function drawPub() {
     const w = Math.max(300, Math.min(700, label.length * 11 + 120)), x = W / 2 - w / 2, y = H - 92;
     pubPanel(x, y, w, 62);
     textOut(label, W / 2, y + 22, '17px ' + DISPLAY, '#efe6d2', OUT, 4);
-    const tch = touchUI && !padOn();
     ctx.font = '800 11px ' + BODY; ctx.fillStyle = '#ffd23f'; ctx.textAlign = 'center';
-    ctx.fillText(tch ? '' : (padOn() ? 'HIT' : 'J / ENTER') + (MINI_DEF[o.id] ? '  ·  JUMP FOR THE FULL BOARD' : ''), W / 2, y + 47);
-    if (tch) { pubBtn('act', W / 2 - (MINI_DEF[o.id] ? 140 : 60), y + 34, 120, 24, o.id === 'door' ? 'GO' : 'DO IT', true); if (MINI_DEF[o.id]) pubBtn('board', W / 2 + 20, y + 34, 120, 24, 'BOARD'); }
+    ctx.fillText((touchUI ? 'HIT' : 'J / ENTER') + (MINI_DEF[o.id] ? '  ·  JUMP FOR THE FULL BOARD' : ''), W / 2, y + 47);
   }
   pubTabHud();
   if (PUB.from === 'run' && run) { pubPanel(16, 14, 170, 52); ctx.font = '800 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'left'; ctx.fillText('LIVES', 30, 30); textOut(String(run.lives), 30, 47, '22px ' + DISPLAY, '#7fe07a', OUT, 5, 'left'); ctx.fillStyle = '#93a3a1'; ctx.fillText(run.c.name, 72, 47); }
   if (touchUI && !padOn()) pubBtn('leave', PUB.from === 'run' ? 200 : 16, 14, 110, 40, PUB.from === 'run' ? 'CARRY ON' : 'LEAVE');
   if (PUB.msgT > 0 && PUB.msg) { const a = Math.min(1, PUB.msgT / 0.3); ctx.save(); ctx.globalAlpha = a; textOut(PUB.msg, W / 2, 92, '18px ' + DISPLAY, '#ffd23f', OUT, 5); ctx.restore(); }
-  if (PUB.view === 'board') drawPubBoard(PUB.boardGame);
+  if (PUB.view === 'board') drawPubBoard(PUB.boardGame); else if (pubPadTouch()) drawTouch();
 }
 function drawPubBoard(g) {
   const d = MINI_DEF[g];
@@ -425,7 +424,7 @@ function updateMini(dt) {
     return;
   }
   if (MG.phase === 'play') {
-    if (pubBack() || pubHits.has('quit')) { if (MG.id === 'fruit') { miniEnd('CASHED OUT'); return; } MG.forfeit = true; MGAME[MG.id].quit && MGAME[MG.id].quit(MG); miniEnd('Gave up'); return; }
+    if (pressed.has('escape') || (pressed.has('back') && !pubStick()) || pubHits.has('quit')) { if (MG.id === 'fruit') { miniEnd('CASHED OUT'); return; } MG.forfeit = true; MGAME[MG.id].quit && MGAME[MG.id].quit(MG); miniEnd('Gave up'); return; }
     try { MGAME[MG.id].update(MG, dt); } catch (e) { glitch('mini ' + MG.id, e); miniEnd('Glitch'); }
     return;
   }
@@ -438,7 +437,7 @@ function drawMini() {
   const G = MGAME[MG.id];
   pubPixel(() => G.draw(MG));
   try { G.hud(MG); } catch (e) { glitch('mini hud', e); }
-  if (MG.phase === 'play' && touchUI && !padOn()) pubBtn('quit', 14, H - 50, 92, 36, MG.id === 'fruit' ? 'CASH OUT' : 'QUIT');
+  if (MG.phase === 'play' && pubPadTouch()) { if (pubStick()) { drawTouch(); pubBtn('quit', W / 2 + 140, 16, 92, 34, 'QUIT'); } else pubBtn('quit', 14, H - 50, 92, 36, MG.id === 'fruit' ? 'CASH OUT' : 'QUIT'); }
   if (MG.phase === 'intro') drawMiniIntro();
   if (MG.phase === 'result') drawMiniResult();
 }
@@ -516,10 +515,7 @@ MGAME.darts = {
     if (s.wait > 0) { s.wait -= dt; if (s.wait <= 0) { if (s.n >= 9) { miniEnd(M.score >= 300 ? 'TON-PLUS PLAYER' : 'GAME SHOT'); return; } s.darts = []; s.visit = 0; } return; }
     // aim: the stick, or drag a finger; throw: HIT, or let go
     const inp = readInput(); s.ax = clamp(s.ax + inp.ix * 160 * dt, DBX - 200, DBX + 200); s.ay = clamp(s.ay + inp.iy * 160 * dt, DBY - 200, DBY + 200);
-    const f = pubFinger();
-    if (f) { if (!s.drag || s.drag.f !== f) s.drag = { f, x: f.x, y: f.y }; s.ax = clamp(s.ax + (f.x - s.drag.x) * 0.8, DBX - 200, DBX + 200); s.ay = clamp(s.ay + (f.y - s.drag.y) * 0.8, DBY - 200, DBY + 200); s.drag.x = f.x; s.drag.y = f.y; }
-    let go = pressed.has('punch') || pressed.has('start');
-    if (pubRel.length && s.drag) { go = true; s.drag = null; }
+    const go = pressed.has('punch') || pressed.has('start');
     if (go) { const [wx, wy] = this.sway(M); s.fly = { x: s.ax + wx + rand(-2, 2), y: s.ay + wy + rand(-2, 2), t: 0 }; sfx('throw'); }
   },
   draw(M) {
@@ -884,7 +880,6 @@ MGAME.awake = {
     s.meter -= (6 + T * 0.13) * dt;
     // input: up and down, or tap above or below the car
     const inp = readInput();
-    for (const t of pubFree) s.ty = clamp(d.y + (t.y < d.y - 30 ? -54 : t.y > d.y + 10 ? 54 : 0), ROAD.lanes[0], ROAD.lanes[2]);
     let vy = inp.iy * 330; if (inp.iy) s.ty = null;
     if (s.ty != null) { const dd = s.ty - d.y; vy = Math.abs(dd) < 4 ? 0 : Math.sign(dd) * 330; if (!vy) s.ty = null; }
     // nodding off: the car wanders
@@ -963,8 +958,7 @@ MGAME.kiss = {
     if (left <= 0) { s.midnight = true; s.endT = 0; M.score += 1000; pubFlash(s, s.kisses ? 'HAPPY NEW YEAR!' : 'HAPPY NEW YEAR, ON YOUR OWN', '#ffd23f', 2.4); sfx('airhorn'); sfx('jackpot'); return; }
     // Seb: the stick, or run to your finger
     let ix = 0, iy = 0; const inp = readInput(); ix = inp.ix; iy = inp.iy;
-    const f = pubFinger(); if (f) { const dx = f.x + s.camX - s.x, dy = f.y - s.y, dd = Math.hypot(dx, dy); if (dd > 12) { ix = dx / dd; iy = dy / dd; } }
-    if ((pressed.has('jump') || pressed.has('special') || pubHits.has('sprint')) && !s.sprintUsed) { s.sprintUsed = true; s.sprint = 3; sfx('special'); pubFlash(s, 'SIR, YES SIR!', '#7fe07a', 1.4); }
+    if ((pressed.has('jump') || pressed.has('special')) && !s.sprintUsed) { s.sprintUsed = true; s.sprint = 3; sfx('special'); pubFlash(s, 'SIR, YES SIR!', '#7fe07a', 1.4); }
     const sp = s.daze > 0 ? 0 : s.sprint > 0 ? 410 : 300, n = Math.hypot(ix, iy) || 1, go = ix || iy ? 1 : 0;
     s.x = clamp(s.x + ix / n * sp * dt * go, KC.x0, KC.x1); s.y = clamp(s.y + iy / n * sp * 0.7 * dt * go, KC.y0, KC.y1);
     s.moving = !!go && s.daze <= 0; if (ix && s.daze <= 0) s.face = Math.sign(ix); if (s.moving) s.walk += dt * (s.sprint > 0 ? 18 : 13);
@@ -1040,7 +1034,6 @@ MGAME.kiss = {
     ctx.font = '800 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('KISSES', 30, 30);
     this.heart(40, 54, 1, '#ff4fb0'); textOut('x ' + s.kisses, 58, 54, '22px ' + DISPLAY, '#ff4fb0', OUT, 5, 'left');
     pubPanel(W - 196, 14, 180, 52); ctx.font = '800 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'left'; ctx.fillText('SCORE', W - 182, 30); textOut(fmtN(M.score), W - 30, 46, '22px ' + DISPLAY, '#ffd23f', OUT, 5, 'right');
-    if (M.phase === 'play' && touchUI && !padOn() && !s.sprintUsed) pubBtn('sprint', W - 150, H - 66, 134, 46, 'SPRINT', false, '#7fe07a');
     drawGameMsg(s, 120);
   },
   heart(x, y, k, col) { ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(x, y + 8 * k); ctx.bezierCurveTo(x - 14 * k, y - 2 * k, x - 6 * k, y - 12 * k, x, y - 4 * k); ctx.bezierCurveTo(x + 6 * k, y - 12 * k, x + 14 * k, y - 2 * k, x, y + 8 * k); ctx.fill(); },

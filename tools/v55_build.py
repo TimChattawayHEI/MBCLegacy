@@ -62,6 +62,11 @@ else:
     s = swap(s, "window.__appBack = () => {\n", block + "window.__appBack = () => {\n", 'pub module')
 
 # ---------------------------------------------------------------- keys, loop and screen
+s = swap(s, """  if (e.pointerType === 'mouse' && !touchUI) return;
+  if (mode !== 'play') return;""", """  if (e.pointerType === 'mouse' && !touchUI) return;
+  if (mode !== 'play' && !pubStick()) return;   // the pub and its moving games use the stick too (Version 55.2)""", 'touch stick in the pub')
+s = swap(s, """  if (!touchUI || mode !== 'play' || padOn()) return;""", """  if (!touchUI || (mode !== 'play' && !pubStick()) || padOn()) return;""", 'touch controls drawn in the pub')
+s = swap(s, """    const on = touchHeld(b.id), ready = b.id === 'special' && player.meter >= 100;""", """    const on = touchHeld(b.id), ready = b.id === 'special' && mode === 'play' && !!player && player.meter >= 100;""", 'special ready outside a fight')
 s = swap(s, """KeyB: 'board', KeyR: 'route', KeyT: 'diff', KeyP: 'pause' };""",
          """KeyB: 'board', KeyR: 'route', KeyT: 'diff', KeyP: 'pause', KeyN: 'pub' };""", 'pub key')
 s = swap(s, """  if (mode === 'board') { updateBoard(); return true; }
