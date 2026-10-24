@@ -10219,8 +10219,8 @@ const MINI_DEF = {
     after: 'The Frequency', how: ['Five penalties against the Parkie.', 'Stop the arrow for the side, then the height.', 'Corners score more. JUMP once: the under-12s heckle him.'],
     keys: 'HIT to stop the arrow, JUMP for the whistle', touch: 'Tap to stop the arrow, WHISTLE once' },
   kiss: { title: 'KISS CHASE', short: 'KISS', lad: 'seb', price: 1000, unit: '', board: 'TOP SCORES', music: 'soundz', pay: s => s * 0.3,
-    after: 'Soundz FM', how: ["New Year's Eve, 11:59. Every girl at the party wants Seb.", 'Keep away till midnight. Three snogs and he’s spoken for.', 'JUMP once: a smoke grenade.'],
-    keys: 'Stick or arrows to run, JUMP for smoke', touch: 'Hold where you want him to run, SMOKE once' },
+    after: 'Soundz FM', how: ["New Year's Eve, 11:59. Seb's it.", 'Catch as many girls as you can before midnight. Quick kisses chain.', 'Mind the boyfriends. JUMP once: SIR, YES SIR! A sprint.'],
+    keys: 'Stick or arrows to run, JUMP to sprint', touch: 'Hold where you want him to run, SPRINT once' },
   awake: { title: 'STAY AWAKE', short: 'AWAKE', lad: 'sam', price: 1000, unit: 'm', board: 'FURTHEST', music: 'road', pay: s => s * 1.5,
     after: 'The Club', how: ['4am, the drive back to the villa. Sam is fading.', 'Grab energy drinks to keep his eyes open.', 'A crash wakes him up, but four and the car’s done.'],
     keys: 'Up and down to change lanes', touch: 'Tap above or below the car to change lanes' },
@@ -11126,44 +11126,76 @@ MGAME.awake = {
 };
 
 // ------------------------------------------------------------------ KISS CHASE (Seb, New Year's Eve 1999 at Soundz FM)
+// Seb's it. The girls at the party scatter when he comes near; catch one and it's a kiss. Jealous boyfriends get in the way.
 const KC = { x0: 60, x1: 1240, y0: 366, y1: 500, len: 60 };
 MGAME.kiss = {
-  init(M) { M.s = { x: 640, y: 440, face: 1, walk: 0, moving: false, inv: 0, daze: 0, snogs: 0, girls: [], spawnT: 0.5, smoke: 0, smokeUsed: false, near: 0, msgT: 0, camX: 160, midnight: false, endT: -1 }; },
-  spawn(M) {
+  init(M) { M.s = { x: 640, y: 440, face: 1, walk: 0, moving: false, daze: 0, inv: 0, kisses: 0, chain: 0, chainT: 0, girls: [], lads: [], spawnT: 0, sprint: 0, sprintUsed: false, msgT: 0, camX: 160, midnight: false, midKiss: false, endT: -1 }; },
+  spawnGirl(M) {
     const s = M.s, L = chance(0.5);
-    s.girls.push({ x: L ? KC.x0 - 40 : KC.x1 + 40, y: rand(KC.y0, KC.y1), face: L ? 1 : -1, walk: rand(0, 6), sp: 150 + Math.min(110, M.t * 2.2) + rand(-15, 15), wob: rand(0, 6), nearT: 0, happy: 0 });
+    s.girls.push({ x: L ? KC.x0 - 30 : KC.x1 + 30, y: rand(KC.y0, KC.y1), face: L ? 1 : -1, walk: rand(0, 6), sp: 290 + Math.min(25, M.t * 0.5) + rand(-12, 12), wob: rand(0, 6), happy: 0, tx: rand(KC.x0 + 100, KC.x1 - 100), ty: rand(KC.y0, KC.y1), jinkT: rand(0.6, 1.4), jx: 0, jy: 0 });
   },
+  spawnLad(M) { const s = M.s, L = s.x > 650; s.lads.push({ x: L ? KC.x0 - 30 : KC.x1 + 30, y: rand(KC.y0, KC.y1), face: L ? 1 : -1, walk: 0, sp: 130 + rand(0, 20), cool: 0 }); },
   update(M, dt) {
-    const s = M.s; if (s.msgT > 0) s.msgT -= dt; if (s.inv > 0) s.inv -= dt; if (s.daze > 0) s.daze -= dt; if (s.smoke > 0) s.smoke -= dt;
+    const s = M.s; if (s.msgT > 0) s.msgT -= dt; if (s.daze > 0) s.daze -= dt; if (s.inv > 0) s.inv -= dt; if (s.sprint > 0) s.sprint -= dt; if (s.chainT > 0) s.chainT -= dt; else s.chain = 0;
     const left = KC.len - M.t;
-    if (s.endT >= 0) { s.endT += dt; if (s.endT > 2.4) miniEnd(s.midnight ? 'HAPPY NEW YEAR' : 'SPOKEN FOR'); return; }
-    if (left <= 0) { s.midnight = true; s.endT = 0; M.score += 5000; pubFlash(s, 'HAPPY NEW YEAR!', '#ffd23f', 2.4); sfx('airhorn'); sfx('jackpot'); return; }
-    M.score = Math.floor(M.t * 100) + s.near * 50;
-    // Seb: stick, or run towards your finger
+    if (s.endT >= 0) { s.endT += dt; if (s.endT > 2.4) miniEnd('HAPPY NEW YEAR'); return; }
+    if (left <= 0) { s.midnight = true; s.endT = 0; M.score += 1000; pubFlash(s, s.kisses ? 'HAPPY NEW YEAR!' : 'HAPPY NEW YEAR, ON YOUR OWN', '#ffd23f', 2.4); sfx('airhorn'); sfx('jackpot'); return; }
+    // Seb: the stick, or run to your finger
     let ix = 0, iy = 0; const inp = readInput(); ix = inp.ix; iy = inp.iy;
-    const f = pubFinger(); if (f) { const wx = f.x + s.camX, dx = wx - s.x, dy = f.y - s.y, dd = Math.hypot(dx, dy); if (dd > 12) { ix = dx / dd; iy = dy / dd; } }
-    if ((pressed.has('jump') || pressed.has('special') || pubHits.has('smoke')) && !s.smokeUsed) { s.smokeUsed = true; s.smoke = 3.2; sfx('boom'); pubFlash(s, 'SMOKE OUT!', '#93a3a1', 1.4); }
-    const sp = s.daze > 0 ? 60 : 290, n = Math.hypot(ix, iy) || 1;
-    s.x = clamp(s.x + ix / n * sp * dt * (Math.abs(ix) + Math.abs(iy) ? 1 : 0), KC.x0, KC.x1); s.y = clamp(s.y + iy / n * sp * 0.7 * dt * (Math.abs(ix) + Math.abs(iy) ? 1 : 0), KC.y0, KC.y1);
-    s.moving = !!(ix || iy); if (ix) s.face = Math.sign(ix); if (s.moving) s.walk += dt * 13;
+    const f = pubFinger(); if (f) { const dx = f.x + s.camX - s.x, dy = f.y - s.y, dd = Math.hypot(dx, dy); if (dd > 12) { ix = dx / dd; iy = dy / dd; } }
+    if ((pressed.has('jump') || pressed.has('special') || pubHits.has('sprint')) && !s.sprintUsed) { s.sprintUsed = true; s.sprint = 3; sfx('special'); pubFlash(s, 'SIR, YES SIR!', '#7fe07a', 1.4); }
+    const sp = s.daze > 0 ? 0 : s.sprint > 0 ? 410 : 300, n = Math.hypot(ix, iy) || 1, go = ix || iy ? 1 : 0;
+    s.x = clamp(s.x + ix / n * sp * dt * go, KC.x0, KC.x1); s.y = clamp(s.y + iy / n * sp * 0.7 * dt * go, KC.y0, KC.y1);
+    s.moving = !!go && s.daze <= 0; if (ix && s.daze <= 0) s.face = Math.sign(ix); if (s.moving) s.walk += dt * (s.sprint > 0 ? 18 : 13);
     s.camX = clamp(s.x - W / 2, 0, 1300 - W);
-    // the party
-    s.spawnT -= dt; const want = Math.min(7, 2 + Math.floor(M.t / 9));
-    if (s.spawnT <= 0 && s.girls.filter(g => !g.happy).length < want) { this.spawn(M); s.spawnT = 1.2; }
+    // the party: girls to chase, more of them as it gets late; a jealous boyfriend, then two
+    s.spawnT -= dt;
+    if (s.spawnT <= 0 && s.girls.filter(g => !g.happy).length < Math.min(6, 3 + Math.floor(M.t / 15))) { this.spawnGirl(M); s.spawnT = 0.8; }
+    if (s.lads.length < (M.t > 30 ? 2 : M.t > 6 ? 1 : 0)) this.spawnLad(M);
     for (const g of s.girls) {
       g.walk += dt * 10; g.wob += dt;
-      if (g.happy) { g.happy += dt; g.x += g.face * 180 * dt; continue; }
-      let tx = s.x, ty = s.y;
-      if (s.smoke > 0) { tx = g.x + Math.sin(g.wob * 1.3) * 200; ty = g.y + Math.cos(g.wob) * 80; }
-      const dx = tx - g.x, dy = ty - g.y, dd = Math.hypot(dx, dy) || 1;
-      g.x += dx / dd * g.sp * dt + Math.sin(g.wob * 3) * 20 * dt; g.y = clamp(g.y + dy / dd * g.sp * 0.6 * dt, KC.y0, KC.y1); g.face = dx < 0 ? -1 : 1;
-      const dist = Math.hypot(s.x - g.x, (s.y - g.y) * 1.6);
-      if (dist < 34 && s.inv <= 0 && s.smoke <= 0) {
-        g.happy = 0.01; g.face = g.x < s.x ? -1 : 1; s.snogs++; s.inv = 1.6; s.daze = 0.7; sfx('pickup'); pubFlash(s, 'MWAH!', '#ff4fb0', 1.1);
-        if (s.snogs >= 3) { s.endT = 0; pubFlash(s, "SEB'S BEEN SNOGGED", '#ff4fb0', 2.2); sfx('ko'); return; }
-      } else if (dist < 70 && s.inv <= 0) { g.nearT += dt; if (g.nearT > 0.25 && !g.counted) { g.counted = true; s.near++; } } else if (dist > 120) g.counted = false;
+      if (g.happy) { g.happy += dt; g.x += g.face * 120 * dt; continue; }
+      const dx = g.x - s.x, dy = (g.y - s.y) * 1.6, d = Math.hypot(dx, dy) || 1;
+      let vx, vy, spd;
+      if (d < 270) {
+        // run away, bend off the walls so the corners aren't a dead end for long, and jink now and then
+        vx = dx / d; vy = dy / d;
+        if (g.x < KC.x0 + 80) vx += 1.2; if (g.x > KC.x1 - 80) vx -= 1.2; if (g.y < KC.y0 + 20) vy += 1; if (g.y > KC.y1 - 20) vy -= 1;
+        g.jinkT -= dt; if (g.jinkT <= 0) { g.jinkT = rand(0.5, 1.2); g.jx = rand(-0.45, 0.45); g.jy = rand(-0.45, 0.45); }
+        vx += g.jx; vy += g.jy; spd = g.sp;
+      } else {
+        // dancing about: drift to a spot, pick another
+        vx = g.tx - g.x; vy = g.ty - g.y; spd = 70;
+        if (Math.hypot(vx, vy) < 20) { g.tx = rand(KC.x0 + 60, KC.x1 - 60); g.ty = rand(KC.y0, KC.y1); }
+      }
+      const vn = Math.hypot(vx, vy) || 1;
+      g.x = clamp(g.x + vx / vn * spd * dt, KC.x0 - 40, KC.x1 + 40); g.y = clamp(g.y + vy / vn * spd * 0.7 * dt, KC.y0, KC.y1); if (Math.abs(vx) > 0.1) g.face = vx < 0 ? -1 : 1;
+      if (d < 34 && s.daze <= 0) {
+        g.happy = 0.01; g.face = g.x > s.x ? 1 : -1; s.kisses++; s.chain++; s.chainT = 3;
+        let pts = 500 + (Math.min(5, s.chain) - 1) * 250; M.score += pts;
+        if (left < 6 && !s.midKiss) { s.midKiss = true; M.score += 2000; pts += 2000; pubFlash(s, 'MIDNIGHT KISS! +' + fmtN(pts), '#ff4fb0', 1.8); }
+        else pubFlash(s, (s.chain > 1 ? 'MWAH x' + s.chain : 'MWAH!') + '  +' + fmtN(pts), '#ff4fb0', 1.1);
+        sfx('pickup');
+      }
     }
     s.girls = s.girls.filter(g => !(g.happy && (g.x < -100 || g.x > 1400)));
+    // they don't stack up on top of each other
+    const live = s.girls.filter(g => !g.happy);
+    for (let i = 0; i < live.length; i++) for (let j = i + 1; j < live.length; j++) {
+      const A = live[i], B = live[j], dx = B.x - A.x, dy = (B.y - A.y) * 1.6, d = Math.hypot(dx, dy);
+      if (d < 46 && d > 0.01) { const k = (46 - d) / 2 / d; A.x -= dx * k; B.x += dx * k; A.y = clamp(A.y - dy * k / 1.6, KC.y0, KC.y1); B.y = clamp(B.y + dy * k / 1.6, KC.y0, KC.y1); }
+      else if (d <= 0.01) { A.x -= 10; B.x += 10; }
+    }
+    for (const l of s.lads) {
+      l.walk += dt * 9; if (l.cool > 0) l.cool -= dt;
+      const dx = s.x - l.x, dy = s.y - l.y, d = Math.hypot(dx, dy) || 1;
+      if (l.cool <= 0) { l.x += dx / d * l.sp * dt; l.y = clamp(l.y + dy / d * l.sp * 0.7 * dt, KC.y0, KC.y1); l.face = dx < 0 ? -1 : 1; }
+      if (Math.hypot(dx, dy * 1.6) < 36 && s.inv <= 0) {
+        s.daze = 1; s.inv = 2.2; l.cool = 1.6; s.chain = 0; sfx('heavy');
+        s.x = clamp(s.x + Math.sign(dx || 1) * 70, KC.x0, KC.x1);
+        pubFlash(s, ["OI! THAT'S MY BIRD!", 'HANDS OFF, SOLDIER', 'NOT TONIGHT, MATE'][rand(0, 3) | 0], '#ff7a5a', 1.4);
+      }
+    }
   },
   draw(M) {
     const s = M.s, keep = { S, FT, FB, cx: cam.x };
@@ -11171,23 +11203,26 @@ MGAME.kiss = {
     cam.x = s.camX;
     const list = [];
     for (const g of s.girls) list.push({ y: g.y, f: () => pubFoe('ladette', g.x - s.camX, g.y, 'walk', g.face, g.walk) });
-    list.push({ y: s.y, f: () => { if (s.inv > 0 && Math.floor(s.inv * 12) % 2) return; pubLad('seb', s.x - s.camX, s.y, s.daze > 0 ? 'drowsy' : s.moving ? 'run' : 'idle', s.face, s.walk); } });
+    for (const l of s.lads) list.push({ y: l.y, f: () => pubFoe('townie', l.x - s.camX, l.y, l.cool > 0 ? 'idle' : 'walk', l.face, l.walk) });
+    list.push({ y: s.y, f: () => { if (s.inv > 0 && s.daze <= 0 && Math.floor(s.inv * 12) % 2) return; pubLad('seb', s.x - s.camX, s.y, s.daze > 0 ? 'drowsy' : s.moving ? 'run' : 'idle', s.face, s.walk); } });
     list.sort((a, b) => a.y - b.y); for (const o of list) o.f();
-    if (s.smoke > 0) for (let i = 0; i < 9; i++) { const a = i / 9 * Math.PI * 2 + time * 0.4, r = 50 + (3.2 - s.smoke) * 30; pxCircle(s.x - s.camX + Math.cos(a) * r, s.y - 40 + Math.sin(a) * r * 0.5, 26 + (i % 3) * 6, 'rgba(180,184,190,' + (0.55 * Math.min(1, s.smoke)).toFixed(2) + ')'); }
     if (s.midnight) { ctx.save(); ctx.globalAlpha = 0.7; drawFireworks(6, 1); ctx.restore(); }
     cam.x = keep.cx;
   },
   hud(M) {
     const s = M.s, left = Math.max(0, Math.ceil(KC.len - M.t));
+    // a heart over each girl he's kissed, as she skips off
+    for (const g of s.girls) if (g.happy && g.happy < 1.2) { const x = g.x - s.camX, y = g.y - 150 - g.happy * 40; ctx.save(); ctx.globalAlpha = 1 - g.happy / 1.2; this.heart(x, y, 1.4, '#ff4fb0'); ctx.restore(); }
     pubPanel(W / 2 - 90, 12, 180, 54);
     textOut(s.midnight ? '00:00' : '23:59:' + String(60 - left).padStart(2, '0'), W / 2, 40, '28px ' + DISPLAY, s.midnight ? '#7fe07a' : left <= 10 ? '#ff5a3c' : '#ffd23f', OUT, 5);
     pubPanel(16, 14, 200, 64);
-    ctx.font = '800 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('SNOGS', 30, 30);
-    for (let i = 0; i < 3; i++) { const x = 40 + i * 30, y = 56; ctx.fillStyle = i < s.snogs ? '#ff4fb0' : '#3a4a52'; ctx.beginPath(); ctx.moveTo(x, y + 8); ctx.bezierCurveTo(x - 14, y - 2, x - 6, y - 12, x, y - 4); ctx.bezierCurveTo(x + 6, y - 12, x + 14, y - 2, x, y + 8); ctx.fill(); }
-    pubPanel(W - 196, 14, 180, 52); ctx.font = '800 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.fillText('SCORE', W - 182, 30); textOut(fmtN(M.score), W - 30, 46, '22px ' + DISPLAY, '#ffd23f', OUT, 5, 'right');
-    if (M.phase === 'play' && touchUI && !padOn() && !s.smokeUsed) pubBtn('smoke', W - 150, H - 66, 134, 46, 'SMOKE', false, '#93a3a1');
+    ctx.font = '800 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('KISSES', 30, 30);
+    this.heart(40, 54, 1, '#ff4fb0'); textOut('x ' + s.kisses, 58, 54, '22px ' + DISPLAY, '#ff4fb0', OUT, 5, 'left');
+    pubPanel(W - 196, 14, 180, 52); ctx.font = '800 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'left'; ctx.fillText('SCORE', W - 182, 30); textOut(fmtN(M.score), W - 30, 46, '22px ' + DISPLAY, '#ffd23f', OUT, 5, 'right');
+    if (M.phase === 'play' && touchUI && !padOn() && !s.sprintUsed) pubBtn('sprint', W - 150, H - 66, 134, 46, 'SPRINT', false, '#7fe07a');
     drawGameMsg(s, 120);
   },
+  heart(x, y, k, col) { ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(x, y + 8 * k); ctx.bezierCurveTo(x - 14 * k, y - 2 * k, x - 6 * k, y - 12 * k, x, y - 4 * k); ctx.bezierCurveTo(x + 6 * k, y - 12 * k, x + 14 * k, y - 2 * k, x, y + 8 * k); ctx.fill(); },
 };
 
 // ------------------------------------------------------------------ hooks: the run, the clear screen, the select screen
