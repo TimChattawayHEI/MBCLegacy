@@ -23,7 +23,7 @@ from foe_sheets import frames_of  # noqa: E402
 os.makedirs(OUT, exist_ok=True)
 
 # ---------------------------------------------------------------- plain images
-for n in ['cabinet', 'fruitface', 'pitch', 'can', 'sym_cherry', 'sym_lemon', 'sym_bell', 'sym_bar', 'sym_seven', 'sym_grapes']:
+for n in ['cabinet', 'fruitface', 'pitch', 'can', 'sym_cherry', 'sym_lemon', 'sym_bell', 'sym_bar', 'sym_seven', 'sym_grapes'] + ['tornado', 'tornado2']:
     shutil.copy(os.path.join(HERE, 'img', n + '.png'), os.path.join(OUT, n + '.png'))
 
 

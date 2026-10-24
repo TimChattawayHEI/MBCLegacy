@@ -10195,7 +10195,7 @@ function pubSpend(n) { if (PUB.wallet < n) return false; PUB.wallet -= n; pubSav
 const fmtN = n => Math.round(n).toLocaleString('en-GB');
 function pubImg(n) { return bgImg('pub/' + n); }
 const PUB_FILES = ['cabinet', 'chalk', 'fruitface', 'pitch', 'can', 'dartboard', 'dart', 'dart_fly', 'golfball', 'tee',
-  'sym_cherry', 'sym_lemon', 'sym_grapes', 'sym_bell', 'sym_bar', 'sym_seven', 'keeper_ready', 'keeper_dive', 'byron_kick', 'pearcy_golf'];
+  'sym_cherry', 'sym_lemon', 'sym_grapes', 'sym_bell', 'sym_bar', 'sym_seven', 'keeper_ready', 'keeper_dive', 'byron_kick', 'pearcy_golf', 'tornado', 'tornado2'];
 function pubPreload() { PUB_FILES.forEach(pubImg); ['social/wall', 'social/bar', 'social/fruit', 'set/dartboard', 'set/window', 'fishery/treeline', 'fishery/goose', 'fish/gary'].forEach(bgImg); }
 // one cell of a PUB_STRIPS strip, feet on (x, y), k sprite pixels per... k game units per sprite pixel (2 = 1:1 on the pixel layer)
 function pubStrip(name, f, x, y, k, flip) {
@@ -10219,8 +10219,8 @@ const MINI_DEF = {
     after: 'The Frequency', how: ['Five penalties against the Parkie.', 'Stop the arrow for the side, then the height.', 'Corners score more. JUMP once: the under-12s heckle him.'],
     keys: 'HIT to stop the arrow, JUMP for the whistle', touch: 'Tap to stop the arrow, WHISTLE once' },
   kiss: { title: 'KISS CHASE', short: 'KISS', lad: 'seb', price: 1000, unit: '', board: 'TOP SCORES', music: 'soundz', pay: s => s * 0.3,
-    after: 'Soundz FM', how: ["New Year's Eve, 11:59. Seb's it.", 'Catch as many girls as you can before midnight. Quick kisses chain.', 'Mind the boyfriends. JUMP once: SIR, YES SIR! A sprint.'],
-    keys: 'Stick or arrows to run, JUMP to sprint', touch: 'Stick to run, JUMP once to sprint' },
+    after: 'Soundz FM', how: ["New Year's Eve, 11:59. Seb's it.", 'Catch as many girls as you can before midnight. Quick kisses chain.', 'Mind the boyfriends. JUMP once: THE ULTIMATE SEX TORNADO.'],
+    keys: 'Stick or arrows to run, JUMP for the tornado', touch: 'Stick to run, JUMP once for the tornado' },
   awake: { title: 'STAY AWAKE', short: 'AWAKE', lad: 'sam', price: 1000, unit: 'm', board: 'FURTHEST', music: 'road', pay: s => s * 1.5,
     after: 'The Club', how: ['4am, the drive back to the villa. Sam is fading.', 'Grab energy drinks to keep his eyes open.', 'A crash wakes him up, but four and the car’s done.'],
     keys: 'Up and down to change lanes', touch: 'Stick up and down to change lanes' },
@@ -11124,23 +11124,24 @@ MGAME.awake = {
 // Seb's it. The girls at the party scatter when he comes near; catch one and it's a kiss. Jealous boyfriends get in the way.
 const KC = { x0: 60, x1: 1240, y0: 366, y1: 500, len: 60 };
 MGAME.kiss = {
-  init(M) { M.s = { x: 640, y: 440, face: 1, walk: 0, moving: false, daze: 0, inv: 0, kisses: 0, chain: 0, chainT: 0, girls: [], lads: [], spawnT: 0, sprint: 0, sprintUsed: false, msgT: 0, camX: 160, midnight: false, midKiss: false, endT: -1 }; },
+  init(M) { M.s = { x: 640, y: 440, face: 1, walk: 0, moving: false, daze: 0, inv: 0, kisses: 0, chain: 0, chainT: 0, girls: [], lads: [], spawnT: 0, torn: 0, tornUsed: false, whooshT: 0, msgT: 0, camX: 160, midnight: false, midKiss: false, endT: -1 }; },
   spawnGirl(M) {
     const s = M.s, L = chance(0.5);
     s.girls.push({ x: L ? KC.x0 - 30 : KC.x1 + 30, y: rand(KC.y0, KC.y1), face: L ? 1 : -1, walk: rand(0, 6), sp: 290 + Math.min(25, M.t * 0.5) + rand(-12, 12), wob: rand(0, 6), happy: 0, tx: rand(KC.x0 + 100, KC.x1 - 100), ty: rand(KC.y0, KC.y1), jinkT: rand(0.6, 1.4), jx: 0, jy: 0 });
   },
   spawnLad(M) { const s = M.s, L = s.x > 650; s.lads.push({ x: L ? KC.x0 - 30 : KC.x1 + 30, y: rand(KC.y0, KC.y1), face: L ? 1 : -1, walk: 0, sp: 130 + rand(0, 20), cool: 0 }); },
   update(M, dt) {
-    const s = M.s; if (s.msgT > 0) s.msgT -= dt; if (s.daze > 0) s.daze -= dt; if (s.inv > 0) s.inv -= dt; if (s.sprint > 0) s.sprint -= dt; if (s.chainT > 0) s.chainT -= dt; else s.chain = 0;
+    const s = M.s; if (s.msgT > 0) s.msgT -= dt; if (s.daze > 0) s.daze -= dt; if (s.inv > 0) s.inv -= dt; if (s.torn > 0) { s.torn -= dt; s.whooshT -= dt; if (s.whooshT <= 0) { s.whooshT = 0.18; sfx('swing'); } } if (s.chainT > 0) s.chainT -= dt; else s.chain = 0;
     const left = KC.len - M.t;
     if (s.endT >= 0) { s.endT += dt; if (s.endT > 2.4) miniEnd('HAPPY NEW YEAR'); return; }
     if (left <= 0) { s.midnight = true; s.endT = 0; M.score += 1000; pubFlash(s, s.kisses ? 'HAPPY NEW YEAR!' : 'HAPPY NEW YEAR, ON YOUR OWN', '#ffd23f', 2.4); sfx('airhorn'); sfx('jackpot'); return; }
     // Seb: the stick, or run to your finger
     let ix = 0, iy = 0; const inp = readInput(); ix = inp.ix; iy = inp.iy;
-    if ((pressed.has('jump') || pressed.has('special')) && !s.sprintUsed) { s.sprintUsed = true; s.sprint = 3; sfx('special'); pubFlash(s, 'SIR, YES SIR!', '#7fe07a', 1.4); }
-    const sp = s.daze > 0 ? 0 : s.sprint > 0 ? 410 : 300, n = Math.hypot(ix, iy) || 1, go = ix || iy ? 1 : 0;
+    // THE ULTIMATE SEX TORNADO: once a game, four seconds of whirlwind
+    if ((pressed.has('jump') || pressed.has('special')) && !s.tornUsed && s.daze <= 0) { s.tornUsed = true; s.torn = 4; s.whooshT = 0; sfx('special'); sfx('boom'); pubFlash(s, 'THE ULTIMATE SEX TORNADO!', '#ff4fb0', 2.2); }
+    const sp = s.daze > 0 ? 0 : s.torn > 0 ? 450 : 300, n = Math.hypot(ix, iy) || 1, go = ix || iy ? 1 : 0;
     s.x = clamp(s.x + ix / n * sp * dt * go, KC.x0, KC.x1); s.y = clamp(s.y + iy / n * sp * 0.7 * dt * go, KC.y0, KC.y1);
-    s.moving = !!go && s.daze <= 0; if (ix && s.daze <= 0) s.face = Math.sign(ix); if (s.moving) s.walk += dt * (s.sprint > 0 ? 18 : 13);
+    s.moving = !!go && s.daze <= 0; if (ix && s.daze <= 0) s.face = Math.sign(ix); if (s.moving) s.walk += dt * 13;
     s.camX = clamp(s.x - W / 2, 0, 1300 - W);
     // the party: girls to chase, more of them as it gets late; a jealous boyfriend, then two
     s.spawnT -= dt;
@@ -11151,7 +11152,7 @@ MGAME.kiss = {
       if (g.happy) { g.happy += dt; g.x += g.face * 120 * dt; continue; }
       const dx = g.x - s.x, dy = (g.y - s.y) * 1.6, d = Math.hypot(dx, dy) || 1;
       let vx, vy, spd;
-      if (d < 270) {
+      if (d < (s.torn > 0 ? 420 : 270)) {
         // run away, bend off the walls so the corners aren't a dead end for long, and jink now and then
         vx = dx / d; vy = dy / d;
         if (g.x < KC.x0 + 80) vx += 1.2; if (g.x > KC.x1 - 80) vx -= 1.2; if (g.y < KC.y0 + 20) vy += 1; if (g.y > KC.y1 - 20) vy -= 1;
@@ -11164,7 +11165,7 @@ MGAME.kiss = {
       }
       const vn = Math.hypot(vx, vy) || 1;
       g.x = clamp(g.x + vx / vn * spd * dt, KC.x0 - 40, KC.x1 + 40); g.y = clamp(g.y + vy / vn * spd * 0.7 * dt, KC.y0, KC.y1); if (Math.abs(vx) > 0.1) g.face = vx < 0 ? -1 : 1;
-      if (d < 34 && s.daze <= 0) {
+      if (d < (s.torn > 0 ? 64 : 34) && s.daze <= 0) {
         g.happy = 0.01; g.face = g.x > s.x ? 1 : -1; s.kisses++; s.chain++; s.chainT = 3;
         let pts = 500 + (Math.min(5, s.chain) - 1) * 250; M.score += pts;
         if (left < 6 && !s.midKiss) { s.midKiss = true; M.score += 2000; pts += 2000; pubFlash(s, 'MIDNIGHT KISS! +' + fmtN(pts), '#ff4fb0', 1.8); }
@@ -11184,7 +11185,11 @@ MGAME.kiss = {
       l.walk += dt * 9; if (l.cool > 0) l.cool -= dt;
       const dx = s.x - l.x, dy = s.y - l.y, d = Math.hypot(dx, dy) || 1;
       if (l.cool <= 0) { l.x += dx / d * l.sp * dt; l.y = clamp(l.y + dy / d * l.sp * 0.7 * dt, KC.y0, KC.y1); l.face = dx < 0 ? -1 : 1; }
-      if (Math.hypot(dx, dy * 1.6) < 36 && s.inv <= 0) {
+      if (s.torn > 0 && Math.hypot(dx, dy * 1.6) < 70 && l.cool <= 0) {
+        // a boyfriend in the way gets spun off across the room
+        l.cool = 2.2; l.x = clamp(l.x - Math.sign(dx || 1) * 260, KC.x0 - 20, KC.x1 + 20); sfx('heavy'); pubFlash(s, 'WHOOSH!', '#efe6d2', 0.9); continue;
+      }
+      if (Math.hypot(dx, dy * 1.6) < 36 && s.inv <= 0 && s.torn <= 0) {
         s.daze = 1; s.inv = 2.2; l.cool = 1.6; s.chain = 0; sfx('heavy');
         s.x = clamp(s.x + Math.sign(dx || 1) * 70, KC.x0, KC.x1);
         pubFlash(s, ["OI! THAT'S MY BIRD!", 'HANDS OFF, SOLDIER', 'NOT TONIGHT, MATE'][rand(0, 3) | 0], '#ff7a5a', 1.4);
@@ -11198,7 +11203,9 @@ MGAME.kiss = {
     const list = [];
     for (const g of s.girls) list.push({ y: g.y, f: () => pubFoe('ladette', g.x - s.camX, g.y, 'walk', g.face, g.walk) });
     for (const l of s.lads) list.push({ y: l.y, f: () => pubFoe('townie', l.x - s.camX, l.y, l.cool > 0 ? 'idle' : 'walk', l.face, l.walk) });
-    list.push({ y: s.y, f: () => { if (s.inv > 0 && s.daze <= 0 && Math.floor(s.inv * 12) % 2) return; pubLad('seb', s.x - s.camX, s.y, s.daze > 0 ? 'drowsy' : s.moving ? 'run' : 'idle', s.face, s.walk); } });
+    list.push({ y: s.y, f: () => {
+      if (s.torn > 0) { this.tornado(s, s.x - s.camX, s.y); return; }
+      if (s.inv > 0 && s.daze <= 0 && Math.floor(s.inv * 12) % 2) return; pubLad('seb', s.x - s.camX, s.y, s.daze > 0 ? 'drowsy' : s.moving ? 'run' : 'idle', s.face, s.walk); } });
     list.sort((a, b) => a.y - b.y); for (const o of list) o.f();
     if (s.midnight) { ctx.save(); ctx.globalAlpha = 0.7; drawFireworks(6, 1); ctx.restore(); }
     cam.x = keep.cx;
@@ -11214,6 +11221,14 @@ MGAME.kiss = {
     this.heart(40, 54, 1, '#ff4fb0'); textOut('x ' + s.kisses, 58, 54, '22px ' + DISPLAY, '#ff4fb0', OUT, 5, 'left');
     pubPanel(W - 196, 14, 180, 52); ctx.font = '800 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'left'; ctx.fillText('SCORE', W - 182, 30); textOut(fmtN(M.score), W - 30, 46, '22px ' + DISPLAY, '#ffd23f', OUT, 5, 'right');
     drawGameMsg(s, 120);
+  },
+  // the tornado: PixelLab's whirlwind with Seb's arms and boots, flipped fast so it spins, wobbling and bobbing, with dust
+  tornado(s, x, y) {
+    const ph = Math.floor(time * 16), img = pubImg(Math.floor(ph / 2) % 2 ? 'tornado2' : 'tornado') || pubImg('tornado');
+    ctx.fillStyle = 'rgba(10,8,6,0.35)'; ctx.beginPath(); ctx.ellipse(snap2(x), snap2(y), 46, 9, 0, 0, Math.PI * 2); ctx.fill();
+    for (let i = 0; i < 6; i++) { const a = time * 9 + i * 1.05, r = 52 + (i % 2) * 10; pxCircle(x + Math.cos(a) * r, y - 8 + Math.sin(a) * 8, 6 + (i % 3) * 2, 'rgba(200,190,170,0.5)'); }
+    if (img) { ctx.save(); ctx.imageSmoothingEnabled = false; ctx.translate(snap2(x), snap2(y - img.height - Math.abs(Math.sin(time * 14)) * 6)); ctx.rotate(Math.sin(time * 23) * 0.12); if (ph % 2) ctx.scale(-1, 1); ctx.drawImage(img, -img.width, -img.height, img.width * 2, img.height * 2); ctx.restore(); }
+    else pubLad('seb', x, y, 'run', ph % 2 ? 1 : -1, time * 20);
   },
   heart(x, y, k, col) { ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(x, y + 8 * k); ctx.bezierCurveTo(x - 14 * k, y - 2 * k, x - 6 * k, y - 12 * k, x, y - 4 * k); ctx.bezierCurveTo(x + 6 * k, y - 12 * k, x + 14 * k, y - 2 * k, x, y + 8 * k); ctx.fill(); },
 };
