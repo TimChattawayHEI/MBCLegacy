@@ -464,6 +464,8 @@ const T3 = (() => {
     if (view === 'go') return;
     if (P('mute')) toggleSound();
     if (P('board')) { sfx('page'); openBoard(null, 'select'); return; }
+    if (P('pub')) { pubFromSelect(chosen().id); return; }
+    if (pubTyped()) toast('EVERY ARCADE CABINET IS OPEN');
     if (P('online') && netAvailable()) { sfx('page'); openNetLobby(); return; }
     if (P('escape') || P('back')) { back(); return; }
     if (P('punch') || P('start')) { next(); return; }
@@ -509,6 +511,7 @@ const T3 = (() => {
   click('new', newInstead);
   click('sound', toggleSound);
   click('board', () => { sfx('page'); openBoard(null, 'select'); });
+  click('pub', () => pubFromSelect(chosen().id));   // Version 55
   click('online', () => { if (netAvailable()) { sfx('page'); openNetLobby(); } });
 
   // ---------------------------------------------------------------- camera poses

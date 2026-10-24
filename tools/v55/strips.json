@@ -1,0 +1,32 @@
+{
+ "keeper_ready": {
+  "cell": 108,
+  "n": 2,
+  "ax": 46,
+  "ay": 92
+ },
+ "keeper_dive": {
+  "cell": 108,
+  "n": 10,
+  "ax": 46,
+  "ay": 92
+ },
+ "byron_kick": {
+  "cell": 88,
+  "n": 11,
+  "ax": 44,
+  "ay": 75
+ },
+ "pearcy_golf": {
+  "cell": 88,
+  "n": 9,
+  "ax": 56,
+  "ay": 75
+ },
+ "chalk_slate": [
+  7,
+  7,
+  75,
+  52
+ ]
+}
