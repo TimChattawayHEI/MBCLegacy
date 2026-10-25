@@ -409,6 +409,7 @@ const T3 = (() => {
     q('sound').textContent = 'Sound ' + (settings.sound ? 'on' : 'off');
     q('sound').setAttribute('aria-pressed', String(!!settings.sound)); q('sound').classList.toggle('off', !settings.sound);
     q('online').hidden = !netAvailable();
+    profileFoot();
     q('hint').textContent = hint();
   }
   function renderLad() {
@@ -512,6 +513,7 @@ const T3 = (() => {
   click('sound', toggleSound);
   click('board', () => { sfx('page'); openBoard(null, 'select'); });
   click('pub', () => pubFromSelect(chosen().id));   // Version 55
+  click('me', () => profileAsk(false));   // Version 56
   click('online', () => { if (netAvailable()) { sfx('page'); openNetLobby(); } });
 
   // ---------------------------------------------------------------- camera poses

@@ -7,10 +7,10 @@
 // Every game has an all-time board (Firebase in the app, the shared store on claude.ai, this device as a fallback):
 // top five on a chalkboard by its cabinet, your personal best under them, and the record holder's face on the screen.
 const PUB_TAB0 = 5000;   // the landlord starts everyone with a tab
-const PUB = { wallet: lsGet('mbc.pub.wallet', PUB_TAB0), cabs: lsGet('mbc.pub.cabs', {}), pb: lsGet('mbc.pub.pb', {}),
+const PUB = { wallet: lsGet('mbc.pub.wallet', PUB_TAB0), cabs: lsGet('mbc.pub.cabs', {}), pb: lsGet('mbc.pub.pb', {}), pbLad: lsGet('mbc.pub.pblad', {}),
   lad: 'tim', x: 200, y: 470, face: 1, walk: 0, moving: false, target: null, from: null, next: null, near: null,
   msg: null, msgT: 0, pints: 0, round: false, view: null, boardGame: null, t: 0 };
-function pubSave() { lsSet('mbc.pub.wallet', PUB.wallet); lsSet('mbc.pub.cabs', PUB.cabs); lsSet('mbc.pub.pb', PUB.pb); }
+function pubSave() { lsSet('mbc.pub.wallet', PUB.wallet); lsSet('mbc.pub.cabs', PUB.cabs); lsSet('mbc.pub.pb', PUB.pb); lsSet('mbc.pub.pblad', PUB.pbLad); }
 function pubBank(n) { n = Math.round(n || 0); if (n > 0) { PUB.wallet += n; pubSave(); } return n; }
 function pubSpend(n) { if (PUB.wallet < n) return false; PUB.wallet -= n; pubSave(); return true; }
 const fmtN = n => Math.round(n).toLocaleString('en-GB');
@@ -65,6 +65,7 @@ function pubBoardsStart() {
         for (const g of PUB_GAMES) {
           PUBB.db.ref('boards/' + g).orderByChild('score').limitToLast(40).on('value', snap => {
             const out = []; snap.forEach(c => { const e = pubEntry(c.val()); if (e) out.push(e); }); PUBB.remote[g] = out;
+            pubSyncMine(g);
           }, () => { PUBB.kind = 'local'; });
         }
         return;
@@ -85,61 +86,50 @@ function pubBoardsStart() {
 function pubEntry(e) {
   if (!e || typeof e !== 'object') return null;
   const score = Number(e.score); if (!isFinite(score) || score <= 0) return null;
-  return { id: String(e.id || '').slice(0, 24), name: String(e.name || 'ANON').toUpperCase().slice(0, 12), lad: CHAR_BY_ID[e.lad] ? e.lad : 'tim', score: Math.round(score), at: Number(e.at) || 0 };
+  const name = String(e.name || 'ANON').toUpperCase().slice(0, 12);
+  return { id: name, name, lad: CHAR_BY_ID[e.lad] ? e.lad : 'tim', score: Math.round(score), at: Number(e.at) || 0 };
 }
+// one row per player: their best, whichever lad they used (Version 56)
 function pubBoard(g) {
-  const seen = new Set(), out = [];
-  for (const e of (PUBB.remote[g] || []).concat(PUBB.local[g] || [])) { const s = pubEntry(e); if (!s || seen.has(s.id)) continue; seen.add(s.id); out.push(s); }
-  return out.sort((a, b) => b.score - a.score || a.at - b.at);
+  const best = {};
+  for (const e of (PUBB.remote[g] || []).concat(PUBB.local[g] || [])) { const s = pubEntry(e); if (!s) continue; const b = best[s.name]; if (!b || s.score > b.score) best[s.name] = s; }
+  return Object.values(best).sort((a, b) => b.score - a.score || a.at - b.at);
+}
+// a best made before the name was claimed (or with no signal) goes up as soon as it can
+function pubSyncMine(g) {
+  if (PUBB.kind !== 'fb' || !PROFILE.name || !PROFILE.claimed || !PUB.pb[g] || !PUB.pbLad[g]) return;
+  const mine = (PUBB.remote[g] || []).find(e => e.name === PROFILE.name);
+  if (mine && mine.score >= PUB.pb[g]) return;
+  PUBB.db.ref('boards/' + g + '/' + PROFILE.name).set({ name: PROFILE.name, lad: PUB.pbLad[g], score: PUB.pb[g], at: Date.now() }).catch(() => {});
 }
 async function pubBoardAdd(g, entry) {
-  PUBB.local[g] = (PUBB.local[g] || []).concat([entry]).sort((a, b) => b.score - a.score).slice(0, 40); lsSet('mbc.pub.boards', PUBB.local);
+  PUBB.local[g] = (PUBB.local[g] || []).filter(e => pubEntry(e) && pubEntry(e).name !== entry.name).concat([entry]).sort((a, b) => b.score - a.score).slice(0, 40); lsSet('mbc.pub.boards', PUBB.local);
   try {
-    if (PUBB.kind === 'fb') { await PUBB.db.ref('boards/' + g + '/' + entry.id).set(entry); return 'shared'; }
+    if (PUBB.kind === 'fb') { await PUBB.db.ref('boards/' + g + '/' + entry.name).set(entry); return 'shared'; }
     if (PUBB.kind === 'claude' && PUBB.uid) {
       const ref = PUBB.db.doc('pubboards/' + PUBB.uid), snap = await ref.get();
       const es = snap.exists ? Object.assign({}, (snap.data() || {}).entries) : {};
-      es[g] = (Array.isArray(es[g]) ? es[g] : []).concat([entry]).sort((a, b) => b.score - a.score).slice(0, 12);
+      es[g] = [entry];
       await ref.set({ entries: es }); return 'shared';
     }
   } catch (e) { /* this device only */ }
   return 'local';
 }
-// a personal best for that lad (or anyone, for the pub games) goes on the board
+// your best goes on the board under your name, with the lad you used (Version 56: one row each, not one per lad)
 function pubRecord(g, lad, score, then) {
   score = Math.round(score);
-  const kA = g, kL = g + ':' + lad, newBest = score > (PUB.pb[kA] || 0), ladBest = score > (PUB.pb[kL] || 0);
-  if (score <= 0) { then({ newBest: false, place: 0 }); return; }
-  if (newBest) PUB.pb[kA] = score;
-  if (ladBest) PUB.pb[kL] = score;
-  pubSave();
-  if (!ladBest) { then({ newBest: false, place: 0 }); return; }
-  const go = name => {
-    const entry = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8), name, lad, score, at: Date.now() };
+  if (score <= 0 || score <= (PUB.pb[g] || 0)) { then({ newBest: false, place: 0 }); return; }
+  PUB.pb[g] = score; PUB.pbLad[g] = lad; pubSave();
+  const go = () => {
+    const entry = { name: PROFILE.name || 'ANON', lad, score, at: Date.now() };
     pubBoardAdd(g, entry).then(w => { if (MG) MG.saved = w; });
-    const place = pubBoard(g).filter(e => e.id !== entry.id && e.score >= score).length + 1;
-    then({ newBest, place, entry });
+    const place = pubBoard(g).filter(e => e.name !== entry.name && e.score >= score).length + 1;
+    then({ newBest: true, place, entry });
   };
-  if (settings.lastName) go(settings.lastName);
-  else pubAskName(name => go(name || 'ANON'));
+  if (PROFILE.name) go(); else profileAsk(false, go);
 }
-// the name overlay the high scores use, borrowed once for the pub boards
 let pubNameCb = null, pubNameMode = null;
-function pubAskName(cb) {
-  const el = nameEls; if (!el.overlay || !el.form) { cb(null); return; }
-  pubNameCb = cb; pubNameMode = mode; mode = 'name'; modeT = 0;
-  el.title.textContent = 'Your name for the pub boards'; el.sum.textContent = 'It goes on the chalkboard next to your score.';
-  el.input.value = ''; el.overlay.hidden = false;
-  try { el.input.focus(); } catch (e) { /* optional */ }
-}
-function pubNameHook(skip) {
-  if (!pubNameCb) return false;
-  const name = (nameEls.input.value || '').trim().replace(/\s+/g, ' ').toUpperCase().slice(0, 12);
-  closeNameEntry(); mode = pubNameMode || 'mini'; modeT = 1;
-  if (name && !skip) { settings.lastName = name; saveSettings(); }
-  const cb = pubNameCb; pubNameCb = null; cb(skip ? null : name || null);
-  return true;
-}
+function pubNameHook() { return false; }
 
 // ------------------------------------------------------------------ touch: where fingers are, and buttons drawn on screen
 const pubPtr = new Map();
@@ -363,34 +353,30 @@ function drawPub() {
   if (PUB.view === 'board') drawPubBoard(PUB.boardGame); else if (pubPadTouch()) drawTouch();
 }
 function drawPubBoard(g) {
-  const d = MINI_DEF[g];
+  const d = MINI_DEF[g], shared = PUBB.kind === 'fb' || PUBB.kind === 'claude';
   ctx.fillStyle = 'rgba(8,12,14,0.94)'; ctx.fillRect(0, 0, W, H);
   textOut(d.title, W / 2, 50, '36px ' + DISPLAY, '#f2a23a', OUT, 7);
   ctx.font = '600 12px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'center';
-  ctx.fillText(d.board + ' · ALL TIME' + (PUBB.kind === 'fb' || PUBB.kind === 'claude' ? ' · EVERYONE’S SCORES' : ' · THIS PHONE'), W / 2, 82);
-  const list = pubBoard(g), u = d.unit ? ' ' + d.unit : '';
+  ctx.fillText(d.board + ' · ALL TIME · EVERYONE’S BEST' + (shared ? '' : ' · THIS PHONE'), W / 2, 82);
+  const list = pubBoard(g), u = d.unit ? ' ' + d.unit : '', me = PROFILE.name, x0 = W / 2 - 290, x1 = W / 2 + 290;
   ctx.textBaseline = 'middle';
   if (!list.length) { ctx.font = '600 15px ' + BODY; ctx.fillStyle = '#e9dcc0'; ctx.fillText('No scores yet. Be the first on the board.', W / 2, 240); }
-  list.slice(0, 10).forEach((e, i) => {
-    const y = 118 + i * 30, x0 = 90;
-    if (i % 2 === 0) { ctx.fillStyle = 'rgba(255,255,255,0.04)'; ctx.fillRect(x0 - 12, y - 14, 470, 28); }
+  const row = (e, i, y) => {
+    const mine = e.name === me;
+    if (mine) { rrect(x0 - 14, y - 15, x1 - x0 + 28, 30, 6); ctx.fillStyle = 'rgba(242,162,58,0.22)'; ctx.fill(); }
+    else if (i % 2 === 0) { ctx.fillStyle = 'rgba(255,255,255,0.04)'; ctx.fillRect(x0 - 14, y - 15, x1 - x0 + 28, 30); }
     textOut(String(i + 1), x0, y, '16px ' + DISPLAY, i === 0 ? '#ffd23f' : '#efe6d2', OUT, 4, 'left');
-    drawPortrait(e.lad, x0 + 34, y - 11, 22);
-    ctx.font = '800 14px ' + BODY; ctx.fillStyle = '#efe6d2'; ctx.textAlign = 'left'; ctx.fillText(e.name, x0 + 66, y);
-    textOut(fmtN(e.score) + u, x0 + 450, y, '16px ' + DISPLAY, i === 0 ? '#ffd23f' : '#efe6d2', OUT, 4, 'right');
-  });
-  // best by lad, so a record set by a different lad is fair (the lad-specific games are always their own lad)
-  const by = {}; for (const e of list) if (!by[e.lad]) by[e.lad] = e;
-  ctx.font = '800 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'left'; ctx.fillText('BEST BY LAD', 620, 108);
-  Object.values(by).slice(0, 9).forEach((e, i) => {
-    const y = 132 + i * 30; drawPortrait(e.lad, 620, y - 11, 22);
-    ctx.font = '800 13px ' + BODY; ctx.fillStyle = CHAR_BY_ID[e.lad].color; ctx.textAlign = 'left'; ctx.fillText(CHAR_BY_ID[e.lad].name, 652, y);
-    ctx.fillStyle = '#efe6d2'; ctx.textAlign = 'right'; ctx.fillText(fmtN(e.score) + u, 880, y);
-  });
-  const pb = PUB.pb[g]; if (pb) { ctx.font = '800 13px ' + BODY; ctx.fillStyle = '#9fd0ff'; ctx.textAlign = 'center'; ctx.fillText('YOUR BEST: ' + fmtN(pb) + u, W / 2, 440); }
-  if (PUBB.kind !== 'fb' && PUBB.kind !== 'claude') { ctx.font = '600 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'center'; ctx.fillText('Scores are saved on this phone until the shared boards are switched on.', W / 2, 464); }
-  if (touchUI && !padOn()) pubBtn('close', W / 2 - 60, H - 58, 120, 40, 'CLOSE');
-  else if (Math.floor(time * 2) % 2) { ctx.font = '800 13px ' + BODY; ctx.fillStyle = '#ffd23f'; ctx.textAlign = 'center'; ctx.fillText('J TO GO BACK', W / 2, H - 36); }
+    ctx.font = '800 15px ' + BODY; ctx.fillStyle = '#efe6d2'; ctx.textAlign = 'left'; ctx.fillText(e.name + (mine ? '  (YOU)' : ''), x0 + 48, y);
+    drawPortrait(e.lad, x0 + 330, y - 11, 22); ctx.font = '800 12px ' + BODY; ctx.fillStyle = CHAR_BY_ID[e.lad].color; ctx.fillText(CHAR_BY_ID[e.lad].name, x0 + 360, y);
+    textOut(fmtN(e.score) + u, x1, y, '16px ' + DISPLAY, i === 0 ? '#ffd23f' : '#efe6d2', OUT, 4, 'right');
+  };
+  list.slice(0, 10).forEach((e, i) => row(e, i, 118 + i * 30));
+  const at = list.findIndex(e => e.name === me);
+  if (at >= 10) { ctx.fillStyle = '#93a3a1'; ctx.font = '800 14px ' + BODY; ctx.textAlign = 'center'; ctx.fillText('· · ·', W / 2, 420); row(list[at], at, 446); }
+  else if (at < 0 && PUB.pb[g]) { ctx.font = '800 13px ' + BODY; ctx.fillStyle = '#9fd0ff'; ctx.textAlign = 'center'; ctx.fillText('YOUR BEST: ' + fmtN(PUB.pb[g]) + u + (shared ? ' (going up when there’s signal)' : ''), W / 2, 446); }
+  if (!shared) { ctx.font = '600 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'center'; ctx.fillText('Scores are saved on this phone until the shared boards are switched on.', W / 2, 472); }
+  if (touchUI && !padOn()) pubBtn('close', W / 2 - 60, H - 52, 120, 40, 'CLOSE');
+  else if (Math.floor(time * 2) % 2) { ctx.font = '800 13px ' + BODY; ctx.fillStyle = '#ffd23f'; ctx.textAlign = 'center'; ctx.fillText('J TO GO BACK', W / 2, H - 32); }
 }
 
 // ================================================================== the games
@@ -1080,7 +1066,111 @@ function pubBankStage() {
   return pubBank(n);
 }
 function pubSelectLad() { try { const c = PLAYABLE[typeof sel === 'number' ? sel : 0]; return c && !ladLocked(c) ? c.id : 'tim'; } catch (e) { return 'tim'; } }
-function pubFromSelect(id) { sfx('page'); const c = id && CHAR_BY_ID[id]; openPub('menu', null, c && !ladLocked(c) ? id : pubSelectLad()); }
+function pubFromSelect(id) { if (!PROFILE.name) { profileAsk(false, () => pubFromSelect(id)); return; } sfx('page'); const c = id && CHAR_BY_ID[id]; openPub('menu', null, c && !ladLocked(c) ? id : pubSelectLad()); }
 function pubTyped() { if (typed.endsWith('ARCADE')) { typed = ''; PUB_GAMES.forEach(g => { PUB.cabs[g] = true; }); pubSave(); sfx('jackpot'); return true; } return false; }
+// ================================================================== Version 56: your name
+// Picked the first time you get to the select screen, kept on this phone, and used on every board and in the online
+// lobby. In the app the name is claimed in Firebase (players/<NAME>) with a secret key only this phone has, so nobody
+// else can take it; the boards (boards/<game>/<NAME>) keep one row per player, their best.
+const PROFILE = { name: lsGet('mbc.name', null), key: lsGet('mbc.key', null), claimed: !!lsGet('mbc.claimed', false), asking: false, first: false, then: null, busy: false };
+if (!PROFILE.key) { PROFILE.key = Array.from({ length: 24 }, () => 'abcdefghijkmnpqrstuvwxyz23456789'[Math.floor(nativeRandom() * 32)]).join(''); lsSet('mbc.key', PROFILE.key); }
+const cleanName = v => String(v || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 12);
+const nameOk = n => /^[A-Z0-9]{3,12}$/.test(n);
+const appFb = () => typeof FB_CFG !== 'undefined' && !!FB_CFG && !!window.MBC_APP;
+function withTimeout(p, ms) { return Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))]); }
+const denied = e => /permission/i.test(String((e && (e.code || e.message)) || e));
+// 'ok', 'taken', 'norules' (Firebase isn't set up for names yet) or 'offline'
+async function claimName(n) {
+  if (!appFb()) return 'ok';
+  try { await withTimeout(NT.init(), 8000); } catch (e) { return 'offline'; }
+  if (NT.kind !== 'fb') return 'offline';
+  const ref = NT.db.ref('players/' + n); let taken = false;
+  try { taken = (await withTimeout(ref.child('at').once('value'), 7000)).exists(); } catch (e) { return denied(e) ? 'norules' : 'offline'; }
+  try { await withTimeout(ref.set({ key: PROFILE.key, at: Date.now() }), 7000); return 'ok'; } catch (e) { return denied(e) ? (taken ? 'taken' : 'norules') : 'offline'; }
+}
+function profileSet(n, claimed) {
+  PROFILE.name = n; PROFILE.claimed = !!claimed; lsSet('mbc.name', n); lsSet('mbc.claimed', PROFILE.claimed);
+  settings.lastName = n; saveSettings(); profileFoot();
+  if (claimed) PUB_GAMES.forEach(pubSyncMine), boardSyncMine();
+}
+function profileFoot() { const b = document.getElementById('t3-me'); if (b) b.textContent = PROFILE.name ? 'You: ' + PROFILE.name : 'Pick a name'; }
+// the name box (the same overlay the high scores used)
+function profileAsk(first, then, why) {
+  const el = nameEls; if (!el.overlay || !el.form || PROFILE.asking) return;
+  PROFILE.asking = true; PROFILE.first = !!first || !PROFILE.name; PROFILE.then = then || null;
+  el.title.textContent = PROFILE.name && !why ? 'Change your name' : 'Pick a name';
+  el.sum.textContent = why || 'It goes on every scoreboard and in the online lobby. Letters and numbers, 3 to 12.';
+  el.input.value = PROFILE.name || cleanName(settings.lastName);
+  el.skip.hidden = PROFILE.first; el.skip.textContent = 'Cancel';
+  const save = document.getElementById('nameSave'); if (save) { save.textContent = "That's me"; save.disabled = false; }
+  el.overlay.hidden = false; held.clear();
+  try { el.input.focus(); el.input.select(); } catch (e) { /* optional */ }
+}
+function profileClose() {
+  PROFILE.asking = false; closeNameEntry(); nameEls.skip.hidden = false; nameEls.skip.textContent = 'Skip';
+  const save = document.getElementById('nameSave'); if (save) { save.textContent = 'Save score'; save.disabled = false; }
+  const t = PROFILE.then; PROFILE.then = null; pressed.clear(); if (t) t();
+}
+function profileHook(skip) {
+  if (!PROFILE.asking) return false;
+  if (skip) { if (!PROFILE.first) { PROFILE.then = null; profileClose(); } return true; }
+  if (PROFILE.busy) return true;
+  const n = cleanName(nameEls.input.value);
+  if (!nameOk(n)) { nameEls.sum.textContent = 'Letters and numbers only, 3 to 12 of them.'; return true; }
+  if (n === PROFILE.name && (PROFILE.claimed || !appFb())) { profileClose(); return true; }
+  PROFILE.busy = true; nameEls.sum.textContent = 'Checking nobody else is ' + n + '...';
+  const save = document.getElementById('nameSave'); if (save) save.disabled = true;
+  claimName(n).then(r => {
+    PROFILE.busy = false; if (save) save.disabled = false;
+    if (r === 'taken') { nameEls.sum.textContent = 'Someone already plays as ' + n + '. Try another.'; sfx('grab'); return; }
+    profileSet(n, r === 'ok' && appFb()); sfx('life'); profileClose();
+  });
+  return true;
+}
+if (nameEls.input) nameEls.input.addEventListener('input', () => { if (!PROFILE.asking) return; const v = cleanName(nameEls.input.value); if (v !== nameEls.input.value) nameEls.input.value = v; });
+// runs at the top of every frame: the first visit to the select screen asks for a name; nothing else moves while it's open
+function profileTick() {
+  if (PROFILE.asking) { pressed.clear(); taps.length = 0; return true; }
+  if (mode === 'select' && !PROFILE.name && modeT > 0.4) { profileAsk(true); return true; }
+  return false;
+}
+// a name picked without signal (or before Firebase knew about names) is claimed the next time the app opens
+setTimeout(async () => {
+  profileFoot();
+  if (!PROFILE.name || PROFILE.claimed || !appFb()) return;
+  const r = await claimName(PROFILE.name);
+  if (r === 'ok') profileSet(PROFILE.name, true);
+  else if (r === 'taken') { PROFILE.claimed = false; const n = PROFILE.name; PROFILE.name = null; lsSet('mbc.name', null); profileAsk(true, null, 'Someone already plays as ' + n + '. Pick another name.'); }
+}, 2500);
+function lobbyName(isMe, n) { return isMe ? (PROFILE.name || 'PLAYER ' + n) + ' (YOU)' : ((NL.them && NL.them.name) || 'PLAYER ' + n); }
+
+// the main high scores: shared through Firebase in the app (boards/runs), one row each, under your name
+function boardFbInit() {
+  board.ready = true;
+  (async () => {
+    try {
+      await NT.init(); if (NT.kind !== 'fb') return;
+      board.fb = NT.db; board.mode = 'shared';
+      NT.db.ref('boards/runs').orderByChild('score').limitToLast(40).on('value', snap => {
+        const out = []; snap.forEach(c => { const s = sanitizeEntry(Object.assign({}, c.val(), { id: 'fb:' + c.key })); if (s) out.push(s); });
+        board.shared = out; boardSyncMine();
+      }, () => { board.mode = 'local'; board.fb = null; });
+    } catch (e) { board.mode = 'local'; }
+  })();
+}
+async function boardFbAdd(entry) {
+  board.local.push(Object.assign({}, entry, { local: true })); board.local.sort((a, b) => b.score - a.score); board.local = board.local.slice(0, 30); lsSet('carpdiem.scores', board.local);
+  const mine = board.shared.find(e => e.name === entry.name);
+  if (mine && mine.score >= entry.score) return 'shared';
+  try { await withTimeout(board.fb.ref('boards/runs/' + entry.name).set({ name: entry.name, lad: entry.lad, score: entry.score, res: entry.res || '', at: entry.at || Date.now() }), 8000); return 'shared'; }
+  catch (e) { return 'local'; }
+}
+function boardSyncMine() {
+  if (!board.fb || !PROFILE.name || !PROFILE.claimed) return;
+  const best = board.local.filter(e => String(e.name).toUpperCase() === PROFILE.name).sort((a, b) => b.score - a.score)[0];
+  const mine = board.shared.find(e => e.name === PROFILE.name);
+  if (best && (!mine || best.score > mine.score)) board.fb.ref('boards/runs/' + PROFILE.name).set({ name: PROFILE.name, lad: best.lad, score: best.score, res: best.res || '', at: best.at || Date.now() }).catch(() => {});
+}
+
 // headless tests only: ?pubtest lets tools/v55/shots.py reach the game from outside
 if (/[?&]pubtest/.test(location.search)) window.__pub = s => eval(s);

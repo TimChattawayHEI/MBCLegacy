@@ -33,7 +33,7 @@ with sync_playwright() as pw:
     def glitch():
         g = ev('glitchInfo && glitchInfo.msg');
         if g: errs.append('GLITCH ' + g)
-    ev("PUB_GAMES.forEach(g => PUB.cabs[g] = true); PUB.wallet = 50000; pubSave(); openPub('menu', null, 'tim')"); time.sleep(1.5)
+    ev("profileSet('TIM', false); PUB_GAMES.forEach(g => PUB.cabs[g] = true); PUB.wallet = 50000; pubSave(); openPub('menu', null, 'tim')"); time.sleep(1.5)
     shot('pub_0'); glitch()
     for i, x in enumerate([700, 1300, 1700]):
         ev(f"PUB.x = {x}"); time.sleep(0.6); shot(f'pub_{i + 1}'); glitch()
