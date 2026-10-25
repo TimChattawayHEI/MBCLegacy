@@ -34,7 +34,7 @@ def swap(s, old, new, label):
 # ---------------------------------------------------------------- the 3D select screen gets a PUB button
 h = read(os.path.join(T3, 'title3d.html'))
 h = swap(h, """          <button class="t3ghost" id="t3-board" type="button">High scores</button>""",
-         """          <button class="t3ghost" id="t3-pub" type="button">The pub</button>
+         """          <button class="t3ghost" id="t3-pub" type="button">Harvest Moon</button>
           <button class="t3ghost" id="t3-board" type="button">High scores</button>""", '3D pub button')
 open(os.path.join(T3, 'title3d.html'), 'w', encoding='utf-8').write(h)
 j = read(os.path.join(T3, 'title3d.js'))

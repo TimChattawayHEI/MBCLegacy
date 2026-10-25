@@ -30,9 +30,9 @@ def swap(s, old, new, label):
 
 # ---------------------------------------------------------------- the 3D select screen: who you are
 h = read(os.path.join(T3, 'title3d.html'))
-h = swap(h, """          <button class="t3ghost" id="t3-pub" type="button">The pub</button>""",
+h = swap(h, """          <button class="t3ghost" id="t3-pub" type="button">Harvest Moon</button>""",
          """          <button class="t3ghost" id="t3-me" type="button">You</button>
-          <button class="t3ghost" id="t3-pub" type="button">The pub</button>""", '3D name button')
+          <button class="t3ghost" id="t3-pub" type="button">Harvest Moon</button>""", '3D name button')
 open(os.path.join(T3, 'title3d.html'), 'w', encoding='utf-8').write(h)
 j = read(os.path.join(T3, 'title3d.js'))
 j = swap(j, """  click('pub', () => pubFromSelect(chosen().id));   // Version 55""",

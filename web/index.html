@@ -226,7 +226,7 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
         <div id="t3-opts">
           <button class="t3ghost" id="t3-sound" type="button" aria-pressed="true">Sound on</button>
           <button class="t3ghost" id="t3-me" type="button">You</button>
-          <button class="t3ghost" id="t3-pub" type="button">The pub</button>
+          <button class="t3ghost" id="t3-pub" type="button">Harvest Moon</button>
           <button class="t3ghost" id="t3-board" type="button">High scores</button>
           <button class="t3ghost" id="t3-online" type="button" hidden>Play online</button>
         </div>
@@ -10390,7 +10390,7 @@ function openPub(from, next, lad) {
   PUB.x = 150; PUB.y = 470; PUB.face = 1; PUB.target = null; PUB.view = null; PUB.round = false; PUB.t = 0;
   if (from === 'run') PUB.pints = 0;
   cam.x = 0; mode = 'pub'; modeT = 0; banner = null; musicSet('social');
-  pubSay(from === 'run' ? 'The lads pile into the pub. HIT at the bar for a round.' : 'Walk up to anything and press HIT.', 3);
+  pubSay(from === 'run' ? 'The lads pile into the Harvest Moon. HIT at the bar for a round.' : 'The Harvest Moon. Walk up to anything, or anyone, and press HIT.', 3);
 }
 function pubLeave() {
   sfx('page'); PUB.view = null;
@@ -10399,11 +10399,13 @@ function pubLeave() {
 }
 function pubNear() {
   let best = null;
+  for (const g of hubGhosts()) { const d = Math.abs(PUB.x - g.x) + Math.abs(PUB.y - g.y) * 0.5; if (d < 70 && (!best || d < best.d)) best = { o: { id: 'player', g }, d: d * 0.5 }; }
   for (const o of PUB_OBJ) { const d = Math.abs(PUB.x - o.x); if (d < (o.id === 'bar' ? 220 : o.id === 'door' ? 90 : 62) && (!best || d < best.d)) best = { o, d }; }
   return best ? best.o : null;
 }
 function pubPrompt(o) {
   if (!o) return null;
+  if (o.id === 'player') return hubPrompt(o.g);
   if (o.id === 'door') return PUB.from === 'run' ? 'BACK OUT INTO THE NIGHT' : 'LEAVE THE PUB';
   if (o.id === 'bar') return PUB.from === 'run' ? (PUB.round ? 'ANOTHER? YOU’VE HAD YOUR ROUND' : 'BUY A ROUND · ' + fmtN(PUB_ROUND) + ' · +1 LIFE') : 'HAVE A PINT · ' + fmtN(PUB_PINT);
   const d = MINI_DEF[o.id];
@@ -10413,6 +10415,7 @@ function pubPrompt(o) {
 const PUB_ROUND = 20000, PUB_PINT = 300;
 function pubAct(o) {
   if (!o) return;
+  if (o.id === 'player') { hubInvite(o.g); return; }
   if (o.id === 'door') { pubLeave(); return; }
   if (o.id === 'bar') {
     if (PUB.from === 'run') {
@@ -10490,8 +10493,10 @@ function pubDrawWorld() {
     if (!cabOpen(id)) { ctx.fillStyle = '#0a0c10'; ctx.fillRect(sx, sy, 30, 26); }
     else { ctx.fillStyle = 'rgba(80,160,255,' + (0.18 + 0.08 * Math.sin(time * 3 + o.x)).toFixed(2) + ')'; ctx.fillRect(sx, sy, 30, 26); }
   }
-  // the lad
-  pubLad(PUB.lad, PUB.x - cx, PUB.y, PUB.moving ? 'walk' : 'idle', PUB.face, PUB.walk, 1, PUB.pints > 2 ? { state: 'drowsy' } : null);
+  // everyone else who's online, then you, back to front
+  const people = hubGhosts().map(g => ({ y: g.y, f: () => pubLad(g.lad, g.x - cx, g.y, g.moving ? 'walk' : 'idle', g.face, g.walk) }));
+  people.push({ y: PUB.y, f: () => pubLad(PUB.lad, PUB.x - cx, PUB.y, PUB.moving ? 'walk' : 'idle', PUB.face, PUB.walk, 1, PUB.pints > 2 ? { state: 'drowsy' } : null) });
+  people.sort((a, b) => a.y - b.y); for (const p of people) p.f();
 }
 const pubChalkX = id => id === 'darts' ? 1130 : PUB_OBJ.find(o => o.id === id).x;
 const CHALK_B = 238;   // the chalkboards' bottom edge on the wall
@@ -10518,7 +10523,7 @@ function drawPub() {
   PUI = [];
   const cx = cam.x;
   // sharp text over the room: the pub's name, chalkboards, cabinet marquees and the record holders' faces
-  { const x = 540 - cx; if (x > -200 && x < W + 200) textOut('THE LOCAL', x, 128, '26px ' + DISPLAY, '#ffd23f', OUT, 6); }
+  { const x = 540 - cx; if (x > -200 && x < W + 200) textOut('THE HARVEST MOON', x, 128, '26px ' + DISPLAY, '#ffd23f', OUT, 6); }
   for (const id of ['darts', 'fruit', 'pens', 'golf', 'awake', 'kiss']) pubChalkText(id);
   for (const id of ['pens', 'golf', 'awake', 'kiss']) {
     const o = PUB_OBJ.find(o => o.id === id), x = o.x - cx; if (x < -60 || x > W + 60) continue;
@@ -10526,6 +10531,7 @@ function drawPub() {
     if (!cabOpen(id)) { ctx.save(); ctx.translate(x + 4, 414 - 176 + 64); ctx.rotate(-0.12); ctx.fillStyle = '#efe6d2'; ctx.fillRect(-26, -9, 52, 18); ctx.font = '800 8px ' + BODY; ctx.fillStyle = '#b23a32'; ctx.fillText('OUT OF', 0, -3); ctx.fillText('ORDER', 0, 5); ctx.restore(); continue; }
     const top = pubBoard(id)[0]; if (top) drawPortrait(top.lad, x - 8, 414 - 176 + 54, 26, '#ffd23f');
   }
+  hubTags();
   // the prompt by whatever you're stood at
   const o = PUB.near, label = pubPrompt(o);
   if (label && !PUB.view) {
@@ -10533,9 +10539,10 @@ function drawPub() {
     pubPanel(x, y, w, 62);
     textOut(label, W / 2, y + 22, '17px ' + DISPLAY, '#efe6d2', OUT, 4);
     ctx.font = '800 11px ' + BODY; ctx.fillStyle = '#ffd23f'; ctx.textAlign = 'center';
-    ctx.fillText((touchUI ? 'HIT' : 'J / ENTER') + (MINI_DEF[o.id] ? '  ·  JUMP FOR THE FULL BOARD' : ''), W / 2, y + 47);
+    ctx.fillText(o.id === 'player' && !hubCanInvite(o.g) ? '' : (touchUI ? 'HIT' : 'J / ENTER') + (MINI_DEF[o.id] ? '  ·  JUMP FOR THE FULL BOARD' : ''), W / 2, y + 47);
   }
   pubTabHud();
+  hubCountHud();
   if (PUB.from === 'run' && run) { pubPanel(16, 14, 170, 52); ctx.font = '800 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'left'; ctx.fillText('LIVES', 30, 30); textOut(String(run.lives), 30, 47, '22px ' + DISPLAY, '#7fe07a', OUT, 5, 'left'); ctx.fillStyle = '#93a3a1'; ctx.fillText(run.c.name, 72, 47); }
   if (touchUI && !padOn()) pubBtn('leave', PUB.from === 'run' ? 200 : 16, 14, 110, 40, PUB.from === 'run' ? 'CARRY ON' : 'LEAVE');
   if (PUB.msgT > 0 && PUB.msg) { const a = Math.min(1, PUB.msgT / 0.3); ctx.save(); ctx.globalAlpha = a; textOut(PUB.msg, W / 2, 92, '18px ' + DISPLAY, '#ffd23f', OUT, 5); ctx.restore(); }
@@ -11282,7 +11289,7 @@ function profileSet(n, claimed) {
   settings.lastName = n; saveSettings(); profileFoot();
   if (claimed) PUB_GAMES.forEach(pubSyncMine), boardSyncMine();
 }
-function profileFoot() { const b = document.getElementById('t3-me'); if (b) b.textContent = PROFILE.name ? 'You: ' + PROFILE.name : 'Pick a name'; }
+function profileFoot() { const b = document.getElementById('t3-me'); if (b) b.textContent = PROFILE.name ? 'You: ' + PROFILE.name : 'Pick a name'; hubFoot(); }
 // the name box (the same overlay the high scores used)
 function profileAsk(first, then, why) {
   const el = nameEls; if (!el.overlay || !el.form || PROFILE.asking) return;
@@ -11319,6 +11326,7 @@ function profileHook(skip) {
 if (nameEls.input) nameEls.input.addEventListener('input', () => { if (!PROFILE.asking) return; const v = cleanName(nameEls.input.value); if (v !== nameEls.input.value) nameEls.input.value = v; });
 // runs at the top of every frame: the first visit to the select screen asks for a name; nothing else moves while it's open
 function profileTick() {
+  try { hubTick(); } catch (e) { glitch('hub', e); }
   if (PROFILE.asking) { pressed.clear(); taps.length = 0; return true; }
   if (mode === 'select' && !PROFILE.name && modeT > 0.4) { profileAsk(true); return true; }
   return false;
@@ -11360,6 +11368,210 @@ function boardSyncMine() {
   const mine = board.shared.find(e => e.name === PROFILE.name);
   if (best && (!mine || best.score > mine.score)) board.fb.ref('boards/runs/' + PROFILE.name).set({ name: PROFILE.name, lad: best.lad, score: best.score, res: best.res || '', at: best.at || Date.now() }).catch(() => {});
 }
+
+// ================================================================== Version 57: the Harvest Moon, where the lads meet
+// Everyone with the app open is online (online/<NAME>: where they are, which lad, and in the pub where they're stood).
+// In the pub you see them: the ones in the pub walk about live with their name over their head, the rest stand at the
+// bar with what they're up to. Walk up to someone and HIT to invite them: you host an online game, they get a card
+// (JOIN / NOT NOW) wherever they are in the menus or the pub, and JOIN drops them straight into your lobby.
+const HUB = { kind: null, db: null, bc: null, subs: [], starting: false, others: {}, ghosts: {}, inv: {}, out: null, outNo: false,
+  where: null, what: '', last: 0, lastX: 0, lastY: 0, hidden: false, seen: new Set(), card: null, cardFor: null };
+async function hubStart() {
+  if (HUB.kind || HUB.starting || !PROFILE.name || !appFb()) return;
+  HUB.starting = true;
+  try {
+    if (netMockWanted()) { HUB.kind = 'mock'; HUB.mem = {}; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k.startsWith('mbchub/')) HUB.mem[k.slice(7)] = JSON.parse(localStorage.getItem(k)); } } catch (e) { /* ok */ } HUB.bc = new BroadcastChannel('mbc-hub'); HUB.bc.onmessage = ev => { const { path, val } = ev.data; if (val == null) delete HUB.mem[path]; else HUB.mem[path] = val; hubMockFire(path); }; }
+    else { await withTimeout(NT.init(), 8000); if (NT.kind !== 'fb') return; HUB.kind = 'fb'; HUB.db = NT.db; }
+    hubListen('online', v => { HUB.others = v || {}; });
+    hubListen('invites/' + PROFILE.name, v => { HUB.inv = v || {}; });
+    hubPresence(true);
+    if (HUB.kind === 'fb') HUB.db.ref('online/' + PROFILE.name).onDisconnect().remove();
+    else window.addEventListener('pagehide', () => hubSet('online/' + PROFILE.name, null));
+  } catch (e) { /* no signal: try again later */ } finally { HUB.starting = false; }
+}
+// a tiny store: Firebase in the app, or localStorage and a BroadcastChannel for testing two pages (?netmock)
+function hubSet(path, val) {
+  if (HUB.kind === 'fb') { const r = HUB.db.ref(path); (val == null ? r.remove() : r.set(val)).catch(() => {}); return; }
+  if (HUB.kind !== 'mock') return;
+  try { if (val == null) localStorage.removeItem('mbchub/' + path); else localStorage.setItem('mbchub/' + path, JSON.stringify(val)); } catch (e) { /* ok */ }
+  if (val == null) delete HUB.mem[path]; else HUB.mem[path] = val;
+  HUB.bc.postMessage({ path, val }); hubMockFire(path);
+}
+function hubMockRead(prefix) {
+  const out = {}, pre = prefix + '/';
+  for (const k in HUB.mem) if (k.startsWith(pre)) { const rest = k.slice(pre.length).split('/'); let o = out; for (let j = 0; j < rest.length - 1; j++) o = o[rest[j]] = o[rest[j]] || {}; o[rest[rest.length - 1]] = HUB.mem[k]; }
+  return out;
+}
+function hubMockFire(path) { for (const sub of HUB.subs) if (path === sub.prefix || path.startsWith(sub.prefix + '/')) sub.cb(hubMockRead(sub.prefix)); }
+function hubListen(prefix, cb) {
+  if (HUB.kind === 'fb') { const r = HUB.db.ref(prefix), h = snap => cb(snap.val()); r.on('value', h, () => {}); return () => r.off('value', h); }
+  const sub = { prefix, cb }; HUB.subs.push(sub); cb(hubMockRead(prefix)); return () => { HUB.subs = HUB.subs.filter(x => x !== sub); };
+}
+// where you are, in a word, and the detail people see in the pub
+function hubWhere() {
+  if (NET.on) return ['coop', 'an online game'];
+  if (mode === 'net') return ['lobby', ''];
+  if (mode === 'pub' || (mode === 'name' && PUB.from)) return ['pub', ''];
+  if (mode === 'mini' && MG) return [MG.from === 'pub' ? 'cab' : 'run', MG.d.title];
+  if (run && ['play', 'pause', 'chat', 'clear', 'loading', 'over', 'win', 'name'].includes(mode)) return ['run', ST ? ST.title : 'a run'];
+  return ['menu', ''];
+}
+function hubPresence(force) {
+  if (!HUB.kind || !PROFILE.name || HUB.hidden) return;
+  const [where, what] = hubWhere(), now = Date.now(), inPub = where === 'pub';
+  const moved = inPub && (Math.abs(PUB.x - HUB.lastX) > 6 || Math.abs(PUB.y - HUB.lastY) > 6);
+  if (!force && where === HUB.where && what === HUB.what && !(moved && now - HUB.last > 150) && now - HUB.last < 20000) return;
+  HUB.where = where; HUB.what = what; HUB.last = now; HUB.lastX = PUB.x; HUB.lastY = PUB.y;
+  const lad = where === 'pub' || where === 'cab' ? PUB.lad : run ? run.c.id : (PLAYABLE[sel] && !ladLocked(PLAYABLE[sel]) ? PLAYABLE[sel].id : PUB.lad);
+  hubSet('online/' + PROFILE.name, { where, what: String(what || '').slice(0, 30), lad, x: Math.round(PUB.x), y: Math.round(PUB.y), face: PUB.face, mv: !!PUB.moving, at: now });
+}
+document.addEventListener('visibilitychange', () => {
+  HUB.hidden = document.hidden;
+  if (!HUB.kind || !PROFILE.name) return;
+  if (document.hidden) hubSet('online/' + PROFILE.name, null); else { hubPresence(true); if (HUB.kind === 'mock') for (const sub of HUB.subs) sub.cb(hubMockRead(sub.prefix)); }   // Firebase catches up by itself
+});
+// everyone else who's online, as people in the pub: walking about if they're in it, at the bar if they're not
+function hubPeople() {
+  const now = Date.now(), out = [];
+  for (const n in HUB.others) { const o = HUB.others[n]; if (n === PROFILE.name || !o || !(now - (o.at || 0) < 90000)) continue; out.push(Object.assign({ name: n }, o)); }
+  return out.sort((a, b) => a.name < b.name ? -1 : 1);
+}
+const BAR_SPOTS = [[350, 452], [430, 462], [510, 450], [590, 464], [670, 452], [750, 462], [390, 476], [550, 478], [710, 476]];
+function hubGhosts() {
+  if (!HUB.kind) return [];
+  const list = [], keep = new Set(); let b = 0;
+  for (const p of hubPeople()) {
+    let tx, ty;
+    if (p.where === 'pub' || p.where === 'cab') { tx = clamp(+p.x || 300, 30, PUB_W - 40); ty = clamp(+p.y || 470, 436, 500); }
+    else { const sp = BAR_SPOTS[b++ % BAR_SPOTS.length]; tx = sp[0]; ty = sp[1]; }
+    let g = HUB.ghosts[p.name];
+    if (!g) g = HUB.ghosts[p.name] = { x: tx, y: ty, walk: 0, face: 1 };
+    g.name = p.name; g.lad = CHAR_BY_ID[p.lad] ? p.lad : 'tim'; g.where = p.where; g.what = p.what || ''; g.tx = tx; g.ty = ty;
+    keep.add(p.name); list.push(g);
+  }
+  for (const n in HUB.ghosts) if (!keep.has(n)) delete HUB.ghosts[n];
+  return list;
+}
+function hubMoveGhosts(dt) {
+  for (const g of Object.values(HUB.ghosts)) {
+    const dx = g.tx - g.x, dy = g.ty - g.y, d = Math.hypot(dx, dy);
+    g.moving = d > 3;
+    if (d > 400) { g.x = g.tx; g.y = g.ty; }
+    else if (g.moving) { const k = Math.min(1, dt * 380 / d); g.x += dx * k; g.y += dy * k; g.walk += dt * 11; if (Math.abs(dx) > 2) g.face = dx > 0 ? 1 : -1; }
+  }
+}
+const hubCanInvite = g => g.where === 'pub' || g.where === 'menu' || g.where === 'cab';
+function hubStatus(g) {
+  return ({ pub: 'IN THE PUB', menu: 'PICKING A LAD', lobby: 'IN THE ONLINE LOBBY', cab: 'ON THE ' + (g.what || 'ARCADE').replace(/^THE /, ''), run: 'PLAYING ' + (g.what || 'A RUN'), coop: 'IN AN ONLINE GAME' })[g.where] || '';
+}
+function hubPrompt(g) { return hubCanInvite(g) ? 'INVITE ' + g.name + ' FOR A GAME' : g.name + ' IS ' + hubStatus(g).replace(/^IN /, 'IN ').replace(/^PLAYING/, 'PLAYING') + '. TRY THEM LATER'; }
+// name tags over everyone's heads
+function hubTags() {
+  const cx = cam.x;
+  for (const g of hubGhosts()) {
+    const x = g.x - cx, y = g.y - 150; if (x < -80 || x > W + 80) continue;
+    const col = (CHAR_BY_ID[g.lad] || {}).color || '#efe6d2';
+    textOut(g.name, x, y, '14px ' + DISPLAY, col, OUT, 4);
+    if (g.where !== 'pub') { ctx.font = '800 9px ' + BODY; ctx.fillStyle = '#c8d6d4'; ctx.textAlign = 'center'; ctx.fillText(hubStatus(g), x, y + 14); }
+  }
+  if (PROFILE.name) { const x = PUB.x - cx; textOut(PROFILE.name, x, PUB.y - 150, '14px ' + DISPLAY, '#ffd23f', OUT, 4); }
+}
+function hubCountHud() {
+  if (!HUB.kind) return;
+  const n = hubPeople().length, inPub = hubPeople().filter(p => p.where === 'pub' || p.where === 'cab').length;
+  pubPanel(W - 236, 74, 220, 36);
+  ctx.font = '800 12px ' + BODY; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = n ? '#7fe07a' : '#93a3a1'; ctx.fillText(n ? '● ' + n + ' ONLINE' + (inPub ? ' · ' + inPub + ' IN HERE' : '') : '○ NOBODY ELSE ONLINE', W - 222, 92);
+}
+function hubFoot() {
+  const b = document.getElementById('t3-pub'); if (!b) return;
+  const n = HUB.kind ? hubPeople().length : 0;
+  b.textContent = 'Harvest Moon' + (n ? ' · ' + n + ' online' : '');
+}
+// sending an invite: you host, they get a card
+async function hubInvite(g) {
+  if (!HUB.kind) { pubSay('Inviting needs the app and a signal.'); sfx('grab'); return; }
+  if (!hubCanInvite(g)) { pubSay(g.name + ' is busy. Try them later.'); sfx('grab'); return; }
+  sfx('page'); pubSaveSpot();
+  openNetLobby(); NL.lad = Math.max(0, PLAYABLE.findIndex(c => c.id === PUB.lad));
+  await netHost();
+  if (NL.screen !== 'host' || !NT.code) return;
+  HUB.out = { to: g.name, code: NT.code }; HUB.outNo = false;
+  hubSet('invites/' + g.name + '/' + PROFILE.name, { code: NT.code, at: Date.now(), lad: PUB.lad });
+  HUB.outOff = hubListen('invites/' + g.name, v => { const mine = v && v[PROFILE.name]; if (mine && mine.no && HUB.out && !HUB.outNo) { HUB.outNo = true; NL.msg = g.name + ' said not now.'; sfx('grab'); } });
+  NL.msg = 'Invited ' + g.name + '. Waiting for them...';
+}
+function hubCancelInvite() {
+  if (!HUB.out) return;
+  if (mode === 'net' && NL.msg && /^Invited /.test(NL.msg)) NL.msg = '';
+  hubSet('invites/' + HUB.out.to + '/' + PROFILE.name, null);
+  if (HUB.outOff) HUB.outOff(); HUB.out = null; HUB.outOff = null;
+}
+// where you were in the pub, so you're back at the same spot after a game
+function pubSaveSpot() { PUB.spot = { x: PUB.x, y: PUB.y }; }
+// receiving one: a card over whatever's on screen
+function hubPendingInvite() {
+  const now = Date.now(); let best = null;
+  for (const from in HUB.inv) { const v = HUB.inv[from]; if (!v || v.no || !(now - (v.at || 0) < 180000) || HUB.seen.has(from + v.at)) continue; if (!best || v.at > best.at) best = Object.assign({ from }, v); }
+  return best;
+}
+function hubCardEl() {
+  if (HUB.card) return HUB.card;
+  const el = document.createElement('div'); el.id = 'hubInvite';
+  el.style.cssText = 'position:fixed;z-index:60;display:none;align-items:center;gap:12px;padding:12px 14px;background:#121a1e;border:2px solid #f2a23a;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.6);font:600 14px Rubik,system-ui,sans-serif;color:#efe6d2;max-width:min(520px,92vw)';
+  el.innerHTML = '<img id="hubInvFace" width="44" height="44" style="image-rendering:pixelated;border:2px solid #16120f;background:#1a242a;flex:none" alt=""><div style="flex:1;min-width:0"><div id="hubInvWho" style="font:400 18px \'Pixelify Sans\',monospace;color:#ffd23f"></div><div style="color:#93a3a1;font-size:12px">wants a game. Online co-op, the two of you.</div></div>' +
+    '<button id="hubInvNo" type="button" style="font:700 13px Rubik,sans-serif;padding:10px 12px;border-radius:9px;border:2px solid #f2a23a;background:transparent;color:#ffd23f;cursor:pointer">Not now</button>' +
+    '<button id="hubInvYes" type="button" style="font:700 13px Rubik,sans-serif;padding:10px 16px;border-radius:9px;border:2px solid #7fe07a;background:#7fe07a;color:#10200f;cursor:pointer">Join</button>';
+  document.body.appendChild(el); HUB.card = el;
+  el.querySelector('#hubInvYes').addEventListener('click', e => { e.stopPropagation(); hubAccept(); });
+  el.querySelector('#hubInvNo').addEventListener('click', e => { e.stopPropagation(); hubDecline(); });
+  ['pointerdown', 'keydown'].forEach(t => el.addEventListener(t, e => e.stopPropagation()));
+  return el;
+}
+function hubShowCard(inv) {
+  const el = hubCardEl();
+  if (!inv) { if (el.style.display !== 'none') el.style.display = 'none'; HUB.cardFor = null; return; }
+  if (HUB.cardFor !== inv.from + inv.at) {
+    HUB.cardFor = inv.from + inv.at; sfx('incoming');
+    el.querySelector('#hubInvWho').textContent = inv.from;
+    const img = portraitImg(CHAR_BY_ID[inv.lad] ? inv.lad : 'tim'); el.querySelector('#hubInvFace').src = img ? img.src : '';
+  }
+  const r = canvas.getBoundingClientRect();
+  el.style.display = 'flex'; el.style.left = Math.max(8, r.left + r.width / 2 - el.offsetWidth / 2) + 'px'; el.style.top = Math.max(8, r.top + 10) + 'px';
+}
+function hubAccept() {
+  const inv = hubPendingInvite(); if (!inv) return;
+  HUB.seen.add(inv.from + inv.at); hubShowCard(null);
+  hubSet('invites/' + PROFILE.name + '/' + inv.from, null);
+  if (mode === 'pub') pubSaveSpot();
+  if (T3 && T3.live && T3.live() && mode === 'title') mode = 'select';
+  const lad = mode === 'pub' ? PUB.lad : (PLAYABLE[sel] && !ladLocked(PLAYABLE[sel]) ? PLAYABLE[sel].id : PUB.lad);
+  openNetLobby(); NL.lad = Math.max(0, PLAYABLE.findIndex(c => c.id === lad));
+  if (lad === inv.lad) NL.lad = PLAYABLE.findIndex((c, i) => i !== PLAYABLE.findIndex(d => d.id === inv.lad) && !ladLocked(c));
+  netJoin(inv.code);
+}
+function hubDecline() {
+  const inv = hubPendingInvite(); if (!inv) return;
+  HUB.seen.add(inv.from + inv.at); hubShowCard(null);
+  hubSet('invites/' + PROFILE.name + '/' + inv.from, { code: inv.code, at: inv.at, no: true });
+  sfx('page');
+}
+// every frame (from profileTick): start once there's a name, keep presence fresh, move the regulars, show any invite
+let hubT = 0;
+function hubTick() {
+  if (!HUB.kind) { if (PROFILE.name && appFb() && !HUB.starting && (hubT -= 1) < 0) { hubT = 600; hubStart(); } return; }
+  hubPresence(false);
+  const now = performance.now(), dt = Math.min(0.1, (now - (HUB.lastT || now)) / 1000); HUB.lastT = now; hubMoveGhosts(dt);
+  if (HUB.out && (mode !== 'net' || NL.screen === 'lobby' || NL.screen === 'menu')) hubCancelInvite();   // they joined, or you left the lobby
+  const showable = !NET.on && !PROFILE.asking && ['pub', 'select', 'title', 'board'].includes(mode);
+  const inv = showable ? hubPendingInvite() : null;
+  hubShowCard(inv);
+  if (inv && pressed.has('start')) { pressed.clear(); hubAccept(); }
+  if (now - (HUB.footT || 0) > 2000) { HUB.footT = now; hubFoot(); }
+  if (mode === 'select' && PUB.spot && !NET.on && !PROFILE.asking) hubBackToPub();   // a game that started in the pub ends back in it
+}
+// back to the pub after an online game that started there
+function hubBackToPub() { if (PUB.spot) { const sp = PUB.spot; PUB.spot = null; openPub('menu', null, PUB.lad); PUB.x = sp.x; PUB.y = sp.y; } }
 
 // headless tests only: ?pubtest lets tools/v55/shots.py reach the game from outside
 if (/[?&]pubtest/.test(location.search)) window.__pub = s => eval(s);
