@@ -10572,6 +10572,7 @@ function drawPubBoard(g) {
   if (at >= 10) { ctx.fillStyle = '#93a3a1'; ctx.font = '800 14px ' + BODY; ctx.textAlign = 'center'; ctx.fillText('· · ·', W / 2, 420); row(list[at], at, 446); }
   else if (at < 0 && PUB.pb[g]) { ctx.font = '800 13px ' + BODY; ctx.fillStyle = '#9fd0ff'; ctx.textAlign = 'center'; ctx.fillText('YOUR BEST: ' + fmtN(PUB.pb[g]) + u + (shared ? ' (going up when there’s signal)' : ''), W / 2, 446); }
   if (!shared) { ctx.font = '600 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'center'; ctx.fillText('Scores are saved on this phone until the shared boards are switched on.', W / 2, 472); }
+  else if (appFb() && !PROFILE.claimed) { ctx.font = '600 11px ' + BODY; ctx.fillStyle = '#ff9a7a'; ctx.textAlign = 'center'; ctx.fillText('Your name isn\u2019t registered yet, so your scores are only on this phone. It tries again each time the app opens.', W / 2, 472); }
   if (touchUI && !padOn()) pubBtn('close', W / 2 - 60, H - 52, 120, 40, 'CLOSE');
   else if (Math.floor(time * 2) % 2) { ctx.font = '800 13px ' + BODY; ctx.fillStyle = '#ffd23f'; ctx.textAlign = 'center'; ctx.fillText('J TO GO BACK', W / 2, H - 32); }
 }
@@ -11287,9 +11288,24 @@ async function claimName(n) {
 }
 function profileSet(n, claimed) {
   PROFILE.name = n; PROFILE.claimed = !!claimed; lsSet('mbc.name', n); lsSet('mbc.claimed', PROFILE.claimed);
-  settings.lastName = n; saveSettings(); profileFoot();
+  settings.lastName = n; saveSettings(); profileFoot(); profileAdopt();
   if (claimed) PUB_GAMES.forEach(pubSyncMine), boardSyncMine();
 }
+// scores this phone saved before it had a name (or under an old one) are yours: rename them, and fill in the lad
+// for bests from Version 55, which didn't keep it, so they can go up to the shared boards (Version 59.1)
+function profileAdopt() {
+  if (!PROFILE.name) return;
+  let changed = false;
+  for (const g in PUBB.local) for (const e of PUBB.local[g] || []) {
+    if (e && e.name !== PROFILE.name) { e.name = PROFILE.name; changed = true; }
+    if (e && !PUB.pbLad[g] && CHAR_BY_ID[e.lad]) { PUB.pbLad[g] = e.lad; changed = true; }
+  }
+  for (const g of PUB_GAMES) if (PUB.pb[g] && !PUB.pbLad[g]) { PUB.pbLad[g] = (MINI_DEF[g] && MINI_DEF[g].lad) || PUB.lad || 'tim'; changed = true; }
+  if (changed) { lsSet('mbc.pub.boards', PUBB.local); pubSave(); }
+  let ch2 = false; for (const e of board.local) if (e && e.name !== PROFILE.name) { e.name = PROFILE.name; ch2 = true; }
+  if (ch2) lsSet('carpdiem.scores', board.local);
+}
+setTimeout(profileAdopt, 0);
 function profileFoot() { const b = document.getElementById('t3-me'); if (b) b.textContent = PROFILE.name ? 'You: ' + PROFILE.name : 'Pick a name'; hubFoot(); }
 // the name box (the same overlay the high scores used)
 function profileAsk(first, then, why) {
@@ -11563,6 +11579,10 @@ function hubDecline() {
 // every frame (from profileTick): start once there's a name, keep presence fresh, move the regulars, show any invite
 let hubT = 0;
 function hubTick() {
+  if (PROFILE.name && !PROFILE.claimed && appFb() && !PROFILE.busy && !PROFILE.asking && performance.now() - (PROFILE.retryT || 0) > 60000) {
+    PROFILE.retryT = performance.now();
+    claimName(PROFILE.name).then(r => { if (r === 'ok') profileSet(PROFILE.name, true); });
+  }
   if (!HUB.kind) { if (PROFILE.name && appFb() && !HUB.starting && (hubT -= 1) < 0) { hubT = 600; hubStart(); } return; }
   hubPresence(false);
   const now = performance.now(), dt = Math.min(0.1, (now - (HUB.lastT || now)) / 1000); HUB.lastT = now; hubMoveGhosts(dt);
