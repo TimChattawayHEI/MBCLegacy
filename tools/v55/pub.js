@@ -16,7 +16,7 @@ function pubSpend(n) { if (PUB.wallet < n) return false; PUB.wallet -= n; pubSav
 const fmtN = n => Math.round(n).toLocaleString('en-GB');
 function pubImg(n) { return bgImg('pub/' + n); }
 const PUB_FILES = ['cabinet', 'chalk', 'fruitface', 'pitch', 'can', 'dartboard', 'dart', 'dart_fly', 'golfball', 'tee',
-  'sym_cherry', 'sym_lemon', 'sym_grapes', 'sym_bell', 'sym_bar', 'sym_seven', 'keeper_ready', 'keeper_dive', 'byron_kick', 'pearcy_golf', 'tornado', 'tornado2'];
+  'sym_cherry', 'sym_lemon', 'sym_grapes', 'sym_bell', 'sym_bar', 'sym_seven', 'keeper_ready', 'keeper_dive', 'byron_kick', 'pearcy_golf', 'tornado', 'tornado2', 'kebab_wall'];
 function pubPreload() { PUB_FILES.forEach(pubImg); ['social/wall', 'social/bar', 'social/fruit', 'set/dartboard', 'set/window', 'fishery/treeline', 'fishery/goose', 'fish/gary'].forEach(bgImg); }
 // one cell of a PUB_STRIPS strip, feet on (x, y), k sprite pixels per... k game units per sprite pixel (2 = 1:1 on the pixel layer)
 function pubStrip(name, f, x, y, k, flip) {
@@ -28,7 +28,7 @@ function pubStrip(name, f, x, y, k, flip) {
 }
 
 // the games, and where each one turns up on a run
-const MINI_AFTER = { frequency: 'pens', soundz: 'kiss', club: 'awake', arrival: 'golf' };
+const MINI_AFTER = { frequency: 'pens', soundz: 'kiss', club: 'awake', nl_alley: 'kebab', arrival: 'golf' };
 const MINI_DEF = {
   darts: { title: 'NINE DARTS', short: 'DARTS', price: 1500, unit: '', board: 'BEST NINE DARTS', music: 'social', pay: s => s * 15,
     how: ['Nine darts. Score as many as you can.', 'Your hand sways. Throw when it lines up.', 'Every pint you have makes it sway more.'],
@@ -45,11 +45,14 @@ const MINI_DEF = {
   awake: { title: 'STAY AWAKE', short: 'AWAKE', lad: 'sam', price: 1000, unit: 'm', board: 'FURTHEST', music: 'road', pay: s => s * 1.5,
     after: 'The Club', how: ['4am, the drive back to the villa. Sam is fading.', 'Grab energy drinks to keep his eyes open.', 'A crash wakes him up, but four and the car’s done.'],
     keys: 'Up and down to change lanes', touch: 'Stick up and down to change lanes' },
+  kebab: { title: 'KEBAB SIEGE', short: 'KEBAB', price: 1500, unit: '', board: 'TOP SCORES', music: null, pay: s => s * 0.25,
+    after: 'The Smoking Area', how: ["3am, the kebab shop. You're ticket 50. They're on 45.", 'Hold your place: wave after wave of the 2am crowd want it.', 'Throw them out the door. One life. Kebabs heal.'],
+    keys: 'Fight like a stage: J hit, K jump, L special', touch: 'Fight like a stage: the stick and buttons' },
   golf: { title: 'THE LONG DRIVE', short: 'DRIVE', lad: 'pearcy', price: 1000, unit: 'yds', board: 'LONGEST DRIVES', music: 'naval', pay: s => s * 8,
     after: 'The Arrangement', how: ['Three balls into the lake. Longest one counts.', 'HIT to swing, HIT for power, HIT on the line.', 'JUMP once first: CARP DIEM. More power, less control.'],
     keys: 'HIT three times to swing, JUMP for the pills', touch: 'Tap three times to swing, PILLS once' },
 };
-const PUB_GAMES = ['darts', 'fruit', 'pens', 'golf', 'awake', 'kiss'];
+const PUB_GAMES = ['darts', 'fruit', 'pens', 'golf', 'awake', 'kiss', 'kebab'];
 const cabOpen = id => !MINI_DEF[id].lad || !!PUB.cabs[id];
 
 // ------------------------------------------------------------------ the boards
@@ -190,10 +193,10 @@ function pubTabHud(label) {
 function pubSay(text, t) { PUB.msg = text; PUB.msgT = t || 2.4; }
 
 // ================================================================== the pub itself
-const PUB_W = 2120, PUB_FLOOR = 400;
+const PUB_W = 2290, PUB_FLOOR = 400;
 const PUB_OBJ = [
   { id: 'door', x: 60 }, { id: 'bar', x: 540 }, { id: 'darts', x: 960 }, { id: 'fruit', x: 1300 },
-  { id: 'pens', x: 1480 }, { id: 'golf', x: 1650 }, { id: 'awake', x: 1820 }, { id: 'kiss', x: 1990 },
+  { id: 'pens', x: 1480 }, { id: 'golf', x: 1650 }, { id: 'awake', x: 1820 }, { id: 'kiss', x: 1990 }, { id: 'kebab', x: 2160 },
 ];
 function openPub(from, next, lad) {
   pubPreload(); pubBoardsStart();
@@ -293,10 +296,10 @@ function pubDrawWorld() {
   const db = bgImg('set/dartboard'); if (db) bgPut(db, 960 - db.width, 330);
   // the oche
   { const x = snap2(960 - 70 - cx); ctx.fillStyle = '#c8b070'; ctx.fillRect(x, 506, 140, 4); }
-  for (const id of ['darts', 'fruit', 'pens', 'golf', 'awake', 'kiss']) { const c = pubChalkX(id), img = pubImg('chalk'); if (img) bgPut(img, c - img.width, CHALK_B); }
+  for (const id of ['darts', 'fruit', 'pens', 'golf', 'awake', 'kiss', 'kebab']) { const c = pubChalkX(id), img = pubImg('chalk'); if (img) bgPut(img, c - img.width, CHALK_B); }
   const fr = bgImg('social/fruit'); if (fr) bgPut(fr, 1300 - fr.width, 414);
   const cab = pubImg('cabinet');
-  for (const id of ['pens', 'golf', 'awake', 'kiss']) {
+  for (const id of ['pens', 'golf', 'awake', 'kiss', 'kebab']) {
     const o = PUB_OBJ.find(o => o.id === id); if (!cab) break;
     bgPut(cab, o.x - cab.width, 414);
     // the screen: dark when it's out of order, the record holder's colours when it's lit
@@ -335,8 +338,8 @@ function drawPub() {
   const cx = cam.x;
   // sharp text over the room: the pub's name, chalkboards, cabinet marquees and the record holders' faces
   { const x = 540 - cx; if (x > -200 && x < W + 200) textOut('THE HARVEST MOON', x, 128, '26px ' + DISPLAY, '#ffd23f', OUT, 6); }
-  for (const id of ['darts', 'fruit', 'pens', 'golf', 'awake', 'kiss']) pubChalkText(id);
-  for (const id of ['pens', 'golf', 'awake', 'kiss']) {
+  for (const id of ['darts', 'fruit', 'pens', 'golf', 'awake', 'kiss', 'kebab']) pubChalkText(id);
+  for (const id of ['pens', 'golf', 'awake', 'kiss', 'kebab']) {
     const o = PUB_OBJ.find(o => o.id === id), x = o.x - cx; if (x < -60 || x > W + 60) continue;
     ctx.font = '9px ' + DISPLAY; ctx.fillStyle = '#2a1a06'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(MINI_DEF[id].short, x + 10, 414 - 176 + 29);
     if (!cabOpen(id)) { ctx.save(); ctx.translate(x + 4, 414 - 176 + 64); ctx.rotate(-0.12); ctx.fillStyle = '#efe6d2'; ctx.fillRect(-26, -9, 52, 18); ctx.font = '800 8px ' + BODY; ctx.fillStyle = '#b23a32'; ctx.fillText('OUT OF', 0, -3); ctx.fillText('ORDER', 0, 5); ctx.restore(); continue; }
@@ -1138,6 +1141,7 @@ function profileHook(skip) {
 if (nameEls.input) nameEls.input.addEventListener('input', () => { if (!PROFILE.asking) return; const v = cleanName(nameEls.input.value); if (v !== nameEls.input.value) nameEls.input.value = v; });
 // runs at the top of every frame: the first visit to the select screen asks for a name; nothing else moves while it's open
 function profileTick() {
+  if (typeof KB !== 'undefined' && KB.endReq) { const r = KB.endReq; KB.endReq = null; kebabEnd(r[0], r[1], true); return true; }   // Version 59
   try { hubTick(); } catch (e) { glitch('hub', e); }
   if (PROFILE.asking) { pressed.clear(); taps.length = 0; return true; }
   if (mode === 'select' && !PROFILE.name && modeT > 0.4) { profileAsk(true); return true; }

@@ -106,7 +106,7 @@ s = swap(s, """function startStageNow(key) {
   slowT = 0; finishFX = null;""", """function startStageNow(key) {
   slowT = 0; finishFX = null;
   if (run && run.banked == null) run.banked = run.score;   // a carried-on run has banked what it had (Version 55)""", 'bank start')
-s = swap(s, """function gameOver() { if (!NET.on) clearSavedRun();""", """function gameOver() { pubBankStage(); if (!NET.on) clearSavedRun();""", 'bank on game over')
+s = swap(s, """function gameOver() { if (!NET.on) clearSavedRun();""", """function gameOver() { if (run && run.mini) { kebabEnd('OUT ON WAVE ' + ((S ? S.waveIdx : 0) + 1)); return; } pubBankStage(); if (!NET.on) clearSavedRun();""", 'bank on game over')   # the mini run's own end is Version 59's kebab siege
 s = swap(s, """  run.winBonus = Math.round(run.lives * 10000 * D().score); addScore(run.winBonus, true);""",
          """  run.winBonus = Math.round(run.lives * 10000 * D().score); addScore(run.winBonus, true); pubBankStage();""", 'bank on win')
 s = swap(s, """  if (done && clearInfo.lifeUp) textOut('EXTRA LIFE!', W / 2, yN + 6, '22px ' + DISPLAY, '#7fe07a', OUT, 5);""",
