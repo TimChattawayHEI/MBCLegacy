@@ -409,7 +409,7 @@ function miniEnd(reason) {
   if (!MG.forfeit) pubRecord(MG.id, MG.lad, MG.id === 'fruit' ? MG.s.best || 0 : sc, r => { if (MG) MG.res = r; });
   musicSet(null); sfx(pay > 0 ? 'life' : 'ko');
 }
-function updateMini(dt) {
+function updateMiniGame(dt) {
   pubTapsIn(); if (!MG) { mode = 'select'; return; }
   MG.t += dt;
   if (MG.phase === 'intro') {
@@ -425,7 +425,7 @@ function updateMini(dt) {
   if (MG.phase === 'result' && MG.t > 1.2 && (pubGo() || pubBack())) closeMini();
 }
 function closeMini() { const n = MG && MG.next; MG = null; pubPtr.clear(); if (n) n(); else { mode = 'select'; modeT = 0; } }
-function drawMini() {
+function drawMiniGame() {
   PUI = [];
   if (!MG) return;
   const G = MGAME[MG.id];

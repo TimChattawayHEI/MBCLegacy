@@ -41,7 +41,8 @@ def block(s, start, end, content, anchor, label, before=True):
 s = read(PAGE)
 
 # ---------------------------------------------------------------- start a run at any stage
-s = swap(s, """function routeFrom(start) {
+# only once: later versions (v53) keep their own chapterOf, and a second copy would replace it
+if 'function chapterOf(' not in s: s = swap(s, """function routeFrom(start) {
   if (start === 'ramsden') return ['ramsden'];""", """// a chapter ('elba') or any stage ('divebar') can start a run (Version 43)
 function chapterOf(key) { const i = ROUTE.indexOf(key); return i < 0 ? null : i >= ROUTE.indexOf('arrival') ? 'carpdiem' : i >= ROUTE.indexOf('airport') ? 'elba' : '1999'; }
 // how many stages a mid-chapter start skips, so that stage keeps its place in the difficulty ramp

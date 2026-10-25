@@ -1601,14 +1601,8 @@ function chapterOf(key) { const i = ROUTE.indexOf(key); return i < 0 ? null : i 
 // how many stages a mid-chapter start skips, so that stage keeps its place in the difficulty ramp
 function routeDepth(start) { if (!ROUTE.includes(start)) return 0; const full = routeFrom(chapterOf(start)); return Math.max(0, full.indexOf(start)); }
 function startLabel(start) { return ({ elba: 'ELBA 2002', nightlife: 'NIGHTLIFE 2006', carpdiem: 'CARP DIEM', ramsden: 'RAMSDEN' })[start] || (STAGES[start] && ROUTE.includes(start) ? 'STAGE ' + STAGES[start].n : '1999'); }
-// a chapter ('elba') or any stage ('divebar') can start a run (Version 43)
-function chapterOf(key) { const i = ROUTE.indexOf(key); return i < 0 ? null : i >= ROUTE.indexOf('arrival') ? 'carpdiem' : i >= ROUTE.indexOf('airport') ? 'elba' : '1999'; }
-// how many stages a mid-chapter start skips, so that stage keeps its place in the difficulty ramp
-function routeDepth(start) { if (!ROUTE.includes(start)) return 0; const full = routeFrom(chapterOf(start)); return Math.max(0, full.indexOf(start)); }
-function startLabel(start) { return ({ elba: 'ELBA 2002', carpdiem: 'CARP DIEM', ramsden: 'RAMSDEN' })[start] || (STAGES[start] && ROUTE.includes(start) ? 'STAGE ' + STAGES[start].n : '1999'); }
 function routeFrom(start) {
   if (start === 'ramsden') return ['ramsden'];
-  if (ROUTE.includes(start)) { const full = routeFrom(chapterOf(start)); return full.slice(Math.max(0, full.indexOf(start))); }
   if (ROUTE.includes(start)) { const full = routeFrom(chapterOf(start)); return full.slice(Math.max(0, full.indexOf(start))); }
   const at = { elba: 'airport', nightlife: 'nl_station', carpdiem: 'arrival', fishery: 'arrival' }[start];
   const r = at ? ROUTE.slice(ROUTE.indexOf(at)) : ROUTE.slice();
@@ -10022,7 +10016,7 @@ function step(dt) {
   if (mode === 'clear') { updateClear(); return true; }
   if (mode === 'board') { updateBoard(); return true; }
   if (mode === 'pub') { updatePub(dt); return true; }   // Version 55
-  if (mode === 'mini') { updateMini(dt); return true; }
+  if (mode === 'mini') { updateMiniGame(dt); return true; }
   if (mode === 'name') return true;
   if (mode === 'pause') { updatePause(); return true; }
   if (mode === 'win' || mode === 'over') { updateEnd(); updateBubbles(dt); return true; }
@@ -10143,7 +10137,7 @@ function render() {
   if (mode === 'loading') { drawLoading(); return; }
   if (mode === 'board') { drawBoard(); return; }
   if (mode === 'pub' || (mode === 'name' && pubNameCb && pubNameMode === 'pub')) { drawPub(); return; }   // Version 55
-  if (mode === 'mini' || (mode === 'name' && pubNameCb)) { drawMini(); return; }
+  if (mode === 'mini' || (mode === 'name' && pubNameCb)) { drawMiniGame(); return; }
   drawWorldPixel();
   if (!cutin) { drawHUD(); drawDeniseHUD(); if (ST && ST.drive && mode === 'play') drawDriveHud(); }
   if (S && S.card && (mode === 'play' || mode === 'pause')) drawBossCard();
@@ -10598,7 +10592,7 @@ function miniEnd(reason) {
   if (!MG.forfeit) pubRecord(MG.id, MG.lad, MG.id === 'fruit' ? MG.s.best || 0 : sc, r => { if (MG) MG.res = r; });
   musicSet(null); sfx(pay > 0 ? 'life' : 'ko');
 }
-function updateMini(dt) {
+function updateMiniGame(dt) {
   pubTapsIn(); if (!MG) { mode = 'select'; return; }
   MG.t += dt;
   if (MG.phase === 'intro') {
@@ -10614,7 +10608,7 @@ function updateMini(dt) {
   if (MG.phase === 'result' && MG.t > 1.2 && (pubGo() || pubBack())) closeMini();
 }
 function closeMini() { const n = MG && MG.next; MG = null; pubPtr.clear(); if (n) n(); else { mode = 'select'; modeT = 0; } }
-function drawMini() {
+function drawMiniGame() {
   PUI = [];
   if (!MG) return;
   const G = MGAME[MG.id];

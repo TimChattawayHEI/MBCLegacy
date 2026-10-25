@@ -73,13 +73,13 @@ s = swap(s, """  if (mode === 'board') { updateBoard(); return true; }
   if (mode === 'name') return true;""",
          """  if (mode === 'board') { updateBoard(); return true; }
   if (mode === 'pub') { updatePub(dt); return true; }   // Version 55
-  if (mode === 'mini') { updateMini(dt); return true; }
+  if (mode === 'mini') { updateMiniGame(dt); return true; }
   if (mode === 'name') return true;""", 'step hooks')
 s = swap(s, """  if (mode === 'board') { drawBoard(); return; }
   drawWorldPixel();""",
          """  if (mode === 'board') { drawBoard(); return; }
   if (mode === 'pub' || (mode === 'name' && pubNameCb && pubNameMode === 'pub')) { drawPub(); return; }   // Version 55
-  if (mode === 'mini' || (mode === 'name' && pubNameCb)) { drawMini(); return; }
+  if (mode === 'mini' || (mode === 'name' && pubNameCb)) { drawMiniGame(); return; }
   drawWorldPixel();""", 'render hooks')
 s = swap(s, """async function submitName(skip) {
   if (mode !== 'name') return;""", """async function submitName(skip) {
