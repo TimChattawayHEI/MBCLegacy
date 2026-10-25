@@ -10532,6 +10532,7 @@ function drawPub() {
     const top = pubBoard(id)[0]; if (top) drawPortrait(top.lad, x - 8, 414 - 176 + 54, 26, '#ffd23f');
   }
   hubTags();
+  chatBubbles();
   // the prompt by whatever you're stood at
   const o = PUB.near, label = pubPrompt(o);
   if (label && !PUB.view) {
@@ -11384,6 +11385,7 @@ async function hubStart() {
     else { await withTimeout(NT.init(), 8000); if (NT.kind !== 'fb') return; HUB.kind = 'fb'; HUB.db = NT.db; }
     hubListen('online', v => { HUB.others = v || {}; });
     hubListen('invites/' + PROFILE.name, v => { HUB.inv = v || {}; });
+    chatListen();
     hubPresence(true);
     if (HUB.kind === 'fb') HUB.db.ref('online/' + PROFILE.name).onDisconnect().remove();
     else window.addEventListener('pagehide', () => hubSet('online/' + PROFILE.name, null));
@@ -11486,7 +11488,8 @@ function hubCountHud() {
 function hubFoot() {
   const b = document.getElementById('t3-pub'); if (!b) return;
   const n = HUB.kind ? hubPeople().length : 0;
-  b.textContent = 'Harvest Moon' + (n ? ' · ' + n + ' online' : '');
+  const u = chatUnread();
+  b.textContent = 'Harvest Moon' + (n ? ' · ' + n + ' online' : '') + (u ? ' · ' + u + ' new' : '');
 }
 // sending an invite: you host, they get a card
 async function hubInvite(g) {
@@ -11568,10 +11571,139 @@ function hubTick() {
   hubShowCard(inv);
   if (inv && pressed.has('start')) { pressed.clear(); hubAccept(); }
   if (now - (HUB.footT || 0) > 2000) { HUB.footT = now; hubFoot(); }
+  chatTick();
   if (mode === 'select' && PUB.spot && !NET.on && !PROFILE.asking) hubBackToPub();   // a game that started in the pub ends back in it
 }
 // back to the pub after an online game that started there
 function hubBackToPub() { if (PUB.spot) { const sp = PUB.spot; PUB.spot = null; openPub('menu', null, PUB.lad); PUB.x = sp.x; PUB.y = sp.y; } }
+
+// ================================================================== Version 58: chat in the Harvest Moon
+// A CHAT tab on the right of the pub slides out a panel: quick lines (everyday ones and one in your lad's voice), a box
+// to type your own (140 characters), and the last 50 messages, newest first. What anyone says also pops up in a speech
+// bubble over their head in the pub. Firebase chat/<id> in the app; the test relay with ?netmock.
+const CHAT = { msgs: [], read: lsGet('mbc.chat.read', 0), open: false, el: null, tab: null, sentAt: 0, lastTop: 0, heard: 0 };
+const CHAT_QUICK = ['Game?', 'Pint?', 'Get in!', 'Back in 5', 'Night lads'];
+const CHAT_LAD = { tim: 'Right, lads!', seb: 'Sir, yes sir!', byron: "Ref! REF!", pearcy: 'CARP DIEM!', kelly: 'MASS HEAD!', marc: "It's all about the numbers. Meeeehhhhh", sam: 'What happened?', thet: "Can't see me!", ash: "I'll be back." };
+function chatListen() {
+  const take = v => {
+    const out = [];
+    for (const id in (v || {})) { const m = v[id]; if (!m || typeof m.text !== 'string' || !m.name) continue; out.push({ id, name: String(m.name).slice(0, 12), lad: CHAR_BY_ID[m.lad] ? m.lad : 'tim', text: m.text.slice(0, 140), at: +m.at || 0 }); }
+    out.sort((a, b) => a.at - b.at); CHAT.msgs = out.slice(-50);
+    const top = CHAT.msgs.length ? CHAT.msgs[CHAT.msgs.length - 1].at : 0;
+    if (top > CHAT.lastTop) { const fresh = CHAT.msgs[CHAT.msgs.length - 1]; if (CHAT.lastTop && fresh.name !== PROFILE.name && mode === 'pub') sfx('page'); CHAT.lastTop = top; }
+    chatRender();
+  };
+  if (HUB.kind === 'fb') HUB.db.ref('chat').orderByChild('at').limitToLast(50).on('value', snap => take(snap.val()), () => {});
+  else hubListen('chat', take);
+}
+function chatSend(text) {
+  text = String(text || '').replace(/\s+/g, ' ').trim().slice(0, 140);
+  if (!text || !HUB.kind || !PROFILE.name) return false;
+  const now = Date.now(); if (now - CHAT.sentAt < 1200) return false; CHAT.sentAt = now;
+  const lad = mode === 'pub' ? PUB.lad : (PLAYABLE[sel] && !ladLocked(PLAYABLE[sel]) ? PLAYABLE[sel].id : PUB.lad);
+  const id = HUB.kind === 'fb' ? HUB.db.ref('chat').push().key : now.toString(36) + Math.floor(nativeRandom() * 1e6).toString(36);
+  hubSet('chat/' + id, { name: PROFILE.name, lad, text, at: now });
+  sfx('pickup'); return true;
+}
+function chatUnread() { return CHAT.msgs.filter(m => m.at > CHAT.read && m.name !== PROFILE.name).length; }
+function chatMarkRead() { const top = CHAT.msgs.length ? CHAT.msgs[CHAT.msgs.length - 1].at : 0; if (top > CHAT.read) { CHAT.read = top; lsSet('mbc.chat.read', top); } }
+const chatEsc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+function chatAgo(at) { const s = Math.max(0, (Date.now() - at) / 1000); return s < 60 ? 'now' : s < 3600 ? Math.floor(s / 60) + 'm' : s < 86400 ? Math.floor(s / 3600) + 'h' : Math.floor(s / 86400) + 'd'; }
+function chatBuild() {
+  if (CHAT.el) return;
+  const css = document.createElement('style');
+  css.textContent = `#chatTab{position:fixed;z-index:40;display:none;writing-mode:vertical-rl;transform:rotate(180deg);font:400 15px 'Pixelify Sans',monospace;letter-spacing:2px;color:#ffd23f;background:#121a1e;border:2px solid #f2a23a;border-right:0;border-radius:0 10px 10px 0;padding:12px 7px;cursor:pointer}
+#chatTab b{display:inline-block;margin-top:6px;background:#ff5a3c;color:#fff;border-radius:9px;padding:3px 2px;font:700 11px Rubik,sans-serif;writing-mode:horizontal-tb;transform:rotate(180deg)}
+#chatPanel{position:fixed;z-index:41;display:none;flex-direction:column;background:rgba(14,20,24,.97);border-left:2px solid #f2a23a;box-shadow:-10px 0 30px rgba(0,0,0,.5);font:600 13px Rubik,system-ui,sans-serif;color:#efe6d2;box-sizing:border-box}
+#chatPanel header{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid #2b3b42}
+#chatPanel header h3{flex:1;margin:0;font:400 16px 'Pixelify Sans',monospace;color:#ffd23f}
+#chatPanel header span{font:700 11px Rubik,sans-serif;color:#7fe07a}
+#chatPanel button{font:700 12px Rubik,sans-serif;cursor:pointer;border-radius:8px}
+#chatClose{border:2px solid #2b3b42;background:transparent;color:#efe6d2;padding:4px 9px}
+#chatQuick{display:flex;flex-wrap:wrap;gap:5px;padding:8px 10px 4px}
+#chatQuick button{border:1px solid #3a4a52;background:#1a242a;color:#efe6d2;padding:5px 8px}
+#chatQuick button.lad{border-color:#f2a23a;color:#ffd23f}
+#chatForm{display:flex;gap:6px;padding:6px 10px 8px;border-bottom:1px solid #2b3b42}
+#chatInput{flex:1;min-width:0;font:600 14px Rubik,sans-serif;background:#0c1014;color:#efe6d2;border:2px solid #2b3b42;border-radius:8px;padding:7px 9px}
+#chatInput:focus{outline:none;border-color:#f2a23a}
+#chatSend{border:2px solid #7fe07a;background:#7fe07a;color:#10200f;padding:0 12px}
+#chatList{flex:1;overflow-y:auto;padding:4px 10px 10px;overscroll-behavior:contain}
+#chatList .m{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+#chatList img{width:28px;height:28px;flex:none;image-rendering:pixelated;border:2px solid #16120f;background:#1a242a}
+#chatList .n{font:400 13px 'Pixelify Sans',monospace}
+#chatList .t{color:#93a3a1;font-size:10px;margin-left:6px}
+#chatList .x{overflow-wrap:anywhere;line-height:1.35}
+#chatList .none{color:#93a3a1;text-align:center;padding:24px 0}`;
+  document.head.appendChild(css);
+  const tab = document.createElement('button'); tab.id = 'chatTab'; tab.type = 'button'; tab.innerHTML = 'CHAT';
+  const el = document.createElement('div'); el.id = 'chatPanel';
+  el.innerHTML = `<header><h3>HARVEST MOON CHAT</h3><span id="chatWho"></span><button id="chatClose" type="button">Close</button></header>
+<div id="chatQuick"></div><form id="chatForm" autocomplete="off"><input id="chatInput" maxlength="140" placeholder="Say something..." autocomplete="off" spellcheck="true" enterkeyhint="send"><button id="chatSend" type="submit">Send</button></form><div id="chatList"></div>`;
+  document.body.appendChild(tab); document.body.appendChild(el); CHAT.el = el; CHAT.tab = tab;
+  for (const n of [tab, el]) ['pointerdown', 'keydown', 'keyup'].forEach(t => n.addEventListener(t, e => e.stopPropagation()));
+  tab.addEventListener('click', () => chatToggle(true));
+  el.querySelector('#chatClose').addEventListener('click', () => chatToggle(false));
+  el.querySelector('#chatForm').addEventListener('submit', e => { e.preventDefault(); const i = el.querySelector('#chatInput'); if (chatSend(i.value)) i.value = ''; });
+  el.querySelector('#chatInput').addEventListener('keydown', e => { if (e.key === 'Escape') { e.preventDefault(); chatToggle(false); } });
+}
+function chatToggle(on) {
+  chatBuild(); CHAT.open = on; held.clear(); pointers.clear();
+  if (on) { chatMarkRead(); chatRender(); sfx('page'); } else { try { CHAT.el.querySelector('#chatInput').blur(); canvas.focus(); } catch (e) { /* ok */ } }
+  chatPlace();
+}
+function chatRender() {
+  if (!CHAT.el) return;
+  const q = CHAT.el.querySelector('#chatQuick'), lad = PUB.lad, lines = CHAT_QUICK.concat(CHAT_LAD[lad] ? [CHAT_LAD[lad]] : []);
+  const key = lad + lines.length;
+  if (q.dataset.k !== key) {
+    q.dataset.k = key; q.innerHTML = '';
+    lines.forEach((l, i) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = l; if (i >= CHAT_QUICK.length) b.className = 'lad'; b.addEventListener('click', () => chatSend(l)); q.appendChild(b); });
+  }
+  const list = CHAT.el.querySelector('#chatList');
+  if (!CHAT.msgs.length) { list.innerHTML = '<div class="none">Nobody’s said anything yet.</div>'; return; }
+  list.innerHTML = CHAT.msgs.slice().reverse().map(m => {
+    const c = CHAR_BY_ID[m.lad] || CHAR_BY_ID.tim, img = portraitImg(m.lad);
+    return `<div class="m"><img alt="" src="${img ? img.src : ''}"><div><span class="n" style="color:${m.name === PROFILE.name ? '#ffd23f' : c.color}">${chatEsc(m.name)}</span><span class="t">${chatAgo(m.at)}</span><div class="x">${chatEsc(m.text)}</div></div></div>`;
+  }).join('');
+  if (CHAT.open) chatMarkRead();
+}
+// the tab and panel sit on the right edge of the game, only in the pub
+function chatPlace() {
+  if (!CHAT.el) return;
+  const show = mode === 'pub' && !!HUB.kind && !!PROFILE.name && !PUB.view, r = canvas.getBoundingClientRect();
+  if (!show) { CHAT.tab.style.display = 'none'; CHAT.el.style.display = 'none'; return; }
+  const w = Math.round(Math.min(380, Math.max(260, r.width * 0.42)));
+  CHAT.el.style.display = CHAT.open ? 'flex' : 'none';
+  CHAT.el.style.left = (r.right - w) + 'px'; CHAT.el.style.top = r.top + 'px'; CHAT.el.style.width = w + 'px'; CHAT.el.style.height = r.height + 'px';
+  CHAT.tab.style.display = CHAT.open ? 'none' : 'block';
+  const u = chatUnread(), tabH = CHAT.tab.offsetHeight || 90;
+  CHAT.tab.innerHTML = 'CHAT' + (u ? '<b>' + (u > 9 ? '9+' : u) + '</b>' : '');
+  CHAT.tab.style.left = (r.right - (CHAT.tab.offsetWidth || 32)) + 'px'; CHAT.tab.style.top = Math.round(r.top + r.height * 0.42 - tabH / 2) + 'px';
+  const who = CHAT.el.querySelector('#chatWho'), n = hubPeople().length; who.textContent = n ? '● ' + (n + 1) + ' online' : '';
+}
+function chatTick() {
+  if (!HUB.kind) return;
+  chatBuild(); chatPlace();
+  if (CHAT.open && mode !== 'pub') CHAT.open = false;
+  if (CHAT.open && performance.now() - (CHAT.agoT || 0) > 30000) { CHAT.agoT = performance.now(); chatRender(); }
+}
+// speech bubbles in the pub: anything said in the last six seconds, over the sayer's head
+function chatBubbles() {
+  const now = Date.now(), cx = cam.x, ghosts = hubGhosts();
+  const last = {}; for (const m of CHAT.msgs) if (now - m.at < 6000 && now - m.at > -5000) last[m.name] = m;
+  for (const name in last) {
+    const m = last[name], g = name === PROFILE.name ? { x: PUB.x, y: PUB.y } : ghosts.find(o => o.name === name); if (!g) continue;
+    const x = g.x - cx; if (x < -150 || x > W + 150) continue;
+    ctx.save(); ctx.font = '700 13px ' + BODY;
+    const lines = wrapLines(m.text, 190).slice(0, 4), w = Math.min(214, Math.max(...lines.map(l => ctx.measureText(l).width)) + 22), h = lines.length * 17 + 14;
+    const bx = clamp(x - w / 2, 6, W - w - 6), by = g.y - 176 - h, k = Math.min(1, (6000 - (now - m.at)) / 400);
+    ctx.globalAlpha = k;
+    rrect(bx, by, w, h, 9); ctx.fillStyle = '#fbf6ea'; ctx.fill(); ctx.strokeStyle = OUT; ctx.lineWidth = 3; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x - 7, by + h - 1); ctx.lineTo(x, by + h + 10); ctx.lineTo(x + 7, by + h - 1); ctx.closePath(); ctx.fillStyle = '#fbf6ea'; ctx.fill();
+    ctx.fillStyle = '#1b1b1b'; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; lines.forEach((l, i) => ctx.fillText(l, bx + 11, by + 8 + i * 17));
+    ctx.restore();
+  }
+}
 
 // headless tests only: ?pubtest lets tools/v55/shots.py reach the game from outside
 if (/[?&]pubtest/.test(location.search)) window.__pub = s => eval(s);
