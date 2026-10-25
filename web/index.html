@@ -10202,7 +10202,7 @@ function pubSpend(n) { if (PUB.wallet < n) return false; PUB.wallet -= n; pubSav
 const fmtN = n => Math.round(n).toLocaleString('en-GB');
 function pubImg(n) { return bgImg('pub/' + n); }
 const PUB_FILES = ['cabinet', 'chalk', 'fruitface', 'pitch', 'can', 'dartboard', 'dart', 'dart_fly', 'golfball', 'tee',
-  'sym_cherry', 'sym_lemon', 'sym_grapes', 'sym_bell', 'sym_bar', 'sym_seven', 'keeper_ready', 'keeper_dive', 'byron_kick', 'pearcy_golf', 'tornado', 'tornado2', 'kebab_wall'];
+  'sym_cherry', 'sym_lemon', 'sym_grapes', 'sym_bell', 'sym_bar', 'sym_seven', 'keeper_ready', 'keeper_dive', 'byron_kick', 'pearcy_golf', 'tornado', 'tornado2', 'kebab_wall', 'kebab_scene'];
 function pubPreload() { PUB_FILES.forEach(pubImg); ['social/wall', 'social/bar', 'social/fruit', 'set/dartboard', 'set/window', 'fishery/treeline', 'fishery/goose', 'fish/gary'].forEach(bgImg); }
 // one cell of a PUB_STRIPS strip, feet on (x, y), k sprite pixels per... k game units per sprite pixel (2 = 1:1 on the pixel layer)
 function pubStrip(name, f, x, y, k, flip) {
@@ -11736,8 +11736,8 @@ if (/[?&]pubtest/.test(location.search)) window.__pub = s => eval(s);
 // kebab's up (full health, a bonus), you get a new ticket and it goes on. Knock someone down by the door and they're
 // thrown out. Played once on a run (after The Smoking Area) and as a cabinet in the Harvest Moon.
 STAGES.kebab = { n: 'K', era: 2006, title: 'KEBAB SIEGE', sub: '3am. Hold your place in the queue.', bg: 'kebab', fixed: true, door: true,
-  ft: 360, fb: 506, raft: [40, 920], len: W, music: 'nightbus', aggro: 3, aa: 0.45, waves: [],
-  breakables: [{ type: 'bin', x: 300, y: 470, drop: 'w:alcopop' }, { type: 'keg', x: 860, y: 400, drop: 'chips' }] };
+  ft: 404, fb: 520, raft: [40, 920], len: W, music: 'nightbus', aggro: 3, aa: 0.45, waves: [],
+  breakables: [{ type: 'bin', x: 300, y: 492, drop: 'w:alcopop' }, { type: 'keg', x: 880, y: 430, drop: 'chips' }] };
 const KB_TIERS = [
   ['burb', 'shellsuit', 'hoops', 'city', 'itgirl', 'stag', 'groom'],
   ['puffer', 'hood', 'snood', 'denim', 'tuba'],
@@ -11794,14 +11794,10 @@ function kebabEnd(reason, forfeit, now) {
   mode = 'mini'; modeT = 0; MG.phase = 'play'; miniEnd(reason);
 }
 function kebabBg() {
+  // the whole shop, wall and floor, is one PixelLab picture (Version 59.2: the floor was painted on to match the wall)
   ctx.fillStyle = '#0c0a0a'; ctx.fillRect(0, 0, W, H);
-  const img = pubImg('kebab_wall');
-  if (img) { ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(img, 0, FT + 8 - img.height * 2, img.width * 2, img.height * 2); ctx.restore(); }
-  pxChecker(0, W, 24, '#8a8476', '#6c675c');
-  // a bit of grime, and the counter's shadow on the floor
-  for (let i = 0; i < 70; i++) { ctx.fillStyle = i % 3 ? 'rgba(40,30,20,0.18)' : 'rgba(255,240,200,0.06)'; ctx.fillRect(snap2(hash(i * 7.3) * W), snap2(FT + 8 + hash(i * 3.1) * (H - FT - 8)), 2 + (i % 4) * 2, 2); }
-  ctx.fillStyle = 'rgba(10,8,6,0.35)'; ctx.fillRect(640, FT, W - 640, 14);
-  ctx.fillStyle = '#2a2420'; ctx.fillRect(0, FT, W, 6);
+  const img = pubImg('kebab_scene') || pubImg('kebab_wall');
+  if (img) { ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(img, 0, 0, img.width * 2, img.height * 2); ctx.restore(); }
   // the order display over the counter
   const x = 600, y = 8;
   ctx.fillStyle = OUT; ctx.fillRect(x - 92, y - 2, 184, 34); ctx.fillStyle = '#120808'; ctx.fillRect(x - 90, y, 180, 30);
@@ -11821,8 +11817,7 @@ MGAME.kebab = {
   update(M) { if (!M.s.started) { M.s.started = true; kebabStart(M); } },
   draw(M) {
     ctx.fillStyle = '#0c0a0a'; ctx.fillRect(0, 0, W, H);
-    const img = pubImg('kebab_wall'); if (img) { ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(img, 0, 368 - img.height * 2, img.width * 2, img.height * 2); ctx.restore(); }
-    ctx.fillStyle = '#827c70'; ctx.fillRect(0, 368, W, H - 368);
+    const img = pubImg('kebab_scene'); if (img) { ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(img, 0, 0, img.width * 2, img.height * 2); ctx.restore(); }
   },
   hud(M) {
     if (M.phase !== 'result' || !M.s) return;

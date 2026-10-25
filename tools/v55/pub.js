@@ -16,7 +16,7 @@ function pubSpend(n) { if (PUB.wallet < n) return false; PUB.wallet -= n; pubSav
 const fmtN = n => Math.round(n).toLocaleString('en-GB');
 function pubImg(n) { return bgImg('pub/' + n); }
 const PUB_FILES = ['cabinet', 'chalk', 'fruitface', 'pitch', 'can', 'dartboard', 'dart', 'dart_fly', 'golfball', 'tee',
-  'sym_cherry', 'sym_lemon', 'sym_grapes', 'sym_bell', 'sym_bar', 'sym_seven', 'keeper_ready', 'keeper_dive', 'byron_kick', 'pearcy_golf', 'tornado', 'tornado2', 'kebab_wall'];
+  'sym_cherry', 'sym_lemon', 'sym_grapes', 'sym_bell', 'sym_bar', 'sym_seven', 'keeper_ready', 'keeper_dive', 'byron_kick', 'pearcy_golf', 'tornado', 'tornado2', 'kebab_wall', 'kebab_scene'];
 function pubPreload() { PUB_FILES.forEach(pubImg); ['social/wall', 'social/bar', 'social/fruit', 'set/dartboard', 'set/window', 'fishery/treeline', 'fishery/goose', 'fish/gary'].forEach(bgImg); }
 // one cell of a PUB_STRIPS strip, feet on (x, y), k sprite pixels per... k game units per sprite pixel (2 = 1:1 on the pixel layer)
 function pubStrip(name, f, x, y, k, flip) {
