@@ -10224,7 +10224,7 @@ function pubSpend(n) { if (PUB.wallet < n) return false; PUB.wallet -= n; pubSav
 const fmtN = n => Math.round(n).toLocaleString('en-GB');
 function pubImg(n) { return bgImg('pub/' + n); }
 const PUB_FILES = ['cabinet', 'chalk', 'fruitface', 'pitch', 'can', 'dartboard', 'dart', 'dart_fly', 'golfball', 'tee',
-  'sym_cherry', 'sym_lemon', 'sym_grapes', 'sym_bell', 'sym_bar', 'sym_seven', 'keeper_ready', 'keeper_dive', 'byron_kick', 'pearcy_golf', 'tornado', 'tornado2', 'kebab_wall', 'kebab_scene'];
+  'sym_cherry', 'sym_lemon', 'sym_grapes', 'sym_bell', 'sym_bar', 'sym_seven', 'keeper_ready', 'keeper_dive', 'byron_kick', 'pearcy_golf', 'tornado', 'tornado2', 'kebab_wall', 'kebab_scene', 'trophy_cab', 'trophy_items'];
 function pubPreload() { PUB_FILES.forEach(pubImg); ['social/wall', 'social/bar', 'social/fruit', 'set/dartboard', 'set/window', 'fishery/treeline', 'fishery/goose', 'fish/gary'].forEach(bgImg); }
 // one cell of a PUB_STRIPS strip, feet on (x, y), k sprite pixels per... k game units per sprite pixel (2 = 1:1 on the pixel layer)
 function pubStrip(name, f, x, y, k, flip) {
@@ -10401,10 +10401,11 @@ function pubTabHud(label) {
 function pubSay(text, t) { PUB.msg = text; PUB.msgT = t || 2.4; }
 
 // ================================================================== the pub itself
-const PUB_W = 2290, PUB_FLOOR = 400;
+const PUB_W = 2540, PUB_FLOOR = 400;   // 2290 until the trophy cabinet (Version 63)
 const PUB_OBJ = [
   { id: 'door', x: 60 }, { id: 'bar', x: 540 }, { id: 'darts', x: 960 }, { id: 'fruit', x: 1300 },
   { id: 'pens', x: 1480 }, { id: 'golf', x: 1650 }, { id: 'awake', x: 1820 }, { id: 'kiss', x: 1990 }, { id: 'kebab', x: 2160 },
+  { id: 'trophy', x: 2420 },   // the trophy cabinet (Version 63)
 ];
 function openPub(from, next, lad) {
   pubPreload(); pubBoardsStart();
@@ -10429,6 +10430,7 @@ function pubPrompt(o) {
   if (!o) return null;
   if (o.id === 'player') return hubPrompt(o.g);
   if (o.id === 'door') return PUB.from === 'run' ? 'BACK OUT INTO THE NIGHT' : 'LEAVE THE PUB';
+  if (o.id === 'trophy') return typeof achCount === 'function' ? 'TROPHY CABINET · ' + achCount() + ' OF ' + ACH_LIST.length : null;
   if (o.id === 'bar') return PUB.from === 'run' ? (PUB.round ? 'ANOTHER? YOU’VE HAD YOUR ROUND' : 'BUY A ROUND · ' + fmtN(PUB_ROUND) + ' · +1 LIFE') : 'HAVE A PINT · ' + fmtN(PUB_PINT);
   const d = MINI_DEF[o.id];
   if (!cabOpen(o.id)) return 'OUT OF ORDER · PLAY IT AFTER ' + d.after.toUpperCase();
@@ -10439,6 +10441,7 @@ function pubAct(o) {
   if (!o) return;
   if (o.id === 'player') { hubInvite(o.g); return; }
   if (o.id === 'door') { pubLeave(); return; }
+  if (o.id === 'trophy') { if (typeof trophyOpen === 'function') trophyOpen('pub'); return; }
   if (o.id === 'bar') {
     if (PUB.from === 'run') {
       if (PUB.round) { pubSay('Landlord says one round per visit.'); sfx('grab'); return; }
@@ -10515,6 +10518,7 @@ function pubDrawWorld() {
     if (!cabOpen(id)) { ctx.fillStyle = '#0a0c10'; ctx.fillRect(sx, sy, 30, 26); }
     else { ctx.fillStyle = 'rgba(80,160,255,' + (0.18 + 0.08 * Math.sin(time * 3 + o.x)).toFixed(2) + ')'; ctx.fillRect(sx, sy, 30, 26); }
   }
+  if (typeof trophyCabDraw === 'function') trophyCabDraw(cx);   // Version 63
   // everyone else who's online, then you, back to front
   const people = hubGhosts().map(g => ({ y: g.y, f: () => pubLad(g.lad, g.x - cx, g.y, g.moving ? 'walk' : 'idle', g.face, g.walk) }));
   people.push({ y: PUB.y, f: () => pubLad(PUB.lad, PUB.x - cx, PUB.y, PUB.moving ? 'walk' : 'idle', PUB.face, PUB.walk, 1, PUB.pints > 2 ? { state: 'drowsy' } : null) });
@@ -10553,6 +10557,7 @@ function drawPub() {
     if (!cabOpen(id)) { ctx.save(); ctx.translate(x + 4, 414 - 176 + 64); ctx.rotate(-0.12); ctx.fillStyle = '#efe6d2'; ctx.fillRect(-26, -9, 52, 18); ctx.font = '800 8px ' + BODY; ctx.fillStyle = '#b23a32'; ctx.fillText('OUT OF', 0, -3); ctx.fillText('ORDER', 0, 5); ctx.restore(); continue; }
     const top = pubBoard(id)[0]; if (top) drawPortrait(top.lad, x - 8, 414 - 176 + 54, 26, '#ffd23f');
   }
+  if (typeof trophyCabText === 'function') trophyCabText(cx);   // Version 63
   hubTags();
   chatBubbles();
   // the prompt by whatever you're stood at
@@ -12435,6 +12440,37 @@ function tleDraw() {
   }
 }
 // V62 js end
+// V63 js start
+const TROPHY_CAB = {"items":[[0,0,8,9,10,27],[8,0,6,7,18,29],[14,0,9,9,24,27],[23,0,6,11,34,25],[29,0,7,11,10,45],[36,0,9,11,17,45],[45,0,6,11,26,45],[51,0,9,11,32,45],[60,0,7,10,10,65],[67,0,8,8,17,67],[75,0,8,9,25,66],[83,0,8,10,33,65],[91,0,7,9,10,84],[98,0,9,10,17,83],[107,0,6,8,26,85],[113,0,9,9,32,84]],"w":50,"h":114};
+// ================================================================== Version 63: the trophy cabinet
+// At the far end of the Harvest Moon, past the arcade: an open-fronted cabinet whose shelves fill up as you win
+// trophies (16 on the shelves for the 29 trophies, a share matching yours; all of them when you've got the lot).
+// The count is on the drawer. HIT opens the trophy room. Art: tools/v63/trophy_art.py; TROPHY_CAB comes from its json.
+const TROPHY_X = 2420;   // the cabinet's middle, in the pub's world
+function trophyShown() {
+  const n = achCount(), t = ACH_LIST.length, k = TROPHY_CAB.items.length;
+  return n <= 0 ? 0 : n >= t ? k : Math.min(k - 1, Math.max(1, Math.round(n / t * k)));
+}
+function trophyCabDraw(cx) {
+  const img = pubImg('trophy_cab'); if (!img) return;
+  const L = TROPHY_X - img.width, T = 414 - img.height * 2, x0 = Math.round((L - cx) / 2) * 2;
+  if (x0 > W + 4 || x0 + img.width * 2 < -4) return;
+  bgPut(img, L, 414);
+  const it = pubImg('trophy_items'); if (!it) return;
+  ctx.save(); ctx.imageSmoothingEnabled = false;
+  TROPHY_CAB.items.slice(0, trophyShown()).forEach(([sx, sy, w, h, ix, iy]) => ctx.drawImage(it, sx, sy, w, h, x0 + ix * 2, T + iy * 2, w * 2, h * 2));
+  // the newest one catches the light now and then
+  const k = trophyShown(); if (k) { const [, , w, h, ix, iy] = TROPHY_CAB.items[k - 1], ph = (time * 0.6) % 3; if (ph < 0.5) { ctx.fillStyle = 'rgba(255,250,220,0.75)'; ctx.fillRect(x0 + (ix + Math.floor(ph / 0.5 * w)) * 2, T + (iy + 1) * 2, 2, 2); } }
+  ctx.restore();
+}
+// sharp text over the room: a sign above, the count on the drawer
+function trophyCabText(cx) {
+  const x = TROPHY_X - cx; if (x < -120 || x > W + 120) return;
+  textOut('TROPHIES', x, 168, '15px ' + DISPLAY, '#ffd23f', OUT, 4);
+  ctx.font = '10px ' + DISPLAY; ctx.fillStyle = '#ffd23f'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(achCount() + ' / ' + ACH_LIST.length, x, 414 - (TROPHY_CAB.h - 104) * 2);
+}
+// V63 js end
 window.__appBack = () => {
   if (NET.on) { netPressed.add('pause'); return true; }
   if (mode === 'select' && T3.live()) return T3.back();

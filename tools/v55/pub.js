@@ -16,7 +16,7 @@ function pubSpend(n) { if (PUB.wallet < n) return false; PUB.wallet -= n; pubSav
 const fmtN = n => Math.round(n).toLocaleString('en-GB');
 function pubImg(n) { return bgImg('pub/' + n); }
 const PUB_FILES = ['cabinet', 'chalk', 'fruitface', 'pitch', 'can', 'dartboard', 'dart', 'dart_fly', 'golfball', 'tee',
-  'sym_cherry', 'sym_lemon', 'sym_grapes', 'sym_bell', 'sym_bar', 'sym_seven', 'keeper_ready', 'keeper_dive', 'byron_kick', 'pearcy_golf', 'tornado', 'tornado2', 'kebab_wall', 'kebab_scene'];
+  'sym_cherry', 'sym_lemon', 'sym_grapes', 'sym_bell', 'sym_bar', 'sym_seven', 'keeper_ready', 'keeper_dive', 'byron_kick', 'pearcy_golf', 'tornado', 'tornado2', 'kebab_wall', 'kebab_scene', 'trophy_cab', 'trophy_items'];
 function pubPreload() { PUB_FILES.forEach(pubImg); ['social/wall', 'social/bar', 'social/fruit', 'set/dartboard', 'set/window', 'fishery/treeline', 'fishery/goose', 'fish/gary'].forEach(bgImg); }
 // one cell of a PUB_STRIPS strip, feet on (x, y), k sprite pixels per... k game units per sprite pixel (2 = 1:1 on the pixel layer)
 function pubStrip(name, f, x, y, k, flip) {
@@ -193,10 +193,11 @@ function pubTabHud(label) {
 function pubSay(text, t) { PUB.msg = text; PUB.msgT = t || 2.4; }
 
 // ================================================================== the pub itself
-const PUB_W = 2290, PUB_FLOOR = 400;
+const PUB_W = 2540, PUB_FLOOR = 400;   // 2290 until the trophy cabinet (Version 63)
 const PUB_OBJ = [
   { id: 'door', x: 60 }, { id: 'bar', x: 540 }, { id: 'darts', x: 960 }, { id: 'fruit', x: 1300 },
   { id: 'pens', x: 1480 }, { id: 'golf', x: 1650 }, { id: 'awake', x: 1820 }, { id: 'kiss', x: 1990 }, { id: 'kebab', x: 2160 },
+  { id: 'trophy', x: 2420 },   // the trophy cabinet (Version 63)
 ];
 function openPub(from, next, lad) {
   pubPreload(); pubBoardsStart();
@@ -221,6 +222,7 @@ function pubPrompt(o) {
   if (!o) return null;
   if (o.id === 'player') return hubPrompt(o.g);
   if (o.id === 'door') return PUB.from === 'run' ? 'BACK OUT INTO THE NIGHT' : 'LEAVE THE PUB';
+  if (o.id === 'trophy') return typeof achCount === 'function' ? 'TROPHY CABINET · ' + achCount() + ' OF ' + ACH_LIST.length : null;
   if (o.id === 'bar') return PUB.from === 'run' ? (PUB.round ? 'ANOTHER? YOU’VE HAD YOUR ROUND' : 'BUY A ROUND · ' + fmtN(PUB_ROUND) + ' · +1 LIFE') : 'HAVE A PINT · ' + fmtN(PUB_PINT);
   const d = MINI_DEF[o.id];
   if (!cabOpen(o.id)) return 'OUT OF ORDER · PLAY IT AFTER ' + d.after.toUpperCase();
@@ -231,6 +233,7 @@ function pubAct(o) {
   if (!o) return;
   if (o.id === 'player') { hubInvite(o.g); return; }
   if (o.id === 'door') { pubLeave(); return; }
+  if (o.id === 'trophy') { if (typeof trophyOpen === 'function') trophyOpen('pub'); return; }
   if (o.id === 'bar') {
     if (PUB.from === 'run') {
       if (PUB.round) { pubSay('Landlord says one round per visit.'); sfx('grab'); return; }
@@ -307,6 +310,7 @@ function pubDrawWorld() {
     if (!cabOpen(id)) { ctx.fillStyle = '#0a0c10'; ctx.fillRect(sx, sy, 30, 26); }
     else { ctx.fillStyle = 'rgba(80,160,255,' + (0.18 + 0.08 * Math.sin(time * 3 + o.x)).toFixed(2) + ')'; ctx.fillRect(sx, sy, 30, 26); }
   }
+  if (typeof trophyCabDraw === 'function') trophyCabDraw(cx);   // Version 63
   // everyone else who's online, then you, back to front
   const people = hubGhosts().map(g => ({ y: g.y, f: () => pubLad(g.lad, g.x - cx, g.y, g.moving ? 'walk' : 'idle', g.face, g.walk) }));
   people.push({ y: PUB.y, f: () => pubLad(PUB.lad, PUB.x - cx, PUB.y, PUB.moving ? 'walk' : 'idle', PUB.face, PUB.walk, 1, PUB.pints > 2 ? { state: 'drowsy' } : null) });
@@ -345,6 +349,7 @@ function drawPub() {
     if (!cabOpen(id)) { ctx.save(); ctx.translate(x + 4, 414 - 176 + 64); ctx.rotate(-0.12); ctx.fillStyle = '#efe6d2'; ctx.fillRect(-26, -9, 52, 18); ctx.font = '800 8px ' + BODY; ctx.fillStyle = '#b23a32'; ctx.fillText('OUT OF', 0, -3); ctx.fillText('ORDER', 0, 5); ctx.restore(); continue; }
     const top = pubBoard(id)[0]; if (top) drawPortrait(top.lad, x - 8, 414 - 176 + 54, 26, '#ffd23f');
   }
+  if (typeof trophyCabText === 'function') trophyCabText(cx);   // Version 63
   hubTags();
   chatBubbles();
   // the prompt by whatever you're stood at
