@@ -514,6 +514,7 @@ const T3 = (() => {
   click('board', () => { sfx('page'); openBoard(null, 'select'); });
   click('pub', () => pubFromSelect(chosen().id));   // Version 55
   click('me', () => profileAsk(false));   // Version 56
+  click('trophy', () => trophyOpen('select'));   // Version 62
   click('online', () => { if (netAvailable()) { sfx('page'); openNetLobby(); } });
 
   // ---------------------------------------------------------------- camera poses

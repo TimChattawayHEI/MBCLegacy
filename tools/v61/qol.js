@@ -70,7 +70,8 @@ const cloudOn = () => appFb() && NT.kind === 'fb' && !!NT.db;
 // what's worth keeping: progress, not this phone's settings or a run in progress
 function cloudSnap() {
   return { v: 1, unlocked: !!settings.unlocked, thet: !!settings.thet, ash: !!settings.ash, ranks: stageRanks(),
-    wallet: Math.round(PUB.wallet || 0), cabs: Object.assign({}, PUB.cabs), pb: Object.assign({}, PUB.pb), pbLad: Object.assign({}, PUB.pbLad) };
+    wallet: Math.round(PUB.wallet || 0), cabs: Object.assign({}, PUB.cabs), pb: Object.assign({}, PUB.pb), pbLad: Object.assign({}, PUB.pbLad),
+    ach: typeof achSnap === 'function' ? achSnap() : null };   // trophies (Version 62)
 }
 // merge a save into this phone: unlocks and open cabinets add up, the better rank and the higher best win; the tab is
 // taken from the save when it's newer than this phone's last sync from another phone (or on a restore)
@@ -87,7 +88,8 @@ function cloudApply(c, takeTab) {
   for (const g in c.pb || {}) { const v = +c.pb[g] || 0; if (v > (PUB.pb[g] || 0)) { PUB.pb[g] = v; if (c.pbLad && c.pbLad[g]) PUB.pbLad[g] = c.pbLad[g]; pc = true; } }
   if (takeTab && typeof c.wallet === 'number' && isFinite(c.wallet) && c.wallet >= 0 && c.wallet !== PUB.wallet) { PUB.wallet = Math.round(c.wallet); pc = true; }
   if (pc) pubSave();
-  return ch || rc || pc;
+  const ac = !!(c.ach && typeof achMerge === 'function' && achMerge(c.ach));   // trophies (Version 62)
+  return ch || rc || pc || ac;
 }
 function cloudPath(n, key) { return 'saves/' + n + '/' + (key || PROFILE.key); }
 // when the app opens (and when your name changes): pull, merge, push back
@@ -263,4 +265,5 @@ function contDraw() {
 function qolTick() {
   try { updTick(); } catch (e) { glitch('update', e); }
   try { cloudTick(); } catch (e) { glitch('cloud', e); }
+  if (typeof achTick === 'function') try { achTick(); } catch (e) { glitch('trophies', e); }   // Version 62
 }

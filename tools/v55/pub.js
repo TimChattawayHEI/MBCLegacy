@@ -409,6 +409,7 @@ function miniEnd(reason) {
   const sc = Math.max(0, Math.round(MG.score));
   const pay = MG.forfeit ? 0 : Math.round(MG.d.pay(sc) * (MG.from === 'run' ? 2 : 1));
   MG.paid = pay;
+  if (!MG.forfeit && typeof achMini === 'function') achMini(MG.id, sc, MG.reason);   // trophies (Version 62)
   if (pay > 0) { if (MG.from === 'run') { if (run) addScore(pay, true); } else pubBank(pay); }
   if (!MG.forfeit) pubRecord(MG.id, MG.lad, MG.id === 'fruit' ? MG.s.best || 0 : sc, r => { if (MG) MG.res = r; });
   musicSet(null); sfx(pay > 0 ? 'life' : 'ko');
@@ -475,7 +476,7 @@ function drawMiniResult() {
   }
   ctx.restore();
 }
-function pubFlash(s, text, col, t) { s.msg = text; s.msgCol = col || '#ffd23f'; s.msgT = t || 1.4; }
+function pubFlash(s, text, col, t) { s.msg = text; s.msgCol = col || '#ffd23f'; s.msgT = t || 1.4; if (typeof achFlash === 'function') achFlash(text); }   // trophies (Version 62)
 function drawGameMsg(s, y) { if (s.msgT > 0 && s.msg) { ctx.save(); ctx.globalAlpha = Math.min(1, s.msgT / 0.25); textOut(s.msg, W / 2, y || 120, '30px ' + DISPLAY, s.msgCol || '#ffd23f', OUT, 7); ctx.restore(); } }
 
 const MGAME = {};

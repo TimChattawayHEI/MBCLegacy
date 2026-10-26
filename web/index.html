@@ -228,6 +228,7 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
           <button class="t3ghost" id="t3-me" type="button">You</button>
           <button class="t3ghost" id="t3-pub" type="button">Harvest Moon</button>
           <button class="t3ghost" id="t3-board" type="button">High scores</button>
+          <button class="t3ghost" id="t3-trophy" type="button">Trophies</button>
           <button class="t3ghost" id="t3-online" type="button" hidden>Play online</button>
         </div>
       </div>
@@ -626,6 +627,7 @@ const STICK = { x: 130, y: 430, r: 70 };
 // touch layout options (Version 45): button size, and the stick on the right for left-handed players
 const BTN0 = BTN.map(b => Object.assign({}, b)), STICK0 = Object.assign({}, STICK);
 function applyTouchLayout() {
+  if (settings.tl && tlApply()) return;   // your own layout (Version 62)
   const k = { s: 0.85, m: 1, l: 1.18 }[settings.pad] || 1, L = !!settings.lefty;
   BTN.forEach((b, i) => { const o = BTN0[i], x = W - (W - o.x) * k; b.x = L ? W - x : x; b.y = H - (H - o.y) * k; b.r = o.r * k; });
   STICK.r = STICK0.r * k; STICK.x = L ? W - STICK0.x : STICK0.x; STICK.y = H - (H - STICK0.y) * k;
@@ -646,7 +648,7 @@ canvas.addEventListener('pointerdown', e => {
   if (mode !== 'play' && !pubStick()) return;   // the pub and its moving games use the stick too (Version 55.2)
   let role = null;
   for (const b of BTN) if (Math.hypot(p.x - b.x, p.y - b.y) < b.r + 14) { role = b.id; break; }
-  if (!role && (settings.lefty ? p.x > W * 0.5 : p.x < W * 0.5) && p.y > 120) role = 'stick';
+  if (!role && (STICK.x > W * 0.5 ? p.x > W * 0.5 : p.x < W * 0.5) && p.y > 120) role = 'stick';   // the stick's half follows the stick (Version 62)
   if (role === 'stick') pointers.set(e.pointerId, { role, ox: p.x, oy: p.y, x: p.x, y: p.y });
   else if (role) { pointers.set(e.pointerId, { role }); pressed.add(role); }
   e.preventDefault();
@@ -3001,7 +3003,8 @@ const cam = { x: 0 };
 let FT = 340, FB = 506;
 const BBQ = { kind: 'bbq', x: 480, y: 428, face: 1 };
 
-function showBanner(text, sub, life) { if (bossBannerCard(text, sub)) return; banner = { text, sub, t: 0, life }; }
+function showBanner(text, sub, life) { if (typeof achBanner === 'function') achBanner(text);   // Version 62
+  if (bossBannerCard(text, sub)) return; banner = { text, sub, t: 0, life }; }
 function addShake(v) { shake = Math.max(shake, reduceMotion || settings.shake === 'less' ? v * 0.25 : v); }
 // difficulty, eased in over the first two stages of a run so the opener stays an opener
 const dCache = {};
@@ -8058,9 +8061,10 @@ function setRows() {
     { id: 'pad', label: 'BUTTON SIZE', val: ({ s: 'SMALL', m: 'MEDIUM', l: 'LARGE' })[settings.pad] || 'MEDIUM', touch: true },
     { id: 'ghost', label: 'BUTTONS', val: settings.ghost ? 'SEE-THROUGH' : 'SOLID', touch: true },
     { id: 'lefty', label: 'STICK', val: settings.lefty ? 'ON THE RIGHT' : 'ON THE LEFT', touch: true },
+    { id: 'layout', label: 'BUTTON LAYOUT', val: settings.tl ? 'YOURS \u00b7 EDIT' : 'EDIT', touch: true },   // Version 62
     { id: 'run', label: 'RUNNING', val: settings.run === 'push' ? 'ANY FULL PUSH' : 'HOLD THE STICK OUT', touch: true },
   ].filter(r => !r.touch || touchUI || (r.id === 'buzz' && canBuzz()));
-  rows.forEach((r, i) => { r.x = 452; r.y = 110 + i * 32; r.w = 426; r.h = 28; r.vx = r.x + 196; });
+  rows.forEach((r, i) => { r.x = 452; r.y = 110 + i * (rows.length > 11 ? 30 : 32); r.w = 426; r.h = 28; r.vx = r.x + 196; });
   return rows;
 }
 function setAdj(id, d) {
@@ -8073,6 +8077,7 @@ function setAdj(id, d) {
   else if (id === 'pad') { const o = ['s', 'm', 'l'], i = o.indexOf(settings.pad); settings.pad = o[clamp((i < 0 ? 1 : i) + d, 0, 2)]; applyTouchLayout(); }
   else if (id === 'ghost') settings.ghost = !settings.ghost;
   else if (id === 'lefty') { settings.lefty = !settings.lefty; applyTouchLayout(); }
+  else if (id === 'layout') { tleOpen(); return; }   // Version 62
   else if (id === 'run') settings.run = settings.run === 'push' ? 'hold' : 'push';
   saveSettings();
   if (id !== 'fx') sfx('swing');
@@ -10033,6 +10038,8 @@ function step(dt) {
   if (mode === 'name') return true;
   if (mode === 'pause') { updatePause(); return true; }
   if (mode === 'cont') { contUpdate(dt); return true; }   // Version 61
+  if (mode === 'tledit') { tleUpdate(dt); return true; }   // Version 62
+  if (mode === 'trophies') { updateTrophies(); return true; }
   if (mode === 'win' || mode === 'over') { updateEnd(); updateBubbles(dt); return true; }
   if (hitstop > 0) { hitstop -= dt; shake = Math.max(0, shake - dt * 30); return false; }
   if (pressed.has('pause') || pressed.has('escape')) { openPause(); return true; }
@@ -10150,6 +10157,7 @@ function render() {
   if (mode === 'net') { drawNetLobby(); return; }
   if (mode === 'chat') { drawChat(); drawChatSkip(); drawStatic(); return; }
   if (mode === 'loading') { drawLoading(); return; }
+  if (mode === 'trophies') { drawTrophies(); return; }   // Version 62
   if (mode === 'board') { drawBoard(); return; }
   if (mode === 'pub' || (mode === 'name' && pubNameCb && pubNameMode === 'pub')) { drawPub(); return; }   // Version 55
   if (mode === 'mini' || (mode === 'name' && pubNameCb)) { drawMiniGame(); return; }
@@ -10160,6 +10168,7 @@ function render() {
   if (mode === 'clear') drawClear();
   if (mode === 'pause') drawPause();
   if (mode === 'cont') contDraw();   // Version 61
+  if (mode === 'tledit') tleDraw();   // Version 62
   if (mode === 'name') { ctx.fillStyle = 'rgba(12,16,20,0.5)'; ctx.fillRect(0, 0, W, H); }
   if (mode !== 'pause') drawBanner();
   if (mode === 'win' && challenger) drawChallenger();
@@ -10608,6 +10617,7 @@ function miniEnd(reason) {
   const sc = Math.max(0, Math.round(MG.score));
   const pay = MG.forfeit ? 0 : Math.round(MG.d.pay(sc) * (MG.from === 'run' ? 2 : 1));
   MG.paid = pay;
+  if (!MG.forfeit && typeof achMini === 'function') achMini(MG.id, sc, MG.reason);   // trophies (Version 62)
   if (pay > 0) { if (MG.from === 'run') { if (run) addScore(pay, true); } else pubBank(pay); }
   if (!MG.forfeit) pubRecord(MG.id, MG.lad, MG.id === 'fruit' ? MG.s.best || 0 : sc, r => { if (MG) MG.res = r; });
   musicSet(null); sfx(pay > 0 ? 'life' : 'ko');
@@ -10674,7 +10684,7 @@ function drawMiniResult() {
   }
   ctx.restore();
 }
-function pubFlash(s, text, col, t) { s.msg = text; s.msgCol = col || '#ffd23f'; s.msgT = t || 1.4; }
+function pubFlash(s, text, col, t) { s.msg = text; s.msgCol = col || '#ffd23f'; s.msgT = t || 1.4; if (typeof achFlash === 'function') achFlash(text); }   // trophies (Version 62)
 function drawGameMsg(s, y) { if (s.msgT > 0 && s.msg) { ctx.save(); ctx.globalAlpha = Math.min(1, s.msgT / 0.25); textOut(s.msg, W / 2, y || 120, '30px ' + DISPLAY, s.msgCol || '#ffd23f', OUT, 7); ctx.restore(); } }
 
 const MGAME = {};
@@ -11945,7 +11955,8 @@ const cloudOn = () => appFb() && NT.kind === 'fb' && !!NT.db;
 // what's worth keeping: progress, not this phone's settings or a run in progress
 function cloudSnap() {
   return { v: 1, unlocked: !!settings.unlocked, thet: !!settings.thet, ash: !!settings.ash, ranks: stageRanks(),
-    wallet: Math.round(PUB.wallet || 0), cabs: Object.assign({}, PUB.cabs), pb: Object.assign({}, PUB.pb), pbLad: Object.assign({}, PUB.pbLad) };
+    wallet: Math.round(PUB.wallet || 0), cabs: Object.assign({}, PUB.cabs), pb: Object.assign({}, PUB.pb), pbLad: Object.assign({}, PUB.pbLad),
+    ach: typeof achSnap === 'function' ? achSnap() : null };   // trophies (Version 62)
 }
 // merge a save into this phone: unlocks and open cabinets add up, the better rank and the higher best win; the tab is
 // taken from the save when it's newer than this phone's last sync from another phone (or on a restore)
@@ -11962,7 +11973,8 @@ function cloudApply(c, takeTab) {
   for (const g in c.pb || {}) { const v = +c.pb[g] || 0; if (v > (PUB.pb[g] || 0)) { PUB.pb[g] = v; if (c.pbLad && c.pbLad[g]) PUB.pbLad[g] = c.pbLad[g]; pc = true; } }
   if (takeTab && typeof c.wallet === 'number' && isFinite(c.wallet) && c.wallet >= 0 && c.wallet !== PUB.wallet) { PUB.wallet = Math.round(c.wallet); pc = true; }
   if (pc) pubSave();
-  return ch || rc || pc;
+  const ac = !!(c.ach && typeof achMerge === 'function' && achMerge(c.ach));   // trophies (Version 62)
+  return ch || rc || pc || ac;
 }
 function cloudPath(n, key) { return 'saves/' + n + '/' + (key || PROFILE.key); }
 // when the app opens (and when your name changes): pull, merge, push back
@@ -12138,14 +12150,299 @@ function contDraw() {
 function qolTick() {
   try { updTick(); } catch (e) { glitch('update', e); }
   try { cloudTick(); } catch (e) { glitch('cloud', e); }
+  if (typeof achTick === 'function') try { achTick(); } catch (e) { glitch('trophies', e); }   // Version 62
 }
 // QOL js end
+// V62 js start
+// ================================================================== Version 62: trophies
+// 29 achievements across the campaign, the fights, the Harvest Moon and the online side. Each one puts a bonus on your
+// tab the moment you get it, with a card at the top of the screen. TROPHIES on the select screen lists them all.
+// Kept on the phone (mbc.ach), and in your cloud save (Version 61) so a new phone keeps them.
+// Most are spotted by looking at the game each frame; the rest come from three hooks: the pub games' flashes
+// (pubFlash), their results (miniEnd) and the big banners (showBanner).
+const ACH_LIST = [
+  // the campaign
+  { id: 'c1999', name: 'Back to the Future', what: 'Finish 1999', tab: 2000 },
+  { id: 'celba', name: 'Lads on Tour', what: 'Finish Elba 2002', tab: 2000 },
+  { id: 'cnight', name: 'Last Orders', what: 'Finish Nightlife 2006', tab: 2000 },
+  { id: 'ccarp', name: 'Carp Diem', what: 'Land Big Gary and finish the campaign', tab: 5000 },
+  { id: 'cram', name: 'Up the Estate', what: 'Survive Ramsden', tab: 3000 },
+  { id: 'chard', name: 'Hard as Nails', what: 'Finish the campaign on Hard', tab: 10000 },
+  { id: 'cnotab', name: 'Paid Up', what: 'Finish the campaign without a continue', tab: 5000 },
+  // the fights
+  { id: 'untouched', name: 'Untouchable', what: 'Clear a stage without taking a hit', tab: 3000 },
+  { id: 'srank', name: 'Top Marks', what: 'Get an S rank on a stage', tab: 2000 },
+  { id: 'alls', name: 'Straight S', what: 'S rank on every stage', tab: 20000 },
+  { id: 'chain30', name: 'Chain Gang', what: 'Land a 30-hit chain', tab: 2000 },
+  { id: 'multi4', name: 'Wrecking Ball', what: 'Knock out four at once', tab: 2000 },
+  { id: 'secret', name: 'Glint in the Eye', what: 'Find a hidden extra life', tab: 1000 },
+  { id: 'squad', name: 'Full Squad', what: 'Fire a special with all seven lads', tab: 3000 },
+  { id: 'kos1000', name: 'Body Count', what: '1,000 knockouts, all time', tab: 5000 },
+  { id: 'tab', name: 'On the Tab', what: 'Put a continue on the tab', tab: 500 },
+  // the Harvest Moon
+  { id: 'd180', name: 'One Hundred and Eighty!', what: 'Three darts, 180', tab: 2000 },
+  { id: 'jackpot', name: 'Three Marcs', what: 'Hit the fruit machine jackpot', tab: 2000 },
+  { id: 'pens5', name: 'Top Bins', what: 'Five from five on penalties', tab: 2000 },
+  { id: 'midnight', name: 'Midnight Kiss', what: 'A kiss in the last five seconds of Kiss Chase', tab: 2000 },
+  { id: 'gary', name: "Gary's Had It", what: 'Hit Big Gary with a drive', tab: 2000 },
+  { id: 'awake', name: 'Wide Awake', what: 'Drive 1,500 m in Stay Awake', tab: 2000 },
+  { id: 'kebab', name: "Your Kebab's Up", what: 'Get your kebab in the siege', tab: 2000 },
+  { id: 'wave10', name: 'Last Man Standing', what: 'Reach wave 10 in the siege', tab: 3000 },
+  { id: 'round', name: 'Your Round', what: 'Buy the lads a round', tab: 500 },
+  // the lads
+  { id: 'coop', name: "Two's Company", what: 'Play an online co-op game', tab: 1000 },
+  { id: 'chat', name: 'Chatterbox', what: 'Say something in the Harvest Moon chat', tab: 250 },
+  { id: 'thet', name: 'Low Profile', what: 'Unlock Thet', tab: 2000 },
+  { id: 'ash', name: "He's Back", what: 'Unlock Ash', tab: 5000 },
+];
+const ACH_BY_ID = Object.fromEntries(ACH_LIST.map(a => [a.id, a]));
+const SQUAD = ['tim', 'seb', 'byron', 'pearcy', 'kelly', 'marc', 'sam'];
+const ACH = { got: lsGet('mbc.ach', {}) || {}, st: Object.assign({ kos: 0, sp: {} }, lsGet('mbc.stats', {}) || {}),
+  queue: [], el: null, showT: 0, lastRun: null, lastK: 0, saveT: 0, dirty: false };
+const achHave = id => !!ACH.got[id];
+const achCount = () => ACH_LIST.filter(a => ACH.got[a.id]).length;
+function achGive(id) {
+  const a = ACH_BY_ID[id]; if (!a || ACH.got[id]) return false;
+  ACH.got[id] = Date.now(); lsSet('mbc.ach', ACH.got);
+  pubBank(a.tab); ACH.queue.push(a);
+  return true;
+}
+// for the cloud save (Version 61): what you've got and the running totals; merging never pays the bonus twice
+function achSnap() { return { got: Object.assign({}, ACH.got), kos: ACH.st.kos || 0, sp: Object.assign({}, ACH.st.sp) }; }
+function achMerge(c) {
+  if (!c || typeof c !== 'object') return false;
+  let ch = false;
+  for (const id in c.got || {}) if (ACH_BY_ID[id] && !ACH.got[id]) { ACH.got[id] = c.got[id] || Date.now(); ch = true; }
+  if ((+c.kos || 0) > (ACH.st.kos || 0)) { ACH.st.kos = +c.kos; ch = true; }
+  for (const k in c.sp || {}) if (!ACH.st.sp[k]) { ACH.st.sp[k] = true; ch = true; }
+  if (ch) { lsSet('mbc.ach', ACH.got); lsSet('mbc.stats', ACH.st); }
+  return ch;
+}
+// the hooks
+function achFlash(text) {
+  const t = String(text || '');
+  if (t === 'ONE HUNDRED AND EIGHTY!') achGive('d180');
+  else if (/^THREE MARCS/.test(t)) achGive('jackpot');
+  else if (/^MIDNIGHT KISS/.test(t)) achGive('midnight');
+  else if (/^BIG GARY'S HAD IT/.test(t)) achGive('gary');
+}
+function achMini(id, score, reason) {
+  if (id === 'pens' && reason === 'FIVE FROM FIVE') achGive('pens5');
+  if (id === 'awake' && score >= 1500) achGive('awake');
+}
+function achBanner(text) { if (/KEBAB.S UP/.test(String(text || ''))) achGive('kebab'); }
+// a stage is the last of its chapter when the next one on the route is in another chapter
+function achChapterEnd(key) {
+  const i = ROUTE.indexOf(key); if (i < 0) return null;
+  const c = chapterOf(key), n = ROUTE[i + 1];
+  return !n || chapterOf(n) !== c ? c : null;
+}
+// everything else: look at the game
+function achWatch() {
+  if (settings.thet) achGive('thet');
+  if (settings.ash) achGive('ash');
+  if (CHAT && CHAT.sentAt > 0) achGive('chat');
+  if (mode === 'pub' && PUB.round) achGive('round');
+  if (!run) return;
+  if ((run.conts || 0) > 0) achGive('tab');
+  if (mode === 'play' && S && player) {
+    if (NET.on) achGive('coop');
+    if (S.chain >= 30) achGive('chain30');
+    if (S.koN >= 4) achGive('multi4');
+    if (S.secretFound) achGive('secret');
+    if (S.key === 'kebab' && (S.waveIdx || 0) >= 9) achGive('wave10');
+    if (player.state === 'special' && player.def && SQUAD.includes(player.def.id) && !ACH.st.sp[player.def.id]) { ACH.st.sp[player.def.id] = true; ACH.dirty = true; }
+    if (SQUAD.every(id => ACH.st.sp[id])) achGive('squad');
+  }
+  // knockouts, all time
+  if (ACH.lastRun !== run) { ACH.lastRun = run; ACH.lastK = run.kills || 0; }
+  const k = run.kills || 0; if (k > ACH.lastK) { ACH.st.kos = (ACH.st.kos || 0) + (k - ACH.lastK); ACH.lastK = k; ACH.dirty = true; }
+  if (ACH.st.kos >= 1000) achGive('kos1000');
+  // a stage cleared
+  if (mode === 'clear' && clearInfo && !clearInfo.achSeen && S) {
+    clearInfo.achSeen = true;
+    if ((clearInfo.rows || []).some(r => r[0] === 'Untouched')) achGive('untouched');
+    if (clearInfo.rank === 'S') achGive('srank');
+    const ranks = stageRanks(); if (ROUTE.concat(['ramsden']).every(k2 => ranks[k2] === 'S')) achGive('alls');
+    if (S.key === 'ramsden') achGive('cram');
+    const ch = achChapterEnd(S.key);
+    if (ch === '1999') achGive('c1999'); else if (ch === 'elba') achGive('celba'); else if (ch === 'nightlife') achGive('cnight');
+  }
+  // the campaign won
+  if (mode === 'win' && !run.achSeen) {
+    run.achSeen = true;
+    if (run.ramsdenCleared) achGive('cram');
+    if ((run.route || []).includes('pegnine')) achGive('ccarp');
+    if (run.diff === 'hard') achGive('chard');
+    if (!(run.conts > 0)) achGive('cnotab');
+  }
+  if (ACH.dirty && performance.now() - ACH.saveT > 5000) { ACH.dirty = false; ACH.saveT = performance.now(); lsSet('mbc.stats', ACH.st); }
+}
+// the card at the top of the screen, one at a time
+function achCardEl() {
+  if (ACH.el) return ACH.el;
+  const el = document.createElement('div'); el.id = 'achCard';
+  el.style.cssText = 'position:fixed;z-index:61;display:none;align-items:center;gap:12px;padding:10px 16px 10px 12px;background:#121a1e;border:2px solid #ffd23f;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.6);font:600 13px Rubik,system-ui,sans-serif;color:#efe6d2;pointer-events:none;transition:transform .25s ease-out,opacity .25s;max-width:min(520px,92vw)';
+  el.innerHTML = '<canvas id="achCup" width="16" height="16" style="width:40px;height:40px;image-rendering:pixelated;flex:none"></canvas><div style="min-width:0"><div style="font:800 10px Rubik,sans-serif;letter-spacing:2px;color:#ffd23f">TROPHY</div><div id="achName" style="font:400 19px \'Pixelify Sans\',monospace;color:#efe6d2"></div><div id="achWhat" style="color:#93a3a1;font-size:12px"></div></div>';
+  document.body.appendChild(el); ACH.el = el;
+  achCup(el.querySelector('#achCup').getContext('2d'), 0, 0, 1, true);
+  return el;
+}
+// a little gold cup, pixel by pixel (16x16), or its grey outline when you haven't got it
+const CUP = ['...kkkkkkkkkk...', '...kwyyyyyyok...', 'kkkkwyyyyyyokkkk', 'k..kwyyyyyyok..k', 'k..kwyyyyyyok..k', '.k.kwyyyyyyok.k.', '..kkwyyyyyyokk..', '....kwyyyyok....', '.....kwyyok.....', '......kyok......', '......kyok......', '.....kyyyok.....', '....kyyyyyok....', '....kkkkkkkk....', '................', '................'];
+function achCup(c, x, y, s, on) {
+  const pal = on ? { k: '#16120f', y: '#ffd23f', w: '#fff4b8', o: '#c88a1e' } : { k: '#55626a', y: '#1e2a30', w: '#26343b', o: '#1a2328' };
+  for (let r = 0; r < 16; r++) for (let q = 0; q < 16; q++) { const ch = CUP[r][q]; if (!ch || ch === '.') continue; c.fillStyle = pal[ch]; c.fillRect(x + q * s, y + r * s, s, s); }
+}
+function achCardTick(dt) {
+  if (!ACH.queue.length && !ACH.showT) return;
+  const el = achCardEl();
+  if (!ACH.showT && ACH.queue.length && mode !== 'tledit' && mode !== 'cont') {   // not over the layout editor or a continue
+    const a = ACH.queue.shift(); ACH.showT = 3.8;
+    el.querySelector('#achName').textContent = a.name;
+    el.querySelector('#achWhat').textContent = a.what + '  ·  +' + fmtN(a.tab) + ' on your tab';
+    el.style.display = 'flex'; el.style.opacity = '0'; el.style.transform = 'translateY(-16px)';
+    requestAnimationFrame(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; });
+    sfx('life'); setTimeout(() => sfx('incoming'), 120);
+  }
+  const r = canvas.getBoundingClientRect();
+  el.style.left = Math.max(8, r.left + r.width / 2 - el.offsetWidth / 2) + 'px'; el.style.top = Math.max(8, r.top + 56) + 'px';
+  ACH.showT = Math.max(0, ACH.showT - dt);
+  if (ACH.showT < 0.3) el.style.opacity = '0';
+  if (!ACH.showT) el.style.display = 'none';
+}
+let achLastT = 0;
+function achTick() {
+  const now = performance.now(), dt = Math.min(0.1, (now - (achLastT || now)) / 1000); achLastT = now;
+  achWatch(); achCardTick(dt);
+  const b = document.getElementById('t3-trophy'); if (b) { const t = 'Trophies ' + achCount() + '/' + ACH_LIST.length; if (b.textContent !== t) b.textContent = t; }
+}
+
+// ------------------------------------------------------------------ the trophy room (a screen of its own)
+let trophyBack = 'select', trophyPage = 0;
+function trophyOpen(back) { trophyBack = back || 'select'; trophyPage = 0; mode = 'trophies'; modeT = 0; sfx('page'); }
+function trophyClose() { mode = trophyBack === 'pub' ? 'pub' : 'select'; modeT = 0; sfx('page'); }
+function updateTrophies() {
+  if (modeT < 0.3) return;
+  if (pressed.has('escape') || pressed.has('back') || pressed.has('jump') || pressed.has('punch') || pressed.has('start')) { trophyClose(); return; }
+  if (taps.length) trophyClose();
+}
+function drawTrophies() {
+  ctx.fillStyle = '#0d1417'; ctx.fillRect(0, 0, W, H);
+  const g = ctx.createLinearGradient(0, 0, 0, 200); g.addColorStop(0, 'rgba(255,210,63,0.16)'); g.addColorStop(1, 'rgba(255,210,63,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, 200);
+  textOut('TROPHIES', W / 2, 40, '36px ' + DISPLAY, '#ffd23f', OUT, 7);
+  const n = achCount(), earned = ACH_LIST.filter(a => ACH.got[a.id]).reduce((t, a) => t + a.tab, 0);
+  ctx.font = '600 12px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(n + ' of ' + ACH_LIST.length + '   ·   ' + fmtN(earned) + ' put on your tab   ·   knockouts all time: ' + fmtN(ACH.st.kos || 0), W / 2, 70);
+  const half = Math.ceil(ACH_LIST.length / 2);
+  ACH_LIST.forEach((a, i) => {
+    const col = i < half ? 0 : 1, row = i < half ? i : i - half, x = 40 + col * 450, y = 92 + row * 28, on = !!ACH.got[a.id];
+    rrect(x, y, 430, 26, 6); ctx.fillStyle = on ? 'rgba(255,210,63,0.10)' : 'rgba(24,36,42,0.7)'; ctx.fill();
+    achCup(ctx, x + 6, y + 3, 1.25, on);
+    ctx.textAlign = 'left'; ctx.font = '15px ' + DISPLAY; ctx.fillStyle = on ? '#efe6d2' : '#6d7b80'; ctx.fillText(a.name, x + 32, y + 9);
+    ctx.font = '600 10px ' + BODY; ctx.fillStyle = on ? '#b9b09a' : '#56636a'; ctx.fillText(a.what + (a.id === 'kos1000' && !on ? ' (' + fmtN(ACH.st.kos || 0) + ')' : a.id === 'squad' && !on ? ' (' + SQUAD.filter(s => ACH.st.sp[s]).length + '/7)' : ''), x + 32, y + 20);
+    ctx.textAlign = 'right'; ctx.font = '800 11px ' + BODY; ctx.fillStyle = on ? '#7fe07a' : '#56636a'; ctx.fillText('+' + fmtN(a.tab), x + 420, y + 13);
+  });
+  ctx.textAlign = 'center'; ctx.font = '600 12px ' + BODY; ctx.fillStyle = '#93a3a1';
+  ctx.fillText(touchUI ? 'Tap to go back.' : 'Any button to go back.', W / 2, H - 14);
+}
+// ================================================================== Version 62: your own button layout
+// Pause > Settings > BUTTON LAYOUT (on a touch screen). Drag the stick and each button where your thumbs sit, tap one
+// and use - / + to size it, MIRROR swaps sides, RESET puts them back. Kept on this phone (settings.tl): positions as
+// you left them, with the button size and side they were made at, so the BUTTON SIZE and STICK settings still work on
+// top (bigger or smaller round the same spots, or mirrored). The stick still works anywhere on its half of the screen;
+// this is where it sits.
+// called by applyTouchLayout (hoisted, so it's there at start-up): true if your layout was used
+function tlApply() {
+  const t = settings.tl; if (!t || !t.stick) return false;
+  const kNow = { s: 0.85, m: 1, l: 1.18 }[settings.pad] || 1, f = kNow / (t.k || 1), mir = !!settings.lefty !== !!t.L;
+  const put = (o, v) => { if (!v) return; o.x = clamp(mir ? W - v.x : v.x, 20, W - 20); o.y = clamp(v.y, 60, H - 20); o.r = v.r * f; };
+  put(STICK, t.stick); BTN.forEach(b => put(b, t[b.id]));
+  return true;
+}
+const TLE = { sel: 'punch', drag: null, back: 'pause', dirty: false };
+const tleCtl = () => [Object.assign(STICK, { id: 'stick', label: 'STICK' })].concat(BTN);
+const tleR0 = id => id === 'stick' ? STICK0.r : (BTN0.find(b => b.id === id) || { r: 40 }).r;
+function tleBar() {
+  const items = [{ id: 'minus', label: '−', w: 56 }, { id: 'plus', label: '+', w: 56 }, { id: 'mirror', label: 'MIRROR', w: 112 }, { id: 'reset', label: 'RESET', w: 112 }, { id: 'done', label: 'DONE', w: 112 }];
+  let x = W / 2 - (items.reduce((t, b) => t + b.w, 0) + 12 * (items.length - 1)) / 2;
+  for (const b of items) { b.x = x; b.y = 86; b.h = 44; x += b.w + 12; }
+  return items;
+}
+function tleOpen() {
+  if (mode !== 'pause') return;
+  TLE.back = 'pause'; TLE.sel = 'punch'; TLE.drag = null; TLE.dirty = false;
+  mode = 'tledit'; modeT = 0; held.clear(); pointers.clear(); sfx('page');
+}
+function tleSave() {
+  const k = { s: 0.85, m: 1, l: 1.18 }[settings.pad] || 1, t = { k, L: !!settings.lefty, stick: { x: STICK.x, y: STICK.y, r: STICK.r } };
+  BTN.forEach(b => { t[b.id] = { x: b.x, y: b.y, r: b.r }; });
+  settings.tl = t; saveSettings();
+}
+function tleClose() { if (TLE.dirty) tleSave(); mode = 'pause'; modeT = 0; pauseTab = 'settings'; pauseFocus = 'right'; pointers.clear(); sfx('page'); }
+function tleAct(id) {
+  const c = tleCtl().find(o => o.id === TLE.sel);
+  if (id === 'minus' || id === 'plus') { if (!c) return; const r0 = tleR0(c.id); c.r = clamp(c.r * (id === 'plus' ? 1.12 : 1 / 1.12), r0 * 0.6, r0 * 1.8); TLE.dirty = true; sfx('swing'); }
+  else if (id === 'mirror') { for (const o of tleCtl()) o.x = W - o.x; settings.lefty = !settings.lefty; TLE.dirty = true; saveSettings(); sfx('swing'); }
+  else if (id === 'reset') { delete settings.tl; saveSettings(); TLE.dirty = false; applyTouchLayout(); sfx('page'); }
+  else if (id === 'done') tleClose();
+}
+function tleKeep(o) { o.x = clamp(o.x, o.r + 4, W - o.r - 4); o.y = clamp(o.y, 140 + o.r, H - o.r - 4); }
+canvas.addEventListener('pointerdown', e => {
+  if (mode !== 'tledit' || modeT < 0.15) return;
+  const p = toLogical(e);
+  for (const b of tleBar()) if (p.x > b.x && p.x < b.x + b.w && p.y > b.y && p.y < b.y + b.h) { tleAct(b.id); return; }
+  let best = null, bd = 1e9;
+  for (const o of tleCtl()) { const d = Math.hypot(p.x - o.x, p.y - o.y); if (d < o.r + 18 && d < bd) { best = o; bd = d; } }
+  if (best) { TLE.sel = best.id; TLE.drag = { id: e.pointerId, o: best, dx: best.x - p.x, dy: best.y - p.y }; sfx('swing'); }
+});
+canvas.addEventListener('pointermove', e => {
+  if (mode !== 'tledit' || !TLE.drag || TLE.drag.id !== e.pointerId) return;
+  const p = toLogical(e), o = TLE.drag.o; o.x = p.x + TLE.drag.dx; o.y = p.y + TLE.drag.dy; tleKeep(o); TLE.dirty = true;
+});
+['pointerup', 'pointercancel'].forEach(t => canvas.addEventListener(t, e => { if (TLE.drag && TLE.drag.id === e.pointerId) TLE.drag = null; }));
+function tleUpdate() {
+  if (modeT < 0.15) return;
+  if (pressed.has('escape') || pressed.has('pause')) { tleClose(); return; }
+  // keys too, for testing on a computer: Tab picks, arrows move, - and = size
+  const ids = tleCtl().map(o => o.id), c = tleCtl().find(o => o.id === TLE.sel);
+  if (pressed.has('punch')) { TLE.sel = ids[(ids.indexOf(TLE.sel) + 1) % ids.length]; sfx('swing'); }
+  if (c) { const mv = (dx, dy) => { c.x += dx; c.y += dy; tleKeep(c); TLE.dirty = true; };
+    if (held.has('left')) mv(-6, 0); if (held.has('right')) mv(6, 0); if (held.has('up')) mv(0, -6); if (held.has('down')) mv(0, 6); }
+}
+function tleDraw() {
+  ctx.setTransform(scale, 0, 0, scale, 0, 0); ctx.globalAlpha = 1;
+  ctx.fillStyle = 'rgba(10,14,16,0.72)'; ctx.fillRect(0, 0, W, H);
+  ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
+  textOut('BUTTON LAYOUT', W / 2, 30, '30px ' + DISPLAY, '#f2a23a', OUT, 6, 'center');
+  ctx.font = '600 13px ' + BODY; ctx.fillStyle = '#e9dcc0';
+  ctx.fillText('Drag them where your thumbs sit. Tap one, then − / + for its size.', W / 2, 62);
+  tleBar().forEach(b => {
+    const dis = (b.id === 'minus' || b.id === 'plus') && !TLE.sel;
+    rrect(b.x, b.y, b.w, b.h, 10); ctx.fillStyle = b.id === 'done' ? '#7fe07a' : 'rgba(24,36,42,0.95)'; ctx.fill();
+    ctx.strokeStyle = b.id === 'done' ? '#7fe07a' : '#f2a23a'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.font = (b.w < 60 ? 26 : 16) + 'px ' + DISPLAY; ctx.fillStyle = b.id === 'done' ? '#10200f' : dis ? '#56636a' : '#efe6d2'; ctx.fillText(b.label, b.x + b.w / 2, b.y + b.h / 2 + 1);
+  });
+  // the stick's half of the screen, faintly
+  ctx.fillStyle = 'rgba(242,162,58,0.05)'; if (STICK.x < W / 2) ctx.fillRect(0, 140, W / 2, H - 140); else ctx.fillRect(W / 2, 140, W / 2, H - 140);
+  ctx.font = '600 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.fillText('The stick works anywhere on this half. This is where it sits.', STICK.x < W / 2 ? W / 4 : W * 3 / 4, 156);
+  for (const o of tleCtl()) {
+    const on = o.id === TLE.sel;
+    ctx.fillStyle = o.id === 'stick' ? 'rgba(15,22,25,0.55)' : 'rgba(15,22,25,0.7)'; circle(o.x, o.y, o.r); ctx.fill();
+    ctx.strokeStyle = on ? '#ffd23f' : 'rgba(239,230,210,0.6)'; ctx.lineWidth = on ? 4 : 3; ctx.stroke();
+    if (o.id === 'stick') { ctx.fillStyle = 'rgba(239,230,210,0.6)'; circle(o.x, o.y, 28 * o.r / STICK0.r); ctx.fill(); }
+    ctx.fillStyle = '#efe6d2'; ctx.font = (o.id === 'punch' ? 18 : o.id === 'stick' ? 11 : 10) + 'px ' + DISPLAY; ctx.fillText(o.id === 'stick' ? 'MOVE' : o.label, o.x, o.id === 'stick' ? o.y + o.r + 12 : o.y + 1);
+  }
+}
+// V62 js end
 window.__appBack = () => {
   if (NET.on) { netPressed.add('pause'); return true; }
   if (mode === 'select' && T3.live()) return T3.back();
   if (mode === 'loading') return true;   // the phone's back button never closes the app mid-load
   if (mode === 'chat' && chat) { skipChat(); return true; }   // and skips a group chat (Version 45)
   if (mode === 'net') { if (NL.screen === 'menu') { mode = 'select'; modeT = 0; } else netBackToMenu(); return true; }
+  if (mode === 'tledit') { tleClose(); return true; }   // Version 62
+  if (mode === 'trophies') { trophyClose(); return true; }
   if (mode === 'cont') { contNo(); return true; }   // Version 61
   if (mode === 'play') { openPause(); return true; }
   if (mode === 'pause') { resumeGame(); return true; }
@@ -12670,6 +12967,7 @@ const T3 = (() => {
   click('board', () => { sfx('page'); openBoard(null, 'select'); });
   click('pub', () => pubFromSelect(chosen().id));   // Version 55
   click('me', () => profileAsk(false));   // Version 56
+  click('trophy', () => trophyOpen('select'));   // Version 62
   click('online', () => { if (netAvailable()) { sfx('page'); openNetLobby(); } });
 
   // ---------------------------------------------------------------- camera poses
