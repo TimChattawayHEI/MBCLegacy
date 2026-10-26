@@ -1126,7 +1126,7 @@ function profileAsk(first, then, why) {
   const el = nameEls; if (!el.overlay || !el.form || PROFILE.asking) return;
   PROFILE.asking = true; PROFILE.first = !!first || !PROFILE.name; PROFILE.then = then || null;
   el.title.textContent = PROFILE.name && !why ? 'Change your name' : 'Pick a name';
-  el.sum.textContent = why || 'It goes on every scoreboard and in the online lobby. Letters and numbers, 3 to 12.';
+  el.sum.textContent = why || 'It goes on every scoreboard and in the online lobby. Letters and numbers, 3 to 12.' + (typeof cloudCodeLine === 'function' && !PROFILE.first ? cloudCodeLine() : '');   // the save code (Version 61)
   el.input.value = PROFILE.name || cleanName(settings.lastName);
   el.skip.hidden = PROFILE.first; el.skip.textContent = 'Cancel';
   const save = document.getElementById('nameSave'); if (save) { save.textContent = "That's me"; save.disabled = false; }
@@ -1134,12 +1134,14 @@ function profileAsk(first, then, why) {
   try { el.input.focus(); el.input.select(); } catch (e) { /* optional */ }
 }
 function profileClose() {
+  if (typeof CLOUD !== 'undefined' && (CLOUD.restoreFor || CLOUD.offerFor)) cloudRestoreEnd();   // Version 61
   PROFILE.asking = false; closeNameEntry(); nameEls.skip.hidden = false; nameEls.skip.textContent = 'Skip';
   const save = document.getElementById('nameSave'); if (save) { save.textContent = 'Save score'; save.disabled = false; }
   const t = PROFILE.then; PROFILE.then = null; pressed.clear(); if (t) t();
 }
 function profileHook(skip) {
   if (!PROFILE.asking) return false;
+  if (typeof cloudRestoreHook === 'function' && cloudRestoreHook(skip)) return true;   // a new phone, restoring a save (Version 61)
   if (skip) { if (!PROFILE.first) { PROFILE.then = null; profileClose(); } return true; }
   if (PROFILE.busy) return true;
   const n = cleanName(nameEls.input.value);
@@ -1149,7 +1151,7 @@ function profileHook(skip) {
   const save = document.getElementById('nameSave'); if (save) save.disabled = true;
   claimName(n).then(r => {
     PROFILE.busy = false; if (save) save.disabled = false;
-    if (r === 'taken') { nameEls.sum.textContent = 'Someone already plays as ' + n + '. Try another.'; sfx('grab'); return; }
+    if (r === 'taken') { nameEls.sum.textContent = 'Someone already plays as ' + n + '. Try another.'; if (typeof cloudOfferRestore === 'function') cloudOfferRestore(n); sfx('grab'); return; }
     profileSet(n, r === 'ok' && appFb()); sfx('life'); profileClose();
   });
   return true;
@@ -1157,6 +1159,7 @@ function profileHook(skip) {
 if (nameEls.input) nameEls.input.addEventListener('input', () => { if (!PROFILE.asking) return; const v = cleanName(nameEls.input.value); if (v !== nameEls.input.value) nameEls.input.value = v; });
 // runs at the top of every frame: the first visit to the select screen asks for a name; nothing else moves while it's open
 function profileTick() {
+  if (typeof qolTick === 'function') qolTick();   // the update check and the cloud save (Version 61)
   if (typeof KB !== 'undefined' && KB.endReq) { const r = KB.endReq; KB.endReq = null; kebabEnd(r[0], r[1], true); return true; }   // Version 59
   try { hubTick(); } catch (e) { glitch('hub', e); }
   if (PROFILE.asking) { pressed.clear(); taps.length = 0; return true; }
