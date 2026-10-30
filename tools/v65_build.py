@@ -74,5 +74,24 @@ s = swap(s, "  for (const b of bubbles) drawBubble(b);\n  ctx.globalAlpha = 1;\n
          "  if (!(S && S.lids > 0.5)) for (const b of bubbles) drawBubble(b);   // Version 65\n  ctx.globalAlpha = 1;\n}", 'sleepy bubbles (pixel pass)')
 
 
+# ---------------------------------------------------------------- locked lads can't be picked anywhere (Thet, Ash)
+# one rule used everywhere a lad gets chosen: a locked lad becomes the next unlocked one along
+s = swap(s, "function ladLocked(c) { return !!c && ((c.id === 'thet' && !settings.thet) || (c.id === 'ash' && !settings.ash)); }",
+         "function ladLocked(c) { return !!c && ((c.id === 'thet' && !settings.thet) || (c.id === 'ash' && !settings.ash)); }\n"
+         "function freeLad(i) { const n = PLAYABLE.length; i = ((i | 0) % n + n) % n; for (let k = 0; k < n; k++) { if (!ladLocked(PLAYABLE[(i + k) % n])) return (i + k) % n; } return 0; }   // Version 65", 'free lad helper')
+s = swap(s, "function newRun(ci, start) {\n  const c = PLAYABLE[ci];",
+         "function newRun(ci, start) {\n  if (!NET.on) ci = freeLad(ci);   // Version 65: never a locked lad (online, the other phone may have him)\n  const c = PLAYABLE[ci];", 'new run guard')
+s = swap(s, "NL.ready = false; NL.them = null; NL.go = null; NL.lad = sel;", "NL.ready = false; NL.them = null; NL.go = null; NL.lad = freeLad(sel);", 'lobby start lad')
+s = swap(s, "    if (netLadTaken(NL.lad) && !NL.ready) step(1);", "    if ((netLadTaken(NL.lad) || ladLocked(PLAYABLE[NL.lad])) && !NL.ready) step(1);", 'lobby locked lad')
+s = swap(s, "lads: [NL.lad, gi < 0 ? (NL.lad + 1) % n : gi]", "lads: [NL.lad, gi < 0 ? freeLad(NL.lad + 1) : gi]", 'guest default lad')
+s = swap(s, "  openNetLobby(); NL.lad = Math.max(0, PLAYABLE.findIndex(c => c.id === PUB.lad));", "  openNetLobby(); NL.lad = freeLad(Math.max(0, PLAYABLE.findIndex(c => c.id === PUB.lad)));", 'pub lobby lad')
+s = swap(s, "  openNetLobby(); NL.lad = Math.max(0, PLAYABLE.findIndex(c => c.id === lad));", "  openNetLobby(); NL.lad = freeLad(Math.max(0, PLAYABLE.findIndex(c => c.id === lad)));", 'invite lobby lad')
+s = swap(s, "  PUB.from = from; PUB.next = next || null; PUB.lad = lad || PUB.lad || 'tim';",
+         "  PUB.from = from; PUB.next = next || null; PUB.lad = lad || PUB.lad || 'tim';\n  if (ladLocked(CHAR_BY_ID[PUB.lad])) PUB.lad = 'tim';   // Version 65", 'pub lad guard')
+s = swap(s, "    sel = Math.max(0, PLAYABLE.findIndex(c => c.id === id));\n", "    sel = freeLad(Math.max(0, PLAYABLE.findIndex(c => c.id === id)));\n", 'select commit')
+s = swap(s, "      if (sr) { li = Math.max(0, ORDER.indexOf(PLAYABLE[sr.ci].id)); setView('cont'); } else setView('lad');",
+         "      if (sr && !ladLocked(PLAYABLE[sr.ci])) { li = Math.max(0, ORDER.indexOf(PLAYABLE[sr.ci].id)); setView('cont'); } else setView('lad');", 'carry on locked')
+
+
 open(PAGE, 'w', encoding='utf-8').write(s)
 print('v65_build: web/index.html updated')

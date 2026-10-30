@@ -1306,6 +1306,7 @@ function drawSelectBg() {
 const PLAYABLE = ['tim', 'seb', 'byron', 'pearcy', 'kelly', 'marc', 'sam', 'thet', 'ash'].map(id => CHAR_BY_ID[id]);
 // Thet stays a silhouette until the campaign's been finished once (or THET is typed on the select screen)
 function ladLocked(c) { return !!c && ((c.id === 'thet' && !settings.thet) || (c.id === 'ash' && !settings.ash)); }
+function freeLad(i) { const n = PLAYABLE.length; i = ((i | 0) % n + n) % n; for (let k = 0; k < n; k++) { if (!ladLocked(PLAYABLE[(i + k) % n])) return (i + k) % n; } return 0; }   // Version 65
 // Ash (Version 54) stays a silhouette until the campaign's been finished on Hard (or ASH is typed on the select screen)
 function unlockAsh() { if (settings.ash) return false; settings.ash = true; saveSettings(); return true; }
 function lockHint(c) { return c && c.id === 'ash' ? 'Someone tall is waiting. Finish the campaign on Hard to find out who.' : 'Someone is hiding in the bushes. Finish the campaign to find out who.'; }
@@ -7057,6 +7058,8 @@ function drawStageBg() {
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (meshyBg()) return;   // Version 64: painted in Meshy
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (ST.era === 2006 && nlDrawStageBg(ST.bg)) return;
   if (ST.bg === 'fishery') bgFisheryPixel();
   else if (ST.bg === 'orpington') bgOrpingtonPixel();
@@ -7303,6 +7306,7 @@ function restartStage() {
   musicSet(null); startStage(snap.key);
 }
 function newRun(ci, start) {
+  if (!NET.on) ci = freeLad(ci);   // Version 65: never a locked lad (online, the other phone may have him)
   const c = PLAYABLE[ci];
   run = { ci, c, route: routeFrom(start), off: routeDepth(start), vroute: ROUTE.includes(start) ? routeFrom(chapterOf(start)) : null, idx: 0, score: 0, lives: (DIFFS[settings.diff] || DIFFS.normal).lives, diff: settings.diff, livesLost: 0, totalTime: 0,
     jackpot: false, nextLife: 30000, kills: 0, reached: 0, cleared: false, ramsdenCleared: false, flawless: false, entryId: null, secrets: 0, winBonus: 0 };
@@ -9711,7 +9715,7 @@ const NL = { screen: 'menu', sel: 0, code: '', msg: '', busy: false, me: null, t
 function openNetLobby() {
   if (!PROFILE.name) { profileAsk(false, openNetLobby); return; }   // Version 56
   audioInit(); sfx('page');
-  mode = 'net'; modeT = 0; NL.screen = 'menu'; NL.sel = 0; NL.msg = ''; NL.code = ''; NL.ready = false; NL.them = null; NL.go = null; NL.lad = sel;
+  mode = 'net'; modeT = 0; NL.screen = 'menu'; NL.sel = 0; NL.msg = ''; NL.code = ''; NL.ready = false; NL.them = null; NL.go = null; NL.lad = freeLad(sel);
   NL.diff = settings.diff; NL.start = startAt;
 }
 function netCodeInput(show) {
@@ -9810,7 +9814,7 @@ function updateNetLobby() {
     if (!NL.ready && pressed.has('left')) step(-1);
     if (!NL.ready && pressed.has('right')) step(1);
     for (const t of tapsNow) PLAYABLE.forEach((c, i) => { const x = tileX(i); if (!NL.ready && t.x > x && t.x < x + TILE.w && t.y > TILE.y - 8 && t.y < TILE.y + TILE.h && !netLadTaken(i) && !ladLocked(c)) { NL.lad = i; sfx('swing'); netLobbyPublish(); } });
-    if (netLadTaken(NL.lad) && !NL.ready) step(1);
+    if ((netLadTaken(NL.lad) || ladLocked(PLAYABLE[NL.lad])) && !NL.ready) step(1);
     if (NET.role === 'h' && !NL.ready) {
       if (pressed.has('diff') || hit('diff')) { NL.diff = DIFF_ORDER[(DIFF_ORDER.indexOf(NL.diff) + 1) % DIFF_ORDER.length]; sfx('page'); netLobbyPublish(); }
       if (pressed.has('route') || hit('route')) { const o = settings.unlocked ? ['1999', 'elba', 'nightlife', 'carpdiem', 'ramsden'] : ['1999', 'elba', 'nightlife', 'carpdiem']; NL.start = o[(o.indexOf(NL.start) + 1) % o.length]; sfx('page'); netLobbyPublish(); }
@@ -9819,7 +9823,7 @@ function updateNetLobby() {
     // the host starts it once both are ready
     if (NET.role === 'h' && NL.ready && NL.them && NL.them.ready && !NL.go) {
       const gi = PLAYABLE.findIndex(c => c.id === NL.them.lad);
-      const go = { seed: (nativeRandom() * 4294967296) >>> 0, lads: [NL.lad, gi < 0 ? (NL.lad + 1) % n : gi], diff: NL.diff, start: NL.start, route: routeFrom(NL.start), unlocked: !!settings.unlocked };
+      const go = { seed: (nativeRandom() * 4294967296) >>> 0, lads: [NL.lad, gi < 0 ? freeLad(NL.lad + 1) : gi], diff: NL.diff, start: NL.start, route: routeFrom(NL.start), unlocked: !!settings.unlocked };
       NL.go = go; NT.put('go', go); netBegin(go);
     }
   }
@@ -10557,6 +10561,7 @@ const PUB_OBJ = [
 function openPub(from, next, lad) {
   pubPreload(); pubBoardsStart();
   PUB.from = from; PUB.next = next || null; PUB.lad = lad || PUB.lad || 'tim';
+  if (ladLocked(CHAR_BY_ID[PUB.lad])) PUB.lad = 'tim';   // Version 65
   PUB.x = 150; PUB.y = 470; PUB.face = 1; PUB.target = null; PUB.view = null; PUB.round = false; PUB.t = 0;
   if (from === 'run') PUB.pints = 0;
   cam.x = 0; mode = 'pub'; modeT = 0; banner = null; musicSet('social');
@@ -11739,7 +11744,7 @@ async function hubInvite(g) {
   if (!HUB.kind) { pubSay('Inviting needs the app and a signal.'); sfx('grab'); return; }
   if (!hubCanInvite(g)) { pubSay(g.name + ' is busy. Try them later.'); sfx('grab'); return; }
   sfx('page'); pubSaveSpot();
-  openNetLobby(); NL.lad = Math.max(0, PLAYABLE.findIndex(c => c.id === PUB.lad));
+  openNetLobby(); NL.lad = freeLad(Math.max(0, PLAYABLE.findIndex(c => c.id === PUB.lad)));
   await netHost();
   if (NL.screen !== 'host' || !NT.code) return;
   HUB.out = { to: g.name, code: NT.code }; HUB.outNo = false;
@@ -11792,7 +11797,7 @@ function hubAccept() {
   if (mode === 'pub') pubSaveSpot();
   if (T3 && T3.live && T3.live() && mode === 'title') mode = 'select';
   const lad = mode === 'pub' ? PUB.lad : (PLAYABLE[sel] && !ladLocked(PLAYABLE[sel]) ? PLAYABLE[sel].id : PUB.lad);
-  openNetLobby(); NL.lad = Math.max(0, PLAYABLE.findIndex(c => c.id === lad));
+  openNetLobby(); NL.lad = freeLad(Math.max(0, PLAYABLE.findIndex(c => c.id === lad)));
   if (lad === inv.lad) NL.lad = PLAYABLE.findIndex((c, i) => i !== PLAYABLE.findIndex(d => d.id === inv.lad) && !ladLocked(c));
   netJoin(inv.code);
 }
@@ -13006,7 +13011,7 @@ const T3 = (() => {
       sfx('start'); mode = 'select'; modeT = 0; lastMode = 'select';
       // a run saved when the app closed: offer to carry on with it first (Version 45)
       const sr = savedRun();
-      if (sr) { li = Math.max(0, ORDER.indexOf(PLAYABLE[sr.ci].id)); setView('cont'); } else setView('lad');
+      if (sr && !ladLocked(PLAYABLE[sr.ci])) { li = Math.max(0, ORDER.indexOf(PLAYABLE[sr.ci].id)); setView('cont'); } else setView('lad');
     } else if (view === 'cont') carryOn();
     else if (view === 'lad') {
       if (picking) { picking = null; sfx('page'); setView('stage'); return; }   // pressed again: skip the show
@@ -13037,7 +13042,7 @@ const T3 = (() => {
   // hand the choices to the game
   function commit() {
     const id = ORDER[li];
-    sel = Math.max(0, PLAYABLE.findIndex(c => c.id === id));
+    sel = freeLad(Math.max(0, PLAYABLE.findIndex(c => c.id === id)));
     startAt = startFor(FLAT[stageSel].k);
     settings.diff = DIFF_ORDER[diffSel]; saveSettings();
   }
