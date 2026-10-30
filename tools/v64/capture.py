@@ -10,7 +10,7 @@ from playwright.sync_api import sync_playwright
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 stage = sys.argv[1]; out = sys.argv[2] if len(sys.argv) > 2 else f'/tmp/{stage}_ref.png'
-HIDE = {'frequency': 'S.tree = null;', 'arrival': "S.props = S.props.filter(p => p.k !== 'peg');", 'pegnine': "S.props = S.props.filter(p => p.k !== 'peg');"}
+HIDE = {'frequency': 'S.tree = null;', 'arrival': "S.props = S.props.filter(p => p.k !== 'peg');", 'pegnine': "S.props = S.props.filter(p => p.k !== 'peg');", 'social': 'S.fruit = null;'}
 
 
 class Q(http.server.SimpleHTTPRequestHandler):
