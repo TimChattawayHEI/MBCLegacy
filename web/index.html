@@ -7071,8 +7071,6 @@ function drawStageBg() {
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (meshyBg()) return;   // Version 64: painted in Meshy
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
-  if (meshyBg()) return;   // Version 64: painted in Meshy
-  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (ST.era === 2006 && nlDrawStageBg(ST.bg)) return;
   if (ST.bg === 'fishery') bgFisheryPixel();
   else if (ST.bg === 'orpington') bgOrpingtonPixel();
@@ -11211,6 +11209,8 @@ MGAME.pens = {
 };
 
 // ------------------------------------------------------------------ THE LONG DRIVE (Pearcy, at the fishery)
+const GOLF_BG = ['meshy/golf_0', 'meshy/golf_1', 'meshy/golf_2'];   // Version 65: the lake at golden hour, Pearcy's platform on the left
+setTimeout(() => { GOLF_BG.forEach(f => bgImg(f)); ASSET_BG.push(...GOLF_BG); }, 0);
 const GOLF_TEE = 300, GOLF_YD = 4;   // the tee's world x, game units per yard
 MGAME.golf = {
   init(M) { M.s = { ball: 0, best: 0, drives: [], phase: 'ready', m: 0, power: 0, err: 0, pill: false, pillOn: false, fly: null, camX: 0, swingT: -1, msgT: 0, gary: null, goose: { x: GOLF_TEE + rand(160, 260) * GOLF_YD } }; },
@@ -11258,7 +11258,9 @@ MGAME.golf = {
     if (chance(0.3)) s.gary = { x: GOLF_TEE + yd * GOLF_YD * rand(0.55, 0.85), t: -(s.fly.dur * rand(0.4, 0.6)) };
   },
   draw(M) {
-    const s = M.s, cx = s.camX;
+    const s = M.s, cx = s.camX, mz = bgReady(GOLF_BG);
+    if (mz) { ctx.save(); ctx.imageSmoothingEnabled = false; GOLF_BG.forEach((f, i) => { const img = bgImg(f), x = snap2(i * 1024 - cx); if (x < W && x + img.width * 2 > 0) ctx.drawImage(img, x, 0, img.width * 2, img.height * 2); }); ctx.restore(); }
+    if (!mz) {
     pxSky(['#2a5a9a', '#3a6aa8', '#4a7ab4', '#5a8abe', '#7a9ec6', '#a4b4c4', '#d6c0a0', '#f0c890'], 0, 300);
     ctx.fillStyle = '#2d5a6e'; ctx.fillRect(0, 290, W, 60);
     // the far bank and trees, slow; then the lake
@@ -11267,12 +11269,14 @@ MGAME.golf = {
     ctx.fillStyle = '#2d5a6e'; ctx.fillRect(0, 330, W, H - 330);
     ctx.fillStyle = '#3a6a7e'; for (let y = 336; y < H; y += 14) ctx.fillRect(0, y, W, 2);
     ctx.fillStyle = 'rgba(255,255,255,0.35)'; for (let i = 0; i < 30; i++) { const x = snap2((((i * 173 - cx * 0.9) % W) + W) % W), y = 344 + (i * 47) % 180; if (Math.sin(time * 1.5 + i) > 0.3) ctx.fillRect(x, y, 8, 2); }
+    }
+    ctx.save(); if (mz) ctx.translate(0, 20);   // on the painted lake Pearcy's platform, the water line and the buoys sit 20 lower
     // distance markers: buoys every 50 yards, labelled in the HUD pass
     for (let yd = 50; yd <= 500; yd += 50) { const x = snap2(GOLF_TEE + yd * GOLF_YD - cx); if (x < -20 || x > W + 20) continue; ctx.fillStyle = OUT; ctx.fillRect(x - 6, 418, 12, 18); ctx.fillStyle = yd % 100 ? '#efe6d2' : '#d84a3a'; ctx.fillRect(x - 4, 420, 8, 14); ctx.fillStyle = '#d84a3a'; ctx.fillRect(x - 4, 420, 8, 4); }
     const goose = bgImg('fishery/goose'); if (goose) bgPutAt(goose, s.goose.x - cx, 452 + Math.sin(time * 2) * 2, false);
     // the bank Pearcy tees off from
-    ctx.fillStyle = '#4a7a3a'; ctx.fillRect(snap2(-cx - 40), 430, 470, 120); ctx.fillStyle = '#5a8a46'; ctx.fillRect(snap2(-cx - 40), 430, 470, 6);
-    ctx.fillStyle = '#3a2a1a'; ctx.fillRect(snap2(-cx + 420), 430, 10, 120);
+    if (!mz) { ctx.fillStyle = '#4a7a3a'; ctx.fillRect(snap2(-cx - 40), 430, 470, 120); ctx.fillStyle = '#5a8a46'; ctx.fillRect(snap2(-cx - 40), 430, 470, 6);
+    ctx.fillStyle = '#3a2a1a'; ctx.fillRect(snap2(-cx + 420), 430, 10, 120); }
     const tee = pubImg('tee'); if (tee) { ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(tee, snap2(GOLF_TEE - cx - 5), 430 - 10, 10, 10); ctx.restore(); }
     // Pearcy: the swing follows the meter (back) and HIT (through)
     // strip: 0 address, 1-5 backswing, 6 impact, 7-8 finish
@@ -11290,11 +11294,13 @@ MGAME.golf = {
     const gb = pubImg('golfball');
     if (gb) { const bx = s.fly ? s.fly.x : GOLF_TEE, by = s.fly ? s.fly.y : 422; if (!(s.fly && s.fly.landed)) { ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(gb, snap2(bx - cx - 4), snap2(by - 8), 8, 8); ctx.restore(); } }
     if (s.fly && s.fly.landed && s.landT < 0.6) { const x = s.fly.x - cx, k = s.landT / 0.6; ctx.fillStyle = 'rgba(230,245,255,' + (1 - k).toFixed(2) + ')'; ctx.fillRect(snap2(x - 4 - k * 20), 420 - k * 30, 8, 30 * (1 - k) + 6); ctx.fillRect(snap2(x + 4 + k * 20), 424 - k * 20, 6, 20 * (1 - k) + 4); }
+    ctx.restore();
   },
   hud(M) {
     const s = M.s, cx = s.camX;
     ctx.font = '800 12px ' + BODY; ctx.fillStyle = '#efe6d2'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    for (let yd = 50; yd <= 500; yd += 50) { const x = GOLF_TEE + yd * GOLF_YD - cx; if (x > -20 && x < W + 20) { ctx.fillStyle = 'rgba(10,14,16,0.55)'; ctx.fillRect(x - 22, 392, 44, 18); ctx.fillStyle = '#efe6d2'; ctx.fillText(yd + ' yd', x, 401); } }
+    const gdy = bgReady(GOLF_BG) ? 20 : 0;
+    for (let yd = 50; yd <= 500; yd += 50) { const x = GOLF_TEE + yd * GOLF_YD - cx; if (x > -20 && x < W + 20) { ctx.fillStyle = 'rgba(10,14,16,0.55)'; ctx.fillRect(x - 22, 392 + gdy, 44, 18); ctx.fillStyle = '#efe6d2'; ctx.fillText(yd + ' yd', x, 401 + gdy); } }
     if (s.fly && !s.fly.landed) { ctx.font = '22px ' + DISPLAY; ctx.fillStyle = '#ffd23f'; ctx.fillText(Math.round((s.fly.x - GOLF_TEE) / GOLF_YD) + ' yds', W / 2, 70); }
     pubPanel(16, 14, 210, 92);
     ctx.font = '800 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'left'; ctx.fillText('BALL ' + Math.min(3, s.ball + 1) + ' OF 3', 30, 30);
@@ -11303,14 +11309,14 @@ MGAME.golf = {
     // the swing meter: power out to the right, then back to the line
     if (M.phase === 'play' && (s.phase === 'ready' || s.phase === 'power' || s.phase === 'acc')) {
       const mx = W / 2 - 220, my = H - 70, mw = 440, zx = mx + mw * 0.1;
-      pubPanel(mx - 14, my - 18, mw + 28, 50);
+      pubPanel(mx - 14, my - 18, mw + 28, 62);   // Version 65: room for the words under the bar
       ctx.fillStyle = '#1a2428'; ctx.fillRect(mx, my - 4, mw, 18);
       const g = ctx.createLinearGradient(mx, 0, mx + mw, 0); g.addColorStop(0, '#3a8a4a'); g.addColorStop(0.7, '#e8c040'); g.addColorStop(1, '#d84a3a');
       ctx.fillStyle = g; ctx.fillRect(mx, my - 4, mw * (s.phase === 'ready' ? 0 : s.phase === 'power' ? clamp(s.m, 0, 1) : s.power), 18);
       ctx.fillStyle = '#ffffff'; ctx.fillRect(zx - 2, my - 10, 4, 30);
       if (s.phase !== 'ready') { const x = mx + mw * clamp(s.m, -0.12, 1); ctx.fillStyle = '#ffd23f'; ctx.beginPath(); ctx.moveTo(x, my - 12); ctx.lineTo(x - 8, my - 24); ctx.lineTo(x + 8, my - 24); ctx.closePath(); ctx.fill(); }
       ctx.font = '800 12px ' + BODY; ctx.fillStyle = '#efe6d2'; ctx.textAlign = 'center';
-      ctx.fillText(s.phase === 'ready' ? 'HIT TO START THE SWING' : s.phase === 'power' ? 'HIT FOR POWER' : 'HIT ON THE WHITE LINE', W / 2, my - 34);
+      ctx.fillText(s.phase === 'ready' ? 'HIT TO START THE SWING' : s.phase === 'power' ? 'HIT FOR POWER' : 'HIT ON THE WHITE LINE', W / 2, my + 30);
       if (touchUI && !padOn() && !s.pill && s.phase === 'ready') pubBtn('pills', W - 150, H - 140, 134, 46, 'PILLS', false, '#ff5a3c');
     }
     drawGameMsg(s, 130);

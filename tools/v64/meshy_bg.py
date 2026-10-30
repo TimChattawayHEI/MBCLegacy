@@ -48,7 +48,10 @@ def patch(strip, stage, c):
         row = np.median(out[y0:y1, rx0:rx1], axis=1)[:, None, :]; w = dx1 - dx0
         a = np.clip(np.minimum(np.arange(w) + 1, w - np.arange(w)) / 40, 0, 1)[None, :, None]
         out[y0:y1, dx0:dx1] = out[y0:y1, dx0:dx1] * (1 - a) + row * a
-    for x, w in c.get('seams', []):
+    for x, w, *ln in c.get('seams', []):
+        if ln:   # a thin line right on the join: rebuild columns x-ln..x+ln from the columns just outside them
+            k = ln[0]; a, b = out[:, x - k - 1], out[:, x + k + 1]
+            for i in range(-k, k + 1): t = (i + k + 1) / (2 * k + 2); out[:, x + i] = a * (1 - t) + b * t
         # [x, w]: a faint vertical line at column x where Meshy's kept quarter meets what it painted. Row by row (smoothed
         # over 9 rows), the colour step across x is measured from 10 columns either side and spread out over w columns
         # each way, half taken off each side, so the line goes and the picture either side is left as it was.

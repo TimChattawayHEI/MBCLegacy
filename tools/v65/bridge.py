@@ -26,6 +26,11 @@ prompt = ("The first image is a wide pixel art background for a side-scrolling b
           " There must be no straight vertical line where one floor or wall simply stops and the other starts: the floor on the left meets the floor on the right "
           "along the edge of a step, a threshold, a kerb or a doormat, or they blend gradually. The line where the walls meet the ground stays at the same height, and "
           "the bottom third stays flat, wide, empty walkable ground. No people, no text other than signs already there.")
+if os.environ.get('SAME'):   # one place either side: just make the join vanish
+    prompt = ("The first image is a wide pixel art background for a side-scrolling game. Its left third and right third are finished; the blurry middle third is only a "
+              "rough guide and must be repainted. Keep the left third and the right third exactly as they are, pixel for pixel, and repaint the middle so the whole picture is "
+              "one seamless scene with no visible join, line or change of colour, in exactly the same pixel art style, pixel size, light and flat side-on camera. " + what + " No people, no text.")
+if os.environ.get('SAME'): cp = os.path.join(D, name + '_crop.png'); crop.save(cp); first = cp   # its own picture as the style, not the stage's first panel
 subprocess.run([sys.executable, os.path.join(V64, 'meshy_free.py'), stage, name, prompt, gp + ',' + first], check=True)
 Image.open(os.path.join(D, name + '_raw.png')).save(os.path.join(V64, 'img', stage, name + '.webp'), quality=94, method=6)
 print('patch', [x, name])

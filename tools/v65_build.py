@@ -166,5 +166,30 @@ s = swap(s, "  c.spr.forEach((id, i) => drawCardSprite(id, 230 + (i - (n - 1) / 
          "  } else c.spr.forEach((id, i) => drawCardSprite(id, 230 + (i - (n - 1) / 2) * gap, bandY + bandH - 12, sk));\n", 'boss card art')
 
 
+# ---------------------------------------------------------------- The Long Drive: the lake painted in Meshy (stages.json "golf")
+s = swap(s, "const GOLF_TEE = 300, GOLF_YD = 4;",
+         "const GOLF_BG = ['meshy/golf_0', 'meshy/golf_1', 'meshy/golf_2'];   // Version 65: the lake at golden hour, Pearcy's platform on the left\n"
+         "setTimeout(() => { GOLF_BG.forEach(f => bgImg(f)); ASSET_BG.push(...GOLF_BG); }, 0);\n"
+         "const GOLF_TEE = 300, GOLF_YD = 4;", 'golf files')
+s = swap(s, "    const s = M.s, cx = s.camX;\n    pxSky(['#2a5a9a',",
+         "    const s = M.s, cx = s.camX, mz = bgReady(GOLF_BG);\n"
+         "    if (mz) { ctx.save(); ctx.imageSmoothingEnabled = false; GOLF_BG.forEach((f, i) => { const img = bgImg(f), x = snap2(i * 1024 - cx); if (x < W && x + img.width * 2 > 0) ctx.drawImage(img, x, 0, img.width * 2, img.height * 2); }); ctx.restore(); }\n"
+         "    if (!mz) {\n    pxSky(['#2a5a9a',", 'golf painted lake')
+s = swap(s, "    // distance markers: buoys every 50 yards, labelled in the HUD pass\n",
+         "    }\n    ctx.save(); if (mz) ctx.translate(0, 20);   // on the painted lake Pearcy's platform, the water line and the buoys sit 20 lower\n"
+         "    // distance markers: buoys every 50 yards, labelled in the HUD pass\n", 'golf old lake end')
+s = swap(s, "    ctx.fillStyle = '#4a7a3a'; ctx.fillRect(snap2(-cx - 40), 430, 470, 120); ctx.fillStyle = '#5a8a46'; ctx.fillRect(snap2(-cx - 40), 430, 470, 6);\n    ctx.fillStyle = '#3a2a1a'; ctx.fillRect(snap2(-cx + 420), 430, 10, 120);\n",
+         "    if (!mz) { ctx.fillStyle = '#4a7a3a'; ctx.fillRect(snap2(-cx - 40), 430, 470, 120); ctx.fillStyle = '#5a8a46'; ctx.fillRect(snap2(-cx - 40), 430, 470, 6);\n    ctx.fillStyle = '#3a2a1a'; ctx.fillRect(snap2(-cx + 420), 430, 10, 120); }\n", 'golf old bank')
+s = swap(s, "ctx.fillRect(snap2(x + 4 + k * 20), 424 - k * 20, 6, 20 * (1 - k) + 4); }\n  },\n",
+         "ctx.fillRect(snap2(x + 4 + k * 20), 424 - k * 20, 6, 20 * (1 - k) + 4); }\n    ctx.restore();\n  },\n", 'golf restore')
+s = swap(s, "    for (let yd = 50; yd <= 500; yd += 50) { const x = GOLF_TEE + yd * GOLF_YD - cx; if (x > -20 && x < W + 20) { ctx.fillStyle = 'rgba(10,14,16,0.55)'; ctx.fillRect(x - 22, 392, 44, 18); ctx.fillStyle = '#efe6d2'; ctx.fillText(yd + ' yd', x, 401); } }",
+         "    const gdy = bgReady(GOLF_BG) ? 20 : 0;\n"
+         "    for (let yd = 50; yd <= 500; yd += 50) { const x = GOLF_TEE + yd * GOLF_YD - cx; if (x > -20 && x < W + 20) { ctx.fillStyle = 'rgba(10,14,16,0.55)'; ctx.fillRect(x - 22, 392 + gdy, 44, 18); ctx.fillStyle = '#efe6d2'; ctx.fillText(yd + ' yd', x, 401 + gdy); } }", 'golf yard labels')
+
+# the swing meter's instruction sat on the yard labels: it goes inside the meter's panel, under the bar
+s = swap(s, "      pubPanel(mx - 14, my - 18, mw + 28, 50);\n", "      pubPanel(mx - 14, my - 18, mw + 28, 62);   // Version 65: room for the words under the bar\n", 'golf meter panel')
+s = swap(s, "'HIT ON THE WHITE LINE', W / 2, my - 34);", "'HIT ON THE WHITE LINE', W / 2, my + 30);", 'golf meter words')
+
+
 open(PAGE, 'w', encoding='utf-8').write(s)
 print('v65_build: web/index.html updated')
