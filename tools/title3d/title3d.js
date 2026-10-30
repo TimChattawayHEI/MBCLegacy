@@ -185,13 +185,16 @@ const T3 = (() => {
     });
 
     const SHOPS = ['chippy', 'kebab', 'pub', 'video', 'bookies', 'phones'];
-    const paths = { street: 'bg/title/street.png', lamp: 'bg/orpington/lamp.png', phonebox: 'bg/orpington/phonebox.png', bench: 'bg/orpington/bench.png', bin: 'bg/props/bin.png' };
-    SHOPS.forEach(s => { paths[s] = 'bg/orpington/' + s + '.png'; });
+    // Version 65: the street repainted in Meshy (tools/v64/repaint.py title_shops; tools/v65/img/title_*.webp)
+    const paths = { street: 'bg/title/street.png', lamp: 'bg/title/lamp.png', phonebox: 'bg/title/phonebox.png', bench: 'bg/title/bench.png', bin: 'bg/props/bin.png',
+      road: 'bg/title/road.png', pave: 'bg/title/pave.png', logo: 'bg/title/logo.png' };
+    SHOPS.forEach(s => { paths[s] = 'bg/title/' + s + '.png'; });
     ORDER.forEach(id => { paths['lad_' + id] = 'sprites/' + id + '.png'; });
     const img = {}; await Promise.all(Object.keys(paths).map(async k => { img[k] = await loadImg(paths[k]); }));
     // a lad can have his own pick pose: a strip of frames in his sheet's cell size, sprites/pose_<id>.png (Version 47)
     await Promise.all(Object.keys(POSES).map(async id => { try { img['pose_' + id] = await loadImg('sprites/pose_' + id + '.png'); } catch (e) { /* use his special */ } }));
     const T = {}; for (const k in img) if (!k.startsWith('lad_')) T[k] = prep(new THREE.Texture(img[k]));
+    for (const k of ['road', 'pave']) { T[k] = prep(new THREE.Texture(img[k]), true); T[k].wrapS = T[k].wrapT = THREE.RepeatWrapping; }
 
     // backdrop: the title painting, hung far away on the camera's horizon
     backdrop = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: T.street, depthWrite: false, depthTest: false }));
@@ -200,25 +203,14 @@ const T3 = (() => {
       s.fragmentShader = 'uniform float fade; uniform vec3 sky;\n' + s.fragmentShader.replace('#include <opaque_fragment>', 'diffuseColor.rgb *= sky * fade;\n#include <opaque_fragment>'); };
     scene.add(backdrop);
 
-    const road = canvasTex(120, 120, (g, w, h) => {
-      const sh = ['#120d52', '#150f5b', '#181262', '#130e55'];
-      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { g.fillStyle = sh[(rnd() * sh.length) | 0]; g.fillRect(x, y, 1, 1); }
-      g.fillStyle = '#7d73cc'; g.fillRect(59, 0, 2, 54);
-      g.fillStyle = '#3c3290'; g.fillRect(4, 0, 1, h); g.fillRect(w - 5, 0, 1, h);
-    }, true);
-    road.wrapS = road.wrapT = THREE.RepeatWrapping;
+    const road = T.road;   // Meshy's wet tarmac, a dashed line down the middle
     const len = Z_NEAR - Z_FAR, mid = (Z_NEAR + Z_FAR) / 2, pw = FRONT - ROAD;
-    const ground = new THREE.Mesh(new THREE.PlaneGeometry(ROAD * 2, len), mat(road, { tint: [1, 1, 1], glow: 0, rect: [0, 0, 1, len / 240] }));
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(ROAD * 2, len), mat(road, { tint: [0.86, 0.82, 1], glow: 0, rect: [0, 0, 1, len / (ROAD * 2 * road.image.height / road.image.width)] }));
     ground.rotation.x = -Math.PI / 2; ground.position.z = mid; scene.add(ground);
-    const pave = canvasTex(64, 40, (g, w, h) => {
-      g.fillStyle = '#2b2276'; g.fillRect(0, 0, w, h);
-      for (let i = 0; i < 260; i++) { g.fillStyle = rnd() < .5 ? '#271f6c' : '#30277e'; g.fillRect((rnd() * w) | 0, (rnd() * h) | 0, 1, 1); }
-      g.fillStyle = '#1d1660'; g.fillRect(0, 0, w, 1); g.fillRect(0, 20, w, 1); g.fillRect(0, 0, 1, h); g.fillRect(32, 0, 1, h);
-    }, true);
-    pave.wrapS = pave.wrapT = THREE.RepeatWrapping;
+    const pave = T.pave;   // Meshy's paving slabs
     const kerbTex = canvasTex(4, 4, g => { g.fillStyle = '#5c52b4'; g.fillRect(0, 0, 4, 4); g.fillStyle = '#4a419e'; g.fillRect(0, 3, 4, 1); });
     for (const side of [-1, 1]) {
-      const p = new THREE.Mesh(new THREE.PlaneGeometry(pw + 30, len), mat(pave, { tint: [1, 1, 1], glow: 0, rect: [0, 0, pw / 64, len / 40] }));
+      const p = new THREE.Mesh(new THREE.PlaneGeometry(pw + 30, len), mat(pave, { tint: [0.84, 0.8, 1], glow: 0, rect: [0, 0, (pw + 30) / 96, len / 96] }));
       p.rotation.x = -Math.PI / 2; p.position.set(side * (ROAD + (pw + 30) / 2), KERB, mid); scene.add(p);
       const kerb = new THREE.Mesh(new THREE.PlaneGeometry(len, KERB), mat(kerbTex, { tint: [1, 1, 1], glow: 0 }));
       kerb.rotation.y = side * -Math.PI / 2; kerb.position.set(side * ROAD, KERB / 2, mid); scene.add(kerb);
@@ -229,7 +221,7 @@ const T3 = (() => {
       while (z > Z_FAR) {
         const n = SHOPS[k % SHOPS.length]; k += 1 + (rnd() < 0.3 ? 1 : 0);
         const w = T[n].image.width, h = T[n].image.height;
-        const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat(T[n]));
+        const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat(T[n], { tint: [0.76, 0.7, 0.94] }));
         m.rotation.y = side * -Math.PI / 2; m.position.set(side * FRONT, KERB + h / 2, z - w / 2); scene.add(m);
         addPool(side * (FRONT - 16), z - w / 2, w * 0.7, 26, 0xffa24a, 0.16);
         z -= w;
@@ -237,7 +229,7 @@ const T3 = (() => {
     }
     for (let z = Z_NEAR - 60, i = 0; z > Z_FAR; z -= 150, i++) {
       const side = i % 2 ? 1 : -1, x = side * (ROAD + 12);
-      addBillboard(T.lamp, x, z, 16, { tint: [0.62, 0.58, 0.86] });
+      addBillboard(T.lamp, x, z, 16, { tint: [0.8, 0.76, 0.94] });
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: haloTex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false }));
       halo.scale.set(34, 34, 1); halo.position.set(x - side, KERB + 90, z); halo.userData.flicker = rnd() < 0.12;
       scene.add(halo); glows.push(halo);
@@ -247,7 +239,7 @@ const T3 = (() => {
     for (let z = Z_NEAR - 140, i = 0; z > Z_FAR; z -= 230 + rnd() * 220, i++) {
       const [n, ax] = props[i % props.length], side = rnd() < 0.5 ? -1 : 1;
       if (z > -260 && z < 280) continue;   // keep the kerb clear round the lads' line-up (a bin was hiding Kelly)
-      addBillboard(T[n], side * (FRONT - 26), z, ax, { tint: [0.56, 0.5, 0.84] });
+      addBillboard(T[n], side * (FRONT - 26), z, ax, { tint: [0.78, 0.72, 0.94] });
       addShadow(side * (FRONT - 26), z, T[n].image.width * 0.5);
     }
     spot = addPool(0, 0, 120, 60, 0xffc070, 0);
@@ -269,7 +261,7 @@ const T3 = (() => {
     });
 
     if (document.fonts && document.fonts.load) await Promise.race([document.fonts.load('700 34px "Pixelify Sans"').catch(() => {}), new Promise(r => setTimeout(r, 2500))]);
-    const lt = logoTexture(); logoW = lt.image.width; logoH = lt.image.height;
+    const lt = img.logo ? T.logo : logoTexture(); logoW = lt.image.width * 0.66; logoH = lt.image.height * 0.66;   // Version 65: Meshy's painted logo
     logo = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: lt, alphaTest: 0.5, side: THREE.DoubleSide, depthTest: false, depthWrite: false }));
     logo.renderOrder = 20; logo.visible = false; camera.add(logo);
     ready = true;
@@ -337,9 +329,19 @@ const T3 = (() => {
     const L = chosen(), id = L.id, P = PICK[id] || ['', 'start'];
     if (ladLocked(CHAR_BY_ID[id])) { sfx('nope'); toast('LOCKED'); return; }
     act(L, 'pick'); L.tint.set(2.4, 2.3, 2.1);
-    picking = { t: 0, len: L.act ? L.act.len + 0.15 : 0.4 };
-    sfx('special'); sfx(P[1]); if (P[0]) toast(P[0], 'shout');
+    picking = { t: 0, len: Math.max(2.0, L.act ? L.act.len + 0.15 : 0.4) };
+    sfx('special'); sfx(P[1]); ladCard(id, P[0]);
     q('pick').textContent = CHAR_BY_ID[id].name + '!'; q('pick').disabled = true;
+  }
+  // Version 65: picking a lad gets him an intro card, like the bosses get: his Meshy portrait slams in with his shout
+  function ladCard(id, line) {
+    const el = document.getElementById('t3-card'); if (!el) { if (line) toast(line, 'shout'); return; }
+    document.getElementById('t3-cardimg').src = 'bg/ladcard/' + id + '.png';
+    document.getElementById('t3-cardname').textContent = CHAR_BY_ID[id].name;
+    document.getElementById('t3-cardline').textContent = line ? '\u201C' + line + '\u201D' : '';
+    el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
+    clearTimeout(ladCard.t); ladCard.t = setTimeout(() => el.classList.remove('on'), 2000);
+    setTimeout(() => sfx('thud'), 400);
   }
   function flex(L) { if (!L.act && !L.a.pose) act(L, 'mini'); }   // lads with a pose turn to face you instead
   function back() {
@@ -628,10 +630,10 @@ const T3 = (() => {
     const pxu = 2 * 200 * Math.tan(vh) / PH, wob = reduceMotion ? 0 : 1;
     if (view === 'title' && intro) {
       const k = clamp((t - T_LOGO) / 1.1, 0, 1);
-      Object.assign(lg, { x: 0, y: PH / 2 - 47, s: 1 + 2.2 * (1 - (1 - (1 - k) ** 3)), ry: -Math.PI * 2.5 * (1 - easeBack(k)), rx: 0 });
+      Object.assign(lg, { x: 0, y: PH / 2 - 50, s: 1 + 2.2 * (1 - (1 - (1 - k) ** 3)), ry: -Math.PI * 2.5 * (1 - easeBack(k)), rx: 0 });
       logo.visible = t > T_LOGO;
     } else {
-      const g = view !== 'title' ? { x: -PW / 2 + 60, y: PH / 2 - 13, s: 0.4, ry: 0, rx: 0 } : { x: 0, y: PH / 2 - 47, s: 1, ry: Math.sin(t * 0.9) * 0.16 * wob, rx: Math.sin(t * 0.7) * 0.07 * wob };
+      const g = view !== 'title' ? { x: -PW / 2 + 52, y: PH / 2 - 17, s: 0.36, ry: 0, rx: 0 } : { x: 0, y: PH / 2 - 50, s: 1, ry: Math.sin(t * 0.9) * 0.16 * wob, rx: Math.sin(t * 0.7) * 0.07 * wob };
       const k = damp(5, dt); for (const key in g) lg[key] += (g[key] - lg[key]) * k;
       logo.visible = true;
     }

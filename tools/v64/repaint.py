@@ -27,6 +27,11 @@ SHEETS = {
                      "three separate things from a carp fishing lake: a big weathered wooden notice board on two posts holding a blank laminated cream paper sheet (nothing written on it), a small wooden peg marker post with a blank white plate on top (nothing written on it), and a blue folding camping chair"),
     'fishery_smoker': (6, [('set/smoker', 100, 100)],
                        "a big black barbecue smoker on a little two-wheeled trailer, with a chimney, a firebox and a temperature gauge, seen from the side"),
+    # the 3D title street (Version 65): the old Stage 1 shop fronts and street furniture, repainted, saved as new files in bg/title
+    'title_shops': (2, [('orpington/chippy', 20, 40, 'title/chippy'), ('orpington/kebab', 200, 40, 'title/kebab'), ('orpington/pub', 432, 40, 'title/pub'),
+                        ('orpington/video', 732, 40, 'title/video'), ('orpington/bookies', 952, 40, 'title/bookies'), ('orpington/phones', 1152, 40, 'title/phones'),
+                        ('orpington/lamp', 60, 420, 'title/lamp'), ('orpington/phonebox', 220, 500, 'title/phonebox'), ('orpington/bench', 380, 600, 'title/bench')],
+                    "the fronts of six small shops on a London suburban high street at dusk, side by side, each one a two storey brick building with its shop front below and a flat window above: a chip shop, a kebab house, a pub called the Harvest Moon, a video rental shop, a bookmakers and a mobile phone shop, with their lit signs and windows; and below them a Victorian street lamp, a red telephone box and a wooden park bench"),
     'naval': (4, [('naval/raft', 40, 120), ('naval/bbq', 1130, 220)],
               "two separate things from a midnight carp lake, side by side: a big orange inflatable dinghy seen from the side and slightly above, with yellow straps and grab ropes and a grey floor, and a small black kettle barbecue on legs with glowing coals"),
     'scenery': (3.44, [('nightlife/sc_suburb', 0, 40), ('nightlife/sc_platform', 0, 400)],
@@ -49,7 +54,7 @@ def old(path):
 def layout(name):
     k, pieces, what = SHEETS[name]
     sheet = Image.new('RGB', (PW, PH), (40, 40, 46))
-    for path, x, y in pieces:
+    for path, x, y, *_ in pieces:
         im = old(path); big = im.resize((round(im.width * k), round(im.height * k)), Image.NEAREST)
         a = np.asarray(big); rgb = a[..., :3].copy(); rgb[a[..., 3] < 128] = (255, 0, 255)
         sheet.paste(Image.fromarray(rgb), (x, y))
@@ -71,7 +76,7 @@ def make(name):
 def cut(name):
     k, pieces, _ = SHEETS[name]
     new = Image.open(os.path.join(R, name + '.webp')).convert('RGB').resize((PW, PH))
-    for path, x, y in pieces:   # Meshy keeps the layout where it was put
+    for path, x, y, *dest in pieces:   # Meshy keeps the layout where it was put
         im = old(path); w, h = round(im.width * k), round(im.height * k)
         part = new.crop((x, y, x + w, y + h)).resize(im.size, Image.LANCZOS)
         if path in BOOST:
@@ -88,7 +93,7 @@ def cut(name):
             for i in range(n):
                 t_ = i / n; f[:, i] = mid[:, 0] * (1 - t_) + f[:, i] * t_; f[:, -1 - i] = mid[:, 0] * (1 - t_) + f[:, -1 - i] * t_
             out[..., :3] = np.where(keep[..., None], out[..., :3], f.round())
-        Image.fromarray(out.astype(np.uint8), 'RGBA').save(os.path.join(BG, path + '.png'))
+        Image.fromarray(out.astype(np.uint8), 'RGBA').save(os.path.join(BG, (dest[0] if dest else path) + '.png'))
         print(path, im.size)
 
 
