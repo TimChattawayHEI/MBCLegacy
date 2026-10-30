@@ -11282,7 +11282,7 @@ MGAME.pens = {
 // ------------------------------------------------------------------ THE LONG DRIVE (Pearcy, at the fishery)
 const GOLF_BG = ['meshy/golf_0', 'meshy/golf_1', 'meshy/golf_2'];   // Version 65: the lake at golden hour, Pearcy's platform on the left
 setTimeout(() => { GOLF_BG.forEach(f => bgImg(f)); ASSET_BG.push(...GOLF_BG); }, 0);
-const GOLF_TEE = 300, GOLF_YD = 4;   // the tee's world x, game units per yard
+const GOLF_TEE = 300, GOLF_YD = 4, GOLF_PEG_Y = 440;   // Version 67: the waterline the yard boards stand in   // the tee's world x, game units per yard
 MGAME.golf = {
   init(M) { M.s = { ball: 0, best: 0, drives: [], phase: 'ready', m: 0, power: 0, err: 0, pill: false, pillOn: false, fly: null, camX: 0, swingT: -1, msgT: 0, gary: null, goose: { x: GOLF_TEE + rand(160, 260) * GOLF_YD } }; },
   update(M, dt) {
@@ -11342,8 +11342,16 @@ MGAME.golf = {
     ctx.fillStyle = 'rgba(255,255,255,0.35)'; for (let i = 0; i < 30; i++) { const x = snap2((((i * 173 - cx * 0.9) % W) + W) % W), y = 344 + (i * 47) % 180; if (Math.sin(time * 1.5 + i) > 0.3) ctx.fillRect(x, y, 8, 2); }
     }
     ctx.save(); if (mz) ctx.translate(0, 20);   // on the painted lake Pearcy's platform, the water line and the buoys sit 20 lower
-    // distance markers: buoys every 50 yards, labelled in the HUD pass
-    for (let yd = 50; yd <= 500; yd += 50) { const x = snap2(GOLF_TEE + yd * GOLF_YD - cx); if (x < -20 || x > W + 20) continue; ctx.fillStyle = OUT; ctx.fillRect(x - 6, 418, 12, 18); ctx.fillStyle = yd % 100 ? '#efe6d2' : '#d84a3a'; ctx.fillRect(x - 4, 420, 8, 14); ctx.fillStyle = '#d84a3a'; ctx.fillRect(x - 4, 420, 8, 4); }
+    // distance markers every 50 yards (Version 67): the fishery's peg board standing in the lake, its post going into the
+    // water with a ripple; the distance is written on the board in the HUD pass (sharp text)
+    const golfPeg = bgImg('set/peg');
+    for (let yd = 50; yd <= 500; yd += 50) {
+      const x = snap2(GOLF_TEE + yd * GOLF_YD - cx); if (x < -40 || x > W + 40) continue;
+      if (golfPeg) { ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(golfPeg, 0, 0, 24, 37, x - 24, GOLF_PEG_Y - 74, 48, 74); ctx.restore(); }
+      else { ctx.fillStyle = OUT; ctx.fillRect(x - 6, 418, 12, 18); ctx.fillStyle = '#efe6d2'; ctx.fillRect(x - 4, 420, 8, 14); }
+      const rw = 22 + Math.round(Math.sin(time * 2 + yd) * 3) * 2;
+      ctx.fillStyle = 'rgba(255,240,205,0.6)'; ctx.fillRect(x - rw / 2, GOLF_PEG_Y - 2, rw, 2); ctx.fillStyle = 'rgba(60,36,18,0.28)'; ctx.fillRect(x - 6, GOLF_PEG_Y, 12, 8);
+    }
     const goose = bgImg('fishery/goose'); if (goose) bgPutAt(goose, s.goose.x - cx, 452 + Math.sin(time * 2) * 2, false);
     // the bank Pearcy tees off from
     if (!mz) { ctx.fillStyle = '#4a7a3a'; ctx.fillRect(snap2(-cx - 40), 430, 470, 120); ctx.fillStyle = '#5a8a46'; ctx.fillRect(snap2(-cx - 40), 430, 470, 6);
@@ -11371,7 +11379,10 @@ MGAME.golf = {
     const s = M.s, cx = s.camX;
     ctx.font = '800 12px ' + BODY; ctx.fillStyle = '#efe6d2'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     const gdy = bgReady(GOLF_BG) ? 20 : 0;
-    for (let yd = 50; yd <= 500; yd += 50) { const x = GOLF_TEE + yd * GOLF_YD - cx; if (x > -20 && x < W + 20) { ctx.fillStyle = 'rgba(10,14,16,0.55)'; ctx.fillRect(x - 22, 392 + gdy, 44, 18); ctx.fillStyle = '#efe6d2'; ctx.fillText(yd + ' yd', x, 401 + gdy); } }
+    // Version 67: the distance on each peg board (the board is 40 units square, its middle 48 above the waterline)
+    for (let yd = 50; yd <= 500; yd += 50) { const x = snap2(GOLF_TEE + yd * GOLF_YD - cx); if (x > -40 && x < W + 40 && bgImg('set/peg')) {
+      const by = GOLF_PEG_Y - 48 + gdy; ctx.font = '17px ' + DISPLAY; ctx.fillStyle = yd % 100 ? '#1f2c3c' : '#b8322a'; ctx.fillText(String(yd), x, by - 3);
+      ctx.font = '800 8px ' + BODY; ctx.fillStyle = '#4a5462'; ctx.fillText('YARDS', x, by + 11); } }
     if (s.fly && !s.fly.landed) { ctx.font = '22px ' + DISPLAY; ctx.fillStyle = '#ffd23f'; ctx.fillText(Math.round((s.fly.x - GOLF_TEE) / GOLF_YD) + ' yds', W / 2, 70); }
     pubPanel(16, 14, 210, 92);
     ctx.font = '800 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'left'; ctx.fillText('BALL ' + Math.min(3, s.ball + 1) + ' OF 3', 30, 30);

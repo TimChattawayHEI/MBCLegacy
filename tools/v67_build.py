@@ -1,4 +1,4 @@
-"""Version 67: calmer select screens (Tim, 30 October). Patches web/index.html and the title3d sources in place
+"""Version 67: calmer select screens and golf yard boards (Tim, 30 October). Patches web/index.html and the title3d sources in place
 (run from the repo root): python3 tools/v67_build.py. Safe to run again. It doesn't re-run the earlier build scripts
 (title3d_build.py would undo Version 65's locked-lad fixes in the page).
 
@@ -6,6 +6,8 @@
   bursts. They're plain pixel-font headings again, the lad's name in his own colour.
 - The lad tiles along the bottom use the footer buttons' look (same font, size, spacing and capitals).
 - The chapter tabs and the stage list use the same type.
+- The Long Drive's yard markers are the fishery's Meshy peg boards standing in the lake, with the distance painted on
+  the board (every 100 yards in red), instead of little code-drawn floats under grey labels.
 - On a touch screen the footer hint is left out (it was cut off as "TAP A LAD. ..." and tapping is obvious); the
   keyboard hints on the stage and difficulty steps are shorter so they fit.
 """
@@ -45,6 +47,28 @@ SWAPS = [
      "      stage: pad ? 'Stick for chapter · HIT to start here' : tch ? '' : '← → ↑ ↓ choose · J start',\n"
      "      diff: pad ? 'Stick for difficulty · HIT to go' : tch ? '' : '← → choose · J go · F language',\n"
      "      cont: pad ? 'HIT to carry on · JUMP for a new run' : tch ? '' : 'J carry on · K new run · Esc back',\n", 'js'),
+    ('golf markers',
+     "    // distance markers: buoys every 50 yards, labelled in the HUD pass\n"
+     "    for (let yd = 50; yd <= 500; yd += 50) { const x = snap2(GOLF_TEE + yd * GOLF_YD - cx); if (x < -20 || x > W + 20) continue; ctx.fillStyle = OUT; ctx.fillRect(x - 6, 418, 12, 18); ctx.fillStyle = yd % 100 ? '#efe6d2' : '#d84a3a'; ctx.fillRect(x - 4, 420, 8, 14); ctx.fillStyle = '#d84a3a'; ctx.fillRect(x - 4, 420, 8, 4); }\n",
+     "    // distance markers every 50 yards (Version 67): the fishery's peg board standing in the lake, its post going into the\n"
+     "    // water with a ripple; the distance is written on the board in the HUD pass (sharp text)\n"
+     "    const golfPeg = bgImg('set/peg');\n"
+     "    for (let yd = 50; yd <= 500; yd += 50) {\n"
+     "      const x = snap2(GOLF_TEE + yd * GOLF_YD - cx); if (x < -40 || x > W + 40) continue;\n"
+     "      if (golfPeg) { ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(golfPeg, 0, 0, 24, 37, x - 24, GOLF_PEG_Y - 74, 48, 74); ctx.restore(); }\n"
+     "      else { ctx.fillStyle = OUT; ctx.fillRect(x - 6, 418, 12, 18); ctx.fillStyle = '#efe6d2'; ctx.fillRect(x - 4, 420, 8, 14); }\n"
+     "      const rw = 22 + Math.round(Math.sin(time * 2 + yd) * 3) * 2;\n"
+     "      ctx.fillStyle = 'rgba(255,240,205,0.6)'; ctx.fillRect(x - rw / 2, GOLF_PEG_Y - 2, rw, 2); ctx.fillStyle = 'rgba(60,36,18,0.28)'; ctx.fillRect(x - 6, GOLF_PEG_Y, 12, 8);\n"
+     "    }\n", 'page'),
+    ('golf marker labels',
+     "    for (let yd = 50; yd <= 500; yd += 50) { const x = GOLF_TEE + yd * GOLF_YD - cx; if (x > -20 && x < W + 20) { ctx.fillStyle = 'rgba(10,14,16,0.55)'; ctx.fillRect(x - 22, 392 + gdy, 44, 18); ctx.fillStyle = '#efe6d2'; ctx.fillText(yd + ' yd', x, 401 + gdy); } }",
+     "    // Version 67: the distance on each peg board (the board is 40 units square, its middle 48 above the waterline)\n"
+     "    for (let yd = 50; yd <= 500; yd += 50) { const x = snap2(GOLF_TEE + yd * GOLF_YD - cx); if (x > -40 && x < W + 40 && bgImg('set/peg')) {\n"
+     "      const by = GOLF_PEG_Y - 48 + gdy; ctx.font = '17px ' + DISPLAY; ctx.fillStyle = yd % 100 ? '#1f2c3c' : '#b8322a'; ctx.fillText(String(yd), x, by - 3);\n"
+     "      ctx.font = '800 8px ' + BODY; ctx.fillStyle = '#4a5462'; ctx.fillText('YARDS', x, by + 11); } }", 'page'),
+    ('golf peg height',
+     "const GOLF_TEE = 300, GOLF_YD = 4;",
+     "const GOLF_TEE = 300, GOLF_YD = 4, GOLF_PEG_Y = 440;   // Version 67: the waterline the yard boards stand in", 'page'),
 ]
 
 
@@ -61,5 +85,5 @@ def patch(path, kinds):
 
 patch(CSS, {'css'})
 patch(JS, {'js'})
-patch(PAGE, {'css', 'js'})
+patch(PAGE, {'css', 'js', 'page'})
 print('v67_build: web/index.html and tools/title3d updated')
