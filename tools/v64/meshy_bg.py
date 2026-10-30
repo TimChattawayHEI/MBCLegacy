@@ -36,6 +36,7 @@ def patch(strip, stage, c):
     over the stitched picture with the edges faded in"""
     out = np.asarray(strip).astype(np.float32).copy()
     for fix in c.get('fixes', []):
+        if fix[0] == 'diag': continue   # done last, after the patches
         # ["tile", sx0, sx1, dx0, dx1, y0, y1]: cover dx0..dx1 (rows y0..y1) with columns sx0..sx1 repeated, edges faded in
         _, sx0, sx1, dx0, dx1, y0, y1 = fix
         src = out[y0:y1, sx0:sx1].copy(); w = dx1 - dx0; reps = np.concatenate([src] * (w // (sx1 - sx0) + 1), axis=1)[:, :w]
@@ -60,11 +61,23 @@ def patch(strip, stage, c):
         t = np.arange(w, dtype=np.float32) / w
         out[:, x - w:x] += d[:, None, :] * (0.5 * t)[None, :, None]          # left side rises to meet the middle
         out[:, x:x + w] -= d[:, None, :] * (0.5 * (1 - t))[None, :, None]    # right side comes down to meet it
-    for x, name in c.get('patches', []):
+    for x, name, *mode in c.get('patches', []):
         im = np.asarray(Image.open(os.path.join(HERE, 'img', stage, name + '.webp')).convert('RGB').resize((PW, PH))).astype(np.float32)
         x0 = x - PW // 2; a = np.clip(1 - np.abs(np.arange(PW) - PW / 2) / (PW * 0.36), 0, 1); a = np.clip(a * 3, 0, 1)[None, :, None]
+        if mode and mode[0] == 'left':   # Version 69: a repaint of the stage's start: all of it, fading out over its last 90 columns
+            a = np.clip((PW - np.arange(PW)) / 90, 0, 1)[None, :, None]
         lo, hi = max(0, x0), min(out.shape[1], x0 + PW)
         out[:, lo:hi] = out[:, lo:hi] * (1 - a[:, lo - x0:hi - x0]) + im[:, lo - x0:hi - x0] * a[:, lo - x0:hi - x0]
+    for fix in c.get('fixes', []):
+        if fix[0] != 'diag': continue
+        # ["diag", xc, xbot, y0] (Version 69): a floor that changes in a straight line down the picture at column xc, from
+        # row y0 down. The floor right of xc is mirrored leftward to a slanted line from (xc, y0) to (xbot, bottom), with
+        # a kerb along it, so the two floors meet along a slanted step instead of a cut
+        _, xc, xbot, y0 = fix
+        for y in range(y0, out.shape[0]):
+            bx = round(xc + (xbot - xc) * (y - y0) / (out.shape[0] - 1 - y0))
+            if bx < xc: out[y, bx:xc] = out[y, xc + (xc - bx) - 1:xc - 1:-1]
+            out[y, max(0, bx - 7):bx] = (206, 200, 186); out[y, max(0, bx - 11):max(0, bx - 7)] = (112, 108, 102)
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
 
 

@@ -48,8 +48,9 @@ function meshyOver(k) {
     // the Espace, burning out on the track (Sam's drive ends here)
     if (!S.drv) { const wx = 2760, img = eImg('mpv'); if (img) { const w = img.width * 2, x = Math.round((wx - cam.x - w / 2) / 2) * 2, b = FT + 2;
       if (x > -w - 100 && x < W + 100) { ePut('mpv', wx - w / 2, b, 2);
-        for (let i = 0; i < 5; i++) drawFireSprite(x + 20 + i * (w - 40) / 4, b - img.height * 2 + 18 + (i % 2) * 8, wx + i);
-        for (let i = 0; i < 4; i++) { const k2 = (time * 0.35 + i / 4) % 1; pxCircle(x + w / 2 + Math.sin(k2 * 5 + i) * 16, b - img.height * 2 - k2 * 180, Math.round(12 + k2 * 34), 'rgba(40,36,36,' + (0.5 * (1 - k2)).toFixed(2) + ')'); } } } }
+        realFire('espace', x + 24, b - img.height * 2 + 24, 94, 74, 1);   // Version 69: real fire along the roof
+        // Version 69: thin smoke rising off the top of the flames and drifting away, not dark balls
+        for (let i = 0; i < 7; i++) { const k2 = (time * 0.22 + i / 7) % 1; pxCircle(x + w / 2 + Math.sin(k2 * 4 + i) * 14 + (k2 - 0.5) * 60 + Math.sin(i * 2.3) * 40, b - img.height * 2 - 110 - k2 * 170, Math.round(10 + k2 * 30), 'rgba(80,72,74,' + (0.14 * (1 - k2) * Math.min(1, k2 * 5)).toFixed(3) + ')'); } } } }
   }
   if (k === 'beach' && ST.stuart) {   // Stuart, buried up to his neck
     const x = Math.round((ST.stuart - cam.x) / 2) * 2; if (x > -60 && x < W + 60) { ctx.fillStyle = '#d8c088'; ctx.fillRect(x - 30, FT + 44, 60, 10); ctx.fillRect(x - 20, FT + 40, 40, 4); ePut('stuart', ST.stuart - 20, FT + 48, 2); }
@@ -70,7 +71,7 @@ function meshyOver(k) {
   if (k === 'ramsden') {
     // always on fire: the game's flames on the painted wrecks, and embers going up
     for (const wx of [560, 1610, 2324, 2714, 3440]) { const x = Math.round((wx - cam.x) / 2) * 2; if (x < -160 || x > W + 160) continue;
-      for (let i = 0; i < 3; i++) drawFireSprite(x - 40 + i * 36, FT - 74 + (i % 2) * 8, wx + i); }
+      const rf = RAMS_FIRE[wx]; realFire('rams' + wx, x + rf[0] - rf[1], FT + rf[2], rf[1], 66, rf[3]); }   // Version 69: real fire
     for (let i = 0; i < 40; i++) { const x = (((i * 97 + Math.sin(time + i) * 20 - cam.x * 0.4) % W) + W) % W, y = 300 - ((time * 40 + i * 37) % 300);
       ctx.fillStyle = 'rgba(255,' + (120 + (i % 5) * 20) + ',40,' + (0.5 + (i % 3) * 0.15).toFixed(2) + ')'; ctx.fillRect(Math.round(x / 2) * 2, Math.round(y / 2) * 2, 2, 2); }
   }

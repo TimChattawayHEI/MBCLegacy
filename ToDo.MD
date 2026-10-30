@@ -43,8 +43,31 @@
 - [x] The Long Drive: yard markers upgraded
   - Done (V67): the fishery's Meshy peg boards standing in the lake with the yards on them (every 100 in red)
 
+### Joins, blockers and fire (30 October, late)
+- [x] Soundz FM roof: the parapet broke into a corner where the Master Control fight is. Now one straight wall and railing; the corridor ends at the ROOF door set in the wall
+  - Done (V69), Meshy repaints
+- [x] Elba Arrivals: the hard cut from outside to the hall. Now the terminal front ends in a corner, the hall is seen cut away, the full ARRIVI/ARRIVALS sign, and the floor meets the apron along a slanted kerb
+  - Done (V69)
+- [x] Orpington: the station front and the door out to the platform repainted so nothing cuts or sticks out over the floor; a ghost of the bench removed
+  - Done (V69)
+- [x] Charing Cross: the floor started over the tracks, so you could stand on the train or the buffers. The floor now starts at the platform edge, the columns, bins and signs block you, and the lines down the floor are smoothed
+  - Done (V69)
+- [x] Things painted on the floor block the way (the dive bar's end wall by the back door, the pergola post, the stools; the Soundz decks, sofa, door, air con box and mast; the plane and tug; ticket machines, seats, vending machine, open doors and benches; lamp posts, phone box and the underpass pillar; Charing Cross columns; the sandcastle)
+  - Done (V69): FLOOR_BLOCK in tools/v69/v69.js, for players, foes and allies. If one feels wrong in play, it's a line in that list
+- [x] The train: the carriage end looked stuck on and after the first carriage cut a window in half. Each carriage now draws its own walls and the end wall matches the carriage
+  - Done (V69)
+- [x] The N47: the grab poles were stubby poles on red blocks. Now floor to ceiling yellow poles with a red STOP button
+  - Done (V69)
+- [x] Carp Diem car park: two overlapping silver cars and a see-through red car. Now one estate, the smoker, then the red hatchback by the gate
+  - Done (V69)
+- [x] Faint joins on Ramsden's road and in the night fishery's sky smoothed
+  - Done (V69)
+- [x] The fire on the burning Espace, Ramsden's wrecks and bins, and the drive's crash: real animated fire (flames lick up and break off, sparks, glow) instead of rows of the small flame sprite; the Espace's smoke no longer a dark ball
+  - Done (V69)
+- [ ] Have a play through every stage on a phone and say if any block stops you somewhere it shouldn't, or any join still shows
+
 ### For whoever builds next
-- [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66, V67 and V68 patch the page directly for that reason
+- [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V69 patch the page directly for that reason
 
 ## Carried over from the build plan
 
