@@ -28,6 +28,9 @@
 - [x] Every place-to-place join in the stage pictures blended (Arrivals apron to hall, and the rest)
 - [x] Boss intro cards with Meshy portraits for every boss
 
+### Updates
+- [ ] In-app updates: the app downloads only the changed game files from GitHub and restarts itself, no APK download. A full APK only when the Android side changes
+
 ## Carried over from the build plan
 
 ### Firebase rules (Tim to paste, from the README)

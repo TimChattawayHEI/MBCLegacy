@@ -2,6 +2,9 @@
 // 1. A new version is out: the app knows its own build number (build.json, written by the APK build) and asks GitHub
 //    for the latest release; if there's a newer one, a card says so and UPDATE downloads it (the phone's browser takes
 //    the download, then you install over the top).
+//    Version 66: an app with in-app updates (window.MBCNative) fetches only the changed game files itself, in the
+//    background; the card then says UPDATE READY and RESTART switches them in. The APK download is only for a release
+//    that changed the Android side.
 // 2. Your progress follows your name: unlocks, stage ranks, the pub tab, the open cabinets and your pub bests are saved
 //    in Firebase under your name and this phone's secret key (saves/<NAME>/<KEY>), merged both ways when the app
 //    opens and pushed when they change. A save code (8 letters and numbers, on the You screen) brings it all back on a
@@ -10,11 +13,23 @@
 //    three a run) and carry on where you fell with a full set of lives. Not online, not in the kebab siege.
 
 // ------------------------------------------------------------------ 1. a new version is out
-const UPD = { mine: 0, latest: 0, url: '', dismissed: 0, checkedT: -1e9, el: null, busy: false };
+const UPD = { mine: 0, latest: 0, url: '', dismissed: 0, dismissedT: -1e9, checkedT: -1e9, el: null, busy: false, kind: '', statT: -1e9, shown: '' };
 const UPD_API = 'https://api.github.com/repos/TimChattawayHEI/MBCLegacy/releases/latest';
 const UPD_APK = 'https://github.com/TimChattawayHEI/MBCLegacy/releases/latest/download/MBC-Legacies.apk';
+// Version 66: the app's own updater
+const updNative = () => !!(window.MBCNative && typeof window.MBCNative.otaStatus === 'function');
+function updStatus() { try { return JSON.parse(window.MBCNative.otaStatus()); } catch (e) { return null; } }
+function updPoll() {
+  const st = updStatus(); if (!st || st.state === 'off') return false;
+  if (st.mine) UPD.mine = st.mine;
+  if (st.state === 'ready' && st.latest > UPD.mine) { UPD.latest = st.latest; UPD.kind = 'ready'; }
+  else if (st.state === 'apk' && st.latest > UPD.mine) { UPD.latest = st.latest; UPD.kind = 'apk'; UPD.url = UPD_APK; }
+  else if (UPD.kind === 'ready' && st.state !== 'ready') UPD.kind = '';
+  return true;
+}
 async function updCheck() {
   if (!window.MBC_APP || UPD.busy) return;
+  if (updNative() && updPoll()) { UPD.checkedT = performance.now(); try { window.MBCNative.otaCheck(); } catch (e) { /* next time */ } return; }
   UPD.busy = true; UPD.checkedT = performance.now();
   try {
     if (!UPD.mine) { const r = await withTimeout(fetch('build.json', { cache: 'no-store' }), 5000); if (!r.ok) return; UPD.mine = (await r.json()).build | 0; }
@@ -22,7 +37,7 @@ async function updCheck() {
     const r = await withTimeout(fetch(UPD_API, { cache: 'no-store', headers: { Accept: 'application/vnd.github+json' } }), 8000); if (!r.ok) return;
     const j = await r.json(), n = parseInt(String(j.tag_name || '').replace(/\D/g, ''), 10) || 0;
     const apk = (j.assets || []).find(a => /\.apk$/i.test(a.name || ''));
-    if (n > UPD.mine && apk) { UPD.latest = n; UPD.url = apk.browser_download_url || UPD_APK; }
+    if (n > UPD.mine && apk) { UPD.latest = n; UPD.url = apk.browser_download_url || UPD_APK; UPD.kind = 'apk'; }
   } catch (e) { /* no signal: try again later */ } finally { UPD.busy = false; }
 }
 function updCardEl() {
@@ -34,27 +49,50 @@ function updCardEl() {
     '<button id="updGo" type="button" style="font:700 13px Rubik,sans-serif;padding:10px 16px;border-radius:9px;border:2px solid #7fe07a;background:#7fe07a;color:#10200f;cursor:pointer">Update</button>';
   document.body.appendChild(el); UPD.el = el;
   el.querySelector('#updGo').addEventListener('click', e => { e.stopPropagation(); updGo(); });
-  el.querySelector('#updLater').addEventListener('click', e => { e.stopPropagation(); UPD.dismissed = UPD.latest; sfx('page'); });
+  el.querySelector('#updLater').addEventListener('click', e => { e.stopPropagation(); UPD.dismissed = UPD.latest; UPD.dismissedT = performance.now(); sfx('page'); });
   ['pointerdown', 'keydown'].forEach(t => el.addEventListener(t, e => e.stopPropagation()));
   return el;
 }
 // the app opens anything off its own pages in the phone's browser, which downloads the APK
 function updGo() {
-  UPD.dismissed = UPD.latest; sfx('life');
+  UPD.dismissed = UPD.latest; UPD.dismissedT = performance.now(); sfx('life');
   try { cloudPush(true); } catch (e) { /* best effort */ }
-  const sub = UPD.el && UPD.el.querySelector('#updSub'); if (sub) sub.textContent = 'Downloading. Open it when it finishes and install over the top.';
+  const sub = UPD.el && UPD.el.querySelector('#updSub');
+  if (UPD.kind === 'ready') {   // Version 66: switch in the downloaded files and reload
+    if (sub) sub.textContent = 'Restarting...';
+    UPD.dismissedT = 1e12;
+    setTimeout(() => {
+      let ok = false; try { ok = window.MBCNative.otaApply(); } catch (e) { /* below */ }
+      if (!ok && sub) { sub.textContent = "Couldn't switch it in. It'll try again next time you open the game."; UPD.kind = ''; }
+    }, 350);
+    return;
+  }
+  if (sub) sub.textContent = 'Downloading. Open it when it finishes and install over the top.';
   setTimeout(() => { window.location.href = UPD.url || UPD_APK; }, 150);
 }
 function updTick() {
   const quiet = ['title', 'select', 'pub', 'board'].includes(mode) && !NET.on && !PROFILE.asking;
   // look when the app opens, then every 20 minutes while it's on a menu
-  if (quiet && performance.now() - UPD.checkedT > (UPD.mine ? 20 * 60000 : 4000)) updCheck();
+  const now = performance.now();
+  if (quiet && now - UPD.checkedT > (UPD.mine ? 20 * 60000 : 4000)) updCheck();
+  if (updNative() && now - UPD.statT > 700) { UPD.statT = now; updPoll(); }   // Version 66: how the download is going
   const el = UPD.latest || UPD.el ? updCardEl() : null; if (!el) return;
-  const show = quiet && UPD.latest > UPD.mine && UPD.dismissed !== UPD.latest && !(HUB.card && HUB.card.style.display !== 'none');
+  // Later hides it for half an hour (a downloaded update also goes in by itself the next time the game opens)
+  const later = UPD.dismissed === UPD.latest && now - UPD.dismissedT < 30 * 60000;
+  const show = quiet && UPD.kind && UPD.latest > UPD.mine && !later && !(HUB.card && HUB.card.style.display !== 'none');
   if (!show) { if (el.style.display !== 'none') el.style.display = 'none'; return; }
-  if (el.style.display === 'none') {
-    el.querySelector('#updWhat').textContent = 'NEW VERSION: 1.' + UPD.latest;
-    el.querySelector('#updSub').textContent = "You've got 1." + UPD.mine + '. Your progress is saved under your name.';
+  const key = UPD.kind + UPD.latest;
+  if (el.style.display === 'none' || UPD.shown !== key) {
+    UPD.shown = key;
+    if (UPD.kind === 'ready') {
+      el.querySelector('#updWhat').textContent = 'UPDATE READY: 1.' + UPD.latest;
+      el.querySelector('#updSub').textContent = 'Restart to play it. Takes a couple of seconds, and your progress is kept.';
+      el.querySelector('#updGo').textContent = 'Restart';
+    } else {
+      el.querySelector('#updWhat').textContent = 'NEW VERSION: 1.' + UPD.latest;
+      el.querySelector('#updSub').textContent = "You've got 1." + UPD.mine + (updNative() ? '. This one needs the full download.' : '. Your progress is saved under your name.');
+      el.querySelector('#updGo').textContent = 'Update';
+    }
     sfx('incoming');
   }
   const r = canvas.getBoundingClientRect();
