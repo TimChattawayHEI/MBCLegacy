@@ -572,8 +572,10 @@ const FR_PAY = { cherry: 8, lemon: 10, grapes: 12, bell: 20, bar: 30, seven: 80,
 const FR_REEL = ['cherry', 'lemon', 'grapes', 'cherry', 'bell', 'lemon', 'bar', 'cherry', 'grapes', 'seven', 'lemon', 'cherry', 'grapes', 'bell', 'marc', 'bar'];
 const FR_STAKE = 500, FRX = 320, FRY = 70;   // the machine face's top left, in game units (it is drawn 1:1)
 const FR_WIN = { x: FRX + 80, y: FRY + 116, w: 152, h: 96 };   // the reel panel over the face's three windows
+// the machine's own buttons: three HOLD / NUDGE buttons, then START (face pixels doubled, as the face is drawn 2x)
+const FR_BTN = [[24, 45], [52, 72], [79, 99], [107, 136]].map(([a, b]) => ({ x: FRX + a * 2, y: FRY + 124 * 2, w: (b - a) * 2, h: 28 }));
 MGAME.fruit = {
-  init(M) { M.s = { p: [rand(0, 16) | 0, rand(0, 16) | 0, rand(0, 16) | 0], spin: null, hold: [false, false, false], holds: false, nudges: 0, last: 0, best: 0, msgT: 0, lights: 0 }; },
+  init(M) { M.s = { p: [rand(0, 16) | 0, rand(0, 16) | 0, rand(0, 16) | 0], spin: null, hold: [false, false, false], holds: false, nudges: 0, last: 0, best: 0, msgT: 0, lights: 0, nt: [0, 0, 0] }; },
   sym(i, p) { return FR_REEL[((Math.round(p) % 16) + 16) % 16]; },
   line(M) { return M.s.p.map((p, i) => this.sym(i, p)); },
   win(L) {
@@ -594,6 +596,7 @@ MGAME.fruit = {
   },
   update(M, dt) {
     const s = M.s; if (s.msgT > 0) s.msgT -= dt; if (s.lights > 0) s.lights -= dt;
+    for (let i = 0; i < 3; i++) if (s.nt[i] > 0) s.nt[i] = Math.max(0, s.nt[i] - dt);
     if (s.spin) {
       s.spin.t += dt; let done = true;
       s.spin.r.forEach((r, i) => {
@@ -612,9 +615,9 @@ MGAME.fruit = {
       }
       return;
     }
-    const reelTap = i => pubHits.has('reel' + i) || pressed.has(['left', 'up', 'right'][i]) || (i === 1 && pressed.has('down'));
+    const reelTap = i => pubHits.has('frbtn' + i) || pubHits.has('reel' + i) || pressed.has(['left', 'up', 'right'][i]) || (i === 1 && pressed.has('down'));
     for (let i = 0; i < 3; i++) if (reelTap(i)) {
-      if (s.nudges > 0) { s.p[i] = Math.round(s.p[i]) + 1; s.nudges--; sfx('dart'); if (this.settle(M)) s.nudges = 0; }
+      if (s.nudges > 0) { s.p[i] = Math.round(s.p[i]) + 1; s.nt[i] = 0.16; s.nudges--; sfx('dart'); if (this.settle(M)) s.nudges = 0; }
       else if (s.holds) { s.hold[i] = !s.hold[i]; sfx('page'); }
     }
     if (pressed.has('punch') || pressed.has('start') || pubHits.has('spin')) {
@@ -625,6 +628,27 @@ MGAME.fruit = {
     }
   },
   symImg(n) { return n === 'marc' ? portraitImg('marc') : pubImg('sym_' + n); },
+  // one of the machine's buttons: 0-2 hold or nudge that reel, 3 is START
+  button(M, i, tch) {
+    const s = M.s, b = FR_BTN[i], idle = !!s.spin;
+    let label, body, lit;
+    if (i === 3) { label = 'START'; body = '#2f9a3a'; lit = !idle; }
+    else if (s.nudges && !idle) { label = 'NUDGE'; body = '#e8a21c'; lit = Math.floor(time * 4) % 2 === 0; }
+    else if (s.holds && !idle) { label = s.hold[i] ? 'HELD' : 'HOLD'; body = s.hold[i] ? '#3fbf4a' : '#d8452c'; lit = s.hold[i] || Math.floor(time * 4) % 2 === 0; }
+    else { label = 'HOLD'; body = '#6a2a20'; lit = false; }
+    if (i < 3 && s.hold[i] && s.spin) { label = 'HELD'; body = '#3fbf4a'; lit = true; }
+    PUI.push({ id: i === 3 ? 'spin' : 'frbtn' + i, x: b.x, y: b.y, w: b.w, h: b.h });
+    ctx.save();
+    ctx.fillStyle = '#120806'; ctx.fillRect(b.x - 2, b.y - 2, b.w + 4, b.h + 6);
+    ctx.fillStyle = body; ctx.fillRect(b.x, b.y, b.w, b.h);
+    ctx.fillStyle = lit ? 'rgba(255,255,220,0.38)' : 'rgba(0,0,0,0.35)'; ctx.fillRect(b.x, b.y, b.w, b.h);
+    ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.fillRect(b.x + 2, b.y + 2, b.w - 4, 3);
+    ctx.fillStyle = 'rgba(0,0,0,0.35)'; ctx.fillRect(b.x, b.y + b.h, b.w, 4);
+    ctx.restore();
+    textOut(label, b.x + b.w / 2, b.y + b.h / 2 + 1, (label.length > 5 ? '9px ' : '11px ') + DISPLAY, lit ? '#fff7d6' : '#b8a48a', OUT, 3);
+    if (i < 3 && s.nudges && !idle) textOut('▼', b.x + b.w / 2, b.y + b.h + 9, '10px ' + DISPLAY, '#ffd23f', OUT, 3);
+    if (!tch && i < 3) { ctx.font = '700 10px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(['←', '↑', '→'][i], b.x + b.w / 2, b.y + b.h + (s.nudges && !idle ? 20 : 10)); }
+  },
   draw(M) {
     const s = M.s;
     ctx.fillStyle = '#1a1210'; ctx.fillRect(0, 0, W, H);
@@ -635,9 +659,9 @@ MGAME.fruit = {
     for (let i = 0; i < 3; i++) {
       const x = R.x + i * 52; ctx.fillStyle = '#f4ecd6'; ctx.fillRect(x, R.y, 48, R.h);
       ctx.save(); ctx.beginPath(); ctx.rect(x, R.y, 48, R.h); ctx.clip(); ctx.imageSmoothingEnabled = false;
-      const p = s.p[i], base = Math.floor(p), fr = p - base;
+      const p = s.p[i] - s.nt[i] / 0.16, base = Math.floor(p), fr = p - base;
       for (let k = -2; k <= 2; k++) {
-        const n = FR_REEL[(((base + k) % 16) + 16) % 16], img = this.symImg(n), y = R.y + R.h / 2 - 24 + (k - fr) * 48;
+        const n = FR_REEL[(((base + k) % 16) + 16) % 16], img = this.symImg(n), y = R.y + R.h / 2 - 24 + (fr - k) * 48;
         if (img) ctx.drawImage(img, x, snap2(y), 48, 48);
       }
       ctx.fillStyle = 'rgba(0,0,0,0.28)'; ctx.fillRect(x, R.y, 48, 14); ctx.fillRect(x, R.y + R.h - 14, 48, 14);
@@ -650,8 +674,13 @@ MGAME.fruit = {
     const s = M.s, R = FR_WIN, tch = touchUI && !padOn();
     for (let i = 0; i < 3; i++) {
       PUI.push({ id: 'reel' + i, x: R.x + i * 52, y: R.y, w: 48, h: R.h });
-      if (s.holds || s.nudges) { const x = R.x + i * 52 + 24, y = R.y + R.h + 26; textOut(s.nudges ? 'NUDGE' : s.hold[i] ? 'HELD' : 'HOLD', x, y, '12px ' + DISPLAY, s.hold[i] ? '#7fe07a' : '#ffd23f', OUT, 4); if (!tch) { ctx.font = '700 10px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'center'; ctx.fillText(['←', '↑', '→'][i], x, y + 16); } }
+      this.button(M, i, tch);
     }
+    this.button(M, 3, tch);
+    // the strip above the buttons says what the buttons are for right now
+    { const B = FR_BTN, x = (B[0].x + B[2].x + B[2].w) / 2, y = B[0].y - 9, live = !s.spin && (s.holds || s.nudges);
+      ctx.fillStyle = '#1a0d08'; ctx.fillRect(B[0].x - 4, y - 7, B[2].x + B[2].w - B[0].x + 8, 14);
+      if (live) textOut(s.nudges ? s.nudges + (s.nudges === 1 ? ' NUDGE' : ' NUDGES') + ': PRESS A REEL\'S BUTTON' : 'PICK REELS TO HOLD', x, y, '10px ' + DISPLAY, '#ffd23f', OUT, 3); }
     pubTabHud('YOUR TAB');
     pubPanel(16, 14, 236, 236);
     ctx.font = '800 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('PAYS (500 A SPIN)', 30, 32);
