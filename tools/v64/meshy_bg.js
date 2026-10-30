@@ -3,7 +3,7 @@
 // tools/v64/meshy_bg.py) and drawn edge to edge in place of its old pieced-together backdrop. Things the game does on
 // top of the backdrop (the Christmas tree's star, and so on) are still drawn by meshyOver. Until every tile of a stage
 // has loaded, the old backdrop is drawn instead.
-const MESHY_BG = { frequency: 4, soundz: 4, airport: 4, divebar: 4, beach: 4 };
+const MESHY_BG = { frequency: 4, soundz: 4, airport: 4, divebar: 4, beach: 4, club: 4 };
 STAGES.beach.secret.x = 2930;   // the sandcastle
 // where the painted pictures put things the game needs to know about
 STAGES.soundz.secret.x = 2024;   // the broken lift
@@ -39,6 +39,17 @@ function meshyOver(k) {
   }
   if (k === 'beach' && ST.stuart) {   // Stuart, buried up to his neck
     const x = Math.round((ST.stuart - cam.x) / 2) * 2; if (x > -60 && x < W + 60) { ctx.fillStyle = '#d8c088'; ctx.fillRect(x - 30, FT + 44, 60, 10); ctx.fillRect(x - 20, FT + 40, 40, 4); ePut('stuart', ST.stuart - 20, FT + 48, 2); }
+  }
+  if (k === 'club' && cam.x < 1950) {
+    // the DJ in his booth, and the light rig sweeping the room (inside only)
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, Math.min(W, 1950 - cam.x), H); ctx.clip();
+    { const x = 972 - cam.x; if (x > -80 && x < W + 80) clubDancer(x, FT - 40, 98, true); }
+    ePut('djbooth', 860, FT + 2, 2);
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < 6; i++) { const ox = ((i * 330 - cam.x * 0.9) % (W + 300) + W + 300) % (W + 300) - 150, ang = Math.sin(time * (0.7 + i * 0.13) + i) * 0.6;
+      ctx.fillStyle = ['rgba(255,60,180,0.12)', 'rgba(60,200,255,0.12)', 'rgba(255,220,60,0.1)', 'rgba(120,255,120,0.1)'][i % 4];
+      ctx.beginPath(); ctx.moveTo(ox, 10); ctx.lineTo(ox + Math.sin(ang) * 600 - 50, H); ctx.lineTo(ox + Math.sin(ang) * 600 + 50, H); ctx.closePath(); ctx.fill(); }
+    ctx.restore();
   }
   if (k === 'soundz') {
     // Vince, asleep on the sofa

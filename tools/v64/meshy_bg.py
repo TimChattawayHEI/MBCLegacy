@@ -52,7 +52,7 @@ def patch(strip, stage, c):
 def fit(strip, c):
     w = round(strip.width * 480 / PW); ft = c['ft'] // 2
     top = strip.crop((0, c['top'], strip.width, c['base'])).resize((w, ft), Image.LANCZOS)
-    bot = strip.crop((0, c['base'], strip.width, PH)).resize((w, 270 - ft), Image.LANCZOS)
+    bot = strip.crop((0, c['base'], strip.width, c.get('bottom', PH))).resize((w, 270 - ft), Image.LANCZOS)
     out = Image.new('RGB', (w, 270)); out.paste(top, (0, 0)); out.paste(bot, (0, ft))
     return out.crop((0, 0, c['len'] // 2, 270))
 
