@@ -7042,6 +7042,8 @@ function drawStageBg() {
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (meshyBg()) return;   // Version 64: painted in Meshy
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (ST.era === 2006 && nlDrawStageBg(ST.bg)) return;
   if (ST.bg === 'fishery') bgFisheryPixel();
   else if (ST.bg === 'orpington') bgOrpingtonPixel();
@@ -7307,10 +7309,11 @@ setTimeout(preloadArt, 700);
 // tools/v64/meshy_bg.py) and drawn edge to edge in place of its old pieced-together backdrop. Things the game does on
 // top of the backdrop (the Christmas tree's star, and so on) are still drawn by meshyOver. Until every tile of a stage
 // has loaded, the old backdrop is drawn instead.
-const MESHY_BG = { frequency: 4, soundz: 4, airport: 4, divebar: 4, beach: 4, club: 4, nl_station: 4, nl_cx: 4, nl_alley: 4, arrival: 4, social: 3, pegnine: 4 };
+const MESHY_BG = { frequency: 4, soundz: 4, airport: 4, divebar: 4, beach: 4, club: 4, nl_station: 4, nl_cx: 4, nl_alley: 4, arrival: 4, social: 3, pegnine: 4, ramsden: 4 };
 STAGES.beach.secret.x = 2930;   // the sandcastle
 // where the painted pictures put things the game needs to know about
 STAGES.soundz.secret.x = 2024;   // the broken lift
+STAGES.ramsden.secret.x = 1070;   // the NO BALL GAMES sign
 STAGES.social.fruit.x = 1090;   // the fruit machine, on the bare wall between the dartboard and the window
 const MESHY_TILE = 512;
 function meshyFiles(k) { const out = []; for (let i = 0; i < (MESHY_BG[k] || 0); i++) out.push('meshy/' + k + '_' + i); return out; }
@@ -7370,6 +7373,13 @@ function meshyOver(k) {
   }
   if (k === 'nl_station') nlGateline(NL_ST_GATE);
   if (k === 'nl_cx') nlGateline(NL_CX_GATE);
+  if (k === 'ramsden') {
+    // always on fire: the game's flames on the painted wrecks, and embers going up
+    for (const wx of [560, 1610, 2324, 2714, 3440]) { const x = Math.round((wx - cam.x) / 2) * 2; if (x < -160 || x > W + 160) continue;
+      for (let i = 0; i < 3; i++) drawFireSprite(x - 40 + i * 36, FT - 74 + (i % 2) * 8, wx + i); }
+    for (let i = 0; i < 40; i++) { const x = (((i * 97 + Math.sin(time + i) * 20 - cam.x * 0.4) % W) + W) % W, y = 300 - ((time * 40 + i * 37) % 300);
+      ctx.fillStyle = 'rgba(255,' + (120 + (i % 5) * 20) + ',40,' + (0.5 + (i % 3) * 0.15).toFixed(2) + ')'; ctx.fillRect(Math.round(x / 2) * 2, Math.round(y / 2) * 2, 2, 2); }
+  }
   if (k === 'social' && S.fruit) drawFruitPixel(S.fruit);
   if (k === 'arrival' || k === 'pegnine') {
     // the pegs are the game's (their numbers matter), and so are the things with words on, and on a sunny day the clouds still drift over

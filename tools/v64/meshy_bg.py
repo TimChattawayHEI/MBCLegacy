@@ -122,6 +122,28 @@ def skyfill(strip, c):
     return Image.fromarray(np.clip(a, 0, 255).astype(np.uint8))
 
 
+def floormatch(strip, c):
+    """"floormatch": [x0, x1]: Meshy paints some panels' ground lighter or darker than the rest. Each panel after the
+    first has its ground (below the base) shifted, light and colour, to the average ground of columns x0..x1, the shift
+    changing over 200 columns where the panel starts to be its own (just past the quarter it carried on from)."""
+    if 'floormatch' not in c: return strip
+    x0, x1 = c['floormatch']; b = c['base'] + 8
+    ycc = np.asarray(strip.convert('YCbCr')).astype(np.float32); fl = ycc[b:]
+    ref = fl[:, x0:x1].reshape(-1, 3).mean(0); n = len(c['panels']); W_ = fl.shape[1]
+    shift = np.zeros((W_, 3), np.float32); prev = None
+    for i in range(n):
+        a = 0 if i == 0 else i * (PW - Q) + Q; e = min(W_, (i + 1) * (PW - Q) + Q) if i < n - 1 else W_
+        d = ref - fl[:, a:e].reshape(-1, 3).mean(0)
+        shift[a:e] = d
+        if prev is not None:
+            r0 = max(0, a - 100); r1 = min(W_, a + 100); t = np.linspace(0, 1, r1 - r0)[:, None]
+            shift[r0:r1] = prev * (1 - t) + d * t
+        prev = d
+    ramp = np.clip((np.arange(fl.shape[0]) + 1) / 24, 0, 1)[:, None, None]
+    ycc[b:] += ramp * shift[None]
+    return Image.fromarray(np.clip(ycc, 0, 255).astype(np.uint8), 'YCbCr').convert('RGB')
+
+
 def fit(strip, c):
     w = round(strip.width * 480 / PW); ft = c['ft'] // 2
     top = strip.crop((0, c['top'], strip.width, c['base'])).resize((w, ft), Image.LANCZOS)
@@ -142,7 +164,7 @@ def loop(stage, c):
 for stage in ([] if sys.argv[1:] == ['--none'] else sys.argv[1:] or list(CFG)):
     c = CFG[stage]
     if 'loop' in c: loop(stage, c); continue
-    full = fit(skyfill(skytone(grade(patch(stitch(stage, c['panels']), stage, c), c), c), c), c)
+    full = fit(floormatch(skyfill(skytone(grade(patch(stitch(stage, c['panels']), stage, c), c), c), c), c), c)
     for f in os.listdir(OUT):
         if f.startswith(stage + '_'): os.remove(os.path.join(OUT, f))
     n = 0
