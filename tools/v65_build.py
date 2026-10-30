@@ -191,5 +191,33 @@ s = swap(s, "      pubPanel(mx - 14, my - 18, mw + 28, 50);\n", "      pubPanel(
 s = swap(s, "'HIT ON THE WHITE LINE', W / 2, my - 34);", "'HIT ON THE WHITE LINE', W / 2, my + 30);", 'golf meter words')
 
 
+# ---------------------------------------------------------------- speech bubbles and word bursts, painted in Meshy (tools/v65/comic.py)
+s = swap(s, "function drawBubble(b) {\n",
+         "const COMIC = ['bubble_lad', 'bubble_foe', 'tail_lad', 'tail_foe', 'burst_y1', 'burst_y2', 'burst_o1', 'burst_o2'].map(n => 'comic/' + n);   // Version 65\n"
+         "setTimeout(() => { COMIC.forEach(f => bgImg(f)); ASSET_BG.push(...COMIC); }, 0);\n"
+         "function comicBubble(X, Y, Wd, Ht, tx, dir, lad) {   // the painted balloon, nine-sliced to fit, and its tail pointing at the speaker\n"
+         "  const img = bgImg(lad ? 'comic/bubble_lad' : 'comic/bubble_foe'), tail = bgImg(lad ? 'comic/tail_lad' : 'comic/tail_foe'); if (!img || !tail || !bgReady(COMIC)) return false;\n"
+         "  const c = 10, C = Math.min(c * 2, Math.floor(Ht / 2), Math.floor(Wd / 2)), iw = img.width, ih = img.height;\n"
+         "  ctx.save(); ctx.imageSmoothingEnabled = false; const d = (a, b, w, h, x, y, W2, H2) => { if (W2 > 0 && H2 > 0) ctx.drawImage(img, a, b, w, h, x, y, W2, H2); };\n"
+         "  d(c, c, iw - 2 * c, ih - 2 * c, X + C, Y + C, Wd - 2 * C, Ht - 2 * C);\n"
+         "  d(c, 0, iw - 2 * c, c, X + C, Y, Wd - 2 * C, C); d(c, ih - c, iw - 2 * c, c, X + C, Y + Ht - C, Wd - 2 * C, C);\n"
+         "  d(0, c, c, ih - 2 * c, X, Y + C, C, Ht - 2 * C); d(iw - c, c, c, ih - 2 * c, X + Wd - C, Y + C, C, Ht - 2 * C);\n"
+         "  d(0, 0, c, c, X, Y, C, C); d(iw - c, 0, c, c, X + Wd - C, Y, C, C); d(0, ih - c, c, c, X, Y + Ht - C, C, C); d(iw - c, ih - c, c, c, X + Wd - C, Y + Ht - C, C, C);\n"
+         "  ctx.translate(tx, Y + Ht - 4); if (dir < 0) ctx.scale(-1, 1); ctx.drawImage(tail, -8, 0, tail.width * 2, tail.height * 2);\n"
+         "  ctx.restore(); return true;\n"
+         "}\n"
+         "function drawBubble(b) {\n", 'comic bubble helper')
+s = swap(s, "    const steps = [[-6, 12], [-4 + 2 * dir, 8], [-2 + 4 * dir, 4]];\n    ctx.fillStyle = OUT;\n",
+         "    const steps = [[-6, 12], [-4 + 2 * dir, 8], [-2 + 4 * dir, 4]];\n    if (!comicBubble(X, Y, Wd, Ht, tx, dir, isLad)) {\n    ctx.fillStyle = OUT;\n", 'comic bubble use')
+s = swap(s, "    ctx.fillStyle = 'rgba(60,40,20,0.14)'; ctx.fillRect(X + 2, Y + Ht - 4, Wd - 4, 2);\n  }\n",
+         "    ctx.fillStyle = 'rgba(60,40,20,0.14)'; ctx.fillRect(X + 2, Y + Ht - 4, Wd - 4, 2);\n    }\n  }\n", 'comic bubble fallback end')
+s = swap(s, "    ctx.beginPath();\n    for (let i = 0; i <= 28; i++) { const a = i / 28 * Math.PI * 2, rr = i % 2 ? 0.78 : 1;",
+         "    const bimg = bgReady(COMIC) && bgImg('comic/' + (p.big ? 'burst_o' : 'burst_y') + (1 + (p.word.length + p.word.charCodeAt(0)) % 2));\n"
+         "    if (bimg) { ctx.imageSmoothingEnabled = false; ctx.drawImage(bimg, -w * 0.62, -h * 0.68, w * 1.24, h * 1.36); }   // Version 65: Meshy's painted burst\n"
+         "    else {\n    ctx.beginPath();\n    for (let i = 0; i <= 28; i++) { const a = i / 28 * Math.PI * 2, rr = i % 2 ? 0.78 : 1;", 'comic burst')
+s = swap(s, "    ctx.closePath(); fillOut(p.big ? '#f2a23a' : '#ffd23f', 3);\n    ctx.fillStyle = OUT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(p.word, 0, 2);",
+         "    ctx.closePath(); fillOut(p.big ? '#f2a23a' : '#ffd23f', 3); }\n    if (bimg) textOut(p.word, 0, 2, (p.big ? 30 : 22) + 'px ' + DISPLAY, '#fff6dc', OUT, 6, 'center');\n    else { ctx.fillStyle = OUT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(p.word, 0, 2); }", 'comic burst words')
+
+
 open(PAGE, 'w', encoding='utf-8').write(s)
 print('v65_build: web/index.html updated')
