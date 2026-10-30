@@ -7019,6 +7019,8 @@ function drawStageBg() {
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (meshyBg()) return;   // Version 64: painted in Meshy
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (ST.era === 2006 && nlDrawStageBg(ST.bg)) return;
   if (ST.bg === 'fishery') bgFisheryPixel();
   else if (ST.bg === 'orpington') bgOrpingtonPixel();
@@ -7284,7 +7286,8 @@ setTimeout(preloadArt, 700);
 // tools/v64/meshy_bg.py) and drawn edge to edge in place of its old pieced-together backdrop. Things the game does on
 // top of the backdrop (the Christmas tree's star, and so on) are still drawn by meshyOver. Until every tile of a stage
 // has loaded, the old backdrop is drawn instead.
-const MESHY_BG = { frequency: 4, soundz: 4, airport: 4, divebar: 4 };
+const MESHY_BG = { frequency: 4, soundz: 4, airport: 4, divebar: 4, beach: 4 };
+STAGES.beach.secret.x = 2930;   // the sandcastle
 // where the painted pictures put things the game needs to know about
 STAGES.soundz.secret.x = 2024;   // the broken lift
 const MESHY_TILE = 512;
@@ -7316,6 +7319,9 @@ function meshyOver(k) {
       if (x > -w - 100 && x < W + 100) { ePut('mpv', wx - w / 2, b, 2);
         for (let i = 0; i < 5; i++) drawFireSprite(x + 20 + i * (w - 40) / 4, b - img.height * 2 + 18 + (i % 2) * 8, wx + i);
         for (let i = 0; i < 4; i++) { const k2 = (time * 0.35 + i / 4) % 1; pxCircle(x + w / 2 + Math.sin(k2 * 5 + i) * 16, b - img.height * 2 - k2 * 180, Math.round(12 + k2 * 34), 'rgba(40,36,36,' + (0.5 * (1 - k2)).toFixed(2) + ')'); } } } }
+  }
+  if (k === 'beach' && ST.stuart) {   // Stuart, buried up to his neck
+    const x = Math.round((ST.stuart - cam.x) / 2) * 2; if (x > -60 && x < W + 60) { ctx.fillStyle = '#d8c088'; ctx.fillRect(x - 30, FT + 44, 60, 10); ctx.fillRect(x - 20, FT + 40, 40, 4); ePut('stuart', ST.stuart - 20, FT + 48, 2); }
   }
   if (k === 'soundz') {
     // Vince, asleep on the sofa
