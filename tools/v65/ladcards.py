@@ -13,7 +13,7 @@ spec = importlib.util.spec_from_file_location('bc', os.path.join(HERE, 'bosscard
 OUT = os.path.join(ROOT, 'web', 'bg', 'ladcard'); SRC = os.path.join(HERE, 'img', 'ladcard'); os.makedirs(OUT, exist_ok=True)
 WHO = {
     'tim': 'a bald man with a big ginger-brown beard and glasses in an olive green jacket over a dark shirt, jeans',
-    'seb': 'a muscular ex-army man with short reddish hair, a beard and dark sunglasses in a green army T-shirt and camouflage trousers',
+    'seb': 'a powerfully built man with a very short buzz cut of light brown hair and a short ginger-brown stubble beard, no sunglasses, in a dark olive-grey short-sleeved button-up shirt open over a white T-shirt, light blue jeans and brown boots',
     'byron': 'a man with short brown hair and a beard in a grey jacket and jeans, a football at his feet',
     'pearcy': 'a big, broad bearded man in a loud orange Hawaiian shirt with a flame pattern and khaki shorts',
     'kelly': 'a slim young man with short brown hair in a red and white striped shirt and jeans',
