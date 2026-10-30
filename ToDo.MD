@@ -66,8 +66,24 @@
   - Done (V69)
 - [ ] Have a play through every stage on a phone and say if any block stops you somewhere it shouldn't, or any join still shows
 
+### More Meshy (30 October, night)
+- [x] The train and the N47 painted in Meshy: proper ceilings with strip lights and floors, no more black above the carriage
+  - Done (V70)
+- [x] Foreground layer: station columns, lamps, railings and a trolley slide past in front of the fighters (Charing Cross, Orpington, the Frequency, the alley); they go see-through when a lad is behind one
+  - Done (V70), `FG_SET` in tools/v70/v70.js. More stages can be added there
+- [x] Parallax skies: Elba airport, the beach and the dive bar's track have their sky as a slower layer
+  - Done (V70), "parasky" in stages.json
+- [x] Pickups and weapons repainted as one matching sheet (the cone, helmet and net kept, Meshy made them worse); the bus pole weapon matches the new grab poles
+  - Done (V70)
+- [x] Seb's artillery cut-in: the mortar pit painted in Meshy (flare, sandbags, forest)
+- [x] Stage titles, GAME OVER and the win banner on a Meshy caption plate; game over and victory pictures behind them
+- [x] Darts on a Meshy pub wall with the cabinet open round the board; the kiss game in the Meshy Soundz flat
+- [x] App icon (a fist with a sovereign ring over London at sunset) and a splash screen while it loads
+  - Done (V70). Shows on the next APK, not an in-app update
+- [ ] Tim: say if any foreground piece gets in the way in a fight; it's one line per piece to move or drop
+
 ### For whoever builds next
-- [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V69 patch the page directly for that reason
+- [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V70 patch the page directly for that reason
 
 ## Carried over from the build plan
 
