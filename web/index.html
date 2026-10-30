@@ -7011,6 +7011,8 @@ function drawStageBg() {
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (meshyBg()) return;   // Version 64: painted in Meshy
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (ST.era === 2006 && nlDrawStageBg(ST.bg)) return;
   if (ST.bg === 'fishery') bgFisheryPixel();
   else if (ST.bg === 'orpington') bgOrpingtonPixel();
@@ -7276,7 +7278,9 @@ setTimeout(preloadArt, 700);
 // tools/v64/meshy_bg.py) and drawn edge to edge in place of its old pieced-together backdrop. Things the game does on
 // top of the backdrop (the Christmas tree's star, and so on) are still drawn by meshyOver. Until every tile of a stage
 // has loaded, the old backdrop is drawn instead.
-const MESHY_BG = { frequency: 4 };
+const MESHY_BG = { frequency: 4, soundz: 4 };
+// where the painted pictures put things the game needs to know about
+STAGES.soundz.secret.x = 2024;   // the broken lift
 const MESHY_TILE = 512;
 function meshyFiles(k) { const out = []; for (let i = 0; i < (MESHY_BG[k] || 0); i++) out.push('meshy/' + k + '_' + i); return out; }
 for (const k in MESHY_BG) ASSET_BG.push(...meshyFiles(k));
@@ -7289,6 +7293,17 @@ function meshyBg() {
 }
 function meshyOver(k) {
   if (k === 'frequency') { if (S.tree) drawTree(S.tree); }
+  if (k === 'soundz') {
+    // Vince, asleep on the sofa
+    { const x = 1068 - cam.x; if (x > -140 && x < W + 140) { pxText('z', x + 8 + Math.sin(time * 2) * 3, 214 - (time * 10) % 20, 14, '#efe6d2'); pxText('VINCE', x + 104, FT + 14, 12, '#efe6d2', OUT); } }
+    // out on the roof: fireworks over the skyline, and the countdown
+    const roofX = 2520 - cam.x;
+    if (roofX < W) {
+      ctx.save(); ctx.beginPath(); ctx.rect(Math.max(0, roofX), 0, W, 210); ctx.clip(); drawFireworks(S.fireworks ? 9 : 4, S.fireworks ? 1 : 0.8); ctx.restore();
+      const x = Math.round(Math.max(roofX + 60, W / 2) / 2) * 2;
+      if (x < W - 60) { ctx.fillStyle = OUT; ctx.fillRect(x - 52, 38, 104, 38); ctx.fillStyle = '#101014'; ctx.fillRect(x - 50, 40, 100, 34); pxText(S.fireworks ? '00:00' : '23:5' + (Math.floor(time / 6) % 10), x, 57, 26, S.fireworks ? '#7fe07a' : '#ff5a4a'); }
+    }
+  }
 }
 // V64 js end
 function artPending() {

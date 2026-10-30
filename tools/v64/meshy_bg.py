@@ -31,6 +31,24 @@ def stitch(stage, panels):
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
 
 
+def patch(strip, stage, c):
+    """seam repairs: a Meshy redraw of the 1376 pixels around a join (tools/v64/meshy_seam.py), its middle pasted back
+    over the stitched picture with the edges faded in"""
+    out = np.asarray(strip).astype(np.float32).copy()
+    for fix in c.get('fixes', []):
+        # ["tile", sx0, sx1, dx0, dx1, y0, y1]: cover dx0..dx1 (rows y0..y1) with columns sx0..sx1 repeated, edges faded in
+        _, sx0, sx1, dx0, dx1, y0, y1 = fix
+        src = out[y0:y1, sx0:sx1].copy(); w = dx1 - dx0; reps = np.concatenate([src] * (w // (sx1 - sx0) + 1), axis=1)[:, :w]
+        a = np.clip(np.minimum(np.arange(w) + 1, w - np.arange(w)) / 6, 0, 1)[None, :, None]
+        out[y0:y1, dx0:dx1] = out[y0:y1, dx0:dx1] * (1 - a) + reps * a
+    for x, name in c.get('patches', []):
+        im = np.asarray(Image.open(os.path.join(HERE, 'img', stage, name + '.webp')).convert('RGB').resize((PW, PH))).astype(np.float32)
+        x0 = x - PW // 2; a = np.clip(1 - np.abs(np.arange(PW) - PW / 2) / (PW * 0.36), 0, 1); a = np.clip(a * 3, 0, 1)[None, :, None]
+        lo, hi = max(0, x0), min(out.shape[1], x0 + PW)
+        out[:, lo:hi] = out[:, lo:hi] * (1 - a[:, lo - x0:hi - x0]) + im[:, lo - x0:hi - x0] * a[:, lo - x0:hi - x0]
+    return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
+
+
 def fit(strip, c):
     w = round(strip.width * 480 / PW); ft = c['ft'] // 2
     top = strip.crop((0, c['top'], strip.width, c['base'])).resize((w, ft), Image.LANCZOS)
@@ -39,9 +57,9 @@ def fit(strip, c):
     return out.crop((0, 0, c['len'] // 2, 270))
 
 
-for stage in sys.argv[1:] or list(CFG):
+for stage in ([] if sys.argv[1:] == ['--none'] else sys.argv[1:] or list(CFG)):
     c = CFG[stage]
-    full = fit(stitch(stage, c['panels']), c)
+    full = fit(patch(stitch(stage, c['panels']), stage, c), c)
     for f in os.listdir(OUT):
         if f.startswith(stage + '_'): os.remove(os.path.join(OUT, f))
     n = 0
