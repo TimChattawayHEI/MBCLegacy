@@ -3,7 +3,7 @@
 // tools/v64/meshy_bg.py) and drawn edge to edge in place of its old pieced-together backdrop. Things the game does on
 // top of the backdrop (the Christmas tree's star, and so on) are still drawn by meshyOver. Until every tile of a stage
 // has loaded, the old backdrop is drawn instead.
-const MESHY_BG = { frequency: 4, soundz: 4, airport: 4, divebar: 4, beach: 4, club: 4 };
+const MESHY_BG = { frequency: 4, soundz: 4, airport: 4, divebar: 4, beach: 4, club: 4, nl_station: 4 };
 STAGES.beach.secret.x = 2930;   // the sandcastle
 // where the painted pictures put things the game needs to know about
 STAGES.soundz.secret.x = 2024;   // the broken lift
@@ -51,6 +51,7 @@ function meshyOver(k) {
       ctx.beginPath(); ctx.moveTo(ox, 10); ctx.lineTo(ox + Math.sin(ang) * 600 - 50, H); ctx.lineTo(ox + Math.sin(ang) * 600 + 50, H); ctx.closePath(); ctx.fill(); }
     ctx.restore();
   }
+  if (k === 'nl_station') nlGateline(NL_ST_GATE);   // the ticket barriers are people the game runs
   if (k === 'soundz') {
     // Vince, asleep on the sofa
     { const x = 1068 - cam.x; if (x > -140 && x < W + 140) { pxText('z', x + 8 + Math.sin(time * 2) * 3, 214 - (time * 10) % 20, 14, '#efe6d2'); pxText('VINCE', x + 104, FT + 14, 12, '#efe6d2', OUT); } }
