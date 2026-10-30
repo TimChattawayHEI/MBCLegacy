@@ -12,7 +12,7 @@ cv = Image.new('RGB', (w, h), (128, 128, 128))
 X0 = os.environ.get('X0')   # native x of this panel in the stage: fill the unpainted part with the old backdrop, blurred, as a rough guide
 if X0 is not None:
     from PIL import ImageFilter
-    ref = Image.open(os.path.join(D, 'ref.png'))   # tools/v64/capture.py <stage> <work>/<stage>/ref.png.convert('RGB'); x0 = int(X0)
+    ref = Image.open(os.path.join(D, 'ref.png')).convert('RGB'); x0 = int(X0)   # ref.png: tools/v64/capture.py <stage> <work>/<stage>/ref.png
     g = Image.new('RGB', (480, 270), (20, 22, 34)); g.paste(ref.crop((x0, 0, min(ref.width, x0 + 480), 270)), (0, 0))
     cv = g.resize((w, h), Image.BILINEAR).filter(ImageFilter.GaussianBlur(14))
 cv.paste(pv.crop((w - q, 0, w, h)), (0, 0))

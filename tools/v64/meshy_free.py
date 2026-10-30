@@ -8,7 +8,7 @@ import json, os, subprocess, sys
 from PIL import Image
 HERE = os.path.dirname(os.path.abspath(__file__)); WORK = os.environ.get('MESHY_WORK', '/tmp/meshy_work')
 stage, name, prompt = sys.argv[1], sys.argv[2], sys.argv[3]
-refs = [s if s.endswith('.png') else os.path.join(HERE, 'img', 'style', s + '.webp') for s in sys.argv[4].split(',')]
+refs = [s if (s.endswith('.png') or os.path.exists(s)) else os.path.join(HERE, 'img', 'style', s + '.webp') for s in sys.argv[4].split(',')]
 D = os.path.join(WORK, stage); os.makedirs(D, exist_ok=True)
 env = dict(os.environ, NO_PROXY='localhost', no_proxy='localhost', npm_config_noproxy='localhost', NODE_USE_ENV_PROXY='1', NODE_NO_WARNINGS='1')
 M = ['npm', 'exec', '--yes', '--package=meshy-cli@0.4.0', '--', 'meshy']
@@ -27,7 +27,8 @@ tid = os.environ.get('TID')
 if not tid:
     r = subprocess.run(M + ['image-to-image', 'create', '--ai-model', os.environ.get('MODEL', 'nano-banana-pro'), '--prompt', prompt, '--reference-image-urls', ','.join(refs),
                             '--aspect-ratio', '16:9', '--async', '--output-schema', 'v1', '--format', 'json', '--no-update-check'], capture_output=True, text=True, env=env, cwd='/tmp')
-    tid = find_id(json.loads(r.stdout).get('result'))
+    tid = find_id(json.loads(r.stdout).get('result')) if r.stdout.strip() else None
+    if not tid: sys.exit('meshy create failed: ' + (r.stdout + r.stderr)[-800:])
 print('task', tid, flush=True)
 open(os.path.join(D, 'tasks.txt'), 'a').write(f'{name} {tid} {prompt[:120]}\n')
 subprocess.run(M + ['image-to-image', 'wait', tid, '--output-schema', 'v1', '--format', 'json', '--no-update-check'], capture_output=True, text=True, env=env, cwd='/tmp')

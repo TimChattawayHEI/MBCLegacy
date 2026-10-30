@@ -31,17 +31,140 @@ def stitch(stage, panels):
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
 
 
+def patch(strip, stage, c):
+    """seam repairs: a Meshy redraw of the 1376 pixels around a join (tools/v64/meshy_seam.py), its middle pasted back
+    over the stitched picture with the edges faded in"""
+    out = np.asarray(strip).astype(np.float32).copy()
+    for fix in c.get('fixes', []):
+        # ["tile", sx0, sx1, dx0, dx1, y0, y1]: cover dx0..dx1 (rows y0..y1) with columns sx0..sx1 repeated, edges faded in
+        _, sx0, sx1, dx0, dx1, y0, y1 = fix
+        src = out[y0:y1, sx0:sx1].copy(); w = dx1 - dx0; reps = np.concatenate([src] * (w // (sx1 - sx0) + 1), axis=1)[:, :w]
+        a = np.clip(np.minimum(np.arange(w) + 1, w - np.arange(w)) / 6, 0, 1)[None, :, None]
+        out[y0:y1, dx0:dx1] = out[y0:y1, dx0:dx1] * (1 - a) + reps * a
+    for fix in c.get('sky', []):
+        # [rx0, rx1, dx0, dx1, y0, y1]: repaint rows y0..y1 of dx0..dx1 as flat night sky, each row the median colour of
+        # that row over rx0..rx1 (where Meshy painted the sky right), edges faded in over 40 columns
+        rx0, rx1, dx0, dx1, y0, y1 = fix
+        row = np.median(out[y0:y1, rx0:rx1], axis=1)[:, None, :]; w = dx1 - dx0
+        a = np.clip(np.minimum(np.arange(w) + 1, w - np.arange(w)) / 40, 0, 1)[None, :, None]
+        out[y0:y1, dx0:dx1] = out[y0:y1, dx0:dx1] * (1 - a) + row * a
+    for x, name in c.get('patches', []):
+        im = np.asarray(Image.open(os.path.join(HERE, 'img', stage, name + '.webp')).convert('RGB').resize((PW, PH))).astype(np.float32)
+        x0 = x - PW // 2; a = np.clip(1 - np.abs(np.arange(PW) - PW / 2) / (PW * 0.36), 0, 1); a = np.clip(a * 3, 0, 1)[None, :, None]
+        lo, hi = max(0, x0), min(out.shape[1], x0 + PW)
+        out[:, lo:hi] = out[:, lo:hi] * (1 - a[:, lo - x0:hi - x0]) + im[:, lo - x0:hi - x0] * a[:, lo - x0:hi - x0]
+    return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
+
+
+def grade(strip, c):
+    """"grade": [x0, x1] raw columns whose floor is the right colour. Meshy sometimes paints a stretch of floor colder or
+    warmer than the rest; this pulls the floor's colour (not its light and shade) along the whole stage toward that
+    stretch's, a column at a time from the colour around it, fading in over 24 rows from the base down."""
+    if 'grade' not in c: return strip
+    x0, x1 = c['grade']; b = c['base']
+    ycc = np.asarray(strip.convert('YCbCr')).astype(np.float32)
+    fl = ycc[b + 10:, :, 1:].mean(axis=0)                                   # each column's floor chroma
+    k = 400; ker = np.ones(k) / k
+    loc = np.stack([np.convolve(np.pad(fl[:, i], (k // 2, k // 2), mode='edge'), ker, mode='same')[k // 2:-k // 2] for i in range(2)], 1)
+    tgt = fl[x0:x1].mean(axis=0)
+    ramp = np.clip((np.arange(ycc.shape[0]) - b + 4) / 24, 0, 1)[:, None, None]
+    ycc[:, :, 1:] += ramp * (tgt - loc)[None, :, :]
+    return Image.fromarray(np.clip(ycc, 0, 255).astype(np.uint8), 'YCbCr').convert('RGB')
+
+
+def skytone(strip, c):
+    """"skytone": [x0, x1, rows]: Meshy paints some panels' sky paler than others. Every sky pixel (blue, in rows
+    0..rows) along the stage is moved from the colour of the sky around it (a 300 column window) to the colour of the
+    sky in columns x0..x1 at that height, so clouds, the sun and the treeline stay as they are."""
+    if 'skytone' not in c: return strip
+    x0, x1, rows = c['skytone']
+    a = np.asarray(strip).astype(np.float32).copy(); s = a[:rows]
+    r, g, b = s[..., 0], s[..., 1], s[..., 2]
+    sky = (b > r + 25) & (b > g + 5) & (b > 90)
+    tgt = np.array([np.median(s[y, x0:x1][sky[y, x0:x1]], 0) if sky[y, x0:x1].any() else s[y, x0:x1].mean(0) for y in range(rows)])
+    # the sky's own colour at each height, every 50 columns (300 wide windows), then the shift interpolated between
+    step = 50; cs = list(range(0, s.shape[1], step)) + [s.shape[1] - 1]; sh = np.zeros((rows, len(cs), 3), np.float32); ok = np.zeros((rows, len(cs)), bool)
+    for j, cx in enumerate(cs):
+        lo, hi = max(0, cx - 150), min(s.shape[1], cx + 150)
+        for y in range(rows):
+            m = sky[y, lo:hi]
+            if m.sum() >= 20: sh[y, j] = tgt[y] - np.median(s[y, lo:hi][m], 0); ok[y, j] = True
+    xs = np.arange(s.shape[1]); out = s.copy()
+    for y in range(rows):
+        if not ok[y].any(): continue
+        for ch in range(3):
+            d = np.interp(xs, np.array(cs)[ok[y]], sh[y, ok[y], ch])
+            out[y, :, ch] += np.where(sky[y], d, 0)
+    a[:rows] = out
+    return Image.fromarray(np.clip(a, 0, 255).astype(np.uint8))
+
+
+def skyfill(strip, c):
+    """"skyfill": [x0, x1, rx0, rx1, rows]: a plain sky from column x0 on (Meshy painted it hazy there): every pixel above
+    the treeline (the first green pixel down each column, within rows) takes the sky colour of columns rx0..rx1 at that
+    height, faded in over 60 columns from x0. The game drifts its own clouds across it (meshyOver)."""
+    if 'skyfill' not in c: return strip
+    x0, x1, rx0, rx1, rows = c['skyfill']
+    a = np.asarray(strip).astype(np.float32).copy(); s = a[:rows]
+    r, g, b = s[..., 0], s[..., 1], s[..., 2]
+    sky = (b > r + 25) & (b > g + 5) & (b > 90)
+    tgt = np.zeros((rows, 3), np.float32)
+    for y in range(rows):
+        m = sky[y, rx0:rx1]; tgt[y] = np.median(s[y, rx0:rx1][m], 0) if m.sum() > 10 else tgt[y - 1]
+    green = (g > b + 5) & (g > r) & (np.arange(rows)[:, None] > 40)
+    tree = np.where(green.any(0), green.argmax(0), rows)
+    tree = np.array([tree[max(0, i - 2):i + 3].min() for i in range(len(tree))]) - 2
+    for x in range(x0, min(x1, s.shape[1])):
+        k = min(1.0, (x - x0) / 60); t = tree[x]
+        a[:t, x] = a[:t, x] * (1 - k) + tgt[:t] * k
+        loose = (b[t:, x] > r[t:, x] + 5) & (b[t:, x] >= g[t:, x]) & (b[t:, x] > 120)   # sky showing through the trees
+        a[t:rows, x][loose] = a[t:rows, x][loose] * (1 - k) + tgt[t:][loose] * k
+    return Image.fromarray(np.clip(a, 0, 255).astype(np.uint8))
+
+
+def floormatch(strip, c):
+    """"floormatch": [x0, x1]: Meshy paints some panels' ground lighter or darker than the rest. Each panel after the
+    first has its ground (below the base) shifted, light and colour, to the average ground of columns x0..x1, the shift
+    changing over 200 columns where the panel starts to be its own (just past the quarter it carried on from)."""
+    if 'floormatch' not in c: return strip
+    x0, x1 = c['floormatch']; b = c['base'] + 8
+    ycc = np.asarray(strip.convert('YCbCr')).astype(np.float32); fl = ycc[b:]
+    ref = fl[:, x0:x1].reshape(-1, 3).mean(0); n = len(c['panels']); W_ = fl.shape[1]
+    shift = np.zeros((W_, 3), np.float32); prev = None
+    for i in range(n):
+        a = 0 if i == 0 else i * (PW - Q) + Q; e = min(W_, (i + 1) * (PW - Q) + Q) if i < n - 1 else W_
+        d = ref - fl[:, a:e].reshape(-1, 3).mean(0)
+        shift[a:e] = d
+        if prev is not None:
+            r0 = max(0, a - 100); r1 = min(W_, a + 100); t = np.linspace(0, 1, r1 - r0)[:, None]
+            shift[r0:r1] = prev * (1 - t) + d * t
+        prev = d
+    ramp = np.clip((np.arange(fl.shape[0]) + 1) / 24, 0, 1)[:, None, None]
+    ycc[b:] += ramp * shift[None]
+    return Image.fromarray(np.clip(ycc, 0, 255).astype(np.uint8), 'YCbCr').convert('RGB')
+
+
 def fit(strip, c):
     w = round(strip.width * 480 / PW); ft = c['ft'] // 2
     top = strip.crop((0, c['top'], strip.width, c['base'])).resize((w, ft), Image.LANCZOS)
-    bot = strip.crop((0, c['base'], strip.width, PH)).resize((w, 270 - ft), Image.LANCZOS)
+    bot = strip.crop((0, c['base'], strip.width, c.get('bottom', PH))).resize((w, 270 - ft), Image.LANCZOS)
     out = Image.new('RGB', (w, 270)); out.paste(top, (0, 0)); out.paste(bot, (0, ft))
     return out.crop((0, 0, c['len'] // 2, 270))
 
 
-for stage in sys.argv[1:] or list(CFG):
+def loop(stage, c):
+    """scenery that repeats forever (the drive): the panels stitched, then the same again mirrored, so the loop runs on
+    with no join at either end (Meshy will not paint a panel that leads back into the first one)"""
+    s = np.asarray(stitch(stage, c['loop']))
+    s = Image.fromarray(np.concatenate([s, s[:, ::-1]], axis=1))
+    top = c.get('top', 0); k = c['ground'] / 2 / (c['base'] - top)
+    out = s.crop((0, top, s.width, c['base'])).resize((round(s.width * k), round(c['ground'] / 2)), Image.LANCZOS)
+    out.save(os.path.join(OUT, stage + '_loop.png'), optimize=True); print(stage, 'loop', out.size)
+
+for stage in ([] if sys.argv[1:] == ['--none'] else sys.argv[1:] or list(CFG)):
     c = CFG[stage]
-    full = fit(stitch(stage, c['panels']), c)
+    if 'loop' in c: loop(stage, c); continue
+    full = fit(floormatch(skyfill(skytone(grade(patch(stitch(stage, c['panels']), stage, c), c), c), c), c), c)
     for f in os.listdir(OUT):
         if f.startswith(stage + '_'): os.remove(os.path.join(OUT, f))
     n = 0

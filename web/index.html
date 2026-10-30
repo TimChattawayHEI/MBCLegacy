@@ -6508,24 +6508,25 @@ function bgNavalPixel() {
   for (const s of stars) { if (s.y > 200) continue; ctx.fillStyle = 'rgba(255,255,240,' + (0.5 + Math.sin(time * 2 + s.p) * 0.4).toFixed(2) + ')'; ctx.fillRect(Math.round(s.x / 2) * 2, Math.round(s.y / 2) * 2, 2, 2); }
   pxCircle(760, 78, 34, '#f2ecd4'); pxCircle(750, 70, 6, '#cfc6a8'); pxCircle(772, 90, 4, '#cfc6a8');
   const farX = (x, k) => ((x - scroll * k) % (W + 600) + W + 600) % (W + 600) - 300;
-  // far shore: the same treeline as the fishery, in moonlight
-  { const img = bgImg(FSH + 'treeline'), w = img.width * 2 - 24, off = ((scroll * 0.05) % w + w) % w;
+  // far shore: the same treeline as the fishery, in moonlight (Version 64: Meshy's lake once it has loaded)
+  const nshore = meshyNaval(scroll);
+  if (!nshore) { const img = bgImg(FSH + 'treeline'), w = img.width * 2 - 24, off = ((scroll * 0.05) % w + w) % w;
     ctx.save(); ctx.imageSmoothingEnabled = false;
     for (let sx = -off - w; sx < W; sx += w) ctx.drawImage(img, Math.round(sx / 2) * 2, 160, img.width * 2, 74);
     ctx.restore(); ctx.fillStyle = 'rgba(6,10,24,0.78)'; ctx.fillRect(0, 150, W, 86); }
   // the island, a campfire and Nozzer's caravan
-  { const ix = Math.round(farX(900, 0.25) / 2) * 2; ctx.fillStyle = '#081013'; ctx.fillRect(ix - 120, 226, 240, 10); for (let i = 0; i < 5; i++) pxCircle(ix - 70 + i * 34, 220 - (i % 2) * 8, 22, '#081013'); }
+  if (!nshore) { const ix = Math.round(farX(900, 0.25) / 2) * 2; ctx.fillStyle = '#081013'; ctx.fillRect(ix - 120, 226, 240, 10); for (let i = 0; i < 5; i++) pxCircle(ix - 70 + i * 34, 220 - (i % 2) * 8, 22, '#081013'); }
   { const fx = Math.round(farX(300, 0.12) / 2) * 2, f = Math.floor(time * 8) % 3;
     ctx.fillStyle = 'rgba(255,150,60,0.18)'; ctx.fillRect(fx - 36, 196, 72, 36); ctx.fillStyle = 'rgba(255,150,60,0.3)'; ctx.fillRect(fx - 18, 206, 36, 26);
     ctx.fillStyle = '#ffb04a'; ctx.fillRect(fx - 4, 218 - f * 2, 8, 12 + f * 2); ctx.fillStyle = '#fff0b0'; ctx.fillRect(fx - 2, 224, 4, 6); }
-  { const cv = Math.round(farX(560, 0.12) / 2) * 2; ctx.fillStyle = '#121a1e'; ctx.fillRect(cv - 26, 196, 52, 22); ctx.fillRect(cv - 22, 192, 44, 4);
+  if (!nshore) { const cv = Math.round(farX(560, 0.12) / 2) * 2; ctx.fillStyle = '#121a1e'; ctx.fillRect(cv - 26, 196, 52, 22); ctx.fillRect(cv - 22, 192, 44, 4);
     ctx.fillStyle = S.fire > 1 || Math.floor(time) % 7 === 0 ? '#ffd27a' : '#3a3420'; ctx.fillRect(cv - 14, 202, 10, 8); }
-  // the water
-  ['#13283a', '#11243a', '#0f2034', '#0d1c2e', '#0b1828', '#091422', '#07101c', '#050d16'].forEach((c, i) => { ctx.fillStyle = c; ctx.fillRect(0, 232 + i * 40, W, 40); });
-  for (let i = 0; i < 14; i++) { const y = 240 + i * 8, w = Math.round((70 - i * 3 + Math.sin(time * 2 + i) * 8) / 2) * 2; ctx.fillStyle = 'rgba(240,236,212,' + (0.4 - i * 0.025).toFixed(2) + ')'; ctx.fillRect(Math.round((760 - w / 2 + Math.sin(time * 1.4 + i) * 6) / 2) * 2, y, w, 2); }
+  // the water (Meshy's has its own colour; the game's moonlight and ripples go over it)
+  if (!nshore) ['#13283a', '#11243a', '#0f2034', '#0d1c2e', '#0b1828', '#091422', '#07101c', '#050d16'].forEach((c, i) => { ctx.fillStyle = c; ctx.fillRect(0, 232 + i * 40, W, 40); });
+  for (let i = 0; i < 14; i++) { const y = (nshore ? 292 : 240) + i * 8, w = Math.round((70 - i * 3 + Math.sin(time * 2 + i) * 8) / 2) * 2; ctx.fillStyle = 'rgba(240,236,212,' + (0.4 - i * 0.025).toFixed(2) + ')'; ctx.fillRect(Math.round((760 - w / 2 + Math.sin(time * 1.4 + i) * 6) / 2) * 2, y, w, 2); }
   ctx.fillStyle = 'rgba(160,200,230,0.2)';
-  for (let i = 0; i < 40; i++) { const y = 250 + (i * 29) % 290, sp = 0.4 + (y - 240) / 300; const x = ((i * 211 - scroll * sp) % (W + 160) + W + 160) % (W + 160) - 80; ctx.fillRect(Math.round(x / 2) * 2, Math.round(y / 2) * 2, 30 + (i % 3) * 14, 2); }
-  for (let i = 0; i < 4; i++) { ctx.fillStyle = 'rgba(220,230,240,0.07)'; const x = Math.round((((i * 300 + time * 18) % (W + 500)) - 250) / 2) * 2; ctx.fillRect(x - 240, 254 + i * 24, 480, 12); ctx.fillRect(x - 160, 250 + i * 24, 320, 4); }
+  for (let i = 0; i < 40; i++) { const y = (nshore ? 296 : 250) + (i * 29) % (nshore ? 244 : 290), sp = 0.4 + (y - 240) / 300; const x = ((i * 211 - scroll * sp) % (W + 160) + W + 160) % (W + 160) - 80; ctx.fillRect(Math.round(x / 2) * 2, Math.round(y / 2) * 2, 30 + (i % 3) * 14, 2); }
+  for (let i = 0; i < 4; i++) { ctx.fillStyle = 'rgba(220,230,240,0.07)'; const x = Math.round((((i * 300 + time * 18) % (W + 500)) - 250) / 2) * 2; ctx.fillRect(x - 240, (nshore ? 304 : 254) + i * 24, 480, 12); ctx.fillRect(x - 160, (nshore ? 300 : 250) + i * 24, 320, 4); }
   drawRaftPixel();
   return true;
 }
@@ -7011,6 +7012,38 @@ function drawStageBg() {
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (meshyBg()) return;   // Version 64: painted in Meshy
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (ST.era === 2006 && nlDrawStageBg(ST.bg)) return;
   if (ST.bg === 'fishery') bgFisheryPixel();
   else if (ST.bg === 'orpington') bgOrpingtonPixel();
@@ -7276,19 +7309,94 @@ setTimeout(preloadArt, 700);
 // tools/v64/meshy_bg.py) and drawn edge to edge in place of its old pieced-together backdrop. Things the game does on
 // top of the backdrop (the Christmas tree's star, and so on) are still drawn by meshyOver. Until every tile of a stage
 // has loaded, the old backdrop is drawn instead.
-const MESHY_BG = { frequency: 4 };
+const MESHY_BG = { frequency: 4, soundz: 4, airport: 4, divebar: 4, beach: 4, club: 4, nl_station: 4, nl_cx: 4, nl_alley: 4, arrival: 4, social: 3, pegnine: 4, ramsden: 4 };
+STAGES.beach.secret.x = 2930;   // the sandcastle
+// where the painted pictures put things the game needs to know about
+STAGES.soundz.secret.x = 2024;   // the broken lift
+STAGES.ramsden.secret.x = 1070;   // the NO BALL GAMES sign
+STAGES.social.fruit.x = 1090;   // the fruit machine, on the bare wall between the dartboard and the window
 const MESHY_TILE = 512;
 function meshyFiles(k) { const out = []; for (let i = 0; i < (MESHY_BG[k] || 0); i++) out.push('meshy/' + k + '_' + i); return out; }
 for (const k in MESHY_BG) ASSET_BG.push(...meshyFiles(k));
-function meshyBg() {
-  const k = S && S.key; if (!MESHY_BG[k]) return false;
+function meshyBg() { return meshyStage(S && S.key); }
+function meshyStage(k) {
+  if (!MESHY_BG[k]) return false;
   const files = meshyFiles(k); if (!bgReady(files)) return false;
   for (let i = 0; i < files.length; i++) bgPut(bgImg(files[i]), i * MESHY_TILE * 2, H);
   meshyOver(k);
   return true;
 }
+// the drive to the bar: the coast scenery above the road, on a loop, scrolled with the road
+ASSET_BG.push('meshy/road_loop');
+function meshyRoad() {
+  const img = bgImg('meshy/road_loop'); if (!img) return false;
+  const w = img.width * 2, h = img.height * 2, s = ((cam.x % w) + w) % w;
+  ctx.save(); ctx.imageSmoothingEnabled = false;
+  for (let x = -s; x < W; x += w) ctx.drawImage(img, snap2(x), ROAD_TOP - h, w, h);
+  ctx.restore(); return true;
+}
+// Naval Operations: the midnight lake, sky to water, on a loop, drifting slowly past as the dinghy is towed; the
+// game's moon, campfire and ripples stay on top (bgNavalPixel draws its old shore only until this has loaded)
+ASSET_BG.push('meshy/naval_loop');
+function meshyNaval(scroll) {
+  const img = bgImg('meshy/naval_loop'); if (!img) return false;
+  const w = img.width * 2, h = img.height * 2, s = (((scroll * 0.12) % w) + w) % w;
+  ctx.save(); ctx.imageSmoothingEnabled = false;
+  for (let x = -s; x < W; x += w) ctx.drawImage(img, snap2(x), 0, w, h);
+  ctx.restore();
+  pxCircle(760, 78, 34, '#f2ecd4'); pxCircle(750, 70, 6, '#cfc6a8'); pxCircle(772, 90, 4, '#cfc6a8');
+  return true;
+}
 function meshyOver(k) {
   if (k === 'frequency') { if (S.tree) drawTree(S.tree); }
+  if (k === 'divebar') {
+    ePut('stool', CARAB_X - 25, FT + 10, 2);   // the Carabiniere's own stool
+    // the Espace, burning out on the track (Sam's drive ends here)
+    if (!S.drv) { const wx = 2760, img = eImg('mpv'); if (img) { const w = img.width * 2, x = Math.round((wx - cam.x - w / 2) / 2) * 2, b = FT + 2;
+      if (x > -w - 100 && x < W + 100) { ePut('mpv', wx - w / 2, b, 2);
+        for (let i = 0; i < 5; i++) drawFireSprite(x + 20 + i * (w - 40) / 4, b - img.height * 2 + 18 + (i % 2) * 8, wx + i);
+        for (let i = 0; i < 4; i++) { const k2 = (time * 0.35 + i / 4) % 1; pxCircle(x + w / 2 + Math.sin(k2 * 5 + i) * 16, b - img.height * 2 - k2 * 180, Math.round(12 + k2 * 34), 'rgba(40,36,36,' + (0.5 * (1 - k2)).toFixed(2) + ')'); } } } }
+  }
+  if (k === 'beach' && ST.stuart) {   // Stuart, buried up to his neck
+    const x = Math.round((ST.stuart - cam.x) / 2) * 2; if (x > -60 && x < W + 60) { ctx.fillStyle = '#d8c088'; ctx.fillRect(x - 30, FT + 44, 60, 10); ctx.fillRect(x - 20, FT + 40, 40, 4); ePut('stuart', ST.stuart - 20, FT + 48, 2); }
+  }
+  if (k === 'club' && cam.x < 1950) {
+    // the DJ in his booth, and the light rig sweeping the room (inside only)
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, Math.min(W, 1950 - cam.x), H); ctx.clip();
+    { const x = 972 - cam.x; if (x > -80 && x < W + 80) clubDancer(x, FT - 40, 98, true); }
+    ePut('djbooth', 860, FT + 2, 2);
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < 6; i++) { const ox = ((i * 330 - cam.x * 0.9) % (W + 300) + W + 300) % (W + 300) - 150, ang = Math.sin(time * (0.7 + i * 0.13) + i) * 0.6;
+      ctx.fillStyle = ['rgba(255,60,180,0.12)', 'rgba(60,200,255,0.12)', 'rgba(255,220,60,0.1)', 'rgba(120,255,120,0.1)'][i % 4];
+      ctx.beginPath(); ctx.moveTo(ox, 10); ctx.lineTo(ox + Math.sin(ang) * 600 - 50, H); ctx.lineTo(ox + Math.sin(ang) * 600 + 50, H); ctx.closePath(); ctx.fill(); }
+    ctx.restore();
+  }
+  if (k === 'nl_station') nlGateline(NL_ST_GATE);
+  if (k === 'nl_cx') nlGateline(NL_CX_GATE);
+  if (k === 'ramsden') {
+    // always on fire: the game's flames on the painted wrecks, and embers going up
+    for (const wx of [560, 1610, 2324, 2714, 3440]) { const x = Math.round((wx - cam.x) / 2) * 2; if (x < -160 || x > W + 160) continue;
+      for (let i = 0; i < 3; i++) drawFireSprite(x - 40 + i * 36, FT - 74 + (i % 2) * 8, wx + i); }
+    for (let i = 0; i < 40; i++) { const x = (((i * 97 + Math.sin(time + i) * 20 - cam.x * 0.4) % W) + W) % W, y = 300 - ((time * 40 + i * 37) % 300);
+      ctx.fillStyle = 'rgba(255,' + (120 + (i % 5) * 20) + ',40,' + (0.5 + (i % 3) * 0.15).toFixed(2) + ')'; ctx.fillRect(Math.round(x / 2) * 2, Math.round(y / 2) * 2, 2, 2); }
+  }
+  if (k === 'social' && S.fruit) drawFruitPixel(S.fruit);
+  if (k === 'arrival' || k === 'pegnine') {
+    // the pegs are the game's (their numbers matter), and so are the things with words on, and on a sunny day the clouds still drift over
+    for (const p of S.props) if (['peg', 'rota', 'smoker', 'chair'].includes(p.k)) fshProp(p);   // Peg Nine's rota, smoker and chair carry words
+    if (ST.tod === 'day') for (let i = 0; i < 3; i++) { const x = ((i * 380 - cam.x * 0.08 + time * 6) % (W + 300) + W + 300) % (W + 300) - 150; pxCloud(Math.round(x / 2) * 2, 40 + (i % 2) * 36, 1); }
+  }   // the ticket barriers are people the game runs
+  if (k === 'soundz') {
+    // Vince, asleep on the sofa
+    { const x = 1068 - cam.x; if (x > -140 && x < W + 140) { pxText('z', x + 8 + Math.sin(time * 2) * 3, 214 - (time * 10) % 20, 14, '#efe6d2'); pxText('VINCE', x + 104, FT + 14, 12, '#efe6d2', OUT); } }
+    // out on the roof: fireworks over the skyline, and the countdown
+    const roofX = 2520 - cam.x;
+    if (roofX < W) {
+      ctx.save(); ctx.beginPath(); ctx.rect(Math.max(0, roofX), 0, W, 210); ctx.clip(); drawFireworks(S.fireworks ? 9 : 4, S.fireworks ? 1 : 0.8); ctx.restore();
+      const x = Math.round(Math.max(roofX + 60, W / 2) / 2) * 2;
+      if (x < W - 60) { ctx.fillStyle = OUT; ctx.fillRect(x - 52, 38, 104, 38); ctx.fillStyle = '#101014'; ctx.fillRect(x - 50, 40, 100, 34); pxText(S.fireworks ? '00:00' : '23:5' + (Math.floor(time / 6) % 10), x, 57, 26, S.fireworks ? '#7fe07a' : '#ff5a4a'); }
+    }
+  }
 }
 // V64 js end
 function artPending() {
@@ -8310,6 +8418,7 @@ function bgAirportPixel() {
 // ------------------------------------------------------------------ THE DIVE BAR: inside 0-1800, the gravel track outside 1800-3600
 const BAR_DOOR = 1800;
 function bgDivebarPixel() {
+  if (meshyStage('divebar')) return true;   // Version 64 (the drive's crash ends here too)
   const cx = cam.x;
   // outside first (it shows through once the door is passed): bright sky, green hills, cypresses, the burning MPV
   if (cx + W > BAR_DOOR) {
@@ -9191,6 +9300,7 @@ function bgRoadPixel() {
   // a low stone wall along the top of the road
   ctx.fillStyle = '#c8b898'; ctx.fillRect(0, 300, W, 30); ctx.fillStyle = '#a8987a'; ctx.fillRect(0, 300, W, 4);
   ctx.fillStyle = '#b4a486'; for (let wx = Math.floor(cx / 40) * 40; wx < cx + W; wx += 40) { const x = snap2(wx - cx); ctx.fillRect(x, 306, 2, 24); ctx.fillRect(x + 20, 318, 2, 12); }
+  meshyRoad();   // Version 64: the coast painted in Meshy, over the old scenery
   // the road
   ctx.fillStyle = '#4e4e56'; ctx.fillRect(0, ROAD_TOP, W, ROAD_BOT - ROAD_TOP);
   ctx.fillStyle = '#56565e'; for (let wx = Math.floor(cx / 64) * 64; wx < cx + W; wx += 64) { const x = snap2(wx - cx); for (let i = 0; i < 4; i++) ctx.fillRect(x + (hash(wx + i) * 60 | 0), ROAD_TOP + 8 + (hash(wx * 3 + i) * 176 | 0), 4, 2); }
