@@ -7062,6 +7062,8 @@ function drawStageBg() {
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (meshyBg()) return;   // Version 64: painted in Meshy
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (ST.era === 2006 && nlDrawStageBg(ST.bg)) return;
   if (ST.bg === 'fishery') bgFisheryPixel();
   else if (ST.bg === 'orpington') bgOrpingtonPixel();
@@ -8066,6 +8068,32 @@ function bar(x, y, w, h, frac, col, back) {
   ctx.fillStyle = back || '#3a2420'; ctx.fillRect(x, y, w, h);
   ctx.fillStyle = col; ctx.fillRect(x, y, Math.max(0, w * clamp(frac, 0, 1)), h);
   ctx.fillStyle = 'rgba(255,255,255,0.22)'; ctx.fillRect(x, y, Math.max(0, w * clamp(frac, 0, 1)), Math.max(2, h * 0.3));
+}
+// Version 65: Meshy's gunmetal plate and glass-tube bars. A fill is one painted tile, repeated along the bar and cut off
+// where the bar ends; until the pictures load the old code bars are drawn instead.
+const HUD_FILES = ['plate', 'boss', 'fill_hp', 'fill_sp', 'fill_boss', 'fill_foe'].map(n => 'hud/' + n); HUD_FILES.forEach(f => bgImg(f)); ASSET_BG.push(...HUD_FILES);
+function hudFill(name, x, y, w, h, frac, trough, flash) {
+  const img = bgImg('hud/' + name); if (!img) return false;
+  x = PX(x); y = PX(y); w = PX(w); h = PX(h);
+  if (trough) { ctx.fillStyle = OUT; ctx.fillRect(x - 2, y - 2, w + 4, h + 4); }
+  ctx.fillStyle = '#141018'; ctx.fillRect(x, y, w, h);
+  const fw = PX(w * clamp(frac, 0, 1)); if (fw <= 0) return true;
+  ctx.save(); ctx.beginPath(); ctx.rect(x, y, fw, h); ctx.clip(); ctx.imageSmoothingEnabled = false;
+  const tw = img.width * 2; for (let tx = x; tx < x + fw; tx += tw) ctx.drawImage(img, tx, y, tw, h);
+  if (flash) { ctx.fillStyle = 'rgba(255,250,220,0.35)'; ctx.fillRect(x, y, fw, h); }
+  ctx.restore(); return true;
+}
+function hudFrame(name, x, y) { const img = bgImg('hud/' + name); if (!img) return false; ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(img, PX(x), PX(y), img.width * 2, img.height * 2); ctx.restore(); return true; }
+function hudPanel(x, y, w, h) {
+  const img = bgImg('hud/plate'); if (!img || !bgReady(HUD_FILES)) { pxPanel(x, y, w, h); return; }
+  x = PX(x); y = PX(y); w = PX(w); h = PX(h); const c = 6, C = c * 2, mw = 50, mh = 10, sx = 120, sy = 26;   // corner (native), and a plain patch of the plate
+  ctx.save(); ctx.imageSmoothingEnabled = false; const d = (a, b, cw, ch, X, Y, Wd, Hd) => ctx.drawImage(img, a, b, cw, ch, X, Y, Wd, Hd);
+  d(sx, sy, mw, mh, x + C, y + C, w - 2 * C, h - 2 * C);
+  d(120, 0, img.width - 126, c, x + C, y, w - 2 * C, C); d(120, img.height - c, img.width - 126, c, x + C, y + h - C, w - 2 * C, C);   // top and bottom from clear of the holes
+  d(img.width - c, c, c, img.height - 2 * c, x + w - C, y + C, C, h - 2 * C);
+  ctx.save(); ctx.translate(x + C, 0); ctx.scale(-1, 1); d(img.width - c, c, c, img.height - 2 * c, 0, y + C, C, h - 2 * C); d(img.width - c, 0, c, c, 0, y, C, C); d(img.width - c, img.height - c, c, c, 0, y + h - C, C, C); ctx.restore();   // the plate's left edge has the portrait window in it: mirror its right edge
+  d(img.width - c, 0, c, c, x + w - C, y, C, C); d(img.width - c, img.height - c, c, c, x + w - C, y + h - C, C, C);
+  ctx.restore();
 }
 // Version 65: Meshy's gunmetal plate and glass-tube bars. A fill is one painted tile, repeated along the bar and cut off
 // where the bar ends; until the pictures load the old code bars are drawn instead.
