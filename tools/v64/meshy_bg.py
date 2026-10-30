@@ -41,6 +41,13 @@ def patch(strip, stage, c):
         src = out[y0:y1, sx0:sx1].copy(); w = dx1 - dx0; reps = np.concatenate([src] * (w // (sx1 - sx0) + 1), axis=1)[:, :w]
         a = np.clip(np.minimum(np.arange(w) + 1, w - np.arange(w)) / 6, 0, 1)[None, :, None]
         out[y0:y1, dx0:dx1] = out[y0:y1, dx0:dx1] * (1 - a) + reps * a
+    for fix in c.get('sky', []):
+        # [rx0, rx1, dx0, dx1, y0, y1]: repaint rows y0..y1 of dx0..dx1 as flat night sky, each row the median colour of
+        # that row over rx0..rx1 (where Meshy painted the sky right), edges faded in over 40 columns
+        rx0, rx1, dx0, dx1, y0, y1 = fix
+        row = np.median(out[y0:y1, rx0:rx1], axis=1)[:, None, :]; w = dx1 - dx0
+        a = np.clip(np.minimum(np.arange(w) + 1, w - np.arange(w)) / 40, 0, 1)[None, :, None]
+        out[y0:y1, dx0:dx1] = out[y0:y1, dx0:dx1] * (1 - a) + row * a
     for x, name in c.get('patches', []):
         im = np.asarray(Image.open(os.path.join(HERE, 'img', stage, name + '.webp')).convert('RGB').resize((PW, PH))).astype(np.float32)
         x0 = x - PW // 2; a = np.clip(1 - np.abs(np.arange(PW) - PW / 2) / (PW * 0.36), 0, 1); a = np.clip(a * 3, 0, 1)[None, :, None]
