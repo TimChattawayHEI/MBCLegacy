@@ -16,6 +16,7 @@ function meshyBg() { return meshyStage(S && S.key); }
 function meshyStage(k) {
   if (!MESHY_BG[k]) return false;
   const files = meshyFiles(k); if (!bgReady(files)) return false;
+  meshySky(k);   // Version 70: the sky drifts slower behind
   for (let i = 0; i < files.length; i++) bgPut(bgImg(files[i]), i * MESHY_TILE * 2, H);
   meshyOver(k);
   return true;

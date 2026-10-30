@@ -177,6 +177,39 @@ def fit(strip, c):
     return out.crop((0, 0, c['len'] // 2, 270))
 
 
+def parasky(full, stage, c):
+    """"parasky": [x0, x1, rows, (colour tolerance, default 34)] (Version 70; finished picture pixels): the sky becomes its own layer that the game scrolls
+    slower than the scenery, so clouds and stars drift behind. Each column's sky runs down from the top to the first
+    pixel that is neither sky colour (each row's own colour, from columns x0..x1), clear blue, nor a pale cloud; that part of
+    the picture is made see-through, and <stage>_sky.png is the sky of columns x0..x1, with the gaps filled in with each
+    row's sky colour and the two ends blended so it repeats."""
+    if 'parasky' not in c: return full, None
+    x0, x1, rows, *tol = c['parasky']; tol = tol[0] if tol else 34
+    a = np.asarray(full.convert('RGB')).astype(np.float32); H_, W_ = a.shape[:2]
+    ref = np.median(a[:rows, x0:x1], axis=1)                                 # each row's sky colour
+    d = np.abs(a[:rows] - ref[:, None, :]).sum(-1)
+    lum = a[:rows].mean(-1); sat = a[:rows].max(-1) - a[:rows].min(-1)
+    r_, g_, b_ = a[:rows, :, 0], a[:rows, :, 1], a[:rows, :, 2]
+    skyish = (d < tol) | (lum > 228) | ((b_ > r_ + 25) & (b_ > g_ - 5)) | ((r_ > 165) & (g_ > 165) & (b_ > 165) & (sat < 80) & (b_ >= r_ - 8))   # sky, blue sky, or a pale cloud
+    h = np.zeros(W_, int)
+    for x in range(W_):
+        col = skyish[:, x]; h[x] = rows if col.all() else int(np.argmin(col))
+    h = np.array([int(np.median(h[max(0, i - 2):i + 3])) for i in range(W_)])   # a star or speck one or two columns wide doesn't stop it
+    h = np.array([h[max(0, i - 1):i + 2].min() for i in range(W_)])          # and a hair inside the edges of what does
+    h = np.minimum(h, [int(np.median(h[max(0, i - 6):i + 7])) for i in range(W_)])   # no narrow slits cut down into hills of a sky-like colour
+    h[:max(0, x0 - 40)] = 0; h[min(W_, x1 + 40):] = 0                       # only where the stage has sky
+    rgba = np.dstack([a, np.full((H_, W_), 255, np.float32)])
+    for x in range(W_):
+        if h[x] > 1: rgba[:h[x] - 1, x, 3] = 0; rgba[h[x] - 1, x, 3] = 128
+    sky = a[:rows, x0:x1].copy()
+    for x in range(x1 - x0):
+        hx = h[x0 + x]; sky[hx:, x] = ref[hx:]
+    k = 40; w = sky.shape[1] - k                                             # blend the ends so it tiles
+    t = np.linspace(0, 1, k)[None, :, None]
+    sky2 = sky[:, :w].copy(); sky2[:, :k] = sky[:, w:] * (1 - t) + sky[:, :k] * t
+    return Image.fromarray(np.clip(rgba, 0, 255).astype(np.uint8), 'RGBA'), Image.fromarray(np.clip(sky2, 0, 255).astype(np.uint8))
+
+
 def loop(stage, c):
     """scenery that repeats forever (the drive): the panels stitched, then the same again mirrored, so the loop runs on
     with no join at either end (Meshy will not paint a panel that leads back into the first one)"""
@@ -190,8 +223,10 @@ for stage in ([] if sys.argv[1:] == ['--none'] else sys.argv[1:] or list(CFG)):
     c = CFG[stage]
     if 'loop' in c: loop(stage, c); continue
     full = fit(floormatch(skyfill(skytone(grade(patch(stitch(stage, c['panels']), stage, c), c), c), c), c), c)
+    full, sky = parasky(full, stage, c)
     for f in os.listdir(OUT):
-        if f.startswith(stage + '_'): os.remove(os.path.join(OUT, f))
+        if f.startswith(stage + '_') and (f[len(stage) + 1:-4].isdigit() or f == stage + '_sky.png'): os.remove(os.path.join(OUT, f))
+    if sky: sky.save(os.path.join(OUT, stage + '_sky.png'), optimize=True)
     n = 0
     for x in range(0, full.width, TILE):
         full.crop((x, 0, min(full.width, x + TILE), 270)).save(os.path.join(OUT, f'{stage}_{n}.png'), optimize=True); n += 1

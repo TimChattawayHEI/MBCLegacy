@@ -38,6 +38,13 @@ SHEETS = {
                 "two separate long strips of scenery seen from a train window at night, one above the other: a row of south-east London terraced houses with lit windows under a starry sky, and a lit suburban railway platform with lamps, benches and a few waiting commuters"),
     'highst': (3.44, [('nightlife/sc_highst', 0, 220)],
                "a long strip of a south London high street at night seen from a bus window: a row of lit shop fronts reading KEBABS, FRIED CHICKEN, PHONES UNLOCKED, OFF LICENCE and BOOKMAKER, flats above, the pavement in front"),
+    # Version 70: the pickups (the food sheet the game cuts in 32 px squares) and the weapons, one matching sheet. The cone,
+    # helmet and net were on it too but came back darker and greyer than they should be, so they were left as they were
+    'items': (4, [('../sprites/items', 48, 60),
+                  ('weapons/aerial', 40, 300), ('weapons/alcopop', 268, 300), ('weapons/ball', 404, 320), ('weapons/cue', 632, 330),
+                  ('weapons/guinness', 924, 300), 
+                  ('weapons/lam', 40, 500), ('weapons/lock', 144, 520), ('weapons/rum', 616, 480), ('weapons/stick', 760, 540)],
+              "a sheet of separate small game items: along the top a row of ten food pickups (a bacon sandwich, a sausage, a sausage roll, a sausage roll with ketchup, sliced brisket, a doner kebab wrap, a paper cone of chips, a goldfish extra life, a slice of pizza, an ice cream cone); below, weapons lying flat: a car radio aerial, a bottle of blue alcopop, a football, a traffic cone, a pool cue, a bottle of Guinness, a motorbike helmet, a laminated sheet, a bike D-lock, a fishing landing net, a bottle of rum and a wooden stick"),
 }
 
 

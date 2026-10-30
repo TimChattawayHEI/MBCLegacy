@@ -2929,6 +2929,7 @@ function nlBgTrain() {
     if (S.stopSeq) S.lastStop = S.stopSeq.name;
   }
   if (!S.stopSeq && S.platAt != null && S.platAt < sc - 1400) S.platAt = null;
+  nlTrainCeilFloor('ceil');   // Version 70: Meshy's carriage ceiling
   // the carriage: walls with see-through windows, doors, the end wall and the toilets
   // Version 69: each carriage draws its own three wall sections from its front, so its end wall comes right after the
   // third (the wall repeats every 640 and a carriage is 2048, so a running wall cut the end wall into a window)
@@ -2944,7 +2945,7 @@ function nlBgTrain() {
       if (last && (S.toilet === 3)) { ctx.fillStyle = '#11131a'; ctx.fillRect(x + 8, FT + 6 - img.height * 2 + 16, img.width * 2 - 16, img.height * 2 - 20); nlPut('toilet_guy', tx + 2, FT + 2); }
       else { ctx.fillStyle = '#efe6d2'; ctx.fillRect(x + 14, FT - 170, img.width * 2 - 28, 22); pxText('OUT OF ORDER', x + img.width, FT - 159, 9, '#b8231a'); } }
   }
-  pxFloor(0, ST.len, '#2b2f3a', '#262a33', 36, 64, '#323744');
+  if (NLX.img('tr_floor')) nlTrainCeilFloor('floor'); else pxFloor(0, ST.len, '#2b2f3a', '#262a33', 36, 64, '#323744');   // Version 70
   ctx.fillStyle = '#c9a227'; ctx.fillRect(0, FT, W, 4);
   return true;
 }
@@ -2990,9 +2991,10 @@ function nlBgBus() {
   nlStrip('sc_highst', sc, band);
   // Marc, walking home, now and then
   { const per = 5200, ph = ((sc * 0.6) % per + per) % per; if (ph < 1400 && !(NET.on ? PL : [player]).some(q => q.def.id === 'marc')) { const sh = ladSprite('marc'); if (sh && sh.ready) { const m = sh.m, row = m.rows.walk, f = 1 + Math.floor(time * 10) % (row[1] - 1), x = W + 80 - ph * 0.8; ctx.save(); ctx.imageSmoothingEnabled = false; ctx.translate(nlSnap(x), band - 6); ctx.scale(-1, 1); ctx.drawImage(sh.img, f * m.cell, row[0] * m.cell, m.cell, m.cell, -m.ax, -m.ay, m.cell, m.cell); ctx.restore(); } } }
+  nlBusCeilFloor('ceil');   // Version 70: Meshy's bus ceiling
   for (let wx = -40; wx < W + 640; wx += 640) nlPut('bus_deck', wx, FT + 6);
   nlPut('bus_stairs', 20, FT + 6);
-  pxFloor(0, W, '#3a2c2e', '#33272a', 30, 60, '#42343a');
+  if (!nlBusCeilFloor('floor')) pxFloor(0, W, '#3a2c2e', '#33272a', 30, 60, '#42343a');   // Version 70
   ctx.fillStyle = '#c9a227'; ctx.fillRect(0, FT, W, 4);
   // the stops strip
   ctx.fillStyle = '#0b0b10'; ctx.fillRect(W / 2 - 170, 70, 340, 26); ctx.fillStyle = '#c9a227'; ctx.fillRect(W / 2 - 170, 94, 340, 2);
@@ -7144,6 +7146,7 @@ function drawStageFore() {
   else if (ST.bg === 'naval') { if (bgReady(NAV_FILES)) drawNavalForePixel(); }
   else if (ST.bg === 'ramsden') { if (bgReady(RAM_FILES)) drawRamsdenForePixel(); }
   nlDrawFore();
+  drawFG();   // Version 70: the foreground layer
 }
 
 // ================================================================== particles, shots, bubbles
@@ -7424,6 +7427,7 @@ function meshyBg() { return meshyStage(S && S.key); }
 function meshyStage(k) {
   if (!MESHY_BG[k]) return false;
   const files = meshyFiles(k); if (!bgReady(files)) return false;
+  meshySky(k);   // Version 70: the sky drifts slower behind
   for (let i = 0; i < files.length; i++) bgPut(bgImg(files[i]), i * MESHY_TILE * 2, H);
   meshyOver(k);
   return true;
@@ -7592,6 +7596,58 @@ function realFire(id, x, y, w, h, k) {
 // Ramsden's painted wrecks: [centre offset, fire width, seat height above FT (units, negative is up), fierceness]
 const RAMS_FIRE = { 560: [-6, 50, -86, 0.8], 1610: [20, 48, -84, 0.75], 2324: [0, 60, -82, 1], 2714: [-6, 44, -84, 0.7], 3440: [10, 66, -92, 0.9] };
 // V69 js end
+// V70 js start
+// Version 70: more Meshy. The train's and the bus's ceilings and floors, skies that drift slower than the scenery,
+// a foreground layer that passes in front of the fighters, and the darts wall.
+
+// the sky on the sunny and sunset stages is its own layer (tools/v64/meshy_bg.py "parasky"), scrolled at this
+// fraction of the camera, so the clouds hang back while the ground goes by
+const MESHY_SKY = { airport: 0.3, beach: 0.3, divebar: 0.3 };
+for (const k in MESHY_SKY) ASSET_BG.push('meshy/' + k + '_sky');
+function meshySky(k) {
+  const p = MESHY_SKY[k]; if (!p) return; const img = bgImg('meshy/' + k + '_sky'); if (!img) return;
+  const w = img.width * 2, h = img.height * 2;
+  ctx.save(); ctx.imageSmoothingEnabled = false;
+  for (let x = -((cam.x * p % w) + w) % w; x < W; x += w) ctx.drawImage(img, Math.round(x / 2) * 2, 0, w, h);
+  ctx.restore();
+}
+
+// the foreground: Meshy's station column, street lamp, railings and luggage trolley (tools/v70/cut.py), close to the
+// camera, so they slide past faster than the stage (FG_P) and anyone right behind one sees through it
+const FG_P = 1.3;
+const FG_SET = {
+  nl_cx: [['column', 640], ['trolley', 1500], ['column', 2250], ['railing', 3000], ['column', 3700]],
+  nl_station: [['lamp', 900], ['railing', 2100], ['column', 3300]],
+  frequency: [['lamp', 760], ['railing', 1800], ['lamp', 2900], ['lamp', 3900]],
+  nl_alley: [['lamp', 1250], ['railing', 2700]],
+};
+for (const n of ['column', 'lamp', 'railing', 'trolley']) ASSET_BG.push('fg/' + n);
+function drawFG() {
+  const L = S && FG_SET[S.key]; if (!L || mode !== 'play' && mode !== 'pause') return;
+  const lads = (NET.on ? PL : [player]).filter(Boolean);
+  for (const [n, fx] of L) {
+    const img = bgImg('fg/' + n); if (!img) continue;
+    const w = img.width * 2, h = img.height * 2, x = Math.round((fx - cam.x * FG_P - w / 2) / 2) * 2;
+    if (x > W || x + w < 0) continue;
+    let a = 1;
+    for (const q of lads) { const d = Math.abs(q.x - cam.x - (x + w / 2)) - w / 2; a = Math.min(a, Math.max(0.4, Math.min(1, d / 50))); }
+    ctx.save(); ctx.globalAlpha = a; ctx.imageSmoothingEnabled = false; ctx.drawImage(img, x, H + 16 - h, w, h); ctx.restore();
+  }
+}
+
+// the train and the bus: Meshy's ceiling and floor (tools/v70/cut.py), so there's no black above the carriage wall
+// and no plain floor under it. A carriage has three wall sections then its end; the ceiling and floor run under all four
+function nlTrainCeilFloor(which) {
+  for (let c = Math.max(0, Math.floor(cam.x / TRAIN.car) - 1); c * TRAIN.car < cam.x + W + TRAIN.car; c++)
+    for (let k = 0; k < 4; k++) nlPut(which === 'ceil' ? 'tr_ceil' : 'tr_floor', c * TRAIN.car + k * TRAIN.seg, which === 'ceil' ? 92 : H);
+}
+function nlBusCeilFloor(which) {
+  const img = NLX.img(which === 'ceil' ? 'bus_ceil' : 'bus_floor'); if (!img) return false;
+  ctx.save(); ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(img, 0, which === 'ceil' ? 0 : H - img.height * 2, img.width * 2, img.height * 2);
+  ctx.restore(); return true;
+}
+// V70 js end
 function artPending() {
   for (const k in bgImgs) { const b = bgImgs[k]; if (!b.ready && !b.failed) return true; }
   for (const k in ladSheets) { const b = ladSheets[k]; if (!b.ready && !b.failed) return true; }
@@ -8354,8 +8410,11 @@ function drawBanner() {
   if (a <= 0) return;
   ctx.save(); ctx.globalAlpha = a;
   const y = mode === 'play' ? 210 : mode === 'win' ? 80 : 220;
-  ctx.fillStyle = 'rgba(15,22,25,0.6)'; ctx.fillRect(0, y - 54, W, 104);
-  ctx.fillStyle = '#f2a23a'; ctx.fillRect(0, y - 54, W, 3); ctx.fillRect(0, y + 47, W, 3);
+  // Version 70: the game over and victory pictures behind those banners, and every banner on Meshy's caption plate
+  if (mode === 'over' || mode === 'win') { const pic = bgImg('screens/' + mode); if (pic) { ctx.save(); ctx.globalAlpha = a * Math.min(1, modeT / 0.8); ctx.imageSmoothingEnabled = false; ctx.drawImage(pic, 0, 0, W, H); ctx.fillStyle = 'rgba(8,10,14,0.3)'; ctx.fillRect(0, 0, W, H); ctx.restore(); } }
+  const plate = bgImg('hud/banner');
+  if (plate) { ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(plate, 0, y - 60, W, 112); ctx.restore(); }
+  else { ctx.fillStyle = 'rgba(15,22,25,0.6)'; ctx.fillRect(0, y - 54, W, 104); ctx.fillStyle = '#f2a23a'; ctx.fillRect(0, y - 54, W, 3); ctx.fillRect(0, y + 47, W, 3); }
   const slide = Math.max(0, 1 - k / 0.25) * 60;
   textOut(banner.text, W / 2 - slide, y - 8, (banner.text.length > 16 ? 34 : banner.text.length > 12 ? 42 : 52) + 'px ' + DISPLAY, '#efe6d2', OUT, 7);
   ctx.font = '600 15px ' + BODY; ctx.fillStyle = '#e9dcc0'; ctx.textAlign = 'center'; ctx.fillText(clean(banner.sub), W / 2 + slide, y + 30);
@@ -11088,15 +11147,18 @@ MGAME.darts = {
   draw(M) {
     const s = M.s;
     ctx.fillStyle = '#2a1a10'; ctx.fillRect(0, 0, W, H);
-    const wall = bgImg('social/wall');
+    const dwall = bgImg('mini/darts');   // Version 70: Meshy's pub wall and open cabinet, the board space under the board
+    if (dwall) { ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(dwall, 0, 0, W, H); ctx.restore(); }
+    const wall = dwall ? null : bgImg('social/wall');
     if (wall) { ctx.save(); ctx.imageSmoothingEnabled = false;   // lamp-free wallpaper from the wall's left side, tiled; the panelling along the bottom
       for (let y = 0; y < 400; y += 80) for (let x = 0; x < W; x += 160) ctx.drawImage(wall, 0, 20, 80, 40, x, y, 160, 80);
       for (let x = 0; x < W; x += 160) ctx.drawImage(wall, 0, 88, 80, 40, x, 460, 160, 80);
       ctx.restore(); }
     // the cabinet doors open round the board, then the board
-    ctx.fillStyle = '#5a3a22'; ctx.fillRect(DBX - 250, DBY - 230, 500, 470); ctx.fillStyle = '#3a2416'; ctx.fillRect(DBX - 236, DBY - 216, 472, 442); ctx.fillStyle = '#33200f'; for (let y = DBY - 210; y < DBY + 222; y += 18) ctx.fillRect(DBX - 236, y, 472, 2);
+    if (!dwall) { ctx.fillStyle = '#5a3a22'; ctx.fillRect(DBX - 250, DBY - 230, 500, 470); }
+    if (!dwall) { ctx.fillStyle = '#3a2416'; ctx.fillRect(DBX - 236, DBY - 216, 472, 442); ctx.fillStyle = '#33200f'; for (let y = DBY - 210; y < DBY + 222; y += 18) ctx.fillRect(DBX - 236, y, 472, 2);
     ctx.fillStyle = '#2e6a3a'; ctx.fillRect(DBX - 380, DBY - 230, 120, 470); ctx.fillRect(DBX + 260, DBY - 230, 120, 470);
-    ctx.fillStyle = '#1e4a28'; ctx.fillRect(DBX - 372, DBY - 222, 104, 454); ctx.fillRect(DBX + 268, DBY - 222, 104, 454);
+    ctx.fillStyle = '#1e4a28'; ctx.fillRect(DBX - 372, DBY - 222, 104, 454); ctx.fillRect(DBX + 268, DBY - 222, 104, 454); }
     const b = pubImg('dartboard'); if (b) { ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(b, snap2(DBX - b.width), snap2(DBY - b.height), b.width * 2, b.height * 2); ctx.restore(); }
     const dt = pubImg('dart');
     for (const d of s.darts) if (dt && !d.out) { ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(dt, snap2(d.x - dt.width * 2), snap2(d.y - dt.height * 4 + 4), dt.width * 4, dt.height * 4); ctx.restore(); }
@@ -11653,7 +11715,7 @@ MGAME.kiss = {
   },
   draw(M) {
     const s = M.s, keep = { S, FT, FB, cx: cam.x };
-    try { S = { fireworks: s.midnight }; FT = 348; FB = 506; cam.x = s.camX; bgSoundzPixel(); } finally { S = keep.S; FT = keep.FT; FB = keep.FB; }
+    try { S = { fireworks: s.midnight }; FT = 348; FB = 506; cam.x = s.camX; if (!meshyStage('soundz')) bgSoundzPixel(); }   /* Version 70: the Meshy flat */ finally { S = keep.S; FT = keep.FT; FB = keep.FB; }
     cam.x = s.camX;
     const list = [];
     for (const g of s.girls) list.push({ y: g.y, f: () => pubFoe('ladette', g.x - s.camX, g.y, 'walk', g.face, g.walk) });
