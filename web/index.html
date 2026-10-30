@@ -87,17 +87,14 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
 /* 3D title and select (Version 43): a 480x270 WebGL screen over the game canvas, menus in screen units (--t3u) */
 #t3{position:absolute;left:0;top:0;width:100%;height:100%;z-index:2;overflow:hidden;background:#000;
   --s:2;--t3m:1;--t3u:calc(var(--s) * 1px);--t3gold:#ffd23f;--t3orange:#f2a23a;--t3cream:#efe6d2;--t3grey:#93a3a1;--t3ink:#16120f;
-  --t3panel:rgba(13,8,38,.86);--t3rule:#5d52b8;--t3empty:#2b3b42;--t3disp:'Pixelify Sans',Impact,'Arial Black',sans-serif;--t3body:'Rubik',system-ui,sans-serif;
+  --t3panel:rgba(20,22,30,.9);--t3rule:#6b7384;--t3empty:#2b3b42;--t3disp:'Pixelify Sans',Impact,'Arial Black',sans-serif;--t3body:'Rubik',system-ui,sans-serif;
   color:var(--t3cream);font-family:var(--t3body);user-select:none;-webkit-user-select:none}
-#t3cv{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges;cursor:pointer}
-#t3 button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
-#t3 button:focus-visible{outline:calc(var(--t3u) * 1.5) solid var(--t3gold);outline-offset:calc(var(--t3u) * 1)}
 .t3ov{position:absolute;left:0;right:0;text-align:center;pointer-events:none;white-space:nowrap;line-height:1;transform:translateY(-50%);opacity:0;transition:opacity .5s}
 .t3ov.on{opacity:1}
 .t3out{text-shadow:calc(var(--t3u) * -1.5) 0 var(--t3ink),calc(var(--t3u) * 1.5) 0 var(--t3ink),0 calc(var(--t3u) * -1.5) var(--t3ink),0 calc(var(--t3u) * 1.5) var(--t3ink),
   calc(var(--t3u) * -1.1) calc(var(--t3u) * -1.1) var(--t3ink),calc(var(--t3u) * 1.1) calc(var(--t3u) * 1.1) var(--t3ink),calc(var(--t3u) * -1.1) calc(var(--t3u) * 1.1) var(--t3ink),calc(var(--t3u) * 1.1) calc(var(--t3u) * -1.1) var(--t3ink)}
-#t3-sub{top:25.5%;font:700 calc(var(--t3u) * 7.5) var(--t3disp);letter-spacing:.04em}
-#t3-start{top:37%;font:700 calc(var(--t3u) * 11.5) var(--t3disp);color:var(--t3gold);letter-spacing:.06em}
+#t3-sub{top:37%;font:700 calc(var(--t3u) * 7.5) var(--t3disp);letter-spacing:.04em}
+#t3-start{top:47%;font:700 calc(var(--t3u) * 11.5) var(--t3disp);color:var(--t3gold);letter-spacing:.06em}
 #t3-start.blink{animation:t3blink .9s steps(1) infinite}
 #t3-tag{top:96%;font:800 calc(var(--t3u) * 5.6) var(--t3body);letter-spacing:.14em}
 #t3-tag.on{opacity:.72}
@@ -169,6 +166,41 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
 @keyframes t3shout{0%{opacity:0;transform:translate(-50%,-50%) scale(2.2)}12%{opacity:1;transform:translate(-50%,-50%) scale(.92)}20%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
 @keyframes t3toast{0%{opacity:0}10%{opacity:1}75%{opacity:1}100%{opacity:0}}
 @media (prefers-reduced-motion:reduce){#t3-toast.shout{animation:t3toast 1.6s ease-out}#t3-start.blink{animation:none}.t3sel,.t3sel.on{transform:none;transition:opacity .2s}#t3-crumbs,#t3-crumbs.on{transform:translateX(-50%)}}
+/* Version 65: the menus in the HUD's gunmetal (bg/hud/panel.png, nine-sliced), headings on Meshy's comic bursts */
+.t3panel{border-width:calc(var(--t3u) * 7)!important;border-style:solid!important;border-color:transparent!important;border-image-source:url(bg/hud/panel.png);border-image-slice:7 fill;border-image-width:calc(var(--t3u) * 7);border-image-repeat:stretch;background:none!important;image-rendering:pixelated;box-shadow:0 calc(var(--t3u) * 3) 0 rgba(0,0,0,.45)!important;padding:calc(var(--t3u) * 3) calc(var(--t3u) * 4)!important}
+#t3-name,#t3-stitle,#t3-diff>.t3h,#t3-cstage{display:inline-block;justify-self:start;padding:calc(var(--t3u) * 5) calc(var(--t3u) * 14) calc(var(--t3u) * 4);margin-left:calc(var(--t3u) * -6);background:url(bg/comic/burst_o1.png) center/100% 100% no-repeat;image-rendering:pixelated;color:#fff6dc!important}
+#t3-stitle,#t3-diff>.t3h{background-image:url(bg/comic/burst_y1.png)}
+.t3ghost,#t3-roster button{background:rgba(20,22,30,.82)!important;border-color:#6b7384!important}
+#t3-roster button[aria-pressed="true"]{background:var(--c,var(--t3gold))!important}
+.t3go{box-shadow:inset 0 calc(var(--t3u) * 1.5) 0 rgba(255,255,255,.45),inset 0 calc(var(--t3u) * -2) 0 rgba(120,60,0,.45),0 calc(var(--t3u) * 2) 0 #0c0a10!important;border:calc(var(--t3u) * 1) solid #0c0a10!important}
+#t3-card{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:3}
+#t3-card.on{opacity:1}
+#t3-card .band{position:absolute;left:0;right:0;top:30%;height:44%;background:rgba(14,12,22,.93);border-block:calc(var(--t3u) * 2.5) solid var(--t3orange);transform:translateX(100%)}
+#t3-card.on .band{animation:t3band 1.9s cubic-bezier(.2,.8,.2,1) forwards}
+#t3-card .rays{position:absolute;left:4%;width:44%;top:2%;height:72%;background:repeating-conic-gradient(from 0deg at 50% 100%,rgba(242,162,58,.22) 0 5deg,transparent 5deg 13deg);opacity:0}
+#t3-card.on .rays{animation:t3rays 1.9s ease-out forwards}
+#t3-card img{position:absolute;left:26%;bottom:26%;height:66%;transform:translateX(-50%) scale(1.5);image-rendering:pixelated;opacity:0;filter:drop-shadow(0 calc(var(--t3u) * 3) 0 rgba(0,0,0,.5))}
+#t3-card.on img{animation:t3slam 1.9s cubic-bezier(.2,.9,.3,1) forwards}
+#t3-card .who{position:absolute;left:48%;top:38%;transform:translateX(30%);opacity:0}
+#t3-card.on .who{animation:t3who 1.9s ease-out forwards}
+#t3-card .who p{margin:0}
+#t3-card .who .k{font:800 calc(var(--t3u) * 5.5) var(--t3body);letter-spacing:.2em;color:var(--t3orange)}
+#t3-card .who .n{font:700 calc(var(--t3u) * 24) var(--t3disp);color:var(--t3gold);line-height:1.05}
+#t3-card .who .l{font:600 calc(var(--t3u) * 7.5) var(--t3body);color:var(--t3cream)}
+#t3-card .flash{position:absolute;left:0;right:0;top:30%;height:44%;background:#fff6dc;opacity:0}
+#t3-card.on .flash{animation:t3flash 1.9s linear forwards}
+@keyframes t3band{0%{transform:translateX(100%)}16%{transform:none}86%{transform:none;opacity:1}100%{transform:translateX(-100%);opacity:1}}
+@keyframes t3rays{0%,14%{opacity:0}26%{opacity:1}86%{opacity:1}100%{opacity:0}}
+@keyframes t3slam{0%,12%{opacity:0;transform:translateX(-50%) scale(1.5)}24%{opacity:1;transform:translateX(-50%) scale(1)}86%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:0;transform:translateX(-80%) scale(1)}}
+@keyframes t3who{0%,14%{opacity:0;transform:translateX(30%)}26%{opacity:1;transform:none}86%{opacity:1;transform:none}100%{opacity:0;transform:translateX(-30%)}}
+@keyframes t3flash{0%,23%{opacity:0}24%{opacity:.7}34%{opacity:0}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){#t3-card.on .band,#t3-card.on img,#t3-card.on .who{animation:t3toast 1.9s linear forwards;transform:translateX(-50%)}#t3-card.on .who{transform:none}#t3-card.on .band{transform:none}#t3-card.on .flash{animation:none}}
+#t3cv{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges;cursor:pointer}
+#t3 button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+#t3 button:focus-visible{outline:calc(var(--t3u) * 1.5) solid var(--t3gold);outline-offset:calc(var(--t3u) * 1)}
+#t3-stages{width:calc(var(--t3u) * 214)}
+#t3-back{white-space:nowrap;flex:0 0 auto}
+#t3-tabs{display:flex!important;flex-wrap:wrap;column-gap:calc(var(--t3u) * 5)}
 /* T3 css end */
 </style>
 
@@ -232,6 +264,7 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
           <button class="t3ghost" id="t3-online" type="button" hidden>Play online</button>
         </div>
       </div>
+      <div id="t3-card" aria-hidden="true"><div class="rays"></div><div class="band"></div><div class="flash"></div><img id="t3-cardimg" alt=""><div class="who"><p class="k">PLAYER ONE</p><p class="n" id="t3-cardname"></p><p class="l" id="t3-cardline"></p></div></div>
       <div id="t3-toast" aria-live="polite"></div>
     </div>
     <script type="module">
@@ -7071,6 +7104,20 @@ function drawStageBg() {
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (meshyBg()) return;   // Version 64: painted in Meshy
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (ST.era === 2006 && nlDrawStageBg(ST.bg)) return;
   if (ST.bg === 'fishery') bgFisheryPixel();
   else if (ST.bg === 'orpington') bgOrpingtonPixel();
@@ -12939,13 +12986,16 @@ const T3 = (() => {
     });
 
     const SHOPS = ['chippy', 'kebab', 'pub', 'video', 'bookies', 'phones'];
-    const paths = { street: 'bg/title/street.png', lamp: 'bg/orpington/lamp.png', phonebox: 'bg/orpington/phonebox.png', bench: 'bg/orpington/bench.png', bin: 'bg/props/bin.png' };
-    SHOPS.forEach(s => { paths[s] = 'bg/orpington/' + s + '.png'; });
+    // Version 65: the street repainted in Meshy (tools/v64/repaint.py title_shops; tools/v65/img/title_*.webp)
+    const paths = { street: 'bg/title/street.png', lamp: 'bg/title/lamp.png', phonebox: 'bg/title/phonebox.png', bench: 'bg/title/bench.png', bin: 'bg/props/bin.png',
+      road: 'bg/title/road.png', pave: 'bg/title/pave.png', logo: 'bg/title/logo.png' };
+    SHOPS.forEach(s => { paths[s] = 'bg/title/' + s + '.png'; });
     ORDER.forEach(id => { paths['lad_' + id] = 'sprites/' + id + '.png'; });
     const img = {}; await Promise.all(Object.keys(paths).map(async k => { img[k] = await loadImg(paths[k]); }));
     // a lad can have his own pick pose: a strip of frames in his sheet's cell size, sprites/pose_<id>.png (Version 47)
     await Promise.all(Object.keys(POSES).map(async id => { try { img['pose_' + id] = await loadImg('sprites/pose_' + id + '.png'); } catch (e) { /* use his special */ } }));
     const T = {}; for (const k in img) if (!k.startsWith('lad_')) T[k] = prep(new THREE.Texture(img[k]));
+    for (const k of ['road', 'pave']) { T[k] = prep(new THREE.Texture(img[k]), true); T[k].wrapS = T[k].wrapT = THREE.RepeatWrapping; }
 
     // backdrop: the title painting, hung far away on the camera's horizon
     backdrop = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: T.street, depthWrite: false, depthTest: false }));
@@ -12954,25 +13004,14 @@ const T3 = (() => {
       s.fragmentShader = 'uniform float fade; uniform vec3 sky;\n' + s.fragmentShader.replace('#include <opaque_fragment>', 'diffuseColor.rgb *= sky * fade;\n#include <opaque_fragment>'); };
     scene.add(backdrop);
 
-    const road = canvasTex(120, 120, (g, w, h) => {
-      const sh = ['#120d52', '#150f5b', '#181262', '#130e55'];
-      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { g.fillStyle = sh[(rnd() * sh.length) | 0]; g.fillRect(x, y, 1, 1); }
-      g.fillStyle = '#7d73cc'; g.fillRect(59, 0, 2, 54);
-      g.fillStyle = '#3c3290'; g.fillRect(4, 0, 1, h); g.fillRect(w - 5, 0, 1, h);
-    }, true);
-    road.wrapS = road.wrapT = THREE.RepeatWrapping;
+    const road = T.road;   // Meshy's wet tarmac, a dashed line down the middle
     const len = Z_NEAR - Z_FAR, mid = (Z_NEAR + Z_FAR) / 2, pw = FRONT - ROAD;
-    const ground = new THREE.Mesh(new THREE.PlaneGeometry(ROAD * 2, len), mat(road, { tint: [1, 1, 1], glow: 0, rect: [0, 0, 1, len / 240] }));
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(ROAD * 2, len), mat(road, { tint: [0.86, 0.82, 1], glow: 0, rect: [0, 0, 1, len / (ROAD * 2 * road.image.height / road.image.width)] }));
     ground.rotation.x = -Math.PI / 2; ground.position.z = mid; scene.add(ground);
-    const pave = canvasTex(64, 40, (g, w, h) => {
-      g.fillStyle = '#2b2276'; g.fillRect(0, 0, w, h);
-      for (let i = 0; i < 260; i++) { g.fillStyle = rnd() < .5 ? '#271f6c' : '#30277e'; g.fillRect((rnd() * w) | 0, (rnd() * h) | 0, 1, 1); }
-      g.fillStyle = '#1d1660'; g.fillRect(0, 0, w, 1); g.fillRect(0, 20, w, 1); g.fillRect(0, 0, 1, h); g.fillRect(32, 0, 1, h);
-    }, true);
-    pave.wrapS = pave.wrapT = THREE.RepeatWrapping;
+    const pave = T.pave;   // Meshy's paving slabs
     const kerbTex = canvasTex(4, 4, g => { g.fillStyle = '#5c52b4'; g.fillRect(0, 0, 4, 4); g.fillStyle = '#4a419e'; g.fillRect(0, 3, 4, 1); });
     for (const side of [-1, 1]) {
-      const p = new THREE.Mesh(new THREE.PlaneGeometry(pw + 30, len), mat(pave, { tint: [1, 1, 1], glow: 0, rect: [0, 0, pw / 64, len / 40] }));
+      const p = new THREE.Mesh(new THREE.PlaneGeometry(pw + 30, len), mat(pave, { tint: [0.84, 0.8, 1], glow: 0, rect: [0, 0, (pw + 30) / 96, len / 96] }));
       p.rotation.x = -Math.PI / 2; p.position.set(side * (ROAD + (pw + 30) / 2), KERB, mid); scene.add(p);
       const kerb = new THREE.Mesh(new THREE.PlaneGeometry(len, KERB), mat(kerbTex, { tint: [1, 1, 1], glow: 0 }));
       kerb.rotation.y = side * -Math.PI / 2; kerb.position.set(side * ROAD, KERB / 2, mid); scene.add(kerb);
@@ -12983,7 +13022,7 @@ const T3 = (() => {
       while (z > Z_FAR) {
         const n = SHOPS[k % SHOPS.length]; k += 1 + (rnd() < 0.3 ? 1 : 0);
         const w = T[n].image.width, h = T[n].image.height;
-        const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat(T[n]));
+        const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat(T[n], { tint: [0.76, 0.7, 0.94] }));
         m.rotation.y = side * -Math.PI / 2; m.position.set(side * FRONT, KERB + h / 2, z - w / 2); scene.add(m);
         addPool(side * (FRONT - 16), z - w / 2, w * 0.7, 26, 0xffa24a, 0.16);
         z -= w;
@@ -12991,7 +13030,7 @@ const T3 = (() => {
     }
     for (let z = Z_NEAR - 60, i = 0; z > Z_FAR; z -= 150, i++) {
       const side = i % 2 ? 1 : -1, x = side * (ROAD + 12);
-      addBillboard(T.lamp, x, z, 16, { tint: [0.62, 0.58, 0.86] });
+      addBillboard(T.lamp, x, z, 16, { tint: [0.8, 0.76, 0.94] });
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: haloTex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false }));
       halo.scale.set(34, 34, 1); halo.position.set(x - side, KERB + 90, z); halo.userData.flicker = rnd() < 0.12;
       scene.add(halo); glows.push(halo);
@@ -13001,7 +13040,7 @@ const T3 = (() => {
     for (let z = Z_NEAR - 140, i = 0; z > Z_FAR; z -= 230 + rnd() * 220, i++) {
       const [n, ax] = props[i % props.length], side = rnd() < 0.5 ? -1 : 1;
       if (z > -260 && z < 280) continue;   // keep the kerb clear round the lads' line-up (a bin was hiding Kelly)
-      addBillboard(T[n], side * (FRONT - 26), z, ax, { tint: [0.56, 0.5, 0.84] });
+      addBillboard(T[n], side * (FRONT - 26), z, ax, { tint: [0.78, 0.72, 0.94] });
       addShadow(side * (FRONT - 26), z, T[n].image.width * 0.5);
     }
     spot = addPool(0, 0, 120, 60, 0xffc070, 0);
@@ -13023,7 +13062,7 @@ const T3 = (() => {
     });
 
     if (document.fonts && document.fonts.load) await Promise.race([document.fonts.load('700 34px "Pixelify Sans"').catch(() => {}), new Promise(r => setTimeout(r, 2500))]);
-    const lt = logoTexture(); logoW = lt.image.width; logoH = lt.image.height;
+    const lt = img.logo ? T.logo : logoTexture(); logoW = lt.image.width * 0.66; logoH = lt.image.height * 0.66;   // Version 65: Meshy's painted logo
     logo = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: lt, alphaTest: 0.5, side: THREE.DoubleSide, depthTest: false, depthWrite: false }));
     logo.renderOrder = 20; logo.visible = false; camera.add(logo);
     ready = true;
@@ -13091,9 +13130,19 @@ const T3 = (() => {
     const L = chosen(), id = L.id, P = PICK[id] || ['', 'start'];
     if (ladLocked(CHAR_BY_ID[id])) { sfx('nope'); toast('LOCKED'); return; }
     act(L, 'pick'); L.tint.set(2.4, 2.3, 2.1);
-    picking = { t: 0, len: L.act ? L.act.len + 0.15 : 0.4 };
-    sfx('special'); sfx(P[1]); if (P[0]) toast(P[0], 'shout');
+    picking = { t: 0, len: Math.max(2.0, L.act ? L.act.len + 0.15 : 0.4) };
+    sfx('special'); sfx(P[1]); ladCard(id, P[0]);
     q('pick').textContent = CHAR_BY_ID[id].name + '!'; q('pick').disabled = true;
+  }
+  // Version 65: picking a lad gets him an intro card, like the bosses get: his Meshy portrait slams in with his shout
+  function ladCard(id, line) {
+    const el = document.getElementById('t3-card'); if (!el) { if (line) toast(line, 'shout'); return; }
+    document.getElementById('t3-cardimg').src = 'bg/ladcard/' + id + '.png';
+    document.getElementById('t3-cardname').textContent = CHAR_BY_ID[id].name;
+    document.getElementById('t3-cardline').textContent = line ? '\u201C' + line + '\u201D' : '';
+    el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
+    clearTimeout(ladCard.t); ladCard.t = setTimeout(() => el.classList.remove('on'), 2000);
+    setTimeout(() => sfx('thud'), 400);
   }
   function flex(L) { if (!L.act && !L.a.pose) act(L, 'mini'); }   // lads with a pose turn to face you instead
   function back() {
@@ -13382,10 +13431,10 @@ const T3 = (() => {
     const pxu = 2 * 200 * Math.tan(vh) / PH, wob = reduceMotion ? 0 : 1;
     if (view === 'title' && intro) {
       const k = clamp((t - T_LOGO) / 1.1, 0, 1);
-      Object.assign(lg, { x: 0, y: PH / 2 - 47, s: 1 + 2.2 * (1 - (1 - (1 - k) ** 3)), ry: -Math.PI * 2.5 * (1 - easeBack(k)), rx: 0 });
+      Object.assign(lg, { x: 0, y: PH / 2 - 50, s: 1 + 2.2 * (1 - (1 - (1 - k) ** 3)), ry: -Math.PI * 2.5 * (1 - easeBack(k)), rx: 0 });
       logo.visible = t > T_LOGO;
     } else {
-      const g = view !== 'title' ? { x: -PW / 2 + 60, y: PH / 2 - 13, s: 0.4, ry: 0, rx: 0 } : { x: 0, y: PH / 2 - 47, s: 1, ry: Math.sin(t * 0.9) * 0.16 * wob, rx: Math.sin(t * 0.7) * 0.07 * wob };
+      const g = view !== 'title' ? { x: -PW / 2 + 52, y: PH / 2 - 17, s: 0.36, ry: 0, rx: 0 } : { x: 0, y: PH / 2 - 50, s: 1, ry: Math.sin(t * 0.9) * 0.16 * wob, rx: Math.sin(t * 0.7) * 0.07 * wob };
       const k = damp(5, dt); for (const key in g) lg[key] += (g[key] - lg[key]) * k;
       logo.visible = true;
     }
