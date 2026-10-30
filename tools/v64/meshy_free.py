@@ -26,7 +26,7 @@ def find_id(o):
 tid = os.environ.get('TID')
 if not tid:
     r = subprocess.run(M + ['image-to-image', 'create', '--ai-model', os.environ.get('MODEL', 'nano-banana-pro'), '--prompt', prompt, '--reference-image-urls', ','.join(refs),
-                            '--aspect-ratio', '16:9', '--async', '--output-schema', 'v1', '--format', 'json', '--no-update-check'], capture_output=True, text=True, env=env, cwd='/tmp')
+                            '--aspect-ratio', os.environ.get('ASPECT', '16:9'), '--async', '--output-schema', 'v1', '--format', 'json', '--no-update-check'], capture_output=True, text=True, env=env, cwd='/tmp')
     tid = find_id(json.loads(r.stdout).get('result')) if r.stdout.strip() else None
     if not tid: sys.exit('meshy create failed: ' + (r.stdout + r.stderr)[-800:])
 print('task', tid, flush=True)

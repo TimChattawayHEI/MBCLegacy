@@ -23,6 +23,10 @@ SHEETS = {
                    "five separate parts from the inside of a 2006 London commuter train and a night bus, side by side: a door frame, the carriage end wall with its door, a train toilet door with a light above it, a pair of sliding train doors with yellow stripes and windows, and the night bus staircase"),
     'bus_deck': (4, [('nightlife/bus_deck', 48, 96)],
                  "the top deck of a London night bus at 2am, seen from inside, side on: red and blue tartan moquette seats, a yellow grab pole, the bus's red side panels and windows, dim interior lights"),
+    'fishery_bits': (5, [('set/board', 20, 30), ('set/peg', 720, 30), ('set/chair', 950, 30)],
+                     "three separate things from a carp fishing lake: a big weathered wooden notice board on two posts holding a blank laminated cream paper sheet (nothing written on it), a small wooden peg marker post with a blank white plate on top (nothing written on it), and a blue folding camping chair"),
+    'fishery_smoker': (6, [('set/smoker', 100, 100)],
+                       "a big black barbecue smoker on a little two-wheeled trailer, with a chimney, a firebox and a temperature gauge, seen from the side"),
     'naval': (4, [('naval/raft', 40, 120), ('naval/bbq', 1130, 220)],
               "two separate things from a midnight carp lake, side by side: a big orange inflatable dinghy seen from the side and slightly above, with yellow straps and grab ropes and a grey floor, and a small black kettle barbecue on legs with glowing coals"),
     'scenery': (3.44, [('nightlife/sc_suburb', 0, 40), ('nightlife/sc_platform', 0, 400)],
@@ -56,10 +60,10 @@ def make(name):
     sheet, what = layout(name)
     work = os.environ.get('MESHY_WORK', '/tmp/meshy_work'); os.makedirs(os.path.join(work, 'repaint'), exist_ok=True)
     sp = os.path.join(work, 'repaint', name + '_layout.png'); sheet.save(sp)
-    prompt = ("Repaint the first image as rich, detailed, gritty 16-bit pixel art in exactly the style, pixel size, texture and moody night lighting of the other images. "
+    prompt = ("Repaint the first image as rich, detailed, gritty 16-bit pixel art in exactly the style, pixel size, texture and " + os.environ.get('LIGHT', 'moody night lighting') + " of the other images. "
               f"It shows {what}. Keep every shape exactly where it is and exactly the same size: the same outlines, the same layout, the same text. "
               "Every flat bright magenta area must stay exactly flat bright magenta (#FF00FF), untouched, with crisp edges. The plain dark grey background stays plain dark grey. No people other than any already there.")
-    subprocess.run([sys.executable, os.path.join(HERE, 'meshy_free.py'), 'repaint', name, prompt, sp + ',street,alley'], check=True,
+    subprocess.run([sys.executable, os.path.join(HERE, 'meshy_free.py'), 'repaint', name, prompt, sp + ',' + os.environ.get('STYLES', 'street,alley')], check=True,
                    env=dict(os.environ, MESHY_WORK=work))
     Image.open(os.path.join(work, 'repaint', name + '_raw.png')).save(os.path.join(R, name + '.webp'), quality=95, method=6)
 

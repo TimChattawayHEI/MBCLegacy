@@ -72,7 +72,7 @@ html.phone-land .frame{border-radius:4px;flex:0 0 auto}
 .pb.hit{right:0;top:27%;width:46%;height:46%;background:var(--gold);border-color:var(--gold);color:#1b1206;font-size:clamp(14px,4.4vw,20px)}
 .pb.jump{left:27%;bottom:0;width:34%;height:34%}
 .pb.back{left:0;top:30%;width:31%;height:31%;font-size:clamp(9px,2.6vw,12px)}
-.pb.special{left:27%;top:0;width:34%;height:34%;font-size:clamp(9px,2.6vw,12px)}
+.pb.special{left:0;top:28%;width:34%;height:34%;font-size:clamp(9px,2.6vw,12px)}
 .pb.special.ready{border-color:var(--gold);color:var(--gold);animation:glow 0.8s ease-in-out infinite alternate}
 @keyframes glow{from{box-shadow:0 4px 0 rgba(0,0,0,.35),0 0 0 rgba(242,162,58,0)}to{box-shadow:0 4px 0 rgba(0,0,0,.35),0 0 18px rgba(242,162,58,.7)}}
 @media (prefers-reduced-motion:reduce){.pb.special.ready{animation:none}}
@@ -256,7 +256,7 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
     <div class="stick" id="padStick" aria-label="Move"><div class="knob" id="padKnob"></div></div>
     <div class="btns">
       <button class="pb special" type="button" data-act="special" id="padSpecial">SPECIAL</button>
-      <button class="pb back" type="button" data-act="back">BACK</button>
+      <!-- Version 65: no BACK button, the special has its place -->
       <button class="pb hit" type="button" data-act="punch">HIT</button>
       <button class="pb jump" type="button" data-act="jump">JUMP</button>
     </div>
@@ -266,7 +266,7 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
     <div><kbd>WASD</kbd> or arrows move, tap twice to run</div>
     <div><kbd>J</kbd> punch, pick up, grab moves</div>
     <div><kbd>K</kbd> jump, <kbd>J</kbd> in the air to kick</div>
-    <div><kbd>J</kbd>+<kbd>K</kbd> back attack, throws your weapon</div>
+    <div><kbd>J</kbd>+<kbd>K</kbd> or <kbd>U</kbd> throws your weapon</div>
     <div><kbd>L</kbd> special when the bar is full</div>
     <div><kbd>P</kbd> or <kbd>Esc</kbd> pause</div>
     <div>Walk into someone to grab them. <kbd>J</kbd> knee, arrow + <kbd>J</kbd> throw</div>
@@ -602,7 +602,7 @@ const held = new Set(), pressed = new Set(), taps = [];
 let typed = '';
 const KEYMAP = { ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right', ArrowUp: 'up', KeyW: 'up',
   ArrowDown: 'down', KeyS: 'down', KeyJ: 'punch', KeyZ: 'punch', KeyK: 'jump', KeyX: 'jump', Space: 'jump',
-  KeyL: 'special', KeyC: 'special', KeyU: 'back', KeyV: 'back', Enter: 'start', Escape: 'escape',
+  KeyL: 'special', KeyC: 'special', KeyU: 'special', KeyV: 'special', Enter: 'start', Escape: 'escape',
   KeyM: 'mute', KeyC: 'cont', KeyO: 'online', KeyF: 'lang', KeyB: 'board', KeyR: 'route', KeyT: 'diff', KeyP: 'pause', KeyN: 'pub' };
 window.addEventListener('keydown', e => {
   const tg = e.target && e.target.tagName;
@@ -620,8 +620,7 @@ let touchUI = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').mat
 const BTN = [
   { id: 'punch', x: 866, y: 448, r: 46, label: 'HIT' },
   { id: 'jump', x: 760, y: 486, r: 36, label: 'JUMP' },
-  { id: 'back', x: 752, y: 392, r: 30, label: 'BACK' },
-  { id: 'special', x: 862, y: 334, r: 34, label: 'SPECIAL' },
+  { id: 'special', x: 752, y: 392, r: 34, label: 'SPECIAL' },   // Version 65: where BACK was (the back kick is gone)
 ];
 const STICK = { x: 130, y: 430, r: 70 };
 // touch layout options (Version 45): button size, and the stick on the right for left-handed players
@@ -1307,6 +1306,7 @@ function drawSelectBg() {
 const PLAYABLE = ['tim', 'seb', 'byron', 'pearcy', 'kelly', 'marc', 'sam', 'thet', 'ash'].map(id => CHAR_BY_ID[id]);
 // Thet stays a silhouette until the campaign's been finished once (or THET is typed on the select screen)
 function ladLocked(c) { return !!c && ((c.id === 'thet' && !settings.thet) || (c.id === 'ash' && !settings.ash)); }
+function freeLad(i) { const n = PLAYABLE.length; i = ((i | 0) % n + n) % n; for (let k = 0; k < n; k++) { if (!ladLocked(PLAYABLE[(i + k) % n])) return (i + k) % n; } return 0; }   // Version 65
 // Ash (Version 54) stays a silhouette until the campaign's been finished on Hard (or ASH is typed on the select screen)
 function unlockAsh() { if (settings.ash) return false; settings.ash = true; saveSettings(); return true; }
 function lockHint(c) { return c && c.id === 'ash' ? 'Someone tall is waiting. Finish the campaign on Hard to find out who.' : 'Someone is hiding in the bushes. Finish the campaign to find out who.'; }
@@ -3066,6 +3066,7 @@ function chainHit() {
 }
 function noteKO(f) {
   if (!S) return;
+  if (player && !f.npc) gainMeter(player, METER.ko);   // Version 65: every knockout tops the super up
   if (S.time - S.koT < 0.75) S.koN++; else S.koN = 1;
   S.koT = S.time;
   const add = [0, 0, 500, 1000, 1500][Math.min(4, S.koN)];
@@ -3276,7 +3277,7 @@ function canBeHit(t) { return t.inv <= 0 && !NOHIT.has(t.state); }
 function playerTargetable() { return player && !['dead', 'down', 'getup', 'netted', 'walkin', 'cut', 'cutThrow'].includes(player.state); }
 
 // the special bar: about one refill per stage on top of the full bar you start each stage with
-const METER = { hit: 0.72, extra: 0.3, knee: 0.65, hurt: 0.5, respawn: 50 };
+const METER = { hit: 1.6, extra: 0.45, knee: 1.4, hurt: 1.2, respawn: 50, ko: 4, food: 20 };   // Version 65: about three times as quick
 CHARS.forEach(c => { if (c.id === 'byron') c.meterRate = 0.85; });
 let meterNopeT = 0;
 function meterBusy() {
@@ -3388,6 +3389,10 @@ const BOSS_BANNER = {
   'IL CARABINIERE': ['carab'], 'I FRATELLI': ['gianni', 'marco', 'luca', 'paolo'],
   'THE TICKET INSPECTOR': ['inspector'], 'LEWISHAM LENNY': ['lenny'], 'THE JEWELLER': ['jeweller'],
 };
+const BOSS_ART = { 'THE PARKIE': 'parkie', 'MASTER CONTROL': 'mc', 'DENISE': 'denise', 'LADY ADDICT': 'lady', 'BIG GARY': 'gary', 'BIG GAZ': 'gaz', 'DON VITO': 'mafioso',
+  'BIG TONY AND LITTLE NICKY': 'duo', 'IL CARABINIERE': 'carab', 'I FRATELLI': 'bros', 'THE TICKET INSPECTOR': 'inspector', 'LEWISHAM LENNY': 'lenny', 'THE JEWELLER': 'jeweller',
+  'THE FAR BANK': 'farbank', 'NOZZER': 'nozzer' };   // Version 65
+setTimeout(() => { for (const k in BOSS_ART) { bgImg('bosscard/' + BOSS_ART[k]); ASSET_BG.push('bosscard/' + BOSS_ART[k]); } }, 0);   // ASSET_BG is declared further down
 function bossCardFor(w) {
   const key = w.boss || (w.mini && !w.fish ? 'nozzer' : null), c = key && BOSS_CARD[key];
   return c ? { t: 0, len: 2.6, name: c[0], line: c[1], spr: c[2] } : null;
@@ -3425,7 +3430,16 @@ function drawBossCard() {
   ctx.fillStyle = 'rgba(242,162,58,0.12)'; for (let i = 0; i < 14; i++) ctx.fillRect(((i * 90 + t * 260) % (W + 120)) - 60, bandY, 18, bandH);
   const n = c.spr.length, sk = c.spr[0].includes('/') ? 2.2 : 2.6;
   const gap = n > 1 ? Math.min(130, 330 / (n - 1)) : 0;
-  c.spr.forEach((id, i) => drawCardSprite(id, 230 + (i - (n - 1) / 2) * gap, bandY + bandH - 12, sk));
+  const art = BOSS_ART[c.name] && bgImg('bosscard/' + BOSS_ART[c.name]);
+  if (art) {   // Version 65: the boss's painted portrait slams in, bursting up out of the band, with a flash as it lands
+    const slam = clamp((t - 0.12) / 0.2, 0, 1), k = 2 * (1.35 - 0.35 * easeOut(slam)), w = art.width * k, h = art.height * k;
+    ctx.save(); ctx.globalAlpha = Math.min(1, slam * 3); ctx.fillStyle = 'rgba(242,162,58,0.18)';
+    for (let i = 0; i < 9; i++) { const a = -Math.PI / 2 + (i - 4) * 0.28 + Math.sin(t * 3 + i) * 0.04; ctx.beginPath(); ctx.moveTo(230, bandY + bandH); ctx.lineTo(230 + Math.cos(a - 0.06) * 420, bandY + bandH + Math.sin(a - 0.06) * 420); ctx.lineTo(230 + Math.cos(a + 0.06) * 420, bandY + bandH + Math.sin(a + 0.06) * 420); ctx.fill(); }
+    ctx.imageSmoothingEnabled = false; ctx.drawImage(art, Math.round(230 - w / 2), Math.round(bandY + bandH - h), w, h);
+    if (slam >= 1 && t < 0.42) { ctx.globalAlpha = (0.42 - t) / 0.1; ctx.fillStyle = '#fff6dc'; ctx.fillRect(0, bandY, W, bandH); }
+    ctx.restore();
+    if (slam >= 1 && !c.slammed) { c.slammed = true; addShake(8); sfx('thud'); }
+  } else c.spr.forEach((id, i) => drawCardSprite(id, 230 + (i - (n - 1) / 2) * gap, bandY + bandH - 12, sk));
   ctx.font = '800 13px ' + BODY; ctx.fillStyle = '#f2a23a'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('BOSS', 470, bandY + 50);
   textOut(c.name, 470, bandY + 98, (c.name.length > 20 ? '24px ' : c.name.length > 14 ? '30px ' : '40px ') + DISPLAY, '#ffd23f', OUT, 7, 'left');
   ctx.font = '600 17px ' + BODY; ctx.fillStyle = '#efe6d2'; ctx.textAlign = 'left'; ctx.fillText('\u201C' + clean(c.line) + '\u201D', 470, bandY + 146);
@@ -3654,7 +3668,7 @@ function pickupFood(p) {
     if (it.kind === 'oneup') { gainLife(p.x, p.y, 'EXTRA LIFE!'); ladSay('food', 1, true); continue; }
     const f = FOODS[it.f];
     if (p.hp >= p.maxHp) { addScore(750); popWord(p.x, p.y, 140, 'STUFFED! +750', false); sfx('pickup'); continue; }
-    p.hp = Math.min(p.maxHp, p.hp + f.heal); popWord(p.x, p.y, 140, f.word, false); sfx('pickup'); addScore(200); ladSay('food', 0.5);
+    p.hp = Math.min(p.maxHp, p.hp + f.heal); gainMeter(p, METER.food); popWord(p.x, p.y, 140, f.word, false); sfx('pickup'); addScore(200); ladSay('food', 0.5);
   }
   items = items.filter(i => !i.taken);
 }
@@ -3816,7 +3830,8 @@ function updateSpecial(p, dt) {
 function updatePlayer(p, dt) {
   p.t += dt; if (p.atk) p.atkT += dt;
   if (meterNopeT > 0) meterNopeT -= dt;
-  if (pressed.has('special') && p.meter < 100 && p.state !== 'special' && meterNopeT <= 0) { meterNopeT = 0.5; sfx('nope'); }
+  if (pressed.has('special') && p.meter < 100 && p.weapon && (p.state === 'idle' || p.state === 'walk' || p.state === 'run')) throwWeapon(p);
+  else if (pressed.has('special') && p.meter < 100 && p.state !== 'special' && meterNopeT <= 0) { meterNopeT = 0.5; sfx('nope'); }
   if (p.inv > 0 && p.state !== 'special') p.inv -= dt;
   if (p.flash > 0) p.flash -= dt;
   if (p.sayCool > 0) p.sayCool -= dt;
@@ -3842,13 +3857,13 @@ function updatePlayer(p, dt) {
   if (NET.on) { if (held.has('run')) p.running = true; else if (p.runBit) p.running = false; p.runBit = held.has('run'); } else if (touchUI && stickVec()) p.running = stickRun();
   if (!ix || (p.running && ix !== p.face && p.state === 'run')) p.running = false;
   miniHoldTick(p, dt);
-  const chord = pressed.has('back') || (pressed.has('punch') && pressed.has('jump'));
+  const chord = pressed.has('punch') && pressed.has('jump');
   switch (p.state) {
     case 'cut': case 'cutThrow': p.vx = 0; p.vy = 0; break;
     case 'walkin': p.vx = SP * 0.8; p.walk += dt * 9; if (p.x > 150) setIdle(p); break;
     case 'idle': case 'walk': case 'run': {
       if (pressed.has('special') && p.meter >= 100) { startSpecial(p); break; }
-      if (chord) { if (p.weapon) throwWeapon(p); else startBack(p); break; }
+      if (chord && p.weapon) { throwWeapon(p); break; }   // Version 65: no back kick
       if (pressed.has('jump')) { p.state = 'squat'; p.t = 0; p.jx = ix; p.jy = iy; p.jrun = p.running; p.vx = 0; p.vy = 0; break; }
       if (pressed.has('punch')) {
         if (tryPickup(p)) break;
@@ -3865,7 +3880,7 @@ function updatePlayer(p, dt) {
       break;
     }
     case 'squat':
-      if (pressed.has('punch') || pressed.has('back')) { if (p.weapon) throwWeapon(p); else startBack(p); break; }
+      if (pressed.has('punch') && p.weapon) { throwWeapon(p); break; }
       if (p.t >= 0.05) {
         p.state = 'jump'; p.t = 0; p.vz = 760; p.airAtk = false; p.landed = false; p.z = 1; p.jumpId++;
         const spd = p.jrun ? SP * 1.55 : SP;
@@ -3873,7 +3888,7 @@ function updatePlayer(p, dt) {
       }
       break;
     case 'punch':
-      if (p.combo === 1 && p.t < 0.07 && (pressed.has('jump') || pressed.has('back'))) { startBack(p); break; }
+      // Version 65: no back kick off the first jab
       p.vx = (p.comboFin && p.t < 0.1) ? p.face * (p.comboLunge || 140) : 0; p.vy = 0;
       if (pressed.has('punch') && p.t > 0.04) p.queued = true;
       if (pressed.has('special') && p.meter >= 100) { startSpecial(p); break; }
@@ -6052,6 +6067,7 @@ function ladFrame(e, F, rows) {
     case 'walk': case 'walkin': return ['walk', walkIdx()];
     case 'mini': {
       const fr = F.mini, mm = typeof MINI !== 'undefined' && MINI[e.def && e.def.id];
+      if (fr && rows && rows.mini && mm && mm.spring) return ['mini', fr[Math.min(fr.length - 1, t < 0.24 ? 1 : t < 0.27 ? 5 : t < 0.4 ? 6 : t < 0.5 ? 4 : 2)]];   // Version 65: coil, snap, recover
       if (fr && rows && rows.mini) return ['mini', fr[Math.min(fr.length - 1, Math.floor(t / ((mm && mm.end) || 0.6) * fr.length))]];
       return ['hook', hitOf(F.hook)];
     }
@@ -6164,6 +6180,11 @@ function drawLad(e, sx, sy, s, sh) {
   const dir = e.face * (flip ? -1 : 1);
   ctx.scale(dir, 1);
   if (st === 'dash') ctx.rotate(0.12);
+  if (st === 'mini' && e.def && MINI[e.def.id] && MINI[e.def.id].spring) {   // Version 65: lean back on the coil, snap the head through
+    const t = e.t || 0, coil = clamp(t / 0.22, 0, 1), ease = 1 - Math.pow(1 - coil, 2);
+    const a = t < 0.24 ? -0.44 * ease : t < 0.3 ? lerp(-0.44, 0.3, (t - 0.24) / 0.06) : t < 0.38 ? 0.3 : lerp(0.3, 0, clamp((t - 0.38) / 0.18, 0, 1));
+    ctx.rotate(a); if (t < 0.24) ctx.scale(1, 1 - 0.05 * ease);
+  }
   const crazed = e.buffT > 0 || e.rage;
   if (crazed && !reduceMotion) ctx.translate(rand(-1.5, 1.5), rand(-1, 1));
   else if (st === 'drowsy') ctx.rotate(0.06 + Math.sin(time * 2) * 0.04);
@@ -7044,6 +7065,12 @@ function drawStageBg() {
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (meshyBg()) return;   // Version 64: painted in Meshy
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (ST.era === 2006 && nlDrawStageBg(ST.bg)) return;
   if (ST.bg === 'fishery') bgFisheryPixel();
   else if (ST.bg === 'orpington') bgOrpingtonPixel();
@@ -7290,6 +7317,7 @@ function restartStage() {
   musicSet(null); startStage(snap.key);
 }
 function newRun(ci, start) {
+  if (!NET.on) ci = freeLad(ci);   // Version 65: never a locked lad (online, the other phone may have him)
   const c = PLAYABLE[ci];
   run = { ci, c, route: routeFrom(start), off: routeDepth(start), vroute: ROUTE.includes(start) ? routeFrom(chapterOf(start)) : null, idx: 0, score: 0, lives: (DIFFS[settings.diff] || DIFFS.normal).lives, diff: settings.diff, livesLost: 0, totalTime: 0,
     jackpot: false, nextLife: 30000, kills: 0, reached: 0, cleared: false, ramsdenCleared: false, flawless: false, entryId: null, secrets: 0, winBonus: 0 };
@@ -8041,6 +8069,17 @@ function pxBar(x, y, w, h, frac, col, back) {
   const seg = w > 200 ? 12 : 8;
   for (let sx = x + seg; sx < x + w - 1; sx += seg) ctx.fillRect(sx, y, 2, h);
 }
+function hudPanel(x, y, w, h) {
+  const img = bgImg('hud/plate'); if (!img || !bgReady(HUD_FILES)) { pxPanel(x, y, w, h); return; }
+  x = PX(x); y = PX(y); w = PX(w); h = PX(h); const c = 6, C = c * 2, mw = 50, mh = 10, sx = 120, sy = 26;   // corner (native), and a plain patch of the plate
+  ctx.save(); ctx.imageSmoothingEnabled = false; const d = (a, b, cw, ch, X, Y, Wd, Hd) => ctx.drawImage(img, a, b, cw, ch, X, Y, Wd, Hd);
+  d(sx, sy, mw, mh, x + C, y + C, w - 2 * C, h - 2 * C);
+  d(120, 0, img.width - 126, c, x + C, y, w - 2 * C, C); d(120, img.height - c, img.width - 126, c, x + C, y + h - C, w - 2 * C, C);   // top and bottom from clear of the holes
+  d(img.width - c, c, c, img.height - 2 * c, x + w - C, y + C, C, h - 2 * C);
+  ctx.save(); ctx.translate(x + C, 0); ctx.scale(-1, 1); d(img.width - c, c, c, img.height - 2 * c, 0, y + C, C, h - 2 * C); d(img.width - c, 0, c, c, 0, y, C, C); d(img.width - c, img.height - c, c, c, 0, y + h - C, C, C); ctx.restore();   // the plate's left edge has the portrait window in it: mirror its right edge
+  d(img.width - c, 0, c, c, x + w - C, y, C, C); d(img.width - c, img.height - c, c, c, x + w - C, y + h - C, C, C);
+  ctx.restore();
+}
 function bar(x, y, w, h, frac, col, back) {
   if (/^#[0-9a-f]{6}$/i.test(col)) return pxBar(x, y, w, h, frac, col, back);
   ctx.fillStyle = OUT; ctx.fillRect(x - 3, y - 3, w + 6, h + 6);
@@ -8048,24 +8087,40 @@ function bar(x, y, w, h, frac, col, back) {
   ctx.fillStyle = col; ctx.fillRect(x, y, Math.max(0, w * clamp(frac, 0, 1)), h);
   ctx.fillStyle = 'rgba(255,255,255,0.22)'; ctx.fillRect(x, y, Math.max(0, w * clamp(frac, 0, 1)), Math.max(2, h * 0.3));
 }
+// Version 65: Meshy's gunmetal plate and glass-tube bars. A fill is one painted tile, repeated along the bar and cut off
+// where the bar ends; until the pictures load the old code bars are drawn instead.
+const HUD_FILES = ['plate', 'boss', 'fill_hp', 'fill_sp', 'fill_boss', 'fill_foe'].map(n => 'hud/' + n); HUD_FILES.forEach(f => bgImg(f)); ASSET_BG.push(...HUD_FILES);
+function hudFill(name, x, y, w, h, frac, trough, flash) {
+  const img = bgImg('hud/' + name); if (!img) return false;
+  x = PX(x); y = PX(y); w = PX(w); h = PX(h);
+  if (trough) { ctx.fillStyle = OUT; ctx.fillRect(x - 2, y - 2, w + 4, h + 4); }
+  ctx.fillStyle = '#141018'; ctx.fillRect(x, y, w, h);
+  const fw = PX(w * clamp(frac, 0, 1)); if (fw <= 0) return true;
+  ctx.save(); ctx.beginPath(); ctx.rect(x, y, fw, h); ctx.clip(); ctx.imageSmoothingEnabled = false;
+  const tw = img.width * 2; for (let tx = x; tx < x + fw; tx += tw) ctx.drawImage(img, tx, y, tw, h);
+  if (flash) { ctx.fillStyle = 'rgba(255,250,220,0.35)'; ctx.fillRect(x, y, fw, h); }
+  ctx.restore(); return true;
+}
+function hudFrame(name, x, y) { const img = bgImg('hud/' + name); if (!img) return false; ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(img, PX(x), PX(y), img.width * 2, img.height * 2); ctx.restore(); return true; }
 function drawHUD() {
   const p = player;
-  pxPanel(12, 12, 362, 84);
+  const plate = bgReady(HUD_FILES); if (!plate) pxPanel(12, 12, 362, 84);
   ctx.save(); ctx.beginPath(); ctx.rect(20, 20, 56, 68); ctx.clip();
   ctx.fillStyle = '#2a3a42'; ctx.fillRect(20, 20, 56, 68);
   drawHuman({ look: p.look, def: p.def, face: 1, state: 'idle', t: 0, z: 0, walk: 0, vx: 0, vy: 0, flash: 0 }, 46, 170, p.def.id === 'thet' || p.def.id === 'ash' ? 1.15 * 62 / SPRITE_META[p.def.id].h : 1.15);
   ctx.restore();
-  ctx.fillStyle = OUT; ctx.fillRect(18, 18, 60, 2); ctx.fillRect(18, 88, 60, 2); ctx.fillRect(18, 20, 2, 68); ctx.fillRect(76, 20, 2, 68);
+  if (plate) hudFrame('plate', 12, 12); else { ctx.fillStyle = OUT; ctx.fillRect(18, 18, 60, 2); ctx.fillRect(18, 88, 60, 2); ctx.fillRect(18, 20, 2, 68); ctx.fillRect(76, 20, 2, 68); }
   textOut(p.def.name, 88, 30, '18px ' + DISPLAY, '#efe6d2', OUT, 4, 'left');
   textOut('x' + Math.max(0, run.lives - 1), 362, 30, '15px ' + DISPLAY, '#efe6d2', OUT, 4, 'right');
-  bar(88, 46, 272, 14, p.hp / p.maxHp, p.hp / p.maxHp < 0.3 ? '#e5484d' : '#7fcf5a');
+  if (!(plate && hudFill(p.hp / p.maxHp < 0.3 ? 'fill_foe' : 'fill_hp', 88, 46, 274, 14, p.hp / p.maxHp, false, p.hp / p.maxHp < 0.3 && Math.floor(time * 4) % 2)))
+    bar(88, 46, 272, 14, p.hp / p.maxHp, p.hp / p.maxHp < 0.3 ? '#e5484d' : '#7fcf5a');
   const ready = p.meter >= 100;
   ctx.font = '700 12px ' + DISPLAY; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
   if (p.buffT > 0) {
-    bar(88, 72, 150, 8, p.buffT / BUFF_TIME, Math.floor(time * 8) % 2 ? '#ff6a4a' : '#e2471c', '#2a1c1a');
+    if (!(plate && hudFill('fill_foe', 88, 72, 152, 10, p.buffT / BUFF_TIME, false, Math.floor(time * 8) % 2))) bar(88, 72, 150, 8, p.buffT / BUFF_TIME, Math.floor(time * 8) % 2 ? '#ff6a4a' : '#e2471c', '#2a1c1a');
     ctx.fillStyle = '#ff7a5a'; ctx.fillText('CARP DIEM', 246, 77);
   } else {
-    bar(88, 72, 150, 8, p.meter / 100, ready ? (Math.floor(time * 6) % 2 ? '#ffd23f' : '#f2a23a') : '#c98a2e', '#2c2a22');
+    if (!(plate && hudFill('fill_sp', 88, 72, 152, 10, p.meter / 100, false, ready && Math.floor(time * 6) % 2))) bar(88, 72, 150, 8, p.meter / 100, ready ? (Math.floor(time * 6) % 2 ? '#ffd23f' : '#f2a23a') : '#c98a2e', '#2c2a22');
     ctx.fillStyle = ready ? '#ffd23f' : meterNopeT > 0 ? '#ff6a5a' : '#93a3a1';
     ctx.fillText(ready ? (touchUI ? 'SPECIAL READY' : 'SPECIAL READY: L') : meterNopeT > 0 ? 'NOT READY' : 'SPECIAL', 246, 77);
     if (meterNopeT > 0 && Math.floor(time * 12) % 2) { ctx.strokeStyle = '#ff6a5a'; ctx.lineWidth = 2; ctx.strokeRect(86, 70, 154, 12); }
@@ -8073,25 +8128,25 @@ function drawHUD() {
   let ny = 102;
   if (p.weapon) {
     const w = WEAPONS[p.weapon.k];
-    pxPanel(12, ny, 220, 30);
+    hudPanel(12, ny, 220, 30);
     ctx.save(); ctx.beginPath(); ctx.rect(14, ny + 2, 60, 26); ctx.clip(); drawWeapon(p.weapon.k, 22, ny + 16, 0, Math.min(1, 50 / (w.len + 20))); ctx.restore();
     ctx.font = '700 11px ' + DISPLAY; ctx.fillStyle = '#efe6d2'; ctx.fillText(w.name, 80, ny + 10);
     if (!w.noDur) for (let i = 0; i < w.dur; i++) { ctx.fillStyle = i < p.weapon.dur ? '#ffd23f' : '#2b3b42'; ctx.fillRect(80 + i * 13, ny + 18, 10, 6); }
     ny += 36;
   }
   if (lastFoe && lastFoeT > 0 && !lastFoe.boss && !(S.bosses || []).includes(lastFoe)) {
-    pxPanel(12, ny, 220, 34);
+    hudPanel(12, ny, 220, 34);
     ctx.font = '700 12px ' + DISPLAY; ctx.fillStyle = '#efe6d2'; ctx.textAlign = 'left'; ctx.fillText(lastFoe.def.name, 22, ny + 10);
-    bar(22, ny + 20, 196, 7, lastFoe.hp / lastFoe.maxHp, '#e5484d');
+    if (!hudFill('fill_foe', 22, ny + 20, 196, 8, lastFoe.hp / lastFoe.maxHp, true)) bar(22, ny + 20, 196, 7, lastFoe.hp / lastFoe.maxHp, '#e5484d');
   }
   ctx.font = '700 12px ' + DISPLAY; const stLabel = (ST.door ? 'WAVE ' + (S.waveIdx + 1) : ST.hidden ? 'HIDDEN' : 'STAGE ' + ST.n) + '  ·  ' + ST.title;
   const plateW = Math.max(150, ctx.measureText(stLabel).width + 28);
-  pxPanel(W - 12 - plateW, 12, plateW, 74);
+  hudPanel(W - 12 - plateW, 12, plateW, 74);
   textOut(String(run.score).padStart(7, '0'), W - 20, 34, '24px ' + DISPLAY, '#efe6d2', OUT, 5, 'right');
   ctx.font = '700 12px ' + DISPLAY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'right'; ctx.fillText(stLabel, W - 20, 58);
   ctx.font = '700 11px ' + DISPLAY; ctx.fillStyle = '#c9a25a'; ctx.fillText(run.mini ? 'ONE LIFE' : run.lives >= MAX_LIVES ? 'LIVES MAXED' : 'EXTRA LIFE AT ' + run.nextLife.toLocaleString('en-GB'), W - 20, 75);
   if (S.chain >= 3) { const a = Math.min(1, S.chainT / 0.6); ctx.globalAlpha = a; textOut(S.chain + ' HIT CHAIN', W - 20, 106, (S.chain >= 20 ? 22 : 18) + 'px ' + DISPLAY, S.chain >= 20 ? '#ffd23f' : '#efe6d2', OUT, 5, 'right'); bar(W - 130, 120, 110, 5, S.chainT / 2.4, '#ffd23f', '#2b3b42'); ctx.globalAlpha = 1; }
-  { const pb = pauseBtn(plateW); pxPanel(pb.x - pb.r, pb.y - pb.r, pb.r * 2, pb.r * 2); ctx.fillStyle = '#efe6d2'; ctx.fillRect(pb.x - 6, pb.y - 8, 4, 16); ctx.fillRect(pb.x + 2, pb.y - 8, 4, 16); }
+  { const pb = pauseBtn(plateW); hudPanel(pb.x - pb.r, pb.y - pb.r, pb.r * 2, pb.r * 2); ctx.fillStyle = '#efe6d2'; ctx.fillRect(pb.x - 6, pb.y - 8, 4, 16); ctx.fillRect(pb.x + 2, pb.y - 8, 4, 16); }
   const bosses = (S.bosses || []).filter(b => b.state !== 'emerge');
   if (bosses.length >= 3) {
     textOut(S.bossTitle, W / 2, 106, '16px ' + DISPLAY, '#f2a23a', OUT, 4);
@@ -8099,7 +8154,7 @@ function drawHUD() {
   } else if (bosses.length) {
     const hp = bosses.reduce((s, b) => s + Math.max(0, b.hp), 0), max = bosses.reduce((s, b) => s + b.maxHp, 0);
     textOut(S.bossTitle, W / 2, 110, '16px ' + DISPLAY, '#f2a23a', OUT, 4);
-    bar(W / 2 - 200, 124, 400, 12, hp / max, '#f2a23a', '#3a2a14');
+    if (!(bgReady(HUD_FILES) && hudFrame('boss', W / 2 - 216, 116) && hudFill('fill_boss', W / 2 - 200, 124, 400, 12, hp / max))) bar(W / 2 - 200, 124, 400, 12, hp / max, '#f2a23a', '#3a2a14');
   }
   if (S.goT > 0 && Math.floor(S.goT * 3) % 2 === 0 && mode === 'play' && !ST.fixed) {
     textOut('GO', W - 112, 210, '34px ' + DISPLAY, '#ffd23f', OUT, 6);
@@ -9434,7 +9489,7 @@ function comboOf(p) { return COMBO[(p.def && COMBO_OF[p.def.id]) || 'std']; }
 const MINI_HOLD = 0.4, MINI_COST = 0.08;
 const MINI = {
   tim: { name: 'SPINNING ELBOW', hit: [0.2, 0.36], end: 0.56, r: 112, dmg: 9, word: 'ELBOW!' },
-  seb: { name: 'HEADBUTT', hit: [0.28], end: 0.62, r: 124, lunge: 110, dmg: 19, word: 'BONK!' },
+  seb: { name: 'HEADBUTT', hit: [0.31], end: 0.64, r: 124, lunge: 230, lungeT: [0.24, 0.33], dmg: 19, word: 'BONK!', spring: true },   // Version 65: arch back, then snap
   byron: { name: 'SLIDE TACKLE', hit: [0.12, 0.24, 0.36], end: 0.64, r: 96, slide: 600, dmg: 7, word: 'TACKLE!' },
   pearcy: { name: 'WHITE OUT', hit: [0.34], end: 0.78, r: 126, dmg: 17, word: 'PFFFT!', powder: true },
   kelly: { name: 'BMX 360', hit: [0.2, 0.42], end: 0.72, r: 118, spin: [0.14, 0.56], dmg: 9, word: '360!' },
@@ -9470,7 +9525,7 @@ function updateMini(p, dt) {
   const m = MINI[p.def.id], t = p.t;
   if (!m) { setIdle(p); return; }
   p.vy = 0;
-  if (m.lunge) p.vx = t > 0.16 && t < 0.3 ? p.miniFace * m.lunge : 0;
+  if (m.lunge) { const [a, b] = m.lungeT || [0.16, 0.3]; p.vx = t > a && t < b ? p.miniFace * m.lunge : 0; if (m.spring && t >= a && t - dt < a) sfx('swing'); }
   else if (m.slide) { p.vx = t > 0.06 && t < 0.44 ? p.miniFace * m.slide * (1 - t * 1.4) : 0; if (p.vx && chance(0.6)) dust(p.x - p.miniFace * 20, p.y, 1, 26); }
   else p.vx = 0;
   if (m.spin) {
@@ -9698,7 +9753,7 @@ const NL = { screen: 'menu', sel: 0, code: '', msg: '', busy: false, me: null, t
 function openNetLobby() {
   if (!PROFILE.name) { profileAsk(false, openNetLobby); return; }   // Version 56
   audioInit(); sfx('page');
-  mode = 'net'; modeT = 0; NL.screen = 'menu'; NL.sel = 0; NL.msg = ''; NL.code = ''; NL.ready = false; NL.them = null; NL.go = null; NL.lad = sel;
+  mode = 'net'; modeT = 0; NL.screen = 'menu'; NL.sel = 0; NL.msg = ''; NL.code = ''; NL.ready = false; NL.them = null; NL.go = null; NL.lad = freeLad(sel);
   NL.diff = settings.diff; NL.start = startAt;
 }
 function netCodeInput(show) {
@@ -9797,7 +9852,7 @@ function updateNetLobby() {
     if (!NL.ready && pressed.has('left')) step(-1);
     if (!NL.ready && pressed.has('right')) step(1);
     for (const t of tapsNow) PLAYABLE.forEach((c, i) => { const x = tileX(i); if (!NL.ready && t.x > x && t.x < x + TILE.w && t.y > TILE.y - 8 && t.y < TILE.y + TILE.h && !netLadTaken(i) && !ladLocked(c)) { NL.lad = i; sfx('swing'); netLobbyPublish(); } });
-    if (netLadTaken(NL.lad) && !NL.ready) step(1);
+    if ((netLadTaken(NL.lad) || ladLocked(PLAYABLE[NL.lad])) && !NL.ready) step(1);
     if (NET.role === 'h' && !NL.ready) {
       if (pressed.has('diff') || hit('diff')) { NL.diff = DIFF_ORDER[(DIFF_ORDER.indexOf(NL.diff) + 1) % DIFF_ORDER.length]; sfx('page'); netLobbyPublish(); }
       if (pressed.has('route') || hit('route')) { const o = settings.unlocked ? ['1999', 'elba', 'nightlife', 'carpdiem', 'ramsden'] : ['1999', 'elba', 'nightlife', 'carpdiem']; NL.start = o[(o.indexOf(NL.start) + 1) % o.length]; sfx('page'); netLobbyPublish(); }
@@ -9806,7 +9861,7 @@ function updateNetLobby() {
     // the host starts it once both are ready
     if (NET.role === 'h' && NL.ready && NL.them && NL.them.ready && !NL.go) {
       const gi = PLAYABLE.findIndex(c => c.id === NL.them.lad);
-      const go = { seed: (nativeRandom() * 4294967296) >>> 0, lads: [NL.lad, gi < 0 ? (NL.lad + 1) % n : gi], diff: NL.diff, start: NL.start, route: routeFrom(NL.start), unlocked: !!settings.unlocked };
+      const go = { seed: (nativeRandom() * 4294967296) >>> 0, lads: [NL.lad, gi < 0 ? freeLad(NL.lad + 1) : gi], diff: NL.diff, start: NL.start, route: routeFrom(NL.start), unlocked: !!settings.unlocked };
       NL.go = go; NT.put('go', go); netBegin(go);
     }
   }
@@ -10248,7 +10303,7 @@ function drawWorld(pix) {
   for (const p of parts) { if (pix && (p.k === 'pop' || p.k === 'num')) continue; try { drawPart(p); } catch (e) { p.t = p.life; glitch('part ' + p.k, e); ctx.setTransform(passScale, 0, 0, passScale, 0, 0); } }
   drawStageFore();
   drawCine(); drawLids();
-  if (!pix) for (const b of bubbles) drawBubble(b);
+  if (!pix && !(S && S.lids > 0.5)) for (const b of bubbles) drawBubble(b);   // Version 65: nothing to see with Sam's eyes shut
   ctx.restore();
   if (flashT > 0) { ctx.fillStyle = 'rgba(255,240,200,' + (Math.min(0.85, flashT * 3) * (settings.flash === false ? 0.2 : 1)).toFixed(3) + ')'; ctx.fillRect(0, 0, W, H); }
 }
@@ -10276,7 +10331,7 @@ function drawWorldPixel() {
   ctx.setTransform(scale, 0, 0, scale, 0, 0);
   if (cutin) { try { drawCutinText(); } catch (e) { glitch('cutin', e); } ctx.globalAlpha = 1; return; }
   for (const p of parts) if (p.k === 'pop' || p.k === 'num') { try { drawPart(p); } catch (e) { p.t = p.life; glitch('part ' + p.k, e); ctx.setTransform(scale, 0, 0, scale, 0, 0); } }
-  for (const b of bubbles) drawBubble(b);
+  if (!(S && S.lids > 0.5)) for (const b of bubbles) drawBubble(b);   // Version 65
   ctx.globalAlpha = 1;
 }
 const padSpecialEl = document.getElementById('padSpecial'), padKnobEl = document.getElementById('padKnob');
@@ -10544,6 +10599,7 @@ const PUB_OBJ = [
 function openPub(from, next, lad) {
   pubPreload(); pubBoardsStart();
   PUB.from = from; PUB.next = next || null; PUB.lad = lad || PUB.lad || 'tim';
+  if (ladLocked(CHAR_BY_ID[PUB.lad])) PUB.lad = 'tim';   // Version 65
   PUB.x = 150; PUB.y = 470; PUB.face = 1; PUB.target = null; PUB.view = null; PUB.round = false; PUB.t = 0;
   if (from === 'run') PUB.pints = 0;
   cam.x = 0; mode = 'pub'; modeT = 0; banner = null; musicSet('social');
@@ -11153,6 +11209,8 @@ MGAME.pens = {
 };
 
 // ------------------------------------------------------------------ THE LONG DRIVE (Pearcy, at the fishery)
+const GOLF_BG = ['meshy/golf_0', 'meshy/golf_1', 'meshy/golf_2'];   // Version 65: the lake at golden hour, Pearcy's platform on the left
+setTimeout(() => { GOLF_BG.forEach(f => bgImg(f)); ASSET_BG.push(...GOLF_BG); }, 0);
 const GOLF_TEE = 300, GOLF_YD = 4;   // the tee's world x, game units per yard
 MGAME.golf = {
   init(M) { M.s = { ball: 0, best: 0, drives: [], phase: 'ready', m: 0, power: 0, err: 0, pill: false, pillOn: false, fly: null, camX: 0, swingT: -1, msgT: 0, gary: null, goose: { x: GOLF_TEE + rand(160, 260) * GOLF_YD } }; },
@@ -11200,7 +11258,9 @@ MGAME.golf = {
     if (chance(0.3)) s.gary = { x: GOLF_TEE + yd * GOLF_YD * rand(0.55, 0.85), t: -(s.fly.dur * rand(0.4, 0.6)) };
   },
   draw(M) {
-    const s = M.s, cx = s.camX;
+    const s = M.s, cx = s.camX, mz = bgReady(GOLF_BG);
+    if (mz) { ctx.save(); ctx.imageSmoothingEnabled = false; GOLF_BG.forEach((f, i) => { const img = bgImg(f), x = snap2(i * 1024 - cx); if (x < W && x + img.width * 2 > 0) ctx.drawImage(img, x, 0, img.width * 2, img.height * 2); }); ctx.restore(); }
+    if (!mz) {
     pxSky(['#2a5a9a', '#3a6aa8', '#4a7ab4', '#5a8abe', '#7a9ec6', '#a4b4c4', '#d6c0a0', '#f0c890'], 0, 300);
     ctx.fillStyle = '#2d5a6e'; ctx.fillRect(0, 290, W, 60);
     // the far bank and trees, slow; then the lake
@@ -11209,12 +11269,14 @@ MGAME.golf = {
     ctx.fillStyle = '#2d5a6e'; ctx.fillRect(0, 330, W, H - 330);
     ctx.fillStyle = '#3a6a7e'; for (let y = 336; y < H; y += 14) ctx.fillRect(0, y, W, 2);
     ctx.fillStyle = 'rgba(255,255,255,0.35)'; for (let i = 0; i < 30; i++) { const x = snap2((((i * 173 - cx * 0.9) % W) + W) % W), y = 344 + (i * 47) % 180; if (Math.sin(time * 1.5 + i) > 0.3) ctx.fillRect(x, y, 8, 2); }
+    }
+    ctx.save(); if (mz) ctx.translate(0, 20);   // on the painted lake Pearcy's platform, the water line and the buoys sit 20 lower
     // distance markers: buoys every 50 yards, labelled in the HUD pass
     for (let yd = 50; yd <= 500; yd += 50) { const x = snap2(GOLF_TEE + yd * GOLF_YD - cx); if (x < -20 || x > W + 20) continue; ctx.fillStyle = OUT; ctx.fillRect(x - 6, 418, 12, 18); ctx.fillStyle = yd % 100 ? '#efe6d2' : '#d84a3a'; ctx.fillRect(x - 4, 420, 8, 14); ctx.fillStyle = '#d84a3a'; ctx.fillRect(x - 4, 420, 8, 4); }
     const goose = bgImg('fishery/goose'); if (goose) bgPutAt(goose, s.goose.x - cx, 452 + Math.sin(time * 2) * 2, false);
     // the bank Pearcy tees off from
-    ctx.fillStyle = '#4a7a3a'; ctx.fillRect(snap2(-cx - 40), 430, 470, 120); ctx.fillStyle = '#5a8a46'; ctx.fillRect(snap2(-cx - 40), 430, 470, 6);
-    ctx.fillStyle = '#3a2a1a'; ctx.fillRect(snap2(-cx + 420), 430, 10, 120);
+    if (!mz) { ctx.fillStyle = '#4a7a3a'; ctx.fillRect(snap2(-cx - 40), 430, 470, 120); ctx.fillStyle = '#5a8a46'; ctx.fillRect(snap2(-cx - 40), 430, 470, 6);
+    ctx.fillStyle = '#3a2a1a'; ctx.fillRect(snap2(-cx + 420), 430, 10, 120); }
     const tee = pubImg('tee'); if (tee) { ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(tee, snap2(GOLF_TEE - cx - 5), 430 - 10, 10, 10); ctx.restore(); }
     // Pearcy: the swing follows the meter (back) and HIT (through)
     // strip: 0 address, 1-5 backswing, 6 impact, 7-8 finish
@@ -11232,11 +11294,13 @@ MGAME.golf = {
     const gb = pubImg('golfball');
     if (gb) { const bx = s.fly ? s.fly.x : GOLF_TEE, by = s.fly ? s.fly.y : 422; if (!(s.fly && s.fly.landed)) { ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(gb, snap2(bx - cx - 4), snap2(by - 8), 8, 8); ctx.restore(); } }
     if (s.fly && s.fly.landed && s.landT < 0.6) { const x = s.fly.x - cx, k = s.landT / 0.6; ctx.fillStyle = 'rgba(230,245,255,' + (1 - k).toFixed(2) + ')'; ctx.fillRect(snap2(x - 4 - k * 20), 420 - k * 30, 8, 30 * (1 - k) + 6); ctx.fillRect(snap2(x + 4 + k * 20), 424 - k * 20, 6, 20 * (1 - k) + 4); }
+    ctx.restore();
   },
   hud(M) {
     const s = M.s, cx = s.camX;
     ctx.font = '800 12px ' + BODY; ctx.fillStyle = '#efe6d2'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    for (let yd = 50; yd <= 500; yd += 50) { const x = GOLF_TEE + yd * GOLF_YD - cx; if (x > -20 && x < W + 20) { ctx.fillStyle = 'rgba(10,14,16,0.55)'; ctx.fillRect(x - 22, 392, 44, 18); ctx.fillStyle = '#efe6d2'; ctx.fillText(yd + ' yd', x, 401); } }
+    const gdy = bgReady(GOLF_BG) ? 20 : 0;
+    for (let yd = 50; yd <= 500; yd += 50) { const x = GOLF_TEE + yd * GOLF_YD - cx; if (x > -20 && x < W + 20) { ctx.fillStyle = 'rgba(10,14,16,0.55)'; ctx.fillRect(x - 22, 392 + gdy, 44, 18); ctx.fillStyle = '#efe6d2'; ctx.fillText(yd + ' yd', x, 401 + gdy); } }
     if (s.fly && !s.fly.landed) { ctx.font = '22px ' + DISPLAY; ctx.fillStyle = '#ffd23f'; ctx.fillText(Math.round((s.fly.x - GOLF_TEE) / GOLF_YD) + ' yds', W / 2, 70); }
     pubPanel(16, 14, 210, 92);
     ctx.font = '800 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'left'; ctx.fillText('BALL ' + Math.min(3, s.ball + 1) + ' OF 3', 30, 30);
@@ -11245,14 +11309,14 @@ MGAME.golf = {
     // the swing meter: power out to the right, then back to the line
     if (M.phase === 'play' && (s.phase === 'ready' || s.phase === 'power' || s.phase === 'acc')) {
       const mx = W / 2 - 220, my = H - 70, mw = 440, zx = mx + mw * 0.1;
-      pubPanel(mx - 14, my - 18, mw + 28, 50);
+      pubPanel(mx - 14, my - 18, mw + 28, 62);   // Version 65: room for the words under the bar
       ctx.fillStyle = '#1a2428'; ctx.fillRect(mx, my - 4, mw, 18);
       const g = ctx.createLinearGradient(mx, 0, mx + mw, 0); g.addColorStop(0, '#3a8a4a'); g.addColorStop(0.7, '#e8c040'); g.addColorStop(1, '#d84a3a');
       ctx.fillStyle = g; ctx.fillRect(mx, my - 4, mw * (s.phase === 'ready' ? 0 : s.phase === 'power' ? clamp(s.m, 0, 1) : s.power), 18);
       ctx.fillStyle = '#ffffff'; ctx.fillRect(zx - 2, my - 10, 4, 30);
       if (s.phase !== 'ready') { const x = mx + mw * clamp(s.m, -0.12, 1); ctx.fillStyle = '#ffd23f'; ctx.beginPath(); ctx.moveTo(x, my - 12); ctx.lineTo(x - 8, my - 24); ctx.lineTo(x + 8, my - 24); ctx.closePath(); ctx.fill(); }
       ctx.font = '800 12px ' + BODY; ctx.fillStyle = '#efe6d2'; ctx.textAlign = 'center';
-      ctx.fillText(s.phase === 'ready' ? 'HIT TO START THE SWING' : s.phase === 'power' ? 'HIT FOR POWER' : 'HIT ON THE WHITE LINE', W / 2, my - 34);
+      ctx.fillText(s.phase === 'ready' ? 'HIT TO START THE SWING' : s.phase === 'power' ? 'HIT FOR POWER' : 'HIT ON THE WHITE LINE', W / 2, my + 30);
       if (touchUI && !padOn() && !s.pill && s.phase === 'ready') pubBtn('pills', W - 150, H - 140, 134, 46, 'PILLS', false, '#ff5a3c');
     }
     drawGameMsg(s, 130);
@@ -11726,7 +11790,7 @@ async function hubInvite(g) {
   if (!HUB.kind) { pubSay('Inviting needs the app and a signal.'); sfx('grab'); return; }
   if (!hubCanInvite(g)) { pubSay(g.name + ' is busy. Try them later.'); sfx('grab'); return; }
   sfx('page'); pubSaveSpot();
-  openNetLobby(); NL.lad = Math.max(0, PLAYABLE.findIndex(c => c.id === PUB.lad));
+  openNetLobby(); NL.lad = freeLad(Math.max(0, PLAYABLE.findIndex(c => c.id === PUB.lad)));
   await netHost();
   if (NL.screen !== 'host' || !NT.code) return;
   HUB.out = { to: g.name, code: NT.code }; HUB.outNo = false;
@@ -11779,7 +11843,7 @@ function hubAccept() {
   if (mode === 'pub') pubSaveSpot();
   if (T3 && T3.live && T3.live() && mode === 'title') mode = 'select';
   const lad = mode === 'pub' ? PUB.lad : (PLAYABLE[sel] && !ladLocked(PLAYABLE[sel]) ? PLAYABLE[sel].id : PUB.lad);
-  openNetLobby(); NL.lad = Math.max(0, PLAYABLE.findIndex(c => c.id === lad));
+  openNetLobby(); NL.lad = freeLad(Math.max(0, PLAYABLE.findIndex(c => c.id === lad)));
   if (lad === inv.lad) NL.lad = PLAYABLE.findIndex((c, i) => i !== PLAYABLE.findIndex(d => d.id === inv.lad) && !ladLocked(c));
   netJoin(inv.code);
 }
@@ -12993,7 +13057,7 @@ const T3 = (() => {
       sfx('start'); mode = 'select'; modeT = 0; lastMode = 'select';
       // a run saved when the app closed: offer to carry on with it first (Version 45)
       const sr = savedRun();
-      if (sr) { li = Math.max(0, ORDER.indexOf(PLAYABLE[sr.ci].id)); setView('cont'); } else setView('lad');
+      if (sr && !ladLocked(PLAYABLE[sr.ci])) { li = Math.max(0, ORDER.indexOf(PLAYABLE[sr.ci].id)); setView('cont'); } else setView('lad');
     } else if (view === 'cont') carryOn();
     else if (view === 'lad') {
       if (picking) { picking = null; sfx('page'); setView('stage'); return; }   // pressed again: skip the show
@@ -13024,7 +13088,7 @@ const T3 = (() => {
   // hand the choices to the game
   function commit() {
     const id = ORDER[li];
-    sel = Math.max(0, PLAYABLE.findIndex(c => c.id === id));
+    sel = freeLad(Math.max(0, PLAYABLE.findIndex(c => c.id === id)));
     startAt = startFor(FLAT[stageSel].k);
     settings.diff = DIFF_ORDER[diffSel]; saveSettings();
   }
