@@ -72,7 +72,7 @@ html.phone-land .frame{border-radius:4px;flex:0 0 auto}
 .pb.hit{right:0;top:27%;width:46%;height:46%;background:var(--gold);border-color:var(--gold);color:#1b1206;font-size:clamp(14px,4.4vw,20px)}
 .pb.jump{left:27%;bottom:0;width:34%;height:34%}
 .pb.back{left:0;top:30%;width:31%;height:31%;font-size:clamp(9px,2.6vw,12px)}
-.pb.special{left:27%;top:0;width:34%;height:34%;font-size:clamp(9px,2.6vw,12px)}
+.pb.special{left:0;top:28%;width:34%;height:34%;font-size:clamp(9px,2.6vw,12px)}
 .pb.special.ready{border-color:var(--gold);color:var(--gold);animation:glow 0.8s ease-in-out infinite alternate}
 @keyframes glow{from{box-shadow:0 4px 0 rgba(0,0,0,.35),0 0 0 rgba(242,162,58,0)}to{box-shadow:0 4px 0 rgba(0,0,0,.35),0 0 18px rgba(242,162,58,.7)}}
 @media (prefers-reduced-motion:reduce){.pb.special.ready{animation:none}}
@@ -256,7 +256,7 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
     <div class="stick" id="padStick" aria-label="Move"><div class="knob" id="padKnob"></div></div>
     <div class="btns">
       <button class="pb special" type="button" data-act="special" id="padSpecial">SPECIAL</button>
-      <button class="pb back" type="button" data-act="back">BACK</button>
+      <!-- Version 65: no BACK button, the special has its place -->
       <button class="pb hit" type="button" data-act="punch">HIT</button>
       <button class="pb jump" type="button" data-act="jump">JUMP</button>
     </div>
@@ -266,7 +266,7 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
     <div><kbd>WASD</kbd> or arrows move, tap twice to run</div>
     <div><kbd>J</kbd> punch, pick up, grab moves</div>
     <div><kbd>K</kbd> jump, <kbd>J</kbd> in the air to kick</div>
-    <div><kbd>J</kbd>+<kbd>K</kbd> back attack, throws your weapon</div>
+    <div><kbd>J</kbd>+<kbd>K</kbd> or <kbd>U</kbd> throws your weapon</div>
     <div><kbd>L</kbd> special when the bar is full</div>
     <div><kbd>P</kbd> or <kbd>Esc</kbd> pause</div>
     <div>Walk into someone to grab them. <kbd>J</kbd> knee, arrow + <kbd>J</kbd> throw</div>
@@ -602,7 +602,7 @@ const held = new Set(), pressed = new Set(), taps = [];
 let typed = '';
 const KEYMAP = { ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right', ArrowUp: 'up', KeyW: 'up',
   ArrowDown: 'down', KeyS: 'down', KeyJ: 'punch', KeyZ: 'punch', KeyK: 'jump', KeyX: 'jump', Space: 'jump',
-  KeyL: 'special', KeyC: 'special', KeyU: 'back', KeyV: 'back', Enter: 'start', Escape: 'escape',
+  KeyL: 'special', KeyC: 'special', KeyU: 'special', KeyV: 'special', Enter: 'start', Escape: 'escape',
   KeyM: 'mute', KeyC: 'cont', KeyO: 'online', KeyF: 'lang', KeyB: 'board', KeyR: 'route', KeyT: 'diff', KeyP: 'pause', KeyN: 'pub' };
 window.addEventListener('keydown', e => {
   const tg = e.target && e.target.tagName;
@@ -620,8 +620,7 @@ let touchUI = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').mat
 const BTN = [
   { id: 'punch', x: 866, y: 448, r: 46, label: 'HIT' },
   { id: 'jump', x: 760, y: 486, r: 36, label: 'JUMP' },
-  { id: 'back', x: 752, y: 392, r: 30, label: 'BACK' },
-  { id: 'special', x: 862, y: 334, r: 34, label: 'SPECIAL' },
+  { id: 'special', x: 752, y: 392, r: 34, label: 'SPECIAL' },   // Version 65: where BACK was (the back kick is gone)
 ];
 const STICK = { x: 130, y: 430, r: 70 };
 // touch layout options (Version 45): button size, and the stick on the right for left-handed players
@@ -3066,6 +3065,7 @@ function chainHit() {
 }
 function noteKO(f) {
   if (!S) return;
+  if (player && !f.npc) gainMeter(player, METER.ko);   // Version 65: every knockout tops the super up
   if (S.time - S.koT < 0.75) S.koN++; else S.koN = 1;
   S.koT = S.time;
   const add = [0, 0, 500, 1000, 1500][Math.min(4, S.koN)];
@@ -3276,7 +3276,7 @@ function canBeHit(t) { return t.inv <= 0 && !NOHIT.has(t.state); }
 function playerTargetable() { return player && !['dead', 'down', 'getup', 'netted', 'walkin', 'cut', 'cutThrow'].includes(player.state); }
 
 // the special bar: about one refill per stage on top of the full bar you start each stage with
-const METER = { hit: 0.72, extra: 0.3, knee: 0.65, hurt: 0.5, respawn: 50 };
+const METER = { hit: 1.6, extra: 0.45, knee: 1.4, hurt: 1.2, respawn: 50, ko: 4, food: 20 };   // Version 65: about three times as quick
 CHARS.forEach(c => { if (c.id === 'byron') c.meterRate = 0.85; });
 let meterNopeT = 0;
 function meterBusy() {
@@ -3654,7 +3654,7 @@ function pickupFood(p) {
     if (it.kind === 'oneup') { gainLife(p.x, p.y, 'EXTRA LIFE!'); ladSay('food', 1, true); continue; }
     const f = FOODS[it.f];
     if (p.hp >= p.maxHp) { addScore(750); popWord(p.x, p.y, 140, 'STUFFED! +750', false); sfx('pickup'); continue; }
-    p.hp = Math.min(p.maxHp, p.hp + f.heal); popWord(p.x, p.y, 140, f.word, false); sfx('pickup'); addScore(200); ladSay('food', 0.5);
+    p.hp = Math.min(p.maxHp, p.hp + f.heal); gainMeter(p, METER.food); popWord(p.x, p.y, 140, f.word, false); sfx('pickup'); addScore(200); ladSay('food', 0.5);
   }
   items = items.filter(i => !i.taken);
 }
@@ -3816,7 +3816,8 @@ function updateSpecial(p, dt) {
 function updatePlayer(p, dt) {
   p.t += dt; if (p.atk) p.atkT += dt;
   if (meterNopeT > 0) meterNopeT -= dt;
-  if (pressed.has('special') && p.meter < 100 && p.state !== 'special' && meterNopeT <= 0) { meterNopeT = 0.5; sfx('nope'); }
+  if (pressed.has('special') && p.meter < 100 && p.weapon && (p.state === 'idle' || p.state === 'walk' || p.state === 'run')) throwWeapon(p);
+  else if (pressed.has('special') && p.meter < 100 && p.state !== 'special' && meterNopeT <= 0) { meterNopeT = 0.5; sfx('nope'); }
   if (p.inv > 0 && p.state !== 'special') p.inv -= dt;
   if (p.flash > 0) p.flash -= dt;
   if (p.sayCool > 0) p.sayCool -= dt;
@@ -3842,13 +3843,13 @@ function updatePlayer(p, dt) {
   if (NET.on) { if (held.has('run')) p.running = true; else if (p.runBit) p.running = false; p.runBit = held.has('run'); } else if (touchUI && stickVec()) p.running = stickRun();
   if (!ix || (p.running && ix !== p.face && p.state === 'run')) p.running = false;
   miniHoldTick(p, dt);
-  const chord = pressed.has('back') || (pressed.has('punch') && pressed.has('jump'));
+  const chord = pressed.has('punch') && pressed.has('jump');
   switch (p.state) {
     case 'cut': case 'cutThrow': p.vx = 0; p.vy = 0; break;
     case 'walkin': p.vx = SP * 0.8; p.walk += dt * 9; if (p.x > 150) setIdle(p); break;
     case 'idle': case 'walk': case 'run': {
       if (pressed.has('special') && p.meter >= 100) { startSpecial(p); break; }
-      if (chord) { if (p.weapon) throwWeapon(p); else startBack(p); break; }
+      if (chord && p.weapon) { throwWeapon(p); break; }   // Version 65: no back kick
       if (pressed.has('jump')) { p.state = 'squat'; p.t = 0; p.jx = ix; p.jy = iy; p.jrun = p.running; p.vx = 0; p.vy = 0; break; }
       if (pressed.has('punch')) {
         if (tryPickup(p)) break;
@@ -3865,7 +3866,7 @@ function updatePlayer(p, dt) {
       break;
     }
     case 'squat':
-      if (pressed.has('punch') || pressed.has('back')) { if (p.weapon) throwWeapon(p); else startBack(p); break; }
+      if (pressed.has('punch') && p.weapon) { throwWeapon(p); break; }
       if (p.t >= 0.05) {
         p.state = 'jump'; p.t = 0; p.vz = 760; p.airAtk = false; p.landed = false; p.z = 1; p.jumpId++;
         const spd = p.jrun ? SP * 1.55 : SP;
@@ -3873,7 +3874,7 @@ function updatePlayer(p, dt) {
       }
       break;
     case 'punch':
-      if (p.combo === 1 && p.t < 0.07 && (pressed.has('jump') || pressed.has('back'))) { startBack(p); break; }
+      // Version 65: no back kick off the first jab
       p.vx = (p.comboFin && p.t < 0.1) ? p.face * (p.comboLunge || 140) : 0; p.vy = 0;
       if (pressed.has('punch') && p.t > 0.04) p.queued = true;
       if (pressed.has('special') && p.meter >= 100) { startSpecial(p); break; }
@@ -6052,6 +6053,7 @@ function ladFrame(e, F, rows) {
     case 'walk': case 'walkin': return ['walk', walkIdx()];
     case 'mini': {
       const fr = F.mini, mm = typeof MINI !== 'undefined' && MINI[e.def && e.def.id];
+      if (fr && rows && rows.mini && mm && mm.spring) return ['mini', fr[Math.min(fr.length - 1, t < 0.24 ? 1 : t < 0.27 ? 5 : t < 0.4 ? 6 : t < 0.5 ? 4 : 2)]];   // Version 65: coil, snap, recover
       if (fr && rows && rows.mini) return ['mini', fr[Math.min(fr.length - 1, Math.floor(t / ((mm && mm.end) || 0.6) * fr.length))]];
       return ['hook', hitOf(F.hook)];
     }
@@ -6164,6 +6166,11 @@ function drawLad(e, sx, sy, s, sh) {
   const dir = e.face * (flip ? -1 : 1);
   ctx.scale(dir, 1);
   if (st === 'dash') ctx.rotate(0.12);
+  if (st === 'mini' && e.def && MINI[e.def.id] && MINI[e.def.id].spring) {   // Version 65: lean back on the coil, snap the head through
+    const t = e.t || 0, coil = clamp(t / 0.22, 0, 1), ease = 1 - Math.pow(1 - coil, 2);
+    const a = t < 0.24 ? -0.44 * ease : t < 0.3 ? lerp(-0.44, 0.3, (t - 0.24) / 0.06) : t < 0.38 ? 0.3 : lerp(0.3, 0, clamp((t - 0.38) / 0.18, 0, 1));
+    ctx.rotate(a); if (t < 0.24) ctx.scale(1, 1 - 0.05 * ease);
+  }
   const crazed = e.buffT > 0 || e.rage;
   if (crazed && !reduceMotion) ctx.translate(rand(-1.5, 1.5), rand(-1, 1));
   else if (st === 'drowsy') ctx.rotate(0.06 + Math.sin(time * 2) * 0.04);
@@ -7008,6 +7015,8 @@ function bgSoundzPixel() {
 }
 
 function drawStageBg() {
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (meshyBg()) return;   // Version 64: painted in Meshy
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (meshyBg()) return;   // Version 64: painted in Meshy
@@ -9438,7 +9447,7 @@ function comboOf(p) { return COMBO[(p.def && COMBO_OF[p.def.id]) || 'std']; }
 const MINI_HOLD = 0.4, MINI_COST = 0.08;
 const MINI = {
   tim: { name: 'SPINNING ELBOW', hit: [0.2, 0.36], end: 0.56, r: 112, dmg: 9, word: 'ELBOW!' },
-  seb: { name: 'HEADBUTT', hit: [0.28], end: 0.62, r: 124, lunge: 110, dmg: 19, word: 'BONK!' },
+  seb: { name: 'HEADBUTT', hit: [0.31], end: 0.64, r: 124, lunge: 230, lungeT: [0.24, 0.33], dmg: 19, word: 'BONK!', spring: true },   // Version 65: arch back, then snap
   byron: { name: 'SLIDE TACKLE', hit: [0.12, 0.24, 0.36], end: 0.64, r: 96, slide: 600, dmg: 7, word: 'TACKLE!' },
   pearcy: { name: 'WHITE OUT', hit: [0.34], end: 0.78, r: 126, dmg: 17, word: 'PFFFT!', powder: true },
   kelly: { name: 'BMX 360', hit: [0.2, 0.42], end: 0.72, r: 118, spin: [0.14, 0.56], dmg: 9, word: '360!' },
@@ -9474,7 +9483,7 @@ function updateMini(p, dt) {
   const m = MINI[p.def.id], t = p.t;
   if (!m) { setIdle(p); return; }
   p.vy = 0;
-  if (m.lunge) p.vx = t > 0.16 && t < 0.3 ? p.miniFace * m.lunge : 0;
+  if (m.lunge) { const [a, b] = m.lungeT || [0.16, 0.3]; p.vx = t > a && t < b ? p.miniFace * m.lunge : 0; if (m.spring && t >= a && t - dt < a) sfx('swing'); }
   else if (m.slide) { p.vx = t > 0.06 && t < 0.44 ? p.miniFace * m.slide * (1 - t * 1.4) : 0; if (p.vx && chance(0.6)) dust(p.x - p.miniFace * 20, p.y, 1, 26); }
   else p.vx = 0;
   if (m.spin) {
@@ -10252,7 +10261,7 @@ function drawWorld(pix) {
   for (const p of parts) { if (pix && (p.k === 'pop' || p.k === 'num')) continue; try { drawPart(p); } catch (e) { p.t = p.life; glitch('part ' + p.k, e); ctx.setTransform(passScale, 0, 0, passScale, 0, 0); } }
   drawStageFore();
   drawCine(); drawLids();
-  if (!pix) for (const b of bubbles) drawBubble(b);
+  if (!pix && !(S && S.lids > 0.5)) for (const b of bubbles) drawBubble(b);   // Version 65: nothing to see with Sam's eyes shut
   ctx.restore();
   if (flashT > 0) { ctx.fillStyle = 'rgba(255,240,200,' + (Math.min(0.85, flashT * 3) * (settings.flash === false ? 0.2 : 1)).toFixed(3) + ')'; ctx.fillRect(0, 0, W, H); }
 }
@@ -10280,7 +10289,7 @@ function drawWorldPixel() {
   ctx.setTransform(scale, 0, 0, scale, 0, 0);
   if (cutin) { try { drawCutinText(); } catch (e) { glitch('cutin', e); } ctx.globalAlpha = 1; return; }
   for (const p of parts) if (p.k === 'pop' || p.k === 'num') { try { drawPart(p); } catch (e) { p.t = p.life; glitch('part ' + p.k, e); ctx.setTransform(scale, 0, 0, scale, 0, 0); } }
-  for (const b of bubbles) drawBubble(b);
+  if (!(S && S.lids > 0.5)) for (const b of bubbles) drawBubble(b);   // Version 65
   ctx.globalAlpha = 1;
 }
 const padSpecialEl = document.getElementById('padSpecial'), padKnobEl = document.getElementById('padKnob');
