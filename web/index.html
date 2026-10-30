@@ -3251,7 +3251,7 @@ function hitBreakable(b) {
   b.hp--; b.flash = 0.12; sfx('hit'); spark(b.x, b.y, 30, false);
   if (b.hp <= 0) {
     breakables = breakables.filter(o => o !== b);
-    const col = b.type === 'coolbox' ? '#e9eef0' : b.type === 'keg' ? '#a8adb2' : '#2f5a36';
+    const col = b.type === 'coolbox' ? '#e9eef0' : b.type === 'keg' ? '#a8adb2' : b.type === 'luggage' ? '#6a4630' : '#8a9096';   // Version 64
     debris(b.x, b.y, 20, col, 10); sfx('break'); addScore(100);
     if (b.drop) { if (b.drop.startsWith('w:')) dropItemWeapon(b.drop.slice(2), b.x, b.y + 4); else dropFood(b.drop, b.x, b.y + 4); }
   }
@@ -7007,6 +7007,9 @@ function bgSoundzPixel() {
 }
 
 function drawStageBg() {
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (ST.era === 2006 && nlDrawStageBg(ST.bg)) return;
   if (ST.bg === 'fishery') bgFisheryPixel();
@@ -7267,6 +7270,27 @@ const ASSET_BG = ["cutin/mortar", "cutin/pit", "elba/arch", "elba/barwall", "elb
 // all the background art is fetched just after the title appears, so a stage never draws half loaded (Version 44)
 function preloadArt() { for (const p of ASSET_BG) bgImg(p); }
 setTimeout(preloadArt, 700);
+// V64 js start
+// ------------------------------------------------------------------ Version 64: stages painted in Meshy
+// A stage listed here is one long picture, sky to floor, cut into 512 pixel tiles (bg/meshy/<stage>_<n>.png, made by
+// tools/v64/meshy_bg.py) and drawn edge to edge in place of its old pieced-together backdrop. Things the game does on
+// top of the backdrop (the Christmas tree's star, and so on) are still drawn by meshyOver. Until every tile of a stage
+// has loaded, the old backdrop is drawn instead.
+const MESHY_BG = { frequency: 4 };
+const MESHY_TILE = 512;
+function meshyFiles(k) { const out = []; for (let i = 0; i < (MESHY_BG[k] || 0); i++) out.push('meshy/' + k + '_' + i); return out; }
+for (const k in MESHY_BG) ASSET_BG.push(...meshyFiles(k));
+function meshyBg() {
+  const k = S && S.key; if (!MESHY_BG[k]) return false;
+  const files = meshyFiles(k); if (!bgReady(files)) return false;
+  for (let i = 0; i < files.length; i++) bgPut(bgImg(files[i]), i * MESHY_TILE * 2, H);
+  meshyOver(k);
+  return true;
+}
+function meshyOver(k) {
+  if (k === 'frequency') { if (S.tree) drawTree(S.tree); }
+}
+// V64 js end
 function artPending() {
   for (const k in bgImgs) { const b = bgImgs[k]; if (!b.ready && !b.failed) return true; }
   for (const k in ladSheets) { const b = ladSheets[k]; if (!b.ready && !b.failed) return true; }
