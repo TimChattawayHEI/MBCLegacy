@@ -30,6 +30,8 @@ if start in s:
 else:
     s = swap(s, 'setTimeout(preloadArt, 700);\n', 'setTimeout(preloadArt, 700);\n' + block, 'art preload')
 s = swap(s, "function drawStageBg() {\n", "function drawStageBg() {\n  if (meshyBg()) return;   // Version 64: painted in Meshy\n", 'stage backdrop')
+s = swap(s, "  // the road\n  ctx.fillStyle = '#4e4e56';", "  meshyRoad();   // Version 64: the coast painted in Meshy, over the old scenery\n  // the road\n  ctx.fillStyle = '#4e4e56';", 'road scenery')
+s = swap(s, "function bgDivebarPixel() {\n", "function bgDivebarPixel() {\n  if (meshyStage('divebar')) return true;   // Version 64 (the drive's crash ends here too)\n", 'dive bar backdrop')
 # the breakables are Meshy's now (tools/v64/props.py): a grey dustbin and a brown suitcase break into their own colours
 s = swap(s, "const col = b.type === 'coolbox' ? '#e9eef0' : b.type === 'keg' ? '#a8adb2' : '#2f5a36';",
          "const col = b.type === 'coolbox' ? '#e9eef0' : b.type === 'keg' ? '#a8adb2' : b.type === 'luggage' ? '#6a4630' : '#8a9096';   // Version 64", 'breakable debris colours')

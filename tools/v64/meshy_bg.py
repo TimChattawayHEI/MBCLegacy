@@ -49,6 +49,22 @@ def patch(strip, stage, c):
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
 
 
+def grade(strip, c):
+    """"grade": [x0, x1] raw columns whose floor is the right colour. Meshy sometimes paints a stretch of floor colder or
+    warmer than the rest; this pulls the floor's colour (not its light and shade) along the whole stage toward that
+    stretch's, a column at a time from the colour around it, fading in over 24 rows from the base down."""
+    if 'grade' not in c: return strip
+    x0, x1 = c['grade']; b = c['base']
+    ycc = np.asarray(strip.convert('YCbCr')).astype(np.float32)
+    fl = ycc[b + 10:, :, 1:].mean(axis=0)                                   # each column's floor chroma
+    k = 400; ker = np.ones(k) / k
+    loc = np.stack([np.convolve(np.pad(fl[:, i], (k // 2, k // 2), mode='edge'), ker, mode='same')[k // 2:-k // 2] for i in range(2)], 1)
+    tgt = fl[x0:x1].mean(axis=0)
+    ramp = np.clip((np.arange(ycc.shape[0]) - b + 4) / 24, 0, 1)[:, None, None]
+    ycc[:, :, 1:] += ramp * (tgt - loc)[None, :, :]
+    return Image.fromarray(np.clip(ycc, 0, 255).astype(np.uint8), 'YCbCr').convert('RGB')
+
+
 def fit(strip, c):
     w = round(strip.width * 480 / PW); ft = c['ft'] // 2
     top = strip.crop((0, c['top'], strip.width, c['base'])).resize((w, ft), Image.LANCZOS)
@@ -69,7 +85,7 @@ def loop(stage, c):
 for stage in ([] if sys.argv[1:] == ['--none'] else sys.argv[1:] or list(CFG)):
     c = CFG[stage]
     if 'loop' in c: loop(stage, c); continue
-    full = fit(patch(stitch(stage, c['panels']), stage, c), c)
+    full = fit(grade(patch(stitch(stage, c['panels']), stage, c), c), c)
     for f in os.listdir(OUT):
         if f.startswith(stage + '_'): os.remove(os.path.join(OUT, f))
     n = 0
