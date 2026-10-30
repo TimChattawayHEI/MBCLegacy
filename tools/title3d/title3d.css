@@ -43,12 +43,16 @@
 .t3move .t3h{font-size:calc(var(--t3u) * 9);color:var(--t3gold)}
 #t3-lad .t3go,#t3-info .t3go{justify-self:start;margin-top:calc(var(--t3u) * 3)}
 #t3-roster{left:calc(var(--t3u) * 10);bottom:calc(var(--t3u) * 22);display:flex;gap:calc(var(--t3u) * 2)}
-#t3-roster button{font:700 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 5)) var(--t3disp);letter-spacing:.04em;background:rgba(13,8,38,.7);border:1px solid transparent;padding:calc(var(--t3u) * 2) calc(var(--t3u) * 3);color:var(--t3grey)}
+#t3-roster button{font:800 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 4.8)) var(--t3body)!important;letter-spacing:.12em;text-transform:uppercase;background:rgba(13,8,38,.7);border:1px solid var(--t3rule);padding:calc(var(--t3u) * 2.5) calc(var(--t3u) * 5);color:var(--t3cream)}   /* Version 67: the footer buttons' look */
 #t3-roster button[aria-pressed="true"]{color:var(--t3ink);background:var(--c,var(--t3gold))}
 #t3-stages{left:calc(var(--t3u) * 12);top:calc(var(--t3u) * 26);width:calc(var(--t3u) * 196);display:grid;gap:calc(var(--t3u) * 5)}
 #t3-tabs{display:grid;grid-template-columns:repeat(5,auto);gap:calc(var(--t3u) * 2)}
 #t3-tabs button{font:700 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 5.2)) var(--t3disp);letter-spacing:.03em;background:none;border:0;border-bottom:calc(var(--t3u) * 1.5) solid transparent;padding:calc(var(--t3u) * 1) 0 calc(var(--t3u) * 2);color:var(--t3grey);white-space:nowrap}
 #t3-tabs button[aria-selected="true"]{color:var(--t3gold);border-color:var(--t3gold)}
+/* Version 67: chapter tabs and the stage list in the footer buttons' type, like the lad tiles */
+#t3-tabs button{font:800 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 4.8)) var(--t3body)!important;letter-spacing:.12em;text-transform:uppercase}
+#t3-list button{font:800 max(calc(var(--t3m) * 9px),calc(var(--t3u) * 5.6)) var(--t3body)!important;letter-spacing:.1em;text-transform:uppercase}
+#t3-list button .n{font-size:max(calc(var(--t3m) * 8px),calc(var(--t3u) * 4.8))!important}
 #t3-list{list-style:none;margin:0;padding:0;display:grid;gap:calc(var(--t3u) * 1)}
 #t3-list button{width:100%;display:grid;grid-template-columns:calc(var(--t3u) * 14) 1fr;align-items:baseline;text-align:left;background:none;border:0;padding:calc(var(--t3u) * 3) calc(var(--t3u) * 4);font:700 max(calc(var(--t3m) * 9px),calc(var(--t3u) * 7)) var(--t3disp);letter-spacing:.03em}
 #t3-list button .n{font:800 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 5)) var(--t3body);color:var(--t3grey);font-variant-numeric:tabular-nums}
@@ -71,6 +75,7 @@
 #t3-cards .lives b{width:calc(var(--t3u) * 4);height:calc(var(--t3u) * 4);background:#e5484d;box-shadow:0 0 0 1px var(--t3ink)}
 .t3row{display:flex;align-items:center;justify-content:space-between;gap:calc(var(--t3u) * 6)}
 #t3-foot{left:calc(var(--t3u) * 10);right:calc(var(--t3u) * 10);bottom:calc(var(--t3u) * 5);display:flex;align-items:center;gap:calc(var(--t3u) * 6)}
+#t3-hint:empty{display:none}
 #t3-hint{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--t3cream);opacity:.75;text-shadow:0 1px 0 var(--t3ink)}
 #t3-opts{display:flex;gap:calc(var(--t3u) * 3);flex:0 0 auto}
 #t3-online{color:var(--t3orange)!important;border-color:var(--t3orange)!important}
@@ -82,8 +87,8 @@
 @media (prefers-reduced-motion:reduce){#t3-toast.shout{animation:t3toast 1.6s ease-out}#t3-start.blink{animation:none}.t3sel,.t3sel.on{transform:none;transition:opacity .2s}#t3-crumbs,#t3-crumbs.on{transform:translateX(-50%)}}
 /* Version 65: the menus in the HUD's gunmetal (bg/hud/panel.png, nine-sliced), headings on Meshy's comic bursts */
 .t3panel{border-width:calc(var(--t3u) * 7)!important;border-style:solid!important;border-color:transparent!important;border-image-source:url(bg/hud/panel.png);border-image-slice:7 fill;border-image-width:calc(var(--t3u) * 7);border-image-repeat:stretch;background:none!important;image-rendering:pixelated;box-shadow:0 calc(var(--t3u) * 3) 0 rgba(0,0,0,.45)!important;padding:calc(var(--t3u) * 3) calc(var(--t3u) * 4)!important}
-#t3-name,#t3-stitle,#t3-diff>.t3h,#t3-cstage{display:inline-block;justify-self:start;padding:calc(var(--t3u) * 5) calc(var(--t3u) * 14) calc(var(--t3u) * 4);margin-left:calc(var(--t3u) * -6);background:url(bg/comic/burst_o1.png) center/100% 100% no-repeat;image-rendering:pixelated;color:#fff6dc!important}
-#t3-stitle,#t3-diff>.t3h{background-image:url(bg/comic/burst_y1.png)}
+/* Version 67: plain headings again (Tim: the bursts were too busy) */
+#t3-name{font-size:calc(var(--t3u) * 18)}
 .t3ghost,#t3-roster button{background:rgba(20,22,30,.82)!important;border-color:#6b7384!important}
 #t3-roster button[aria-pressed="true"]{background:var(--c,var(--t3gold))!important}
 .t3go{box-shadow:inset 0 calc(var(--t3u) * 1.5) 0 rgba(255,255,255,.45),inset 0 calc(var(--t3u) * -2) 0 rgba(120,60,0,.45),0 calc(var(--t3u) * 2) 0 #0c0a10!important;border:calc(var(--t3u) * 1) solid #0c0a10!important}

@@ -401,10 +401,11 @@ const T3 = (() => {
   function hint() {
     const pad = padOn(), tch = touchUI && !pad;
     return ({
-      lad: pad ? 'Stick to choose · HIT to pick · BACK' : tch ? 'Tap a lad. Tap again to pick.' : '← → choose · J pick · Esc back',
-      stage: pad ? 'Stick for chapter · HIT to start here' : tch ? 'Tap a chapter, then a stage.' : '← → chapter · ↑ ↓ stage · J start here',
-      diff: pad ? 'Stick for difficulty · HIT to go' : tch ? 'Pick a difficulty, then go.' : '← → difficulty · F language · J go',
-      cont: pad ? 'HIT to carry on · JUMP for a new run' : tch ? 'Carry on, or start a new run.' : 'J carry on · K new run · Esc back',
+      // Version 67: no hint on a touch screen (the footer is full and it was cut off; tapping is obvious)
+      lad: pad ? 'Stick to choose · HIT to pick · BACK' : tch ? '' : '← → choose · J pick · Esc back',
+      stage: pad ? 'Stick for chapter · HIT to start here' : tch ? '' : '← → ↑ ↓ choose · J start',
+      diff: pad ? 'Stick for difficulty · HIT to go' : tch ? '' : '← → choose · J go · F language',
+      cont: pad ? 'HIT to carry on · JUMP for a new run' : tch ? '' : 'J carry on · K new run · Esc back',
     })[view] || '';
   }
   function renderFoot() {

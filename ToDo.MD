@@ -27,6 +27,24 @@
 - [x] Fishery pegs, Jo's rota, Nozzer's chair and the smoker repainted in Meshy
 - [x] Every place-to-place join in the stage pictures blended (Arrivals apron to hall, and the rest)
 - [x] Boss intro cards with Meshy portraits for every boss
+- [x] Seb redrawn from Tim's photos: buzz cut, ginger stubble, no sunglasses, no camo (grey-olive shirt over a white tee, jeans, boots, watch)
+  - Done (V68): every move, his select pose, his portrait (also his group chat face) and his title pick card. Same frame counts, so his timings haven't changed. `tools/v68_build.py` patches the page directly like V66 and V67
+
+### Updates
+- [x] In-app updates: the app downloads only the changed game files from GitHub and restarts itself, no APK download. A full APK only when the Android side changes
+  - Done (V66): the card says UPDATE READY and Restart switches it in (or it goes in next time the app opens). Everyone needs this one APK the old way first; the first real in-app update will be the build after it. Not yet tried on a real phone
+- [ ] Online lobby: warn when the two phones are on different versions (they'd drift out of sync), with an update button
+
+### Tidy-ups (30 October evening)
+- [x] Select screen: the lad's name (and the stage and difficulty headings) off the comic bursts; the name in the lad's colour
+  - Done (V67)
+- [x] Select screen: lad tiles, chapter tabs and stage list in the same type as the footer buttons; no cut-off "TAP A LAD..." hint on phones
+  - Done (V67)
+- [x] The Long Drive: yard markers upgraded
+  - Done (V67): the fishery's Meshy peg boards standing in the lake with the yards on them (every 100 in red)
+
+### For whoever builds next
+- [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66, V67 and V68 patch the page directly for that reason
 
 ## Carried over from the build plan
 

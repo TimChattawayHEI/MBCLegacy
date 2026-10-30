@@ -129,12 +129,16 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
 .t3move .t3h{font-size:calc(var(--t3u) * 9);color:var(--t3gold)}
 #t3-lad .t3go,#t3-info .t3go{justify-self:start;margin-top:calc(var(--t3u) * 3)}
 #t3-roster{left:calc(var(--t3u) * 10);bottom:calc(var(--t3u) * 22);display:flex;gap:calc(var(--t3u) * 2)}
-#t3-roster button{font:700 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 5)) var(--t3disp);letter-spacing:.04em;background:rgba(13,8,38,.7);border:1px solid transparent;padding:calc(var(--t3u) * 2) calc(var(--t3u) * 3);color:var(--t3grey)}
+#t3-roster button{font:800 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 4.8)) var(--t3body)!important;letter-spacing:.12em;text-transform:uppercase;background:rgba(13,8,38,.7);border:1px solid var(--t3rule);padding:calc(var(--t3u) * 2.5) calc(var(--t3u) * 5);color:var(--t3cream)}   /* Version 67: the footer buttons' look */
 #t3-roster button[aria-pressed="true"]{color:var(--t3ink);background:var(--c,var(--t3gold))}
 #t3-stages{left:calc(var(--t3u) * 12);top:calc(var(--t3u) * 26);width:calc(var(--t3u) * 196);display:grid;gap:calc(var(--t3u) * 5)}
 #t3-tabs{display:grid;grid-template-columns:repeat(5,auto);gap:calc(var(--t3u) * 2)}
 #t3-tabs button{font:700 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 5.2)) var(--t3disp);letter-spacing:.03em;background:none;border:0;border-bottom:calc(var(--t3u) * 1.5) solid transparent;padding:calc(var(--t3u) * 1) 0 calc(var(--t3u) * 2);color:var(--t3grey);white-space:nowrap}
 #t3-tabs button[aria-selected="true"]{color:var(--t3gold);border-color:var(--t3gold)}
+/* Version 67: chapter tabs and the stage list in the footer buttons' type, like the lad tiles */
+#t3-tabs button{font:800 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 4.8)) var(--t3body)!important;letter-spacing:.12em;text-transform:uppercase}
+#t3-list button{font:800 max(calc(var(--t3m) * 9px),calc(var(--t3u) * 5.6)) var(--t3body)!important;letter-spacing:.1em;text-transform:uppercase}
+#t3-list button .n{font-size:max(calc(var(--t3m) * 8px),calc(var(--t3u) * 4.8))!important}
 #t3-list{list-style:none;margin:0;padding:0;display:grid;gap:calc(var(--t3u) * 1)}
 #t3-list button{width:100%;display:grid;grid-template-columns:calc(var(--t3u) * 14) 1fr;align-items:baseline;text-align:left;background:none;border:0;padding:calc(var(--t3u) * 3) calc(var(--t3u) * 4);font:700 max(calc(var(--t3m) * 9px),calc(var(--t3u) * 7)) var(--t3disp);letter-spacing:.03em}
 #t3-list button .n{font:800 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 5)) var(--t3body);color:var(--t3grey);font-variant-numeric:tabular-nums}
@@ -157,6 +161,7 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
 #t3-cards .lives b{width:calc(var(--t3u) * 4);height:calc(var(--t3u) * 4);background:#e5484d;box-shadow:0 0 0 1px var(--t3ink)}
 .t3row{display:flex;align-items:center;justify-content:space-between;gap:calc(var(--t3u) * 6)}
 #t3-foot{left:calc(var(--t3u) * 10);right:calc(var(--t3u) * 10);bottom:calc(var(--t3u) * 5);display:flex;align-items:center;gap:calc(var(--t3u) * 6)}
+#t3-hint:empty{display:none}
 #t3-hint{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--t3cream);opacity:.75;text-shadow:0 1px 0 var(--t3ink)}
 #t3-opts{display:flex;gap:calc(var(--t3u) * 3);flex:0 0 auto}
 #t3-online{color:var(--t3orange)!important;border-color:var(--t3orange)!important}
@@ -168,8 +173,8 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
 @media (prefers-reduced-motion:reduce){#t3-toast.shout{animation:t3toast 1.6s ease-out}#t3-start.blink{animation:none}.t3sel,.t3sel.on{transform:none;transition:opacity .2s}#t3-crumbs,#t3-crumbs.on{transform:translateX(-50%)}}
 /* Version 65: the menus in the HUD's gunmetal (bg/hud/panel.png, nine-sliced), headings on Meshy's comic bursts */
 .t3panel{border-width:calc(var(--t3u) * 7)!important;border-style:solid!important;border-color:transparent!important;border-image-source:url(bg/hud/panel.png);border-image-slice:7 fill;border-image-width:calc(var(--t3u) * 7);border-image-repeat:stretch;background:none!important;image-rendering:pixelated;box-shadow:0 calc(var(--t3u) * 3) 0 rgba(0,0,0,.45)!important;padding:calc(var(--t3u) * 3) calc(var(--t3u) * 4)!important}
-#t3-name,#t3-stitle,#t3-diff>.t3h,#t3-cstage{display:inline-block;justify-self:start;padding:calc(var(--t3u) * 5) calc(var(--t3u) * 14) calc(var(--t3u) * 4);margin-left:calc(var(--t3u) * -6);background:url(bg/comic/burst_o1.png) center/100% 100% no-repeat;image-rendering:pixelated;color:#fff6dc!important}
-#t3-stitle,#t3-diff>.t3h{background-image:url(bg/comic/burst_y1.png)}
+/* Version 67: plain headings again (Tim: the bursts were too busy) */
+#t3-name{font-size:calc(var(--t3u) * 18)}
 .t3ghost,#t3-roster button{background:rgba(20,22,30,.82)!important;border-color:#6b7384!important}
 #t3-roster button[aria-pressed="true"]{background:var(--c,var(--t3gold))!important}
 .t3go{box-shadow:inset 0 calc(var(--t3u) * 1.5) 0 rgba(255,255,255,.45),inset 0 calc(var(--t3u) * -2) 0 rgba(120,60,0,.45),0 calc(var(--t3u) * 2) 0 #0c0a10!important;border:calc(var(--t3u) * 1) solid #0c0a10!important}
@@ -7118,8 +7123,6 @@ function drawStageBg() {
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (meshyBg()) return;   // Version 64: painted in Meshy
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
-  if (meshyBg()) return;   // Version 64: painted in Meshy
-  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (ST.era === 2006 && nlDrawStageBg(ST.bg)) return;
   if (ST.bg === 'fishery') bgFisheryPixel();
   else if (ST.bg === 'orpington') bgOrpingtonPixel();
@@ -11279,7 +11282,7 @@ MGAME.pens = {
 // ------------------------------------------------------------------ THE LONG DRIVE (Pearcy, at the fishery)
 const GOLF_BG = ['meshy/golf_0', 'meshy/golf_1', 'meshy/golf_2'];   // Version 65: the lake at golden hour, Pearcy's platform on the left
 setTimeout(() => { GOLF_BG.forEach(f => bgImg(f)); ASSET_BG.push(...GOLF_BG); }, 0);
-const GOLF_TEE = 300, GOLF_YD = 4;   // the tee's world x, game units per yard
+const GOLF_TEE = 300, GOLF_YD = 4, GOLF_PEG_Y = 440;   // Version 67: the waterline the yard boards stand in   // the tee's world x, game units per yard
 MGAME.golf = {
   init(M) { M.s = { ball: 0, best: 0, drives: [], phase: 'ready', m: 0, power: 0, err: 0, pill: false, pillOn: false, fly: null, camX: 0, swingT: -1, msgT: 0, gary: null, goose: { x: GOLF_TEE + rand(160, 260) * GOLF_YD } }; },
   update(M, dt) {
@@ -11339,8 +11342,16 @@ MGAME.golf = {
     ctx.fillStyle = 'rgba(255,255,255,0.35)'; for (let i = 0; i < 30; i++) { const x = snap2((((i * 173 - cx * 0.9) % W) + W) % W), y = 344 + (i * 47) % 180; if (Math.sin(time * 1.5 + i) > 0.3) ctx.fillRect(x, y, 8, 2); }
     }
     ctx.save(); if (mz) ctx.translate(0, 20);   // on the painted lake Pearcy's platform, the water line and the buoys sit 20 lower
-    // distance markers: buoys every 50 yards, labelled in the HUD pass
-    for (let yd = 50; yd <= 500; yd += 50) { const x = snap2(GOLF_TEE + yd * GOLF_YD - cx); if (x < -20 || x > W + 20) continue; ctx.fillStyle = OUT; ctx.fillRect(x - 6, 418, 12, 18); ctx.fillStyle = yd % 100 ? '#efe6d2' : '#d84a3a'; ctx.fillRect(x - 4, 420, 8, 14); ctx.fillStyle = '#d84a3a'; ctx.fillRect(x - 4, 420, 8, 4); }
+    // distance markers every 50 yards (Version 67): the fishery's peg board standing in the lake, its post going into the
+    // water with a ripple; the distance is written on the board in the HUD pass (sharp text)
+    const golfPeg = bgImg('set/peg');
+    for (let yd = 50; yd <= 500; yd += 50) {
+      const x = snap2(GOLF_TEE + yd * GOLF_YD - cx); if (x < -40 || x > W + 40) continue;
+      if (golfPeg) { ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(golfPeg, 0, 0, 24, 37, x - 24, GOLF_PEG_Y - 74, 48, 74); ctx.restore(); }
+      else { ctx.fillStyle = OUT; ctx.fillRect(x - 6, 418, 12, 18); ctx.fillStyle = '#efe6d2'; ctx.fillRect(x - 4, 420, 8, 14); }
+      const rw = 22 + Math.round(Math.sin(time * 2 + yd) * 3) * 2;
+      ctx.fillStyle = 'rgba(255,240,205,0.6)'; ctx.fillRect(x - rw / 2, GOLF_PEG_Y - 2, rw, 2); ctx.fillStyle = 'rgba(60,36,18,0.28)'; ctx.fillRect(x - 6, GOLF_PEG_Y, 12, 8);
+    }
     const goose = bgImg('fishery/goose'); if (goose) bgPutAt(goose, s.goose.x - cx, 452 + Math.sin(time * 2) * 2, false);
     // the bank Pearcy tees off from
     if (!mz) { ctx.fillStyle = '#4a7a3a'; ctx.fillRect(snap2(-cx - 40), 430, 470, 120); ctx.fillStyle = '#5a8a46'; ctx.fillRect(snap2(-cx - 40), 430, 470, 6);
@@ -11368,7 +11379,10 @@ MGAME.golf = {
     const s = M.s, cx = s.camX;
     ctx.font = '800 12px ' + BODY; ctx.fillStyle = '#efe6d2'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     const gdy = bgReady(GOLF_BG) ? 20 : 0;
-    for (let yd = 50; yd <= 500; yd += 50) { const x = GOLF_TEE + yd * GOLF_YD - cx; if (x > -20 && x < W + 20) { ctx.fillStyle = 'rgba(10,14,16,0.55)'; ctx.fillRect(x - 22, 392 + gdy, 44, 18); ctx.fillStyle = '#efe6d2'; ctx.fillText(yd + ' yd', x, 401 + gdy); } }
+    // Version 67: the distance on each peg board (the board is 40 units square, its middle 48 above the waterline)
+    for (let yd = 50; yd <= 500; yd += 50) { const x = snap2(GOLF_TEE + yd * GOLF_YD - cx); if (x > -40 && x < W + 40 && bgImg('set/peg')) {
+      const by = GOLF_PEG_Y - 48 + gdy; ctx.font = '17px ' + DISPLAY; ctx.fillStyle = yd % 100 ? '#1f2c3c' : '#b8322a'; ctx.fillText(String(yd), x, by - 3);
+      ctx.font = '800 8px ' + BODY; ctx.fillStyle = '#4a5462'; ctx.fillText('YARDS', x, by + 11); } }
     if (s.fly && !s.fly.landed) { ctx.font = '22px ' + DISPLAY; ctx.fillStyle = '#ffd23f'; ctx.fillText(Math.round((s.fly.x - GOLF_TEE) / GOLF_YD) + ' yds', W / 2, 70); }
     pubPanel(16, 14, 210, 92);
     ctx.font = '800 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'left'; ctx.fillText('BALL ' + Math.min(3, s.ball + 1) + ' OF 3', 30, 30);
@@ -12206,6 +12220,9 @@ function floorAll(parts) {
 // 1. A new version is out: the app knows its own build number (build.json, written by the APK build) and asks GitHub
 //    for the latest release; if there's a newer one, a card says so and UPDATE downloads it (the phone's browser takes
 //    the download, then you install over the top).
+//    Version 66: an app with in-app updates (window.MBCNative) fetches only the changed game files itself, in the
+//    background; the card then says UPDATE READY and RESTART switches them in. The APK download is only for a release
+//    that changed the Android side.
 // 2. Your progress follows your name: unlocks, stage ranks, the pub tab, the open cabinets and your pub bests are saved
 //    in Firebase under your name and this phone's secret key (saves/<NAME>/<KEY>), merged both ways when the app
 //    opens and pushed when they change. A save code (8 letters and numbers, on the You screen) brings it all back on a
@@ -12214,11 +12231,23 @@ function floorAll(parts) {
 //    three a run) and carry on where you fell with a full set of lives. Not online, not in the kebab siege.
 
 // ------------------------------------------------------------------ 1. a new version is out
-const UPD = { mine: 0, latest: 0, url: '', dismissed: 0, checkedT: -1e9, el: null, busy: false };
+const UPD = { mine: 0, latest: 0, url: '', dismissed: 0, dismissedT: -1e9, checkedT: -1e9, el: null, busy: false, kind: '', statT: -1e9, shown: '' };
 const UPD_API = 'https://api.github.com/repos/TimChattawayHEI/MBCLegacy/releases/latest';
 const UPD_APK = 'https://github.com/TimChattawayHEI/MBCLegacy/releases/latest/download/MBC-Legacies.apk';
+// Version 66: the app's own updater
+const updNative = () => !!(window.MBCNative && typeof window.MBCNative.otaStatus === 'function');
+function updStatus() { try { return JSON.parse(window.MBCNative.otaStatus()); } catch (e) { return null; } }
+function updPoll() {
+  const st = updStatus(); if (!st || st.state === 'off') return false;
+  if (st.mine) UPD.mine = st.mine;
+  if (st.state === 'ready' && st.latest > UPD.mine) { UPD.latest = st.latest; UPD.kind = 'ready'; }
+  else if (st.state === 'apk' && st.latest > UPD.mine) { UPD.latest = st.latest; UPD.kind = 'apk'; UPD.url = UPD_APK; }
+  else if (UPD.kind === 'ready' && st.state !== 'ready') UPD.kind = '';
+  return true;
+}
 async function updCheck() {
   if (!window.MBC_APP || UPD.busy) return;
+  if (updNative() && updPoll()) { UPD.checkedT = performance.now(); try { window.MBCNative.otaCheck(); } catch (e) { /* next time */ } return; }
   UPD.busy = true; UPD.checkedT = performance.now();
   try {
     if (!UPD.mine) { const r = await withTimeout(fetch('build.json', { cache: 'no-store' }), 5000); if (!r.ok) return; UPD.mine = (await r.json()).build | 0; }
@@ -12226,7 +12255,7 @@ async function updCheck() {
     const r = await withTimeout(fetch(UPD_API, { cache: 'no-store', headers: { Accept: 'application/vnd.github+json' } }), 8000); if (!r.ok) return;
     const j = await r.json(), n = parseInt(String(j.tag_name || '').replace(/\D/g, ''), 10) || 0;
     const apk = (j.assets || []).find(a => /\.apk$/i.test(a.name || ''));
-    if (n > UPD.mine && apk) { UPD.latest = n; UPD.url = apk.browser_download_url || UPD_APK; }
+    if (n > UPD.mine && apk) { UPD.latest = n; UPD.url = apk.browser_download_url || UPD_APK; UPD.kind = 'apk'; }
   } catch (e) { /* no signal: try again later */ } finally { UPD.busy = false; }
 }
 function updCardEl() {
@@ -12238,27 +12267,50 @@ function updCardEl() {
     '<button id="updGo" type="button" style="font:700 13px Rubik,sans-serif;padding:10px 16px;border-radius:9px;border:2px solid #7fe07a;background:#7fe07a;color:#10200f;cursor:pointer">Update</button>';
   document.body.appendChild(el); UPD.el = el;
   el.querySelector('#updGo').addEventListener('click', e => { e.stopPropagation(); updGo(); });
-  el.querySelector('#updLater').addEventListener('click', e => { e.stopPropagation(); UPD.dismissed = UPD.latest; sfx('page'); });
+  el.querySelector('#updLater').addEventListener('click', e => { e.stopPropagation(); UPD.dismissed = UPD.latest; UPD.dismissedT = performance.now(); sfx('page'); });
   ['pointerdown', 'keydown'].forEach(t => el.addEventListener(t, e => e.stopPropagation()));
   return el;
 }
 // the app opens anything off its own pages in the phone's browser, which downloads the APK
 function updGo() {
-  UPD.dismissed = UPD.latest; sfx('life');
+  UPD.dismissed = UPD.latest; UPD.dismissedT = performance.now(); sfx('life');
   try { cloudPush(true); } catch (e) { /* best effort */ }
-  const sub = UPD.el && UPD.el.querySelector('#updSub'); if (sub) sub.textContent = 'Downloading. Open it when it finishes and install over the top.';
+  const sub = UPD.el && UPD.el.querySelector('#updSub');
+  if (UPD.kind === 'ready') {   // Version 66: switch in the downloaded files and reload
+    if (sub) sub.textContent = 'Restarting...';
+    UPD.dismissedT = 1e12;
+    setTimeout(() => {
+      let ok = false; try { ok = window.MBCNative.otaApply(); } catch (e) { /* below */ }
+      if (!ok && sub) { sub.textContent = "Couldn't switch it in. It'll try again next time you open the game."; UPD.kind = ''; }
+    }, 350);
+    return;
+  }
+  if (sub) sub.textContent = 'Downloading. Open it when it finishes and install over the top.';
   setTimeout(() => { window.location.href = UPD.url || UPD_APK; }, 150);
 }
 function updTick() {
   const quiet = ['title', 'select', 'pub', 'board'].includes(mode) && !NET.on && !PROFILE.asking;
   // look when the app opens, then every 20 minutes while it's on a menu
-  if (quiet && performance.now() - UPD.checkedT > (UPD.mine ? 20 * 60000 : 4000)) updCheck();
+  const now = performance.now();
+  if (quiet && now - UPD.checkedT > (UPD.mine ? 20 * 60000 : 4000)) updCheck();
+  if (updNative() && now - UPD.statT > 700) { UPD.statT = now; updPoll(); }   // Version 66: how the download is going
   const el = UPD.latest || UPD.el ? updCardEl() : null; if (!el) return;
-  const show = quiet && UPD.latest > UPD.mine && UPD.dismissed !== UPD.latest && !(HUB.card && HUB.card.style.display !== 'none');
+  // Later hides it for half an hour (a downloaded update also goes in by itself the next time the game opens)
+  const later = UPD.dismissed === UPD.latest && now - UPD.dismissedT < 30 * 60000;
+  const show = quiet && UPD.kind && UPD.latest > UPD.mine && !later && !(HUB.card && HUB.card.style.display !== 'none');
   if (!show) { if (el.style.display !== 'none') el.style.display = 'none'; return; }
-  if (el.style.display === 'none') {
-    el.querySelector('#updWhat').textContent = 'NEW VERSION: 1.' + UPD.latest;
-    el.querySelector('#updSub').textContent = "You've got 1." + UPD.mine + '. Your progress is saved under your name.';
+  const key = UPD.kind + UPD.latest;
+  if (el.style.display === 'none' || UPD.shown !== key) {
+    UPD.shown = key;
+    if (UPD.kind === 'ready') {
+      el.querySelector('#updWhat').textContent = 'UPDATE READY: 1.' + UPD.latest;
+      el.querySelector('#updSub').textContent = 'Restart to play it. Takes a couple of seconds, and your progress is kept.';
+      el.querySelector('#updGo').textContent = 'Restart';
+    } else {
+      el.querySelector('#updWhat').textContent = 'NEW VERSION: 1.' + UPD.latest;
+      el.querySelector('#updSub').textContent = "You've got 1." + UPD.mine + (updNative() ? '. This one needs the full download.' : '. Your progress is saved under your name.');
+      el.querySelector('#updGo').textContent = 'Update';
+    }
     sfx('incoming');
   }
   const r = canvas.getBoundingClientRect();
@@ -13204,10 +13256,11 @@ const T3 = (() => {
   function hint() {
     const pad = padOn(), tch = touchUI && !pad;
     return ({
-      lad: pad ? 'Stick to choose · HIT to pick · BACK' : tch ? 'Tap a lad. Tap again to pick.' : '← → choose · J pick · Esc back',
-      stage: pad ? 'Stick for chapter · HIT to start here' : tch ? 'Tap a chapter, then a stage.' : '← → chapter · ↑ ↓ stage · J start here',
-      diff: pad ? 'Stick for difficulty · HIT to go' : tch ? 'Pick a difficulty, then go.' : '← → difficulty · F language · J go',
-      cont: pad ? 'HIT to carry on · JUMP for a new run' : tch ? 'Carry on, or start a new run.' : 'J carry on · K new run · Esc back',
+      // Version 67: no hint on a touch screen (the footer is full and it was cut off; tapping is obvious)
+      lad: pad ? 'Stick to choose · HIT to pick · BACK' : tch ? '' : '← → choose · J pick · Esc back',
+      stage: pad ? 'Stick for chapter · HIT to start here' : tch ? '' : '← → ↑ ↓ choose · J start',
+      diff: pad ? 'Stick for difficulty · HIT to go' : tch ? '' : '← → choose · J go · F language',
+      cont: pad ? 'HIT to carry on · JUMP for a new run' : tch ? '' : 'J carry on · K new run · Esc back',
     })[view] || '';
   }
   function renderFoot() {

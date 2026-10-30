@@ -1,8 +1,8 @@
-"""Version 66: Seb redrawn from Tim's photos. Builds web/sprites/seb.png and pose_seb.png: python3 tools/v66/seb_sheet.py
+"""Version 68: Seb redrawn from Tim's photos. Builds web/sprites/seb.png and pose_seb.png: python3 tools/v68/seb_sheet.py
 
 PixelLab character "Seb v4" 2086de59-ed32-490e-872e-e23cd2c44403 (v3, 64px, side view): buzz cut, ginger stubble, no
 sunglasses, olive-grey short-sleeved shirt over a white tee, jeans, brown boots, watch. Frames are the PixelLab workbench
-sheets in tools/v66/src/<anim>.png (`inspect character:<id>:east:<anim> --scale 2`). Rows and frame counts match the old
+sheets in tools/v68/src/<anim>.png (`inspect character:<id>:east:<anim> --scale 2`). Rows and frame counts match the old
 sheet, so LAD_FRAMES keeps working; the new picks are in seb_meta.json. The back kick is gone from the game (Version 65),
 so its row is a copy of the kick.
 """

@@ -2,7 +2,8 @@ name: Build the APK
 
 on:
   push:
-    branches: [main]
+    # every branch builds (so a broken app shows up before it reaches main); only main publishes a release
+    branches: ['**']
   workflow_dispatch:
 
 permissions:
@@ -34,6 +35,11 @@ jobs:
             curl -sSLf "https://www.gstatic.com/firebasejs/10.12.2/$f" -o "android/app/src/main/assets/www/fb/$f"
           done
 
+      - name: List the game files for in-app updates
+        run: |
+          python3 tools/ota/manifest.py ota.txt ${{ github.run_number }} ${{ github.sha }}
+          cp ota.txt android/app/src/main/assets/www/ota.txt
+
       - name: Build
         working-directory: android
         run: |
@@ -56,6 +62,7 @@ jobs:
           path: MBC-Legacies.apk
 
       - name: Publish as the latest release
+        if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
@@ -63,6 +70,8 @@ jobs:
           body: |
             Download **MBC-Legacies.apk** below and open it on your Android phone.
             First time: your phone will ask to allow installs from your browser or files app. Say yes.
-            Updating: just install the new one over the top.
-          files: MBC-Legacies.apk
+            Updating: just install the new one over the top. Once you have a build with in-app updates, the app mostly updates itself.
+          files: |
+            MBC-Legacies.apk
+            ota.txt
           make_latest: true
