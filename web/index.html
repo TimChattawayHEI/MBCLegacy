@@ -3389,6 +3389,10 @@ const BOSS_BANNER = {
   'IL CARABINIERE': ['carab'], 'I FRATELLI': ['gianni', 'marco', 'luca', 'paolo'],
   'THE TICKET INSPECTOR': ['inspector'], 'LEWISHAM LENNY': ['lenny'], 'THE JEWELLER': ['jeweller'],
 };
+const BOSS_ART = { 'THE PARKIE': 'parkie', 'MASTER CONTROL': 'mc', 'DENISE': 'denise', 'LADY ADDICT': 'lady', 'BIG GARY': 'gary', 'BIG GAZ': 'gaz', 'DON VITO': 'mafioso',
+  'BIG TONY AND LITTLE NICKY': 'duo', 'IL CARABINIERE': 'carab', 'I FRATELLI': 'bros', 'THE TICKET INSPECTOR': 'inspector', 'LEWISHAM LENNY': 'lenny', 'THE JEWELLER': 'jeweller',
+  'THE FAR BANK': 'farbank', 'NOZZER': 'nozzer' };   // Version 65
+setTimeout(() => { for (const k in BOSS_ART) { bgImg('bosscard/' + BOSS_ART[k]); ASSET_BG.push('bosscard/' + BOSS_ART[k]); } }, 0);   // ASSET_BG is declared further down
 function bossCardFor(w) {
   const key = w.boss || (w.mini && !w.fish ? 'nozzer' : null), c = key && BOSS_CARD[key];
   return c ? { t: 0, len: 2.6, name: c[0], line: c[1], spr: c[2] } : null;
@@ -3426,7 +3430,16 @@ function drawBossCard() {
   ctx.fillStyle = 'rgba(242,162,58,0.12)'; for (let i = 0; i < 14; i++) ctx.fillRect(((i * 90 + t * 260) % (W + 120)) - 60, bandY, 18, bandH);
   const n = c.spr.length, sk = c.spr[0].includes('/') ? 2.2 : 2.6;
   const gap = n > 1 ? Math.min(130, 330 / (n - 1)) : 0;
-  c.spr.forEach((id, i) => drawCardSprite(id, 230 + (i - (n - 1) / 2) * gap, bandY + bandH - 12, sk));
+  const art = BOSS_ART[c.name] && bgImg('bosscard/' + BOSS_ART[c.name]);
+  if (art) {   // Version 65: the boss's painted portrait slams in, bursting up out of the band, with a flash as it lands
+    const slam = clamp((t - 0.12) / 0.2, 0, 1), k = 2 * (1.35 - 0.35 * easeOut(slam)), w = art.width * k, h = art.height * k;
+    ctx.save(); ctx.globalAlpha = Math.min(1, slam * 3); ctx.fillStyle = 'rgba(242,162,58,0.18)';
+    for (let i = 0; i < 9; i++) { const a = -Math.PI / 2 + (i - 4) * 0.28 + Math.sin(t * 3 + i) * 0.04; ctx.beginPath(); ctx.moveTo(230, bandY + bandH); ctx.lineTo(230 + Math.cos(a - 0.06) * 420, bandY + bandH + Math.sin(a - 0.06) * 420); ctx.lineTo(230 + Math.cos(a + 0.06) * 420, bandY + bandH + Math.sin(a + 0.06) * 420); ctx.fill(); }
+    ctx.imageSmoothingEnabled = false; ctx.drawImage(art, Math.round(230 - w / 2), Math.round(bandY + bandH - h), w, h);
+    if (slam >= 1 && t < 0.42) { ctx.globalAlpha = (0.42 - t) / 0.1; ctx.fillStyle = '#fff6dc'; ctx.fillRect(0, bandY, W, bandH); }
+    ctx.restore();
+    if (slam >= 1 && !c.slammed) { c.slammed = true; addShake(8); sfx('thud'); }
+  } else c.spr.forEach((id, i) => drawCardSprite(id, 230 + (i - (n - 1) / 2) * gap, bandY + bandH - 12, sk));
   ctx.font = '800 13px ' + BODY; ctx.fillStyle = '#f2a23a'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('BOSS', 470, bandY + 50);
   textOut(c.name, 470, bandY + 98, (c.name.length > 20 ? '24px ' : c.name.length > 14 ? '30px ' : '40px ') + DISPLAY, '#ffd23f', OUT, 7, 'left');
   ctx.font = '600 17px ' + BODY; ctx.fillStyle = '#efe6d2'; ctx.textAlign = 'left'; ctx.fillText('\u201C' + clean(c.line) + '\u201D', 470, bandY + 146);
@@ -7060,10 +7073,6 @@ function drawStageBg() {
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (meshyBg()) return;   // Version 64: painted in Meshy
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
-  if (meshyBg()) return;   // Version 64: painted in Meshy
-  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
-  if (meshyBg()) return;   // Version 64: painted in Meshy
-  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (ST.era === 2006 && nlDrawStageBg(ST.bg)) return;
   if (ST.bg === 'fishery') bgFisheryPixel();
   else if (ST.bg === 'orpington') bgOrpingtonPixel();
@@ -8062,6 +8071,17 @@ function pxBar(x, y, w, h, frac, col, back) {
   const seg = w > 200 ? 12 : 8;
   for (let sx = x + seg; sx < x + w - 1; sx += seg) ctx.fillRect(sx, y, 2, h);
 }
+function hudPanel(x, y, w, h) {
+  const img = bgImg('hud/plate'); if (!img || !bgReady(HUD_FILES)) { pxPanel(x, y, w, h); return; }
+  x = PX(x); y = PX(y); w = PX(w); h = PX(h); const c = 6, C = c * 2, mw = 50, mh = 10, sx = 120, sy = 26;   // corner (native), and a plain patch of the plate
+  ctx.save(); ctx.imageSmoothingEnabled = false; const d = (a, b, cw, ch, X, Y, Wd, Hd) => ctx.drawImage(img, a, b, cw, ch, X, Y, Wd, Hd);
+  d(sx, sy, mw, mh, x + C, y + C, w - 2 * C, h - 2 * C);
+  d(120, 0, img.width - 126, c, x + C, y, w - 2 * C, C); d(120, img.height - c, img.width - 126, c, x + C, y + h - C, w - 2 * C, C);   // top and bottom from clear of the holes
+  d(img.width - c, c, c, img.height - 2 * c, x + w - C, y + C, C, h - 2 * C);
+  ctx.save(); ctx.translate(x + C, 0); ctx.scale(-1, 1); d(img.width - c, c, c, img.height - 2 * c, 0, y + C, C, h - 2 * C); d(img.width - c, 0, c, c, 0, y, C, C); d(img.width - c, img.height - c, c, c, 0, y + h - C, C, C); ctx.restore();   // the plate's left edge has the portrait window in it: mirror its right edge
+  d(img.width - c, 0, c, c, x + w - C, y, C, C); d(img.width - c, img.height - c, c, c, x + w - C, y + h - C, C, C);
+  ctx.restore();
+}
 function bar(x, y, w, h, frac, col, back) {
   if (/^#[0-9a-f]{6}$/i.test(col)) return pxBar(x, y, w, h, frac, col, back);
   ctx.fillStyle = OUT; ctx.fillRect(x - 3, y - 3, w + 6, h + 6);
@@ -8084,43 +8104,6 @@ function hudFill(name, x, y, w, h, frac, trough, flash) {
   ctx.restore(); return true;
 }
 function hudFrame(name, x, y) { const img = bgImg('hud/' + name); if (!img) return false; ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(img, PX(x), PX(y), img.width * 2, img.height * 2); ctx.restore(); return true; }
-function hudPanel(x, y, w, h) {
-  const img = bgImg('hud/plate'); if (!img || !bgReady(HUD_FILES)) { pxPanel(x, y, w, h); return; }
-  x = PX(x); y = PX(y); w = PX(w); h = PX(h); const c = 6, C = c * 2, mw = 50, mh = 10, sx = 120, sy = 26;   // corner (native), and a plain patch of the plate
-  ctx.save(); ctx.imageSmoothingEnabled = false; const d = (a, b, cw, ch, X, Y, Wd, Hd) => ctx.drawImage(img, a, b, cw, ch, X, Y, Wd, Hd);
-  d(sx, sy, mw, mh, x + C, y + C, w - 2 * C, h - 2 * C);
-  d(120, 0, img.width - 126, c, x + C, y, w - 2 * C, C); d(120, img.height - c, img.width - 126, c, x + C, y + h - C, w - 2 * C, C);   // top and bottom from clear of the holes
-  d(img.width - c, c, c, img.height - 2 * c, x + w - C, y + C, C, h - 2 * C);
-  ctx.save(); ctx.translate(x + C, 0); ctx.scale(-1, 1); d(img.width - c, c, c, img.height - 2 * c, 0, y + C, C, h - 2 * C); d(img.width - c, 0, c, c, 0, y, C, C); d(img.width - c, img.height - c, c, c, 0, y + h - C, C, C); ctx.restore();   // the plate's left edge has the portrait window in it: mirror its right edge
-  d(img.width - c, 0, c, c, x + w - C, y, C, C); d(img.width - c, img.height - c, c, c, x + w - C, y + h - C, C, C);
-  ctx.restore();
-}
-// Version 65: Meshy's gunmetal plate and glass-tube bars. A fill is one painted tile, repeated along the bar and cut off
-// where the bar ends; until the pictures load the old code bars are drawn instead.
-const HUD_FILES = ['plate', 'boss', 'fill_hp', 'fill_sp', 'fill_boss', 'fill_foe'].map(n => 'hud/' + n); HUD_FILES.forEach(f => bgImg(f)); ASSET_BG.push(...HUD_FILES);
-function hudFill(name, x, y, w, h, frac, trough, flash) {
-  const img = bgImg('hud/' + name); if (!img) return false;
-  x = PX(x); y = PX(y); w = PX(w); h = PX(h);
-  if (trough) { ctx.fillStyle = OUT; ctx.fillRect(x - 2, y - 2, w + 4, h + 4); }
-  ctx.fillStyle = '#141018'; ctx.fillRect(x, y, w, h);
-  const fw = PX(w * clamp(frac, 0, 1)); if (fw <= 0) return true;
-  ctx.save(); ctx.beginPath(); ctx.rect(x, y, fw, h); ctx.clip(); ctx.imageSmoothingEnabled = false;
-  const tw = img.width * 2; for (let tx = x; tx < x + fw; tx += tw) ctx.drawImage(img, tx, y, tw, h);
-  if (flash) { ctx.fillStyle = 'rgba(255,250,220,0.35)'; ctx.fillRect(x, y, fw, h); }
-  ctx.restore(); return true;
-}
-function hudFrame(name, x, y) { const img = bgImg('hud/' + name); if (!img) return false; ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(img, PX(x), PX(y), img.width * 2, img.height * 2); ctx.restore(); return true; }
-function hudPanel(x, y, w, h) {
-  const img = bgImg('hud/plate'); if (!img || !bgReady(HUD_FILES)) { pxPanel(x, y, w, h); return; }
-  x = PX(x); y = PX(y); w = PX(w); h = PX(h); const c = 6, C = c * 2, mw = 50, mh = 10, sx = 120, sy = 26;   // corner (native), and a plain patch of the plate
-  ctx.save(); ctx.imageSmoothingEnabled = false; const d = (a, b, cw, ch, X, Y, Wd, Hd) => ctx.drawImage(img, a, b, cw, ch, X, Y, Wd, Hd);
-  d(sx, sy, mw, mh, x + C, y + C, w - 2 * C, h - 2 * C);
-  d(120, 0, img.width - 126, c, x + C, y, w - 2 * C, C); d(120, img.height - c, img.width - 126, c, x + C, y + h - C, w - 2 * C, C);   // top and bottom from clear of the holes
-  d(img.width - c, c, c, img.height - 2 * c, x + w - C, y + C, C, h - 2 * C);
-  ctx.save(); ctx.translate(x + C, 0); ctx.scale(-1, 1); d(img.width - c, c, c, img.height - 2 * c, 0, y + C, C, h - 2 * C); d(img.width - c, 0, c, c, 0, y, C, C); d(img.width - c, img.height - c, c, c, 0, y + h - C, C, C); ctx.restore();   // the plate's left edge has the portrait window in it: mirror its right edge
-  d(img.width - c, 0, c, c, x + w - C, y, C, C); d(img.width - c, img.height - c, c, c, x + w - C, y + h - C, C, C);
-  ctx.restore();
-}
 function drawHUD() {
   const p = player;
   const plate = bgReady(HUD_FILES); if (!plate) pxPanel(12, 12, 362, 84);

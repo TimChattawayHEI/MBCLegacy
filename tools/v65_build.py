@@ -128,7 +128,7 @@ s = swap(s, "    bar(W / 2 - 200, 124, 400, 12, hp / max, '#f2a23a', '#3a2a14');
          "    if (!(bgReady(HUD_FILES) && hudFrame('boss', W / 2 - 216, 116) && hudFill('fill_boss', W / 2 - 200, 124, 400, 12, hp / max))) bar(W / 2 - 200, 124, 400, 12, hp / max, '#f2a23a', '#3a2a14');\n", 'hud boss')
 
 # the other HUD panels (score, weapon, the last foe, pause) in the same gunmetal, nine-sliced from the plate's edges
-s = swap(s, "function drawHUD() {\n",
+s = swap(s, "function bar(x, y, w, h, frac, col, back) {\n",
          "function hudPanel(x, y, w, h) {\n"
          "  const img = bgImg('hud/plate'); if (!img || !bgReady(HUD_FILES)) { pxPanel(x, y, w, h); return; }\n"
          "  x = PX(x); y = PX(y); w = PX(w); h = PX(h); const c = 6, C = c * 2, mw = 50, mh = 10, sx = 120, sy = 26;   // corner (native), and a plain patch of the plate\n"
@@ -140,10 +140,30 @@ s = swap(s, "function drawHUD() {\n",
          "  d(img.width - c, 0, c, c, x + w - C, y, C, C); d(img.width - c, img.height - c, c, c, x + w - C, y + h - C, C, C);\n"
          "  ctx.restore();\n"
          "}\n"
-         "function drawHUD() {\n", 'hud panel')
+         "function bar(x, y, w, h, frac, col, back) {\n", 'hud panel')
 for a in ["    pxPanel(12, ny, 220, 30);\n", "    pxPanel(12, ny, 220, 34);\n", "  pxPanel(W - 12 - plateW, 12, plateW, 74);\n",
           "  { const pb = pauseBtn(plateW); pxPanel(pb.x - pb.r, pb.y - pb.r, pb.r * 2, pb.r * 2);"]:
     s = swap(s, a, a.replace('pxPanel(', 'hudPanel('), 'hud panel ' + a.strip()[:30])
+
+
+# ---------------------------------------------------------------- boss intro cards: Meshy portraits (tools/v65/bosscards.py)
+s = swap(s, "function bossCardFor(w) {\n",
+         "const BOSS_ART = { 'THE PARKIE': 'parkie', 'MASTER CONTROL': 'mc', 'DENISE': 'denise', 'LADY ADDICT': 'lady', 'BIG GARY': 'gary', 'BIG GAZ': 'gaz', 'DON VITO': 'mafioso',\n"
+         "  'BIG TONY AND LITTLE NICKY': 'duo', 'IL CARABINIERE': 'carab', 'I FRATELLI': 'bros', 'THE TICKET INSPECTOR': 'inspector', 'LEWISHAM LENNY': 'lenny', 'THE JEWELLER': 'jeweller',\n"
+         "  'THE FAR BANK': 'farbank', 'NOZZER': 'nozzer' };   // Version 65\n"
+         "setTimeout(() => { for (const k in BOSS_ART) { bgImg('bosscard/' + BOSS_ART[k]); ASSET_BG.push('bosscard/' + BOSS_ART[k]); } }, 0);   // ASSET_BG is declared further down\n"
+         "function bossCardFor(w) {\n", 'boss art map')
+s = swap(s, "  c.spr.forEach((id, i) => drawCardSprite(id, 230 + (i - (n - 1) / 2) * gap, bandY + bandH - 12, sk));\n",
+         "  const art = BOSS_ART[c.name] && bgImg('bosscard/' + BOSS_ART[c.name]);\n"
+         "  if (art) {   // Version 65: the boss's painted portrait slams in, bursting up out of the band, with a flash as it lands\n"
+         "    const slam = clamp((t - 0.12) / 0.2, 0, 1), k = 2 * (1.35 - 0.35 * easeOut(slam)), w = art.width * k, h = art.height * k;\n"
+         "    ctx.save(); ctx.globalAlpha = Math.min(1, slam * 3); ctx.fillStyle = 'rgba(242,162,58,0.18)';\n"
+         "    for (let i = 0; i < 9; i++) { const a = -Math.PI / 2 + (i - 4) * 0.28 + Math.sin(t * 3 + i) * 0.04; ctx.beginPath(); ctx.moveTo(230, bandY + bandH); ctx.lineTo(230 + Math.cos(a - 0.06) * 420, bandY + bandH + Math.sin(a - 0.06) * 420); ctx.lineTo(230 + Math.cos(a + 0.06) * 420, bandY + bandH + Math.sin(a + 0.06) * 420); ctx.fill(); }\n"
+         "    ctx.imageSmoothingEnabled = false; ctx.drawImage(art, Math.round(230 - w / 2), Math.round(bandY + bandH - h), w, h);\n"
+         "    if (slam >= 1 && t < 0.42) { ctx.globalAlpha = (0.42 - t) / 0.1; ctx.fillStyle = '#fff6dc'; ctx.fillRect(0, bandY, W, bandH); }\n"
+         "    ctx.restore();\n"
+         "    if (slam >= 1 && !c.slammed) { c.slammed = true; addShake(8); sfx('thud'); }\n"
+         "  } else c.spr.forEach((id, i) => drawCardSprite(id, 230 + (i - (n - 1) / 2) * gap, bandY + bandH - 12, sk));\n", 'boss card art')
 
 
 open(PAGE, 'w', encoding='utf-8').write(s)
