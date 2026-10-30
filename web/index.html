@@ -7120,10 +7120,14 @@ function drawPart(p) {
     if (k > 0.8) ctx.globalAlpha = (1 - k) / 0.2;
     ctx.font = (p.big ? 30 : 22) + 'px ' + DISPLAY;
     const w = ctx.measureText(p.word).width + 34, h = p.big ? 58 : 44;
+    const bimg = bgReady(COMIC) && bgImg('comic/' + (p.big ? 'burst_o' : 'burst_y') + (1 + (p.word.length + p.word.charCodeAt(0)) % 2));
+    if (bimg) { ctx.imageSmoothingEnabled = false; ctx.drawImage(bimg, -w * 0.62, -h * 0.68, w * 1.24, h * 1.36); }   // Version 65: Meshy's painted burst
+    else {
     ctx.beginPath();
     for (let i = 0; i <= 28; i++) { const a = i / 28 * Math.PI * 2, rr = i % 2 ? 0.78 : 1; const px = Math.cos(a) * w / 2 * rr, py = Math.sin(a) * h / 2 * rr; i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }
-    ctx.closePath(); fillOut(p.big ? '#f2a23a' : '#ffd23f', 3);
-    ctx.fillStyle = OUT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(p.word, 0, 2);
+    ctx.closePath(); fillOut(p.big ? '#f2a23a' : '#ffd23f', 3); }
+    if (bimg) textOut(p.word, 0, 2, (p.big ? 30 : 22) + 'px ' + DISPLAY, '#fff6dc', OUT, 6, 'center');
+    else { ctx.fillStyle = OUT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(p.word, 0, 2); }
     ctx.restore();
   }
 }
@@ -7197,6 +7201,19 @@ function bubbleAnchor(e) {
   const tall = e.fish ? 150 : e.kind === 'goose' ? 70 : e.kind === 'swan' ? 92 : 150 * (e.scale || 1) * ((e.look && e.look.tall) || 1);
   return { x: e.x - cam.x, y: e.y - e.z - tall };
 }
+const COMIC = ['bubble_lad', 'bubble_foe', 'tail_lad', 'tail_foe', 'burst_y1', 'burst_y2', 'burst_o1', 'burst_o2'].map(n => 'comic/' + n);   // Version 65
+setTimeout(() => { COMIC.forEach(f => bgImg(f)); ASSET_BG.push(...COMIC); }, 0);
+function comicBubble(X, Y, Wd, Ht, tx, dir, lad) {   // the painted balloon, nine-sliced to fit, and its tail pointing at the speaker
+  const img = bgImg(lad ? 'comic/bubble_lad' : 'comic/bubble_foe'), tail = bgImg(lad ? 'comic/tail_lad' : 'comic/tail_foe'); if (!img || !tail || !bgReady(COMIC)) return false;
+  const c = 10, C = Math.min(c * 2, Math.floor(Ht / 2), Math.floor(Wd / 2)), iw = img.width, ih = img.height;
+  ctx.save(); ctx.imageSmoothingEnabled = false; const d = (a, b, w, h, x, y, W2, H2) => { if (W2 > 0 && H2 > 0) ctx.drawImage(img, a, b, w, h, x, y, W2, H2); };
+  d(c, c, iw - 2 * c, ih - 2 * c, X + C, Y + C, Wd - 2 * C, Ht - 2 * C);
+  d(c, 0, iw - 2 * c, c, X + C, Y, Wd - 2 * C, C); d(c, ih - c, iw - 2 * c, c, X + C, Y + Ht - C, Wd - 2 * C, C);
+  d(0, c, c, ih - 2 * c, X, Y + C, C, Ht - 2 * C); d(iw - c, c, c, ih - 2 * c, X + Wd - C, Y + C, C, Ht - 2 * C);
+  d(0, 0, c, c, X, Y, C, C); d(iw - c, 0, c, c, X + Wd - C, Y, C, C); d(0, ih - c, c, c, X, Y + Ht - C, C, C); d(iw - c, ih - c, c, c, X + Wd - C, Y + Ht - C, C, C);
+  ctx.translate(tx, Y + Ht - 4); if (dir < 0) ctx.scale(-1, 1); ctx.drawImage(tail, -8, 0, tail.width * 2, tail.height * 2);
+  ctx.restore(); return true;
+}
 function drawBubble(b) {
   const a = bubbleAnchor(b.e);
   const bs = (touchUI || canvas.getBoundingClientRect().width < 720) ? 1.55 : 1.2;
@@ -7213,12 +7230,14 @@ function drawBubble(b) {
     const X = PX(bx), Y = PX(by), Wd = PX(bw), Ht = PX(bh), face = isLad ? '#fffdf5' : '#f2ecdf';
     const tx = PX(clamp(a.x, X + 14, X + Wd - 14)), dir = a.x >= tx ? 1 : -1;
     const steps = [[-6, 12], [-4 + 2 * dir, 8], [-2 + 4 * dir, 4]];
+    if (!comicBubble(X, Y, Wd, Ht, tx, dir, isLad)) {
     ctx.fillStyle = OUT;
     ctx.fillRect(X + 2, Y, Wd - 4, 2); ctx.fillRect(X + 2, Y + Ht - 2, Wd - 4, 2); ctx.fillRect(X, Y + 2, 2, Ht - 4); ctx.fillRect(X + Wd - 2, Y + 2, 2, Ht - 4);
     steps.forEach(([ox, w], i) => ctx.fillRect(tx + ox - 2, Y + Ht - 2 + i * 4, w + 4, 6));
     ctx.fillStyle = face; ctx.fillRect(X + 2, Y + 2, Wd - 4, Ht - 4);
     steps.forEach(([ox, w], i) => ctx.fillRect(tx + ox, Y + Ht - 2 + i * 4, w, 4));
     ctx.fillStyle = 'rgba(60,40,20,0.14)'; ctx.fillRect(X + 2, Y + Ht - 4, Wd - 4, 2);
+    }
   }
   ctx.fillStyle = OUT; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
   lines.forEach((l, i) => ctx.fillText(l, bx + 9 * bs, by + (6 + 7.5) * bs + i * 15 * bs));
