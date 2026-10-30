@@ -3,7 +3,7 @@
 // tools/v64/meshy_bg.py) and drawn edge to edge in place of its old pieced-together backdrop. Things the game does on
 // top of the backdrop (the Christmas tree's star, and so on) are still drawn by meshyOver. Until every tile of a stage
 // has loaded, the old backdrop is drawn instead.
-const MESHY_BG = { frequency: 4, soundz: 4 };
+const MESHY_BG = { frequency: 4, soundz: 4, airport: 4 };
 // where the painted pictures put things the game needs to know about
 STAGES.soundz.secret.x = 2024;   // the broken lift
 const MESHY_TILE = 512;
