@@ -72,6 +72,56 @@ def grade(strip, c):
     return Image.fromarray(np.clip(ycc, 0, 255).astype(np.uint8), 'YCbCr').convert('RGB')
 
 
+def skytone(strip, c):
+    """"skytone": [x0, x1, rows]: Meshy paints some panels' sky paler than others. Every sky pixel (blue, in rows
+    0..rows) along the stage is moved from the colour of the sky around it (a 300 column window) to the colour of the
+    sky in columns x0..x1 at that height, so clouds, the sun and the treeline stay as they are."""
+    if 'skytone' not in c: return strip
+    x0, x1, rows = c['skytone']
+    a = np.asarray(strip).astype(np.float32).copy(); s = a[:rows]
+    r, g, b = s[..., 0], s[..., 1], s[..., 2]
+    sky = (b > r + 25) & (b > g + 5) & (b > 90)
+    tgt = np.array([np.median(s[y, x0:x1][sky[y, x0:x1]], 0) if sky[y, x0:x1].any() else s[y, x0:x1].mean(0) for y in range(rows)])
+    # the sky's own colour at each height, every 50 columns (300 wide windows), then the shift interpolated between
+    step = 50; cs = list(range(0, s.shape[1], step)) + [s.shape[1] - 1]; sh = np.zeros((rows, len(cs), 3), np.float32); ok = np.zeros((rows, len(cs)), bool)
+    for j, cx in enumerate(cs):
+        lo, hi = max(0, cx - 150), min(s.shape[1], cx + 150)
+        for y in range(rows):
+            m = sky[y, lo:hi]
+            if m.sum() >= 20: sh[y, j] = tgt[y] - np.median(s[y, lo:hi][m], 0); ok[y, j] = True
+    xs = np.arange(s.shape[1]); out = s.copy()
+    for y in range(rows):
+        if not ok[y].any(): continue
+        for ch in range(3):
+            d = np.interp(xs, np.array(cs)[ok[y]], sh[y, ok[y], ch])
+            out[y, :, ch] += np.where(sky[y], d, 0)
+    a[:rows] = out
+    return Image.fromarray(np.clip(a, 0, 255).astype(np.uint8))
+
+
+def skyfill(strip, c):
+    """"skyfill": [x0, x1, rx0, rx1, rows]: a plain sky from column x0 on (Meshy painted it hazy there): every pixel above
+    the treeline (the first green pixel down each column, within rows) takes the sky colour of columns rx0..rx1 at that
+    height, faded in over 60 columns from x0. The game drifts its own clouds across it (meshyOver)."""
+    if 'skyfill' not in c: return strip
+    x0, x1, rx0, rx1, rows = c['skyfill']
+    a = np.asarray(strip).astype(np.float32).copy(); s = a[:rows]
+    r, g, b = s[..., 0], s[..., 1], s[..., 2]
+    sky = (b > r + 25) & (b > g + 5) & (b > 90)
+    tgt = np.zeros((rows, 3), np.float32)
+    for y in range(rows):
+        m = sky[y, rx0:rx1]; tgt[y] = np.median(s[y, rx0:rx1][m], 0) if m.sum() > 10 else tgt[y - 1]
+    green = (g > b + 5) & (g > r) & (np.arange(rows)[:, None] > 40)
+    tree = np.where(green.any(0), green.argmax(0), rows)
+    tree = np.array([tree[max(0, i - 2):i + 3].min() for i in range(len(tree))]) - 2
+    for x in range(x0, min(x1, s.shape[1])):
+        k = min(1.0, (x - x0) / 60); t = tree[x]
+        a[:t, x] = a[:t, x] * (1 - k) + tgt[:t] * k
+        loose = (b[t:, x] > r[t:, x] + 5) & (b[t:, x] >= g[t:, x]) & (b[t:, x] > 120)   # sky showing through the trees
+        a[t:rows, x][loose] = a[t:rows, x][loose] * (1 - k) + tgt[t:][loose] * k
+    return Image.fromarray(np.clip(a, 0, 255).astype(np.uint8))
+
+
 def fit(strip, c):
     w = round(strip.width * 480 / PW); ft = c['ft'] // 2
     top = strip.crop((0, c['top'], strip.width, c['base'])).resize((w, ft), Image.LANCZOS)
@@ -92,7 +142,7 @@ def loop(stage, c):
 for stage in ([] if sys.argv[1:] == ['--none'] else sys.argv[1:] or list(CFG)):
     c = CFG[stage]
     if 'loop' in c: loop(stage, c); continue
-    full = fit(grade(patch(stitch(stage, c['panels']), stage, c), c), c)
+    full = fit(skyfill(skytone(grade(patch(stitch(stage, c['panels']), stage, c), c), c), c), c)
     for f in os.listdir(OUT):
         if f.startswith(stage + '_'): os.remove(os.path.join(OUT, f))
     n = 0

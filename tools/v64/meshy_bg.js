@@ -3,7 +3,7 @@
 // tools/v64/meshy_bg.py) and drawn edge to edge in place of its old pieced-together backdrop. Things the game does on
 // top of the backdrop (the Christmas tree's star, and so on) are still drawn by meshyOver. Until every tile of a stage
 // has loaded, the old backdrop is drawn instead.
-const MESHY_BG = { frequency: 4, soundz: 4, airport: 4, divebar: 4, beach: 4, club: 4, nl_station: 4, nl_cx: 4, nl_alley: 4 };
+const MESHY_BG = { frequency: 4, soundz: 4, airport: 4, divebar: 4, beach: 4, club: 4, nl_station: 4, nl_cx: 4, nl_alley: 4, arrival: 4 };
 STAGES.beach.secret.x = 2930;   // the sandcastle
 // where the painted pictures put things the game needs to know about
 STAGES.soundz.secret.x = 2024;   // the broken lift
@@ -52,7 +52,12 @@ function meshyOver(k) {
     ctx.restore();
   }
   if (k === 'nl_station') nlGateline(NL_ST_GATE);
-  if (k === 'nl_cx') nlGateline(NL_CX_GATE);   // the ticket barriers are people the game runs
+  if (k === 'nl_cx') nlGateline(NL_CX_GATE);
+  if (k === 'arrival' || k === 'pegnine') {
+    // the pegs are the game's (their numbers matter), and on a sunny day the clouds still drift over
+    for (const p of S.props) if (p.k === 'peg') fshProp(p);
+    if (ST.tod === 'day') for (let i = 0; i < 3; i++) { const x = ((i * 380 - cam.x * 0.08 + time * 6) % (W + 300) + W + 300) % (W + 300) - 150; pxCloud(Math.round(x / 2) * 2, 40 + (i % 2) * 36, 1); }
+  }   // the ticket barriers are people the game runs
   if (k === 'soundz') {
     // Vince, asleep on the sofa
     { const x = 1068 - cam.x; if (x > -140 && x < W + 140) { pxText('z', x + 8 + Math.sin(time * 2) * 3, 214 - (time * 10) % 20, 14, '#efe6d2'); pxText('VINCE', x + 104, FT + 14, 12, '#efe6d2', OUT); } }
