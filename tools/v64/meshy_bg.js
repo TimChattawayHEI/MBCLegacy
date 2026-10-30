@@ -3,14 +3,15 @@
 // tools/v64/meshy_bg.py) and drawn edge to edge in place of its old pieced-together backdrop. Things the game does on
 // top of the backdrop (the Christmas tree's star, and so on) are still drawn by meshyOver. Until every tile of a stage
 // has loaded, the old backdrop is drawn instead.
-const MESHY_BG = { frequency: 4, soundz: 4, airport: 4 };
+const MESHY_BG = { frequency: 4, soundz: 4, airport: 4, divebar: 4 };
 // where the painted pictures put things the game needs to know about
 STAGES.soundz.secret.x = 2024;   // the broken lift
 const MESHY_TILE = 512;
 function meshyFiles(k) { const out = []; for (let i = 0; i < (MESHY_BG[k] || 0); i++) out.push('meshy/' + k + '_' + i); return out; }
 for (const k in MESHY_BG) ASSET_BG.push(...meshyFiles(k));
-function meshyBg() {
-  const k = S && S.key; if (!MESHY_BG[k]) return false;
+function meshyBg() { return meshyStage(S && S.key); }
+function meshyStage(k) {
+  if (!MESHY_BG[k]) return false;
   const files = meshyFiles(k); if (!bgReady(files)) return false;
   for (let i = 0; i < files.length; i++) bgPut(bgImg(files[i]), i * MESHY_TILE * 2, H);
   meshyOver(k);
@@ -27,6 +28,14 @@ function meshyRoad() {
 }
 function meshyOver(k) {
   if (k === 'frequency') { if (S.tree) drawTree(S.tree); }
+  if (k === 'divebar') {
+    ePut('stool', CARAB_X - 25, FT + 10, 2);   // the Carabiniere's own stool
+    // the Espace, burning out on the track (Sam's drive ends here)
+    if (!S.drv) { const wx = 2760, img = eImg('mpv'); if (img) { const w = img.width * 2, x = Math.round((wx - cam.x - w / 2) / 2) * 2, b = FT + 2;
+      if (x > -w - 100 && x < W + 100) { ePut('mpv', wx - w / 2, b, 2);
+        for (let i = 0; i < 5; i++) drawFireSprite(x + 20 + i * (w - 40) / 4, b - img.height * 2 + 18 + (i % 2) * 8, wx + i);
+        for (let i = 0; i < 4; i++) { const k2 = (time * 0.35 + i / 4) % 1; pxCircle(x + w / 2 + Math.sin(k2 * 5 + i) * 16, b - img.height * 2 - k2 * 180, Math.round(12 + k2 * 34), 'rgba(40,36,36,' + (0.5 * (1 - k2)).toFixed(2) + ')'); } } } }
+  }
   if (k === 'soundz') {
     // Vince, asleep on the sofa
     { const x = 1068 - cam.x; if (x > -140 && x < W + 140) { pxText('z', x + 8 + Math.sin(time * 2) * 3, 214 - (time * 10) % 20, 14, '#efe6d2'); pxText('VINCE', x + 104, FT + 14, 12, '#efe6d2', OUT); } }

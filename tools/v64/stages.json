@@ -80,5 +80,24 @@
   "mirror": true,
   "base": 576,
   "ground": 330
+ },
+ "divebar": {
+  "panels": [
+   "p0",
+   "p1c",
+   "p2b",
+   "p3",
+   "p4"
+  ],
+  "base": 568,
+  "top": 20,
+  "ft": 344,
+  "len": 3600,
+  "patches": [
+   [
+    1204,
+    "s1"
+   ]
+  ]
  }
 }
