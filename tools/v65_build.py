@@ -93,5 +93,58 @@ s = swap(s, "      if (sr) { li = Math.max(0, ORDER.indexOf(PLAYABLE[sr.ci].id))
          "      if (sr && !ladLocked(PLAYABLE[sr.ci])) { li = Math.max(0, ORDER.indexOf(PLAYABLE[sr.ci].id)); setView('cont'); } else setView('lad');", 'carry on locked')
 
 
+# ---------------------------------------------------------------- the health bars, painted in Meshy (tools/v65/hud.py)
+s = swap(s, "function drawHUD() {\n",
+         "// Version 65: Meshy's gunmetal plate and glass-tube bars. A fill is one painted tile, repeated along the bar and cut off\n"
+         "// where the bar ends; until the pictures load the old code bars are drawn instead.\n"
+         "const HUD_FILES = ['plate', 'boss', 'fill_hp', 'fill_sp', 'fill_boss', 'fill_foe'].map(n => 'hud/' + n); HUD_FILES.forEach(f => bgImg(f)); ASSET_BG.push(...HUD_FILES);\n"
+         "function hudFill(name, x, y, w, h, frac, trough, flash) {\n"
+         "  const img = bgImg('hud/' + name); if (!img) return false;\n"
+         "  x = PX(x); y = PX(y); w = PX(w); h = PX(h);\n"
+         "  if (trough) { ctx.fillStyle = OUT; ctx.fillRect(x - 2, y - 2, w + 4, h + 4); }\n"
+         "  ctx.fillStyle = '#141018'; ctx.fillRect(x, y, w, h);\n"
+         "  const fw = PX(w * clamp(frac, 0, 1)); if (fw <= 0) return true;\n"
+         "  ctx.save(); ctx.beginPath(); ctx.rect(x, y, fw, h); ctx.clip(); ctx.imageSmoothingEnabled = false;\n"
+         "  const tw = img.width * 2; for (let tx = x; tx < x + fw; tx += tw) ctx.drawImage(img, tx, y, tw, h);\n"
+         "  if (flash) { ctx.fillStyle = 'rgba(255,250,220,0.35)'; ctx.fillRect(x, y, fw, h); }\n"
+         "  ctx.restore(); return true;\n"
+         "}\n"
+         "function hudFrame(name, x, y) { const img = bgImg('hud/' + name); if (!img) return false; ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(img, PX(x), PX(y), img.width * 2, img.height * 2); ctx.restore(); return true; }\n"
+         "function drawHUD() {\n", 'hud helpers')
+s = swap(s, "  const p = player;\n  pxPanel(12, 12, 362, 84);\n",
+         "  const p = player;\n  const plate = bgReady(HUD_FILES); if (!plate) pxPanel(12, 12, 362, 84);\n", 'hud plate fallback')
+s = swap(s, "  ctx.fillStyle = OUT; ctx.fillRect(18, 18, 60, 2); ctx.fillRect(18, 88, 60, 2); ctx.fillRect(18, 20, 2, 68); ctx.fillRect(76, 20, 2, 68);\n",
+         "  if (plate) hudFrame('plate', 12, 12); else { ctx.fillStyle = OUT; ctx.fillRect(18, 18, 60, 2); ctx.fillRect(18, 88, 60, 2); ctx.fillRect(18, 20, 2, 68); ctx.fillRect(76, 20, 2, 68); }\n", 'hud plate')
+s = swap(s, "  bar(88, 46, 272, 14, p.hp / p.maxHp, p.hp / p.maxHp < 0.3 ? '#e5484d' : '#7fcf5a');\n",
+         "  if (!(plate && hudFill(p.hp / p.maxHp < 0.3 ? 'fill_foe' : 'fill_hp', 88, 46, 274, 14, p.hp / p.maxHp, false, p.hp / p.maxHp < 0.3 && Math.floor(time * 4) % 2)))\n"
+         "    bar(88, 46, 272, 14, p.hp / p.maxHp, p.hp / p.maxHp < 0.3 ? '#e5484d' : '#7fcf5a');\n", 'hud health')
+s = swap(s, "    bar(88, 72, 150, 8, p.buffT / BUFF_TIME, Math.floor(time * 8) % 2 ? '#ff6a4a' : '#e2471c', '#2a1c1a');\n",
+         "    if (!(plate && hudFill('fill_foe', 88, 72, 152, 10, p.buffT / BUFF_TIME, false, Math.floor(time * 8) % 2))) bar(88, 72, 150, 8, p.buffT / BUFF_TIME, Math.floor(time * 8) % 2 ? '#ff6a4a' : '#e2471c', '#2a1c1a');\n", 'hud buff')
+s = swap(s, "    bar(88, 72, 150, 8, p.meter / 100, ready ? (Math.floor(time * 6) % 2 ? '#ffd23f' : '#f2a23a') : '#c98a2e', '#2c2a22');\n",
+         "    if (!(plate && hudFill('fill_sp', 88, 72, 152, 10, p.meter / 100, false, ready && Math.floor(time * 6) % 2))) bar(88, 72, 150, 8, p.meter / 100, ready ? (Math.floor(time * 6) % 2 ? '#ffd23f' : '#f2a23a') : '#c98a2e', '#2c2a22');\n", 'hud special')
+s = swap(s, "    bar(22, ny + 20, 196, 7, lastFoe.hp / lastFoe.maxHp, '#e5484d');\n",
+         "    if (!hudFill('fill_foe', 22, ny + 20, 196, 8, lastFoe.hp / lastFoe.maxHp, true)) bar(22, ny + 20, 196, 7, lastFoe.hp / lastFoe.maxHp, '#e5484d');\n", 'hud foe')
+s = swap(s, "    bar(W / 2 - 200, 124, 400, 12, hp / max, '#f2a23a', '#3a2a14');\n",
+         "    if (!(bgReady(HUD_FILES) && hudFrame('boss', W / 2 - 216, 116) && hudFill('fill_boss', W / 2 - 200, 124, 400, 12, hp / max))) bar(W / 2 - 200, 124, 400, 12, hp / max, '#f2a23a', '#3a2a14');\n", 'hud boss')
+
+# the other HUD panels (score, weapon, the last foe, pause) in the same gunmetal, nine-sliced from the plate's edges
+s = swap(s, "function drawHUD() {\n",
+         "function hudPanel(x, y, w, h) {\n"
+         "  const img = bgImg('hud/plate'); if (!img || !bgReady(HUD_FILES)) { pxPanel(x, y, w, h); return; }\n"
+         "  x = PX(x); y = PX(y); w = PX(w); h = PX(h); const c = 6, C = c * 2, mw = 50, mh = 10, sx = 120, sy = 26;   // corner (native), and a plain patch of the plate\n"
+         "  ctx.save(); ctx.imageSmoothingEnabled = false; const d = (a, b, cw, ch, X, Y, Wd, Hd) => ctx.drawImage(img, a, b, cw, ch, X, Y, Wd, Hd);\n"
+         "  d(sx, sy, mw, mh, x + C, y + C, w - 2 * C, h - 2 * C);\n"
+         "  d(120, 0, img.width - 126, c, x + C, y, w - 2 * C, C); d(120, img.height - c, img.width - 126, c, x + C, y + h - C, w - 2 * C, C);   // top and bottom from clear of the holes\n"
+         "  d(img.width - c, c, c, img.height - 2 * c, x + w - C, y + C, C, h - 2 * C);\n"
+         "  ctx.save(); ctx.translate(x + C, 0); ctx.scale(-1, 1); d(img.width - c, c, c, img.height - 2 * c, 0, y + C, C, h - 2 * C); d(img.width - c, 0, c, c, 0, y, C, C); d(img.width - c, img.height - c, c, c, 0, y + h - C, C, C); ctx.restore();   // the plate's left edge has the portrait window in it: mirror its right edge\n"
+         "  d(img.width - c, 0, c, c, x + w - C, y, C, C); d(img.width - c, img.height - c, c, c, x + w - C, y + h - C, C, C);\n"
+         "  ctx.restore();\n"
+         "}\n"
+         "function drawHUD() {\n", 'hud panel')
+for a in ["    pxPanel(12, ny, 220, 30);\n", "    pxPanel(12, ny, 220, 34);\n", "  pxPanel(W - 12 - plateW, 12, plateW, 74);\n",
+          "  { const pb = pauseBtn(plateW); pxPanel(pb.x - pb.r, pb.y - pb.r, pb.r * 2, pb.r * 2);"]:
+    s = swap(s, a, a.replace('pxPanel(', 'hudPanel('), 'hud panel ' + a.strip()[:30])
+
+
 open(PAGE, 'w', encoding='utf-8').write(s)
 print('v65_build: web/index.html updated')

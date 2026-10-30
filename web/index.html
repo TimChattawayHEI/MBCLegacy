@@ -7060,6 +7060,8 @@ function drawStageBg() {
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (meshyBg()) return;   // Version 64: painted in Meshy
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (ST.era === 2006 && nlDrawStageBg(ST.bg)) return;
   if (ST.bg === 'fishery') bgFisheryPixel();
   else if (ST.bg === 'orpington') bgOrpingtonPixel();
@@ -8065,24 +8067,51 @@ function bar(x, y, w, h, frac, col, back) {
   ctx.fillStyle = col; ctx.fillRect(x, y, Math.max(0, w * clamp(frac, 0, 1)), h);
   ctx.fillStyle = 'rgba(255,255,255,0.22)'; ctx.fillRect(x, y, Math.max(0, w * clamp(frac, 0, 1)), Math.max(2, h * 0.3));
 }
+// Version 65: Meshy's gunmetal plate and glass-tube bars. A fill is one painted tile, repeated along the bar and cut off
+// where the bar ends; until the pictures load the old code bars are drawn instead.
+const HUD_FILES = ['plate', 'boss', 'fill_hp', 'fill_sp', 'fill_boss', 'fill_foe'].map(n => 'hud/' + n); HUD_FILES.forEach(f => bgImg(f)); ASSET_BG.push(...HUD_FILES);
+function hudFill(name, x, y, w, h, frac, trough, flash) {
+  const img = bgImg('hud/' + name); if (!img) return false;
+  x = PX(x); y = PX(y); w = PX(w); h = PX(h);
+  if (trough) { ctx.fillStyle = OUT; ctx.fillRect(x - 2, y - 2, w + 4, h + 4); }
+  ctx.fillStyle = '#141018'; ctx.fillRect(x, y, w, h);
+  const fw = PX(w * clamp(frac, 0, 1)); if (fw <= 0) return true;
+  ctx.save(); ctx.beginPath(); ctx.rect(x, y, fw, h); ctx.clip(); ctx.imageSmoothingEnabled = false;
+  const tw = img.width * 2; for (let tx = x; tx < x + fw; tx += tw) ctx.drawImage(img, tx, y, tw, h);
+  if (flash) { ctx.fillStyle = 'rgba(255,250,220,0.35)'; ctx.fillRect(x, y, fw, h); }
+  ctx.restore(); return true;
+}
+function hudFrame(name, x, y) { const img = bgImg('hud/' + name); if (!img) return false; ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(img, PX(x), PX(y), img.width * 2, img.height * 2); ctx.restore(); return true; }
+function hudPanel(x, y, w, h) {
+  const img = bgImg('hud/plate'); if (!img || !bgReady(HUD_FILES)) { pxPanel(x, y, w, h); return; }
+  x = PX(x); y = PX(y); w = PX(w); h = PX(h); const c = 6, C = c * 2, mw = 50, mh = 10, sx = 120, sy = 26;   // corner (native), and a plain patch of the plate
+  ctx.save(); ctx.imageSmoothingEnabled = false; const d = (a, b, cw, ch, X, Y, Wd, Hd) => ctx.drawImage(img, a, b, cw, ch, X, Y, Wd, Hd);
+  d(sx, sy, mw, mh, x + C, y + C, w - 2 * C, h - 2 * C);
+  d(120, 0, img.width - 126, c, x + C, y, w - 2 * C, C); d(120, img.height - c, img.width - 126, c, x + C, y + h - C, w - 2 * C, C);   // top and bottom from clear of the holes
+  d(img.width - c, c, c, img.height - 2 * c, x + w - C, y + C, C, h - 2 * C);
+  ctx.save(); ctx.translate(x + C, 0); ctx.scale(-1, 1); d(img.width - c, c, c, img.height - 2 * c, 0, y + C, C, h - 2 * C); d(img.width - c, 0, c, c, 0, y, C, C); d(img.width - c, img.height - c, c, c, 0, y + h - C, C, C); ctx.restore();   // the plate's left edge has the portrait window in it: mirror its right edge
+  d(img.width - c, 0, c, c, x + w - C, y, C, C); d(img.width - c, img.height - c, c, c, x + w - C, y + h - C, C, C);
+  ctx.restore();
+}
 function drawHUD() {
   const p = player;
-  pxPanel(12, 12, 362, 84);
+  const plate = bgReady(HUD_FILES); if (!plate) pxPanel(12, 12, 362, 84);
   ctx.save(); ctx.beginPath(); ctx.rect(20, 20, 56, 68); ctx.clip();
   ctx.fillStyle = '#2a3a42'; ctx.fillRect(20, 20, 56, 68);
   drawHuman({ look: p.look, def: p.def, face: 1, state: 'idle', t: 0, z: 0, walk: 0, vx: 0, vy: 0, flash: 0 }, 46, 170, p.def.id === 'thet' || p.def.id === 'ash' ? 1.15 * 62 / SPRITE_META[p.def.id].h : 1.15);
   ctx.restore();
-  ctx.fillStyle = OUT; ctx.fillRect(18, 18, 60, 2); ctx.fillRect(18, 88, 60, 2); ctx.fillRect(18, 20, 2, 68); ctx.fillRect(76, 20, 2, 68);
+  if (plate) hudFrame('plate', 12, 12); else { ctx.fillStyle = OUT; ctx.fillRect(18, 18, 60, 2); ctx.fillRect(18, 88, 60, 2); ctx.fillRect(18, 20, 2, 68); ctx.fillRect(76, 20, 2, 68); }
   textOut(p.def.name, 88, 30, '18px ' + DISPLAY, '#efe6d2', OUT, 4, 'left');
   textOut('x' + Math.max(0, run.lives - 1), 362, 30, '15px ' + DISPLAY, '#efe6d2', OUT, 4, 'right');
-  bar(88, 46, 272, 14, p.hp / p.maxHp, p.hp / p.maxHp < 0.3 ? '#e5484d' : '#7fcf5a');
+  if (!(plate && hudFill(p.hp / p.maxHp < 0.3 ? 'fill_foe' : 'fill_hp', 88, 46, 274, 14, p.hp / p.maxHp, false, p.hp / p.maxHp < 0.3 && Math.floor(time * 4) % 2)))
+    bar(88, 46, 272, 14, p.hp / p.maxHp, p.hp / p.maxHp < 0.3 ? '#e5484d' : '#7fcf5a');
   const ready = p.meter >= 100;
   ctx.font = '700 12px ' + DISPLAY; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
   if (p.buffT > 0) {
-    bar(88, 72, 150, 8, p.buffT / BUFF_TIME, Math.floor(time * 8) % 2 ? '#ff6a4a' : '#e2471c', '#2a1c1a');
+    if (!(plate && hudFill('fill_foe', 88, 72, 152, 10, p.buffT / BUFF_TIME, false, Math.floor(time * 8) % 2))) bar(88, 72, 150, 8, p.buffT / BUFF_TIME, Math.floor(time * 8) % 2 ? '#ff6a4a' : '#e2471c', '#2a1c1a');
     ctx.fillStyle = '#ff7a5a'; ctx.fillText('CARP DIEM', 246, 77);
   } else {
-    bar(88, 72, 150, 8, p.meter / 100, ready ? (Math.floor(time * 6) % 2 ? '#ffd23f' : '#f2a23a') : '#c98a2e', '#2c2a22');
+    if (!(plate && hudFill('fill_sp', 88, 72, 152, 10, p.meter / 100, false, ready && Math.floor(time * 6) % 2))) bar(88, 72, 150, 8, p.meter / 100, ready ? (Math.floor(time * 6) % 2 ? '#ffd23f' : '#f2a23a') : '#c98a2e', '#2c2a22');
     ctx.fillStyle = ready ? '#ffd23f' : meterNopeT > 0 ? '#ff6a5a' : '#93a3a1';
     ctx.fillText(ready ? (touchUI ? 'SPECIAL READY' : 'SPECIAL READY: L') : meterNopeT > 0 ? 'NOT READY' : 'SPECIAL', 246, 77);
     if (meterNopeT > 0 && Math.floor(time * 12) % 2) { ctx.strokeStyle = '#ff6a5a'; ctx.lineWidth = 2; ctx.strokeRect(86, 70, 154, 12); }
@@ -8090,25 +8119,25 @@ function drawHUD() {
   let ny = 102;
   if (p.weapon) {
     const w = WEAPONS[p.weapon.k];
-    pxPanel(12, ny, 220, 30);
+    hudPanel(12, ny, 220, 30);
     ctx.save(); ctx.beginPath(); ctx.rect(14, ny + 2, 60, 26); ctx.clip(); drawWeapon(p.weapon.k, 22, ny + 16, 0, Math.min(1, 50 / (w.len + 20))); ctx.restore();
     ctx.font = '700 11px ' + DISPLAY; ctx.fillStyle = '#efe6d2'; ctx.fillText(w.name, 80, ny + 10);
     if (!w.noDur) for (let i = 0; i < w.dur; i++) { ctx.fillStyle = i < p.weapon.dur ? '#ffd23f' : '#2b3b42'; ctx.fillRect(80 + i * 13, ny + 18, 10, 6); }
     ny += 36;
   }
   if (lastFoe && lastFoeT > 0 && !lastFoe.boss && !(S.bosses || []).includes(lastFoe)) {
-    pxPanel(12, ny, 220, 34);
+    hudPanel(12, ny, 220, 34);
     ctx.font = '700 12px ' + DISPLAY; ctx.fillStyle = '#efe6d2'; ctx.textAlign = 'left'; ctx.fillText(lastFoe.def.name, 22, ny + 10);
-    bar(22, ny + 20, 196, 7, lastFoe.hp / lastFoe.maxHp, '#e5484d');
+    if (!hudFill('fill_foe', 22, ny + 20, 196, 8, lastFoe.hp / lastFoe.maxHp, true)) bar(22, ny + 20, 196, 7, lastFoe.hp / lastFoe.maxHp, '#e5484d');
   }
   ctx.font = '700 12px ' + DISPLAY; const stLabel = (ST.door ? 'WAVE ' + (S.waveIdx + 1) : ST.hidden ? 'HIDDEN' : 'STAGE ' + ST.n) + '  ·  ' + ST.title;
   const plateW = Math.max(150, ctx.measureText(stLabel).width + 28);
-  pxPanel(W - 12 - plateW, 12, plateW, 74);
+  hudPanel(W - 12 - plateW, 12, plateW, 74);
   textOut(String(run.score).padStart(7, '0'), W - 20, 34, '24px ' + DISPLAY, '#efe6d2', OUT, 5, 'right');
   ctx.font = '700 12px ' + DISPLAY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'right'; ctx.fillText(stLabel, W - 20, 58);
   ctx.font = '700 11px ' + DISPLAY; ctx.fillStyle = '#c9a25a'; ctx.fillText(run.mini ? 'ONE LIFE' : run.lives >= MAX_LIVES ? 'LIVES MAXED' : 'EXTRA LIFE AT ' + run.nextLife.toLocaleString('en-GB'), W - 20, 75);
   if (S.chain >= 3) { const a = Math.min(1, S.chainT / 0.6); ctx.globalAlpha = a; textOut(S.chain + ' HIT CHAIN', W - 20, 106, (S.chain >= 20 ? 22 : 18) + 'px ' + DISPLAY, S.chain >= 20 ? '#ffd23f' : '#efe6d2', OUT, 5, 'right'); bar(W - 130, 120, 110, 5, S.chainT / 2.4, '#ffd23f', '#2b3b42'); ctx.globalAlpha = 1; }
-  { const pb = pauseBtn(plateW); pxPanel(pb.x - pb.r, pb.y - pb.r, pb.r * 2, pb.r * 2); ctx.fillStyle = '#efe6d2'; ctx.fillRect(pb.x - 6, pb.y - 8, 4, 16); ctx.fillRect(pb.x + 2, pb.y - 8, 4, 16); }
+  { const pb = pauseBtn(plateW); hudPanel(pb.x - pb.r, pb.y - pb.r, pb.r * 2, pb.r * 2); ctx.fillStyle = '#efe6d2'; ctx.fillRect(pb.x - 6, pb.y - 8, 4, 16); ctx.fillRect(pb.x + 2, pb.y - 8, 4, 16); }
   const bosses = (S.bosses || []).filter(b => b.state !== 'emerge');
   if (bosses.length >= 3) {
     textOut(S.bossTitle, W / 2, 106, '16px ' + DISPLAY, '#f2a23a', OUT, 4);
@@ -8116,7 +8145,7 @@ function drawHUD() {
   } else if (bosses.length) {
     const hp = bosses.reduce((s, b) => s + Math.max(0, b.hp), 0), max = bosses.reduce((s, b) => s + b.maxHp, 0);
     textOut(S.bossTitle, W / 2, 110, '16px ' + DISPLAY, '#f2a23a', OUT, 4);
-    bar(W / 2 - 200, 124, 400, 12, hp / max, '#f2a23a', '#3a2a14');
+    if (!(bgReady(HUD_FILES) && hudFrame('boss', W / 2 - 216, 116) && hudFill('fill_boss', W / 2 - 200, 124, 400, 12, hp / max))) bar(W / 2 - 200, 124, 400, 12, hp / max, '#f2a23a', '#3a2a14');
   }
   if (S.goT > 0 && Math.floor(S.goT * 3) % 2 === 0 && mode === 'play' && !ST.fixed) {
     textOut('GO', W - 112, 210, '34px ' + DISPLAY, '#ffd23f', OUT, 6);
