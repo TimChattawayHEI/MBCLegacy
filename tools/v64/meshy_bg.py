@@ -48,6 +48,15 @@ def patch(strip, stage, c):
         row = np.median(out[y0:y1, rx0:rx1], axis=1)[:, None, :]; w = dx1 - dx0
         a = np.clip(np.minimum(np.arange(w) + 1, w - np.arange(w)) / 40, 0, 1)[None, :, None]
         out[y0:y1, dx0:dx1] = out[y0:y1, dx0:dx1] * (1 - a) + row * a
+    for x, w in c.get('seams', []):
+        # [x, w]: a faint vertical line at column x where Meshy's kept quarter meets what it painted. Row by row (smoothed
+        # over 9 rows), the colour step across x is measured from 10 columns either side and spread out over w columns
+        # each way, half taken off each side, so the line goes and the picture either side is left as it was.
+        L = out[:, x - 12:x - 2].mean(1); R = out[:, x + 2:x + 12].mean(1); d = R - L
+        k = np.ones(9) / 9; d = np.stack([np.convolve(np.pad(d[:, i], 4, mode='edge'), k, mode='valid') for i in range(3)], 1)
+        t = np.arange(w, dtype=np.float32) / w
+        out[:, x - w:x] += d[:, None, :] * (0.5 * t)[None, :, None]          # left side rises to meet the middle
+        out[:, x:x + w] -= d[:, None, :] * (0.5 * (1 - t))[None, :, None]    # right side comes down to meet it
     for x, name in c.get('patches', []):
         im = np.asarray(Image.open(os.path.join(HERE, 'img', stage, name + '.webp')).convert('RGB').resize((PW, PH))).astype(np.float32)
         x0 = x - PW // 2; a = np.clip(1 - np.abs(np.arange(PW) - PW / 2) / (PW * 0.36), 0, 1); a = np.clip(a * 3, 0, 1)[None, :, None]
