@@ -27,6 +27,8 @@
 - [x] Fishery pegs, Jo's rota, Nozzer's chair and the smoker repainted in Meshy
 - [x] Every place-to-place join in the stage pictures blended (Arrivals apron to hall, and the rest)
 - [x] Boss intro cards with Meshy portraits for every boss
+- [x] Seb redrawn from Tim's photos: buzz cut, ginger stubble, no sunglasses, no camo (grey-olive shirt over a white tee, jeans, boots, watch)
+  - Done (V68): every move, his select pose, his portrait (also his group chat face) and his title pick card. Same frame counts, so his timings haven't changed. `tools/v68_build.py` patches the page directly like V66 and V67
 
 ### Updates
 - [x] In-app updates: the app downloads only the changed game files from GitHub and restarts itself, no APK download. A full APK only when the Android side changes
@@ -42,7 +44,7 @@
   - Done (V67): the fishery's Meshy peg boards standing in the lake with the yards on them (every 100 in red)
 
 ### For whoever builds next
-- [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 and V67 patch the page directly for that reason
+- [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66, V67 and V68 patch the page directly for that reason
 
 ## Carried over from the build plan
 
