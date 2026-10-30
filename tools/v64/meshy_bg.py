@@ -135,8 +135,8 @@ def loop(stage, c):
     with no join at either end (Meshy will not paint a panel that leads back into the first one)"""
     s = np.asarray(stitch(stage, c['loop']))
     s = Image.fromarray(np.concatenate([s, s[:, ::-1]], axis=1))
-    k = c['ground'] / 2 / c['base']
-    out = s.crop((0, 0, s.width, c['base'])).resize((round(s.width * k), round(c['ground'] / 2)), Image.LANCZOS)
+    top = c.get('top', 0); k = c['ground'] / 2 / (c['base'] - top)
+    out = s.crop((0, top, s.width, c['base'])).resize((round(s.width * k), round(c['ground'] / 2)), Image.LANCZOS)
     out.save(os.path.join(OUT, stage + '_loop.png'), optimize=True); print(stage, 'loop', out.size)
 
 for stage in ([] if sys.argv[1:] == ['--none'] else sys.argv[1:] or list(CFG)):

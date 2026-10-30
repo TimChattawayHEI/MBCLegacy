@@ -251,5 +251,15 @@
     768
    ]
   ]
+ },
+ "naval": {
+  "loop": [
+   "p0",
+   "p1"
+  ],
+  "mirror": true,
+  "top": 100,
+  "base": 768,
+  "ground": 540
  }
 }

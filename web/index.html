@@ -6508,24 +6508,25 @@ function bgNavalPixel() {
   for (const s of stars) { if (s.y > 200) continue; ctx.fillStyle = 'rgba(255,255,240,' + (0.5 + Math.sin(time * 2 + s.p) * 0.4).toFixed(2) + ')'; ctx.fillRect(Math.round(s.x / 2) * 2, Math.round(s.y / 2) * 2, 2, 2); }
   pxCircle(760, 78, 34, '#f2ecd4'); pxCircle(750, 70, 6, '#cfc6a8'); pxCircle(772, 90, 4, '#cfc6a8');
   const farX = (x, k) => ((x - scroll * k) % (W + 600) + W + 600) % (W + 600) - 300;
-  // far shore: the same treeline as the fishery, in moonlight
-  { const img = bgImg(FSH + 'treeline'), w = img.width * 2 - 24, off = ((scroll * 0.05) % w + w) % w;
+  // far shore: the same treeline as the fishery, in moonlight (Version 64: Meshy's lake once it has loaded)
+  const nshore = meshyNaval(scroll);
+  if (!nshore) { const img = bgImg(FSH + 'treeline'), w = img.width * 2 - 24, off = ((scroll * 0.05) % w + w) % w;
     ctx.save(); ctx.imageSmoothingEnabled = false;
     for (let sx = -off - w; sx < W; sx += w) ctx.drawImage(img, Math.round(sx / 2) * 2, 160, img.width * 2, 74);
     ctx.restore(); ctx.fillStyle = 'rgba(6,10,24,0.78)'; ctx.fillRect(0, 150, W, 86); }
   // the island, a campfire and Nozzer's caravan
-  { const ix = Math.round(farX(900, 0.25) / 2) * 2; ctx.fillStyle = '#081013'; ctx.fillRect(ix - 120, 226, 240, 10); for (let i = 0; i < 5; i++) pxCircle(ix - 70 + i * 34, 220 - (i % 2) * 8, 22, '#081013'); }
+  if (!nshore) { const ix = Math.round(farX(900, 0.25) / 2) * 2; ctx.fillStyle = '#081013'; ctx.fillRect(ix - 120, 226, 240, 10); for (let i = 0; i < 5; i++) pxCircle(ix - 70 + i * 34, 220 - (i % 2) * 8, 22, '#081013'); }
   { const fx = Math.round(farX(300, 0.12) / 2) * 2, f = Math.floor(time * 8) % 3;
     ctx.fillStyle = 'rgba(255,150,60,0.18)'; ctx.fillRect(fx - 36, 196, 72, 36); ctx.fillStyle = 'rgba(255,150,60,0.3)'; ctx.fillRect(fx - 18, 206, 36, 26);
     ctx.fillStyle = '#ffb04a'; ctx.fillRect(fx - 4, 218 - f * 2, 8, 12 + f * 2); ctx.fillStyle = '#fff0b0'; ctx.fillRect(fx - 2, 224, 4, 6); }
-  { const cv = Math.round(farX(560, 0.12) / 2) * 2; ctx.fillStyle = '#121a1e'; ctx.fillRect(cv - 26, 196, 52, 22); ctx.fillRect(cv - 22, 192, 44, 4);
+  if (!nshore) { const cv = Math.round(farX(560, 0.12) / 2) * 2; ctx.fillStyle = '#121a1e'; ctx.fillRect(cv - 26, 196, 52, 22); ctx.fillRect(cv - 22, 192, 44, 4);
     ctx.fillStyle = S.fire > 1 || Math.floor(time) % 7 === 0 ? '#ffd27a' : '#3a3420'; ctx.fillRect(cv - 14, 202, 10, 8); }
-  // the water
-  ['#13283a', '#11243a', '#0f2034', '#0d1c2e', '#0b1828', '#091422', '#07101c', '#050d16'].forEach((c, i) => { ctx.fillStyle = c; ctx.fillRect(0, 232 + i * 40, W, 40); });
-  for (let i = 0; i < 14; i++) { const y = 240 + i * 8, w = Math.round((70 - i * 3 + Math.sin(time * 2 + i) * 8) / 2) * 2; ctx.fillStyle = 'rgba(240,236,212,' + (0.4 - i * 0.025).toFixed(2) + ')'; ctx.fillRect(Math.round((760 - w / 2 + Math.sin(time * 1.4 + i) * 6) / 2) * 2, y, w, 2); }
+  // the water (Meshy's has its own colour; the game's moonlight and ripples go over it)
+  if (!nshore) ['#13283a', '#11243a', '#0f2034', '#0d1c2e', '#0b1828', '#091422', '#07101c', '#050d16'].forEach((c, i) => { ctx.fillStyle = c; ctx.fillRect(0, 232 + i * 40, W, 40); });
+  for (let i = 0; i < 14; i++) { const y = (nshore ? 292 : 240) + i * 8, w = Math.round((70 - i * 3 + Math.sin(time * 2 + i) * 8) / 2) * 2; ctx.fillStyle = 'rgba(240,236,212,' + (0.4 - i * 0.025).toFixed(2) + ')'; ctx.fillRect(Math.round((760 - w / 2 + Math.sin(time * 1.4 + i) * 6) / 2) * 2, y, w, 2); }
   ctx.fillStyle = 'rgba(160,200,230,0.2)';
-  for (let i = 0; i < 40; i++) { const y = 250 + (i * 29) % 290, sp = 0.4 + (y - 240) / 300; const x = ((i * 211 - scroll * sp) % (W + 160) + W + 160) % (W + 160) - 80; ctx.fillRect(Math.round(x / 2) * 2, Math.round(y / 2) * 2, 30 + (i % 3) * 14, 2); }
-  for (let i = 0; i < 4; i++) { ctx.fillStyle = 'rgba(220,230,240,0.07)'; const x = Math.round((((i * 300 + time * 18) % (W + 500)) - 250) / 2) * 2; ctx.fillRect(x - 240, 254 + i * 24, 480, 12); ctx.fillRect(x - 160, 250 + i * 24, 320, 4); }
+  for (let i = 0; i < 40; i++) { const y = (nshore ? 296 : 250) + (i * 29) % (nshore ? 244 : 290), sp = 0.4 + (y - 240) / 300; const x = ((i * 211 - scroll * sp) % (W + 160) + W + 160) % (W + 160) - 80; ctx.fillRect(Math.round(x / 2) * 2, Math.round(y / 2) * 2, 30 + (i % 3) * 14, 2); }
+  for (let i = 0; i < 4; i++) { ctx.fillStyle = 'rgba(220,230,240,0.07)'; const x = Math.round((((i * 300 + time * 18) % (W + 500)) - 250) / 2) * 2; ctx.fillRect(x - 240, (nshore ? 304 : 254) + i * 24, 480, 12); ctx.fillRect(x - 160, (nshore ? 300 : 250) + i * 24, 320, 4); }
   drawRaftPixel();
   return true;
 }
@@ -7031,6 +7032,10 @@ function drawStageBg() {
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (meshyBg()) return;   // Version 64: painted in Meshy
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (ST.era === 2006 && nlDrawStageBg(ST.bg)) return;
   if (ST.bg === 'fishery') bgFisheryPixel();
   else if (ST.bg === 'orpington') bgOrpingtonPixel();
@@ -7319,6 +7324,18 @@ function meshyRoad() {
   ctx.save(); ctx.imageSmoothingEnabled = false;
   for (let x = -s; x < W; x += w) ctx.drawImage(img, snap2(x), ROAD_TOP - h, w, h);
   ctx.restore(); return true;
+}
+// Naval Operations: the midnight lake, sky to water, on a loop, drifting slowly past as the dinghy is towed; the
+// game's moon, campfire and ripples stay on top (bgNavalPixel draws its old shore only until this has loaded)
+ASSET_BG.push('meshy/naval_loop');
+function meshyNaval(scroll) {
+  const img = bgImg('meshy/naval_loop'); if (!img) return false;
+  const w = img.width * 2, h = img.height * 2, s = (((scroll * 0.12) % w) + w) % w;
+  ctx.save(); ctx.imageSmoothingEnabled = false;
+  for (let x = -s; x < W; x += w) ctx.drawImage(img, snap2(x), 0, w, h);
+  ctx.restore();
+  pxCircle(760, 78, 34, '#f2ecd4'); pxCircle(750, 70, 6, '#cfc6a8'); pxCircle(772, 90, 4, '#cfc6a8');
+  return true;
 }
 function meshyOver(k) {
   if (k === 'frequency') { if (S.tree) drawTree(S.tree); }

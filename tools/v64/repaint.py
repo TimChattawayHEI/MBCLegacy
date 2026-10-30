@@ -23,6 +23,8 @@ SHEETS = {
                    "five separate parts from the inside of a 2006 London commuter train and a night bus, side by side: a door frame, the carriage end wall with its door, a train toilet door with a light above it, a pair of sliding train doors with yellow stripes and windows, and the night bus staircase"),
     'bus_deck': (4, [('nightlife/bus_deck', 48, 96)],
                  "the top deck of a London night bus at 2am, seen from inside, side on: red and blue tartan moquette seats, a yellow grab pole, the bus's red side panels and windows, dim interior lights"),
+    'naval': (4, [('naval/raft', 40, 120), ('naval/bbq', 1130, 220)],
+              "two separate things from a midnight carp lake, side by side: a big orange inflatable dinghy seen from the side and slightly above, with yellow straps and grab ropes and a grey floor, and a small black kettle barbecue on legs with glowing coals"),
     'scenery': (3.44, [('nightlife/sc_suburb', 0, 40), ('nightlife/sc_platform', 0, 400)],
                 "two separate long strips of scenery seen from a train window at night, one above the other: a row of south-east London terraced houses with lit windows under a starry sky, and a lit suburban railway platform with lamps, benches and a few waiting commuters"),
     'highst': (3.44, [('nightlife/sc_highst', 0, 220)],
@@ -30,6 +32,7 @@ SHEETS = {
 }
 
 
+BOOST = {'naval/raft': (1.35, 1.25)}   # (colour, brightness): Meshy painted the dinghy a dull rust; it is a bright orange one
 WRAP = {'nightlife/sc_suburb', 'nightlife/sc_platform', 'nightlife/sc_highst', 'nightlife/bus_deck', 'nightlife/tr_wall'}
 
 
@@ -67,6 +70,9 @@ def cut(name):
     for path, x, y in pieces:   # Meshy keeps the layout where it was put
         im = old(path); w, h = round(im.width * k), round(im.height * k)
         part = new.crop((x, y, x + w, y + h)).resize(im.size, Image.LANCZOS)
+        if path in BOOST:
+            from PIL import ImageEnhance
+            part = ImageEnhance.Brightness(ImageEnhance.Color(part).enhance(BOOST[path][0])).enhance(BOOST[path][1])
         o = np.asarray(im).astype(np.int32); a = o[..., 3]; p = np.asarray(part).astype(np.int32)
         out = np.dstack([p, a])
         # see-through parts (window glass, sky) keep their old paint; so does any magenta that bled into an edge

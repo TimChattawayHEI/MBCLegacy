@@ -27,6 +27,18 @@ function meshyRoad() {
   for (let x = -s; x < W; x += w) ctx.drawImage(img, snap2(x), ROAD_TOP - h, w, h);
   ctx.restore(); return true;
 }
+// Naval Operations: the midnight lake, sky to water, on a loop, drifting slowly past as the dinghy is towed; the
+// game's moon, campfire and ripples stay on top (bgNavalPixel draws its old shore only until this has loaded)
+ASSET_BG.push('meshy/naval_loop');
+function meshyNaval(scroll) {
+  const img = bgImg('meshy/naval_loop'); if (!img) return false;
+  const w = img.width * 2, h = img.height * 2, s = (((scroll * 0.12) % w) + w) % w;
+  ctx.save(); ctx.imageSmoothingEnabled = false;
+  for (let x = -s; x < W; x += w) ctx.drawImage(img, snap2(x), 0, w, h);
+  ctx.restore();
+  pxCircle(760, 78, 34, '#f2ecd4'); pxCircle(750, 70, 6, '#cfc6a8'); pxCircle(772, 90, 4, '#cfc6a8');
+  return true;
+}
 function meshyOver(k) {
   if (k === 'frequency') { if (S.tree) drawTree(S.tree); }
   if (k === 'divebar') {
