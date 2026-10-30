@@ -71,5 +71,14 @@
     "s3"
    ]
   ]
+ },
+ "road": {
+  "loop": [
+   "p0b",
+   "p1"
+  ],
+  "mirror": true,
+  "base": 576,
+  "ground": 330
  }
 }

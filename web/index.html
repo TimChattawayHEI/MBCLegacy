@@ -7015,6 +7015,8 @@ function drawStageBg() {
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (meshyBg()) return;   // Version 64: painted in Meshy
   if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
+  if (meshyBg()) return;   // Version 64: painted in Meshy
+  if (ST.bg === 'kebab') { kebabBg(); return; }   // Version 59
   if (ST.era === 2006 && nlDrawStageBg(ST.bg)) return;
   if (ST.bg === 'fishery') bgFisheryPixel();
   else if (ST.bg === 'orpington') bgOrpingtonPixel();
@@ -7292,6 +7294,15 @@ function meshyBg() {
   for (let i = 0; i < files.length; i++) bgPut(bgImg(files[i]), i * MESHY_TILE * 2, H);
   meshyOver(k);
   return true;
+}
+// the drive to the bar: the coast scenery above the road, on a loop, scrolled with the road
+ASSET_BG.push('meshy/road_loop');
+function meshyRoad() {
+  const img = bgImg('meshy/road_loop'); if (!img) return false;
+  const w = img.width * 2, h = img.height * 2, s = ((cam.x % w) + w) % w;
+  ctx.save(); ctx.imageSmoothingEnabled = false;
+  for (let x = -s; x < W; x += w) ctx.drawImage(img, snap2(x), ROAD_TOP - h, w, h);
+  ctx.restore(); return true;
 }
 function meshyOver(k) {
   if (k === 'frequency') { if (S.tree) drawTree(S.tree); }
@@ -9208,6 +9219,7 @@ function bgRoadPixel() {
   // a low stone wall along the top of the road
   ctx.fillStyle = '#c8b898'; ctx.fillRect(0, 300, W, 30); ctx.fillStyle = '#a8987a'; ctx.fillRect(0, 300, W, 4);
   ctx.fillStyle = '#b4a486'; for (let wx = Math.floor(cx / 40) * 40; wx < cx + W; wx += 40) { const x = snap2(wx - cx); ctx.fillRect(x, 306, 2, 24); ctx.fillRect(x + 20, 318, 2, 12); }
+  meshyRoad();   // Version 64: the coast painted in Meshy, over the old scenery
   // the road
   ctx.fillStyle = '#4e4e56'; ctx.fillRect(0, ROAD_TOP, W, ROAD_BOT - ROAD_TOP);
   ctx.fillStyle = '#56565e'; for (let wx = Math.floor(cx / 64) * 64; wx < cx + W; wx += 64) { const x = snap2(wx - cx); for (let i = 0; i < 4; i++) ctx.fillRect(x + (hash(wx + i) * 60 | 0), ROAD_TOP + 8 + (hash(wx * 3 + i) * 176 | 0), 4, 2); }

@@ -57,8 +57,18 @@ def fit(strip, c):
     return out.crop((0, 0, c['len'] // 2, 270))
 
 
+def loop(stage, c):
+    """scenery that repeats forever (the drive): the panels stitched, then the same again mirrored, so the loop runs on
+    with no join at either end (Meshy will not paint a panel that leads back into the first one)"""
+    s = np.asarray(stitch(stage, c['loop']))
+    s = Image.fromarray(np.concatenate([s, s[:, ::-1]], axis=1))
+    k = c['ground'] / 2 / c['base']
+    out = s.crop((0, 0, s.width, c['base'])).resize((round(s.width * k), round(c['ground'] / 2)), Image.LANCZOS)
+    out.save(os.path.join(OUT, stage + '_loop.png'), optimize=True); print(stage, 'loop', out.size)
+
 for stage in ([] if sys.argv[1:] == ['--none'] else sys.argv[1:] or list(CFG)):
     c = CFG[stage]
+    if 'loop' in c: loop(stage, c); continue
     full = fit(patch(stitch(stage, c['panels']), stage, c), c)
     for f in os.listdir(OUT):
         if f.startswith(stage + '_'): os.remove(os.path.join(OUT, f))

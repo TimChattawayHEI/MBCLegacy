@@ -16,6 +16,15 @@ function meshyBg() {
   meshyOver(k);
   return true;
 }
+// the drive to the bar: the coast scenery above the road, on a loop, scrolled with the road
+ASSET_BG.push('meshy/road_loop');
+function meshyRoad() {
+  const img = bgImg('meshy/road_loop'); if (!img) return false;
+  const w = img.width * 2, h = img.height * 2, s = ((cam.x % w) + w) % w;
+  ctx.save(); ctx.imageSmoothingEnabled = false;
+  for (let x = -s; x < W; x += w) ctx.drawImage(img, snap2(x), ROAD_TOP - h, w, h);
+  ctx.restore(); return true;
+}
 function meshyOver(k) {
   if (k === 'frequency') { if (S.tree) drawTree(S.tree); }
   if (k === 'soundz') {
