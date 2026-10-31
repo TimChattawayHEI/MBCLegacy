@@ -8693,7 +8693,7 @@ setTimeout(() => {
   MINI_AFTER.orp_atlantis = 'snake';
   MINI_DEF.snake = { title: 'SNAKE', short: 'SNAKE', lad: 'kelly', price: 1000, unit: '', board: 'TOP SCORES', music: 'nightbus', pay: s => s * 12,
     after: 'Atlantis', how: ['11pm to 2am on the coach. Kelly has a Nokia and 23% battery.', "Eat the dots. Don't eat yourself. The walls wrap round.", 'Faster every five. The battery dies at 2am.'],
-    keys: 'Arrows to turn', touch: 'Stick to turn' };
+    keys: 'Arrows to turn', touch: 'Arrows or swipe to turn' };
   MGAME.snake = {
     init(M) {
       const C = 21, R = 12;
@@ -8710,7 +8710,10 @@ setTimeout(() => {
       // turning: remember up to two turns so a quick double tap works; never straight back on yourself
       const inp = readInput(); let want = null;
       if (inp.ix) want = [inp.ix, 0]; else if (inp.iy) want = [0, inp.iy];
-      if (!want && taps.length) { const t = taps[taps.length - 1], hx = t.x - W / 2, hy = t.y - H / 2; want = Math.abs(hx) > Math.abs(hy) ? [Math.sign(hx), 0] : [0, Math.sign(hy)]; }
+      // on a phone (Version 78): a tap on the D-pad, or a swipe anywhere (each 30 px of finger travel is a turn)
+      for (const t of taps) { const d = orpSnakePadAt(t.x, t.y); if (d) { want = d; s.padT = 0.15; s.padD = d; } }
+      for (const q of pubPtr.values()) { const dx = q.x - q.ox, dy = q.y - q.oy; if (Math.hypot(dx, dy) > 30 && !orpSnakePadAt(q.ox, q.oy)) { want = Math.abs(dx) > Math.abs(dy) ? [Math.sign(dx), 0] : [0, Math.sign(dy)]; q.ox = q.x; q.oy = q.y; } }
+      if (s.padT > 0) s.padT -= dt;
       if (want) { const last = s.q.length ? s.q[s.q.length - 1] : s.dir; if (!(want[0] === -last[0] && want[1] === -last[1]) && !(want[0] === last[0] && want[1] === last[1]) && s.q.length < 2) s.q.push(want); }
       s.acc += dt;
       while (s.acc >= s.step && s.endT < 0) {
@@ -8748,6 +8751,7 @@ setTimeout(() => {
       if (s.bug && Math.floor(time * 6) % 2) { const [x, y] = s.bug; ctx.fillRect(sx + x * cs + 3, sy + y * cs + 5, cs * 2 - 6, cs - 10); ctx.fillRect(sx + x * cs + 6, sy + y * cs + 2, 4, 4); ctx.fillRect(sx + x * cs + cs * 2 - 10, sy + y * cs + 2, 4, 4); }
       // the keypad under the screen
       for (let r = 0; r < 2; r++) for (let c = 0; c < 3; c++) { ctx.fillStyle = '#3a4a6a'; rrect(W / 2 - 96 + c * 70, sy + sh + 42 + r * 34, 52, 24, 10); ctx.fill(); }
+      if (touchUI) orpSnakePadDraw(s);
     },
     hud(M) {
       const s = M.s;
@@ -8760,6 +8764,33 @@ setTimeout(() => {
   };
 }, 0);
 
+
+// Snake's D-pad (Version 78): four big arrows beside the phone (the right-hand side, or the left with the stick set to the right).
+// A tap anywhere on the pad counts, by which way it is from the middle, so you don't have to hit an arrow dead on.
+const orpSnakePad = () => ({ x: settings.lefty ? 112 : W - 112, y: 352, o: 66, r: 42 });
+function orpSnakePadAt(x, y) {
+  const P = orpSnakePad(), dx = x - P.x, dy = y - P.y, d = Math.hypot(dx, dy);
+  if (d < 10 || d > P.o + P.r + 14) return null;
+  return Math.abs(dx) > Math.abs(dy) ? [Math.sign(dx), 0] : [0, Math.sign(dy)];
+}
+function orpSnakePadDraw(s) {
+  const P = orpSnakePad(), held = [];
+  for (const q of pubPtr.values()) { const d = orpSnakePadAt(q.x, q.y); if (d) held.push(d); }
+  if (s.padT > 0 && s.padD) held.push(s.padD);
+  ctx.save();
+  ctx.fillStyle = 'rgba(10,14,28,0.55)'; ctx.beginPath(); ctx.arc(P.x, P.y, P.o + P.r + 8, 0, Math.PI * 2); ctx.fill();
+  for (const [ax, ay] of [[0, -1], [0, 1], [-1, 0], [1, 0]]) {
+    const bx = P.x + ax * P.o, by = P.y + ay * P.o, on = held.some(h => h[0] === ax && h[1] === ay);
+    ctx.fillStyle = on ? '#9be25a' : 'rgba(40,52,84,0.92)'; ctx.beginPath(); ctx.arc(bx, by, P.r, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = on ? '#e8ffd0' : '#9be25a'; ctx.lineWidth = 3; ctx.stroke();
+    // the arrow
+    const k = 16, px = -ay, py = ax;
+    ctx.fillStyle = on ? '#1a2a10' : '#d9f7c0'; ctx.beginPath();
+    ctx.moveTo(bx + ax * k, by + ay * k); ctx.lineTo(bx - ax * k * 0.6 + px * k, by - ay * k * 0.6 + py * k); ctx.lineTo(bx - ax * k * 0.6 - px * k, by - ay * k * 0.6 - py * k); ctx.closePath(); ctx.fill();
+  }
+  if (s.time > 84) pxText('TAP OR SWIPE', P.x, P.y + P.o + P.r + 26, 11, '#d9f7c0');
+  ctx.restore();
+}
 
 // ---------------------------------------------------------------- lamp posts and poles (Version 75)
 // A post only blocks a small spot where it meets the pavement, and it's drawn again, cut from the painting, over anyone

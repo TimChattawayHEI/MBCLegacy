@@ -203,6 +203,9 @@ Tim asked what Meshy could do with lighting: it has no live lighting, but it can
 - [ ] Tim: check it on a phone, that it isn't too dark on the street and that the dance floor (14 dancers, all lit) still runs smoothly
 - [ ] Next if wanted: painted lit/unlit pairs for the big moments (Atlantis at 2am with the house lights up, last orders dimming the Blacksmiths)
 
+### Snake on a phone (V78, 31 October)
+- [x] Tim: the Snake controls don't work well, maybe an up/down/left/right overlay. Done (V78): on a phone, Snake had no stick and only turned by tapping left/right/above/below the middle of the screen. Now there's a D-pad of four big arrows beside the Nokia (on the right, or the left with the stick set to the right in Settings); a tap anywhere on the pad counts by which way it is from the middle, the arrow lights up, and a swipe anywhere on the screen also turns (every 30 px of finger travel is a turn, so you can steer without lifting). Same on the coach and the Harvest Moon cabinet
+
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
 
