@@ -199,6 +199,7 @@ function updateOrp(dt) {
   orpWheelsTick(dt);
   orpPostsTick();
   nlStyleTick(dt); orpCrowdTick(dt);   // Version 76: the crowd's moves (tools/v76/crowd.js)
+  orpLightTick(dt);   // Version 77
 }
 function orpAnnounce(text, life) { S.ann = { text, t: 0, life: life || 3.2 }; sfx('page'); }
 function orpComic(id, then) {   // a comic page in the middle of a stage, then straight back to the fight
@@ -613,6 +614,7 @@ function orpBg() {
   const img = bgImg('orp/' + (S.scBg || (orpScenes() && orpScenes()[0].bg)));
   if (!img) { ctx.fillStyle = '#0b0c1a'; ctx.fillRect(0, 0, W, H); return true; }
   ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(img, 0, 0, W, H); ctx.restore();
+  orpGlowBg();   // Version 77: the night, and the lights (tools/v77/light.js)
   if (S.scBg === 'floor') orpClubLights();
   return true;
 }
