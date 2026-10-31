@@ -206,6 +206,17 @@ Tim asked what Meshy could do with lighting: it has no live lighting, but it can
 ### Snake on a phone (V78, 31 October)
 - [x] Tim: the Snake controls don't work well, maybe an up/down/left/right overlay. Done (V78): on a phone, Snake had no stick and only turned by tapping left/right/above/below the middle of the screen. Now there's a D-pad of four big arrows beside the Nokia (on the right, or the left with the stick set to the right in Settings); a tap anywhere on the pad counts by which way it is from the middle, the arrow lights up, and a swipe anywhere on the screen also turns (every 30 px of finger travel is a turn, so you can steer without lifting). Same on the coach and the Harvest Moon cabinet
 
+### Quality of life (V79, 31 October)
+Tim asked for quality of life ideas, then for all six
+- [x] The "!" warning before a big move now covers the ten Orpington locals too (the Builder's barge, the Old Boy's hook, Moschino's champagne and the rest), lifted clear of each sprite's head
+- [x] How-to cards stop the game the first time only; after that a one-line reminder at the top while you play (Settings: HOW-TO CARDS, FIRST TIME ONLY / EVERY TIME)
+- [x] An arrow at the edge of the screen for anyone walking in off it, on every stage (red for a boss)
+- [x] Auto-turn on a phone: punch with nobody in front and someone right behind, and you turn round to hit them, unless you're pushing the stick the way you face (Settings: AUTO-TURN, ON / OFF)
+- [x] Settings: LIGHTING, FULL / LOW (low keeps the glowing backdrops, skips lighting the fighters, for older phones)
+- [x] Orpington stages carry on from the place you'd reached (the bar, the pool room, the dance floor) when you carry a run on after the app closed; RESTART STAGE still starts from the top
+- [x] Found while testing: a how-to card appearing mid-punch left the punch stuck (a glitch message on screen); fixed
+- [ ] Tim: try AUTO-TURN on the phone and say if it turns you when you didn't want it to
+
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
 

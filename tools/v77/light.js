@@ -105,7 +105,7 @@ function orpLightsAt(x, y) {
 const ORP_LCV = document.createElement('canvas'), ORP_LCX = ORP_LCV.getContext('2d');
 // called from drawLad straight after the sprite is drawn, inside its transform (dir: which way it's drawn)
 function orpLightSprite(e, sh, sx, sy, cell, dx, dy, dw, dh, dir) {
-  const c = orpLightCfg(); if (!c || S.lights || e.post) return;
+  const c = orpLightCfg(); if (!c || S.lights || e.post || settings.light === 'low') return;
   const ls = orpLightsAt(e.x - cam.x, e.y) || [];
   if (ORP_LCV.width < cell || ORP_LCV.height < cell) { ORP_LCV.width = Math.max(ORP_LCV.width, cell); ORP_LCV.height = Math.max(ORP_LCV.height, cell); }
   const x = ORP_LCX, lit = ls.reduce((s, l) => s + l[1], 0);
