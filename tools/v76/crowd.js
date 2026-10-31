@@ -421,6 +421,7 @@ function orpCrowdTick(dt) {
   S.ocFx = S.ocFx.filter(e => !e.dead);
 }
 function orpCrowdFore() {
+  qolTells();   // Version 79: the "!" before a big move
   if (S.ocFx) for (const e of S.ocFx) {
     if (e.k === 'ring') {   // the wave front rolling away from the mic: a bright arc and two fainter ones behind it
       const a = Math.max(0, 1 - e.t / 0.8), fx = e.x - cam.x + e.face * e.r, cy = e.y - 66, ry = 46 + e.r * 0.1;

@@ -167,6 +167,7 @@ function orpGoScene(i, fromDir) {
     if (p.state !== 'dead' && p.state !== 'walkin') setIdle(p);
   }
   cam.x = 0;
+  qolOrpSaveScene(i);
 }
 function orpExitOpen(w) { S.exitReady = { dir: w.dir || 1, to: w.to, label: w.label }; S.goT = 0; S.wave = null; S.waveIdx++; sfx('ready'); }
 function orpWipe(to, dir, label) { if (S.wipe) return; S.wipe = { t: 0, to, dir, label, swapped: false }; sfx('swing'); }
@@ -175,7 +176,7 @@ function orpWipe(to, dir, label) { if (S.wipe) return; S.wipe = { t: 0, to, dir,
 function updateOrp(dt) {
   if (!S || !ST || ST.era !== 2001) return;
   if (!S.npcs) S.npcs = [];
-  if (S.sc == null) orpGoScene(0);
+  if (S.sc == null) qolOrpStartScene();   // Version 79: from the place you'd reached, when carrying a run on
   updateNpcs(dt);
   if (S.ann) { S.ann.t += dt; if (S.ann.t > S.ann.life) S.ann = null; }
   if (S.wipe) {
@@ -206,12 +207,16 @@ function orpComic(id, then) {   // a comic page in the middle of a stage, then s
   comicShow(id, () => { mode = 'play'; modeT = 0; if (then) then(); });
 }
 // how-to cards: the game waits until you've read it (HIT, JUMP or a tap; it goes by itself after 12 seconds)
-function orpHowto(title, lines, then) { S.howto = { title, lines, then, t: 0 }; sfx('page'); }
+function orpHowto(title, lines, then) {
+  // Version 79: the card stops the game the first time only; after that, a reminder at the top while you play
+  if (qolHowSeen(title) && ORP_HOW_SHORT[title]) { orpAnnounce(ORP_HOW_SHORT[title], 3.6); if (then) then(); return; }
+  S.howto = { title, lines, then, t: 0 }; sfx('page');
+}
 function orpHowtoTick(dt) {
   const h = S.howto; h.t += dt;
-  for (const p of players()) { p.vx = p.vy = 0; p.atk = null; if (p.state === 'walk' || p.state === 'run') setIdle(p); }
+  for (const p of players()) { p.vx = p.vy = 0; if (p.atk || p.state === 'walk' || p.state === 'run' || p.state === 'punch') { p.atk = null; setIdle(p); } }   // Version 79: a punch mid-card no longer sticks
   const go = h.t > 0.6 && (pressed.has('punch') || pressed.has('jump') || pressed.has('start') || taps.length);
-  if (go || h.t > 12) { S.howto = null; sfx('ready'); if (h.then) h.then(); }
+  if (go || h.t > 12) { S.howto = null; sfx('ready'); if (go) qolHowRead(h.title); if (h.then) h.then(); }
 }
 function orpEvent(ev) {
   if (!ST || ST.era !== 2001) return false;
