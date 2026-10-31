@@ -180,6 +180,21 @@ Real street order, left to right (the mirror shop is past the Blacksmiths, not b
   - Done (V75): posts block only a small spot at their foot and are drawn over anyone behind them (you can walk round the back); the street places' floor line moved down to where the buildings actually meet the pavement (FT 406); the bouncer is gone; queue-jumpers no longer add to the queue, it only counts down (10 to the door), with four lots of them pushing in along the way
 - [ ] Still on the list: the run back up the High Street to make the coach
 
+### Orpington 2001: its own crowd (V76, 31 October)
+Tim: build a bunch of new, unique NPCs with different attacks. Done (V76): ten locals drawn and animated in PixelLab (`tools/v76/pixellab_ids.md`), each with a move nobody else in the game has. They play as a group like the 1999/2006 crowds (flanking, piling in when you're held) and replace the reused 1999 lot in the chapter's fights
+- [x] KAPPA KID (the bus stop, Ram Ba Ba): pops his trackies off by the poppers and cracks them like a whip from outside punching range (POPPERS!, TRACKIED!)
+- [x] RAZOR KID: rides his Razor scooter straight through you along his line (step out of it), or kicks it at you along the floor (jump it), then has to go and fetch it. Knock him off mid-ride: WIPEOUT!
+- [x] FROSTED TIPS: a spinning roundhouse that catches both sides, a knee slide along the floor (jump it), and he stops to check his hair the first time you hit him (he takes extra damage while he does)
+- [x] SCRUNCHIE: throws her Nokia 3310, which comes back to her hand (hits going and coming); knock her down and it drops (STILL WORKS). Down to her last mates, she rings her brother
+- [x] GARAGE MC (street and Atlantis): gets on the mic, three sound waves roll out (they shove you back, the first one dizzies you close up) and his mates speed up. Get behind him
+- [x] THE BUILDER (outside the pub, the bar, the pool room, Mick's bell): an unstoppable shoulder barge that skittles his own lot too, and seeing stars if he hits the wall; throws bar stools (a red ring shows where it lands)
+- [x] THE OLD BOY: slow and doesn't flinch; hooks you round the neck with his walking stick from across the room, reels you in and gives you a dig (mash to slip it)
+- [x] POOL SHARK (the pool room): a cue jab with twice anyone's reach, and the break: three balls along the floor in a spread that flatten his own lot too
+- [x] MOSCHINO (the queue, the dance floor, 2am): shakes the champagne and sprays it; caught facing him, you're blinded (held, slowed, the screen fizzes). Turn your back
+- [x] RAVER (the dance floor): glowstick flurries, only on the beat on the dance floor; his whistle sets the dancers round him off early (off the floor it rings your ears)
+- [x] Props drawn by hand: the scooter, a bar stool, the 3310 (`tools/v76/props.py`)
+- [ ] Tim: play the chapter on a phone and say which of them are too much or too little
+
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
 
