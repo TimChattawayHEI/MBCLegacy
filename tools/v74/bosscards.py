@@ -9,7 +9,7 @@ b65 = importlib.util.module_from_spec(spec); spec.loader.exec_module(b65)
 NEW = {
     'alan': (['alan'], 'a thin, scruffy, wasted young man in a grey hoodie and ripped jeans, messy blond hair, unshaven, glassy eyes, swaying, fists up'),
     'jeff': (['jeff'], 'a huge heavy young man in a dirty, stretched navy polo shirt and combat trousers, short dark hair, thick tattooed arms, furious'),
-    'mick': (['mick'], 'a huge fat old East End pub landlord: bald on top with white hair at the sides and a big white beard, a white short-sleeved shirt and black braces, tattooed forearms, a bar towel over his shoulder'),
+    'mick': (['mick'], 'a huge fat old East End pub landlord: bald on top with white hair at the sides and a big white beard, a white short-sleeved shirt and black braces, tattooed forearms, a bar towel over his shoulder. He has exactly two arms: his left arm hangs by his side and his right fist is clenched in front of his belly; no extra arms or hands anywhere'),
 }
 b65.CARDS.update(NEW)
 if __name__ == '__main__':
