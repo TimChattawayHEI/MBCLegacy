@@ -1,0 +1,374 @@
+{
+ "kappa": {
+  "meta": {
+   "cell": 92,
+   "ax": 46.0,
+   "ay": 90,
+   "h": 61,
+   "rows": {
+    "idle": [
+     0,
+     8
+    ],
+    "walk": [
+     1,
+     8
+    ],
+    "attack": [
+     2,
+     9
+    ],
+    "hurt": [
+     3,
+     6
+    ],
+    "knockdown": [
+     4,
+     13
+    ],
+    "whip": [
+     5,
+     9
+    ]
+   },
+   "fist": {}
+  },
+  "frames": "{attack: {pre: [1], hit: 2, post: [3]}, whip: {pre: [1, 4], hit: 5, post: [8]}, hurt: [1, 3], fall: [1, 2, 3, 4, 5], lie: 6, up: [8, 9, 10, 11, 12], wind: {whipWind: \"whip\"}, hits: {whip: \"whip\"}, fallFlip: false}"
+ },
+ "razor": {
+  "meta": {
+   "cell": 92,
+   "ax": 45.0,
+   "ay": 87,
+   "h": 58,
+   "rows": {
+    "idle": [
+     0,
+     8
+    ],
+    "walk": [
+     1,
+     8
+    ],
+    "attack": [
+     2,
+     9
+    ],
+    "hurt": [
+     3,
+     6
+    ],
+    "knockdown": [
+     4,
+     13
+    ],
+    "ride": [
+     5,
+     9
+    ],
+    "kick": [
+     6,
+     9
+    ]
+   },
+   "fist": {}
+  },
+  "frames": "{attack: {pre: [1, 2], hit: 3, post: [5]}, ride: {pre: [1, 2], hit: 4, post: [8]}, kick: {pre: [3, 4], hit: 7, post: [8]}, hurt: [1, 3], fall: [1, 2, 3, 4, 5], lie: 6, up: [8, 9, 10, 11, 12], wind: {rideWind: \"ride\", kickWind: \"kick\"}, hits: {kick: \"kick\"}, loop: {ride: [\"ride\", [3, 4, 5, 6, 7]]}, fallFlip: false}"
+ },
+ "frosted": {
+  "meta": {
+   "cell": 92,
+   "ax": 45.0,
+   "ay": 90,
+   "h": 56,
+   "rows": {
+    "idle": [
+     0,
+     8
+    ],
+    "walk": [
+     1,
+     8
+    ],
+    "attack": [
+     2,
+     9
+    ],
+    "hurt": [
+     3,
+     6
+    ],
+    "knockdown": [
+     4,
+     13
+    ],
+    "spin": [
+     5,
+     7
+    ],
+    "slide": [
+     6,
+     6
+    ]
+   },
+   "fist": {}
+  },
+  "frames": "{attack: {pre: [1, 8], hit: 3, post: [4]}, spin: {pre: [1, 2], hit: 3, post: [5]}, slide: {pre: [0, 1], hit: 2, post: [4]}, hurt: [1, 3], fall: [1, 2, 3, 4, 5], lie: 6, up: [8, 9, 10, 11, 12], wind: {spinKickWind: \"spin\", kneeSlideWind: \"slide\"}, hits: {spinKick: \"spin\", kneeSlide: \"slide\"}, fallFlip: false}"
+ },
+ "scrunchie": {
+  "meta": {
+   "cell": 92,
+   "ax": 44.5,
+   "ay": 90,
+   "h": 58,
+   "rows": {
+    "idle": [
+     0,
+     8
+    ],
+    "walk": [
+     1,
+     8
+    ],
+    "attack": [
+     2,
+     9
+    ],
+    "hurt": [
+     3,
+     6
+    ],
+    "knockdown": [
+     4,
+     13
+    ],
+    "throw": [
+     5,
+     9
+    ]
+   },
+   "fist": {}
+  },
+  "frames": "{attack: {pre: [5, 6], hit: 7, post: [8]}, throw: {pre: [1], hit: 2, post: [3]}, hurt: [1, 3], fall: [1, 2, 3, 4, 5], lie: 6, up: [8, 9, 10, 11, 12], wind: {throwWind: \"throw\"}, hits: {throwing: \"throw\"}, fallFlip: false}"
+ },
+ "garagemc": {
+  "meta": {
+   "cell": 96,
+   "ax": 46.0,
+   "ay": 94,
+   "h": 62,
+   "rows": {
+    "idle": [
+     0,
+     8
+    ],
+    "walk": [
+     1,
+     8
+    ],
+    "attack": [
+     2,
+     9
+    ],
+    "hurt": [
+     3,
+     6
+    ],
+    "knockdown": [
+     4,
+     13
+    ],
+    "bars": [
+     5,
+     9
+    ]
+   },
+   "fist": {}
+  },
+  "frames": "{attack: {pre: [2, 3], hit: 4, post: [6]}, bars: {pre: [1, 2, 3], hit: 4, post: [8]}, hurt: [1, 3], fall: [1, 2, 3, 4, 5], lie: 6, up: [8, 9, 10, 11, 12], wind: {barsWind: \"bars\"}, loop: {bars: [\"bars\", [1, 2, 3, 4, 5, 6, 7, 8]]}, fallFlip: false}"
+ },
+ "builder": {
+  "meta": {
+   "cell": 116,
+   "ax": 57.5,
+   "ay": 97,
+   "h": 78,
+   "rows": {
+    "idle": [
+     0,
+     7
+    ],
+    "walk": [
+     1,
+     9
+    ],
+    "attack": [
+     2,
+     9
+    ],
+    "hurt": [
+     3,
+     6
+    ],
+    "knockdown": [
+     4,
+     13
+    ],
+    "barge": [
+     5,
+     9
+    ],
+    "throw": [
+     6,
+     9
+    ]
+   },
+   "fist": {}
+  },
+  "frames": "{attack: {pre: [5, 6], hit: 8, post: [4]}, barge: {pre: [1, 2, 3], hit: 7, post: [8]}, throw: {pre: [3, 4, 5, 6], hit: 8, post: [7]}, hurt: [1, 3], fall: [1, 2, 3, 4, 5], lie: 6, up: [8, 9, 10, 11, 12], wind: {bargeWind: \"barge\", throwWind: \"throw\"}, hits: {throwStool: \"throw\", stars: \"barge\"}, loop: {barge: [\"barge\", [6, 7]]}, lean: {barge: 0.2}, fallFlip: false}"
+ },
+ "codger": {
+  "meta": {
+   "cell": 92,
+   "ax": 44.0,
+   "ay": 90,
+   "h": 57,
+   "rows": {
+    "idle": [
+     0,
+     8
+    ],
+    "walk": [
+     1,
+     8
+    ],
+    "attack": [
+     2,
+     9
+    ],
+    "hurt": [
+     3,
+     6
+    ],
+    "knockdown": [
+     4,
+     13
+    ],
+    "hook": [
+     5,
+     9
+    ]
+   },
+   "fist": {}
+  },
+  "frames": "{attack: {pre: [4, 5], hit: 7, post: [6]}, hook: {pre: [3, 4, 5], hit: 7, post: [6]}, hurt: [1, 3], fall: [1, 2, 3, 4, 5], lie: 6, up: [8, 9, 10, 11, 12], wind: {hookWind: \"hook\"}, hits: {hookOut: \"hook\", crook: \"hook\", dig: \"attack\"}, fallFlip: false}"
+ },
+ "shark": {
+  "meta": {
+   "cell": 92,
+   "ax": 45.0,
+   "ay": 87,
+   "h": 56,
+   "rows": {
+    "idle": [
+     0,
+     8
+    ],
+    "walk": [
+     1,
+     8
+    ],
+    "attack": [
+     2,
+     9
+    ],
+    "hurt": [
+     3,
+     6
+    ],
+    "knockdown": [
+     4,
+     13
+    ],
+    "break": [
+     5,
+     9
+    ]
+   },
+   "fist": {}
+  },
+  "frames": "{attack: {pre: [2], hit: 4, post: [6]}, break: {pre: [3, 4, 5], hit: 7, post: [8]}, hurt: [1, 3], fall: [1, 2, 3, 4, 5], lie: 6, up: [8, 9, 10, 11, 12], wind: {breakWind: \"break\"}, hits: {breakShot: \"break\"}, fallFlip: false}"
+ },
+ "moschino": {
+  "meta": {
+   "cell": 92,
+   "ax": 43.5,
+   "ay": 90,
+   "h": 57,
+   "rows": {
+    "idle": [
+     0,
+     8
+    ],
+    "walk": [
+     1,
+     8
+    ],
+    "attack": [
+     2,
+     9
+    ],
+    "hurt": [
+     3,
+     6
+    ],
+    "knockdown": [
+     4,
+     13
+    ],
+    "spray": [
+     5,
+     9
+    ]
+   },
+   "fist": {}
+  },
+  "frames": "{attack: {pre: [4, 5], hit: 8, post: [7]}, spray: {pre: [2, 3, 4, 5, 4, 3, 4], hit: 5, post: [8]}, hurt: [1, 3], fall: [1, 2, 3, 4, 5], lie: 6, up: [8, 9, 10, 11, 12], wind: {shakeWind: \"spray\"}, hits: {spray: \"spray\"}, fallFlip: false}"
+ },
+ "raver": {
+  "meta": {
+   "cell": 92,
+   "ax": 44.0,
+   "ay": 89,
+   "h": 59,
+   "rows": {
+    "idle": [
+     0,
+     8
+    ],
+    "walk": [
+     1,
+     8
+    ],
+    "attack": [
+     2,
+     9
+    ],
+    "hurt": [
+     3,
+     6
+    ],
+    "knockdown": [
+     4,
+     13
+    ],
+    "whistle": [
+     5,
+     9
+    ]
+   },
+   "fist": {}
+  },
+  "frames": "{attack: {pre: [1], hit: 3, post: [4]}, whistle: {pre: [1, 2, 3], hit: 6, post: [8]}, hurt: [1, 3], fall: [1, 2, 3, 4, 5], lie: 6, up: [8, 9, 10, 11, 12], wind: {whistleWind: \"whistle\", flurryWind: \"attack\"}, loop: {flurry: [\"attack\", [2, 3, 5, 6]], whistle: [\"whistle\", [4, 5, 6, 7]]}, fallFlip: false}"
+ }
+}

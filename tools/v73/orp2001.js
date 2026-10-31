@@ -28,37 +28,37 @@ const ORP_SCENES = {
     { bg: 'busstop', ft: 406, fb: 506, label: 'THE BUS STOP', posts: [{ x: 349, foot: 443, w: 10, top: 300 }, { x: 394, foot: 447, w: 16, top: 286 }],
       items: [{ w: 'cone', x: 640, y: 470 }], breakables: [{ type: 'bin', x: 520, y: 476, drop: 'chips' }],
       waves: [{ event: 'busstopHow' },
-        { at: 0, groups: [orpG(['townie', 'R'], ['townie', 'L'], ['ladette', 'R']), orpG(['vibez', 'R'], ['townie', 'L'])] }, { event: 'lad' },
-        { at: 0, groups: [orpG(['vibez', 'R'], ['ladette', 'L'], ['townie', 'R']), orpG(['bouncer', 'R'], ['townie', 'L'])], food: 'chips' }, { event: 'lad' },
-        { at: 0, groups: [orpG(['chunk', 'R'], ['townie', 'L'], ['vibez', 'R']), orpG(['townie', 'R'], ['ladette', 'L'], ['vibez', 'L'], ['townie', 'R'])] }, { event: 'lad' },
+        { at: 0, groups: [orpG(['kappa', 'R'], ['townie', 'L'], ['kappa', 'R']), orpG(['scrunchie', 'R'], ['townie', 'L'])] }, { event: 'lad' },
+        { at: 0, groups: [orpG(['razor', 'R'], ['kappa', 'L'], ['scrunchie', 'R']), orpG(['frosted', 'R'], ['townie', 'L'])], food: 'chips' }, { event: 'lad' },
+        { at: 0, groups: [orpG(['garagemc', 'R'], ['kappa', 'L'], ['frosted', 'R']), orpG(['razor', 'R'], ['scrunchie', 'L'], ['chunk', 'L'], ['kappa', 'R'])] }, { event: 'lad' },
         { event: 'ladsGo' }, { event: 'exit', dir: 1, to: 1, label: 'THE CROSSING' }] },
     { bg: 'cross', ft: 209, fb: 522, label: 'THE CROSSING', frog: true,
       waves: [{ event: 'frog' }, { event: 'exit', dir: 1, to: 2, label: 'RAM BA BA' }] },
     { bg: 'rambaba', ft: 406, fb: 506, label: 'RAM BA BA', posts: [{ x: 126, foot: 474, w: 12, top: 300 }, { x: 360, foot: 474, w: 26, top: 404 }],
       items: [{ w: 'alcopop', x: 520, y: 470 }], breakables: [{ type: 'bin', x: 760, y: 480, drop: 'w:alcopop' }],
       waves: [{ event: 'rambaba' },
-        { at: 0, groups: [orpG(['townie', 'R'], ['vibez', 'R'], ['ladette', 'L']), orpG(['townie', 'R'], ['vibez', 'L'])] },
-        { at: 0, groups: [orpG(['chunk', 'R'], ['ladette', 'L'], ['vibez', 'R']), orpG(['townie', 'L'], ['townie', 'R'], ['vibez', 'R'])], food: 'chips' },
-        { at: 0, mini: true, miniKind: 'chunk', title: 'THE PETTS WOOD MASSIVE', groups: [orpG(['chunk', 'R'], ['chunk', 'L']), orpG(['vibez', 'R'], ['ladette', 'L'], ['townie', 'R'])] },
+        { at: 0, groups: [orpG(['razor', 'R'], ['frosted', 'R'], ['scrunchie', 'L']), orpG(['kappa', 'R'], ['razor', 'L'])] },
+        { at: 0, groups: [orpG(['garagemc', 'R'], ['kappa', 'L'], ['frosted', 'R']), orpG(['scrunchie', 'L'], ['townie', 'R'], ['razor', 'R'])], food: 'chips' },
+        { at: 0, mini: true, miniKind: 'chunk', title: 'THE PETTS WOOD MASSIVE', groups: [orpG(['chunk', 'R'], ['garagemc', 'L']), orpG(['frosted', 'R'], ['kappa', 'L'], ['razor', 'R'], ['scrunchie', 'L'])] },
         { event: 'exit', dir: 1, to: 3, label: 'YE OLDE BLACKSMITH' }] },
     { bg: 'front', ft: 406, fb: 506, label: 'YE OLDE BLACKSMITH', posts: [{ x: 782, foot: 460, w: 16, top: 326 }],
       items: [{ w: 'guinness', x: 300, y: 470 }], breakables: [{ type: 'keg', x: 640, y: 484, drop: 'chips' }],
       waves: [{ event: 'smokers' },
-        { at: 0, groups: [orpG(['regular', 'R'], ['regular', 'L'], ['darts', 'R']), orpG(['regular', 'R'], ['townie', 'L'])] },
-        { at: 0, final: true, groups: [orpG(['regular', 'R'], ['chunk', 'L'], ['regular', 'R'], ['darts', 'L']), orpG(['darts', 'R'], ['regular', 'L'], ['bouncer', 'R'])], food: 'chips' }] },
+        { at: 0, groups: [orpG(['codger', 'R'], ['regular', 'L'], ['darts', 'R']), orpG(['regular', 'R'], ['kappa', 'L'])] },
+        { at: 0, final: true, groups: [orpG(['builder', 'R'], ['regular', 'L'], ['codger', 'R'], ['darts', 'L']), orpG(['darts', 'R'], ['regular', 'L'], ['builder', 'R'])], food: 'chips' }] },
   ],
   orp_pub: [
     { bg: 'lounge', ft: 380, fb: 506, label: 'THE LOUNGE', block: [[140, 900, 404]], items: [{ w: 'horseshoe', x: 700, y: 470 }],
       waves: [{ event: 'lounge' }, { event: 'exit', dir: 1, to: 1, label: 'THE BAR' }] },
     { bg: 'bar', ft: 380, fb: 506, label: 'THE BAR', sue: true, block: [[250, 772, 448]], items: [{ w: 'horseshoe', x: 860, y: 470 }],
       waves: [{ event: 'served' }, { event: 'kickoff' },
-        { at: 0, mini: true, miniKind: 'alan', title: 'ALAN', groups: [orpG(['alan', 'R'], ['regular', 'L'], ['regular', 'R']), orpG(['regular', 'R'], ['darts', 'L'])] },
-        { at: 0, groups: [orpG(['regular', 'L'], ['regular', 'R'], ['darts', 'R']), orpG(['regular', 'L'], ['chunk', 'R'])], food: 'chips' },
+        { at: 0, mini: true, miniKind: 'alan', title: 'ALAN', groups: [orpG(['alan', 'R'], ['codger', 'L'], ['regular', 'R']), orpG(['builder', 'R'], ['darts', 'L'])] },
+        { at: 0, groups: [orpG(['codger', 'L'], ['regular', 'R'], ['darts', 'R']), orpG(['builder', 'L'], ['regular', 'R'])], food: 'chips' },
         { event: 'exit', dir: 1, to: 2, label: 'THE POOL ROOM' }] },
     { bg: 'pool', ft: 380, fb: 506, label: 'THE POOL ROOM', block: [[380, 772, 436]], fruit: 860,
       items: [{ w: 'cue', x: 260, y: 470 }, { w: 'horseshoe', x: 600, y: 490 }, { w: 'horseshoe', x: 880, y: 470 }], breakables: [{ type: 'keg', x: 140, y: 484, drop: 'chips' }], wheels: true,
-      waves: [{ at: 0, groups: [orpG(['darts', 'R'], ['regular', 'L'], ['darts', 'R']), orpG(['regular', 'R'], ['regular', 'L'])] },
-        { at: 0, mini: true, miniKind: 'jeff', title: 'JEFF', groups: [orpG(['jeff', 'R'], ['regular', 'L']), orpG(['darts', 'R'], ['regular', 'R'], ['regular', 'L'])], food: 'chips' },
+      waves: [{ at: 0, groups: [orpG(['shark', 'R'], ['regular', 'L'], ['darts', 'R']), orpG(['shark', 'L'], ['codger', 'R'])] },
+        { at: 0, mini: true, miniKind: 'jeff', title: 'JEFF', groups: [orpG(['jeff', 'R'], ['shark', 'L']), orpG(['darts', 'R'], ['builder', 'R'], ['regular', 'L'])], food: 'chips' },
         { event: 'mickComing' }, { event: 'exit', dir: -1, to: 3, label: 'THE BAR' }] },
     { bg: 'bar', ft: 380, fb: 506, label: 'THE BAR', sue: true, block: [[250, 772, 448]], items: [{ w: 'cue', x: 160, y: 480 }, { w: 'horseshoe', x: 840, y: 490 }, { w: 'horseshoe', x: 120, y: 460 }],
       waves: [{ event: 'mickPage' }, { at: 0, boss: 'mick', title: 'MICK' }] },
@@ -68,7 +68,7 @@ const ORP_SCENES = {
       waves: [{ event: 'queue' }, { event: 'door' }] },
     { bg: 'floor', ft: 380, fb: 506, label: 'THE DANCE FLOOR', beat: true,
       waves: [{ event: 'dance' }, { event: 'lightsUp' },
-        { at: 0, final: true, title: '2AM', groups: [orpG(['bouncer', 'R'], ['vibez', 'R'], ['clubm', 'L']), orpG(['bouncer', 'L'], ['chunk', 'R'], ['ladette', 'L'], ['clubf', 'R'])], food: 'chips' }] },
+        { at: 0, final: true, title: '2AM', groups: [orpG(['bouncer', 'R'], ['moschino', 'R'], ['garagemc', 'L']), orpG(['bouncer', 'L'], ['raver', 'R'], ['moschino', 'L'], ['clubf', 'R'])], food: 'chips' }] },
   ],
 };
 Object.assign(STAGES, {
@@ -159,7 +159,7 @@ function orpGoScene(i, fromDir) {
   FLOOR_BLOCK[S.key] = sc.block || [];
   for (const q of (sc.posts || [])) { const n = makeNpc('post', q.x, q.foot); n.hp = 0; n.post = q; n.draw = orpDrawPost; S.npcs.push(n); }
   S.fruit = sc.fruit ? { x: sc.fruit, hits: 0, spin: 0, paid: false, flash: 0 } : null;
-  S.frog = null; S.served = null; S.queue = null; S.dance = null; S.sue = null; S.howto = null; S.carry = 0; S.wheelT = sc.wheels ? 7 : null;
+  S.frog = null; S.served = null; S.queue = null; S.dance = null; S.sue = null; S.howto = null; S.carry = 0; S.wheelT = sc.wheels ? 7 : null; S.ocFx = []; S.ocFizz = 0;
   if (sc.sue) orpMakeSue();
   const dir = fromDir || 1;
   for (const p of players()) {
@@ -198,6 +198,7 @@ function updateOrp(dt) {
   if (S.dance) orpDanceTick(dt);
   orpWheelsTick(dt);
   orpPostsTick();
+  nlStyleTick(dt); orpCrowdTick(dt);   // Version 76: the crowd's moves (tools/v76/crowd.js)
 }
 function orpAnnounce(text, life) { S.ann = { text, t: 0, life: life || 3.2 }; sfx('page'); }
 function orpComic(id, then) {   // a comic page in the middle of a stage, then straight back to the fight
@@ -478,7 +479,7 @@ function orpMick(b, dt, rage) {
       if ((b.face > 0 && b.x > cam.x + W - 60) || (b.face < 0 && b.x < cam.x + 60) || b.t > 1.2) { b.vx = 0; addShake(5); if (b.hitP) { b.state = 'rest'; b.t = 0; } else bDaze(b, 1.3, 'PUFFED OUT!'); }
       return true;
     case 'bellWind': b.vx = b.vy = 0; if (b.t > 0.5) { b.state = 'bell'; b.t = 0; sfx('clink'); setTimeout0(() => sfx('clink'), 0.18); setTimeout0(() => sfx('clink'), 0.36);
-      popWord(b.x, b.y, 200, 'DING DING DING!', true); spawnGroup([['regular', 'L'], ['regular', 'R']]); setTimeout0(() => orpWheel(), 0.8); } return true;
+      popWord(b.x, b.y, 200, 'DING DING DING!', true); spawnGroup([[pick(['regular', 'codger']), 'L'], [pick(['regular', 'builder', 'shark']), 'R']]); setTimeout0(() => orpWheel(), 0.8); } return true;
     case 'bell': if (b.t > 0.8) { b.state = 'rest'; b.t = 0; } return true;
   }
   return false;
@@ -493,7 +494,7 @@ function orpQueueStart() {
     'Every few seconds the bouncers let one more in, but only when it\'s calm. Queue-jumpers push in: sort them out and the queue moves again.'], () => {
     const n = 10;
     S.queue = { ahead: n, t: 2.4, waves: 0, drops: 0 };
-    const kinds = ['clubm', 'clubf', 'vibez', 'ladette', 'townie'];
+    const kinds = ['clubm', 'clubf', 'moschino', 'ladette', 'raver', 'scrunchie'];
     S.qNpcs = [];
     for (let i = 0; i < 9; i++) { const k = kinds[i % kinds.length], q = makeNpc(k, ORP_DOOR_X - 60 - i * 58, FT + 22 + (i % 2) * 6); q.face = 1; q.state = 'idle'; q.hp = 0; q.slot = i; S.npcs.push(q); S.qNpcs.push(q); }
     const bz = [makeNpc('bouncer', ORP_DOOR_X + 20, FT + 14), makeNpc('bouncer', ORP_DOOR_X + 90, FT + 30)]; bz.forEach(b => { b.face = -1; b.state = 'idle'; b.hp = 0; S.npcs.push(b); }); S.qBouncers = bz;
@@ -509,7 +510,7 @@ function orpQueueTick(dt) {
   // queue-jumpers: a lot walks in and pushes in every couple of moves (four lots in all); the queue stops till they're sorted
   if (alive === 0 && Q.waves < 4 && Q.drops >= 2 && Q.ahead > 1) {
     Q.waves++; Q.drops = 0;
-    const grp = [orpG(['vibez', 'R'], ['townie', 'R']), orpG(['clubm', 'R'], ['ladette', 'R'], ['townie', 'L']), orpG(['chunk', 'R'], ['vibez', 'R'], ['clubf', 'L']), orpG(['clubm', 'R'], ['clubm', 'R'], ['vibez', 'L'], ['ladette', 'R'])][Q.waves - 1];
+    const grp = [orpG(['frosted', 'R'], ['clubm', 'R']), orpG(['moschino', 'R'], ['ladette', 'R'], ['kappa', 'L']), orpG(['chunk', 'R'], ['garagemc', 'R'], ['scrunchie', 'L']), orpG(['moschino', 'R'], ['frosted', 'R'], ['raver', 'L'], ['clubf', 'R'])][Q.waves - 1];
     const out = spawnGroup(grp); popWord(ORP_DOOR_X - 100, FT + 30, 190, 'PUSHING IN!', true); sfx('incoming');
     for (const f of out) if (f.def.lines && chance(0.5)) f.sayIn = rand(0.2, 1);
     setTimeout0(() => { if (S.qMates && S.qMates[0]) say(S.qMates[0], pick(["Oi! There's a queue!", 'They just pushed in!', 'Back of the queue, mate!']), 2, true); }, 0.8);
@@ -549,7 +550,7 @@ function orpDoor() {
 // ================================================================== Atlantis: the dance floor
 // The floor is full of dancers on the beat. A few at a time stop dancing (a "!" over their heads) and come for you;
 // the rest carry on. Hits on the beat do more (the BEAT ring at the bottom follows Alarm Call itself).
-const ORP_DANCE = ['clubm', 'clubf', 'vibez', 'ladette', 'townie', 'clubm', 'clubf'];
+const ORP_DANCE = ['clubm', 'clubf', 'raver', 'moschino', 'ladette', 'clubm', 'clubf', 'raver', 'frosted', 'scrunchie'];
 function orpDanceStart() {
   orpHowto('THE DANCE FLOOR', ['DJ EZ is on. The floor is packed, and some of them want trouble.',
     'Watch for a dancer who stops and points (!): that one\'s coming for you. Hit on the beat (the ring at the bottom) for more damage.'], () => {
@@ -625,7 +626,7 @@ function orpClubLights() {
 }
 function orpDrawFore() {
   if (!ST || ST.era !== 2001 || !S) return;
-  orpDrawServed(); orpDrawQueue();
+  orpDrawServed(); orpDrawQueue(); orpCrowdFore();
   if (S.ann) {   // the announcement plate, as the 2006 stages have
     const a = S.ann, k = Math.min(1, a.t / 0.15, (a.life - a.t) / 0.25), w = Math.max(320, a.text.length * 12 + 60), x = W / 2 - w / 2, y = 152;
     ctx.save(); ctx.globalAlpha = Math.max(0, k);
