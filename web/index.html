@@ -536,6 +536,15 @@ const TRACKS = {
   bosselba: { src: 'music/vendetta.mp3', loop: 51.2, fb: 'boss' },
   lady: { src: 'music/rewind-selecta.mp3', loop: 44.651156, fb: 'jungle' },
 };
+// spare tracks ready for new levels (31 October): set a stage's music to one of these keys
+Object.assign(TRACKS, {
+  alarmcall: { src: 'music/alarm-call-every-beat.mp3', loop: 57.313424, fb: 'garage' },
+  alarmcall2: { src: 'music/alarm-call-every-other-beat.mp3', loop: 57.313424, fb: 'garage' },
+  codered: { src: 'music/code-red.mp3', loop: 56.47059, fb: 'garage' },
+  lockdown: { src: 'music/lockdown.mp3', loop: 59.076916, fb: 'garage' },
+  heist: { src: 'music/heist.mp3', loop: 55.652177, fb: 'garage' },
+  deepcover: { src: 'music/deep-cover.mp3', loop: 58.181814, fb: 'garage' },
+});
 // which boss theme each stage uses (anything not listed gets The Big One)
 const BOSS_MUSIC = { frequency: 'boss1999', soundz: 'boss1999', airport: 'bosselba', road: 'bosselba', divebar: 'bosselba', beach: 'bosselba', club: 'bosselba' };
 const BOSS_KEYS = new Set(['boss', 'boss1999', 'bosselba', 'lady']);

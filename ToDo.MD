@@ -96,9 +96,21 @@
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
 
 ### Music (31 October)
-- [ ] Alarm Call is the music for the Atlantis level (Tim likes it). Spy-thriller garage, 134 bpm, 2-step, an original guitar-style chip riff (distorted square-wave power chords) and a blaring alarm on the beat. Both versions are in `web/music/`: `alarm-call-every-beat.mp3` and `alarm-call-every-other-beat.mp3`, loop 57.313424 s. Whoever builds Atlantis: add it to `TRACKS` (e.g. `atlantis: { src: 'music/alarm-call-every-beat.mp3', loop: 57.313424 }`), set the stage's `music` to that key, and delete the version not used. Tim: say which version (every beat or every other beat). Source is `soundtrack/songs5.py` in the claude.ai project
-- [ ] Deep Cover: a second new track, strict four-channel chiptune 2-step (pulse ostinato, pulse arpeggios, triangle sub bass with octave glides, noise drums), E minor, 132 bpm, about 60% swing. Not given a level yet. Tim: listen and say where it goes. Source is `soundtrack/songs6.py` in the claude.ai project
-- [ ] Three more in the Alarm Call style (swung 2-step, guitar-style chip riff, an alarm on the beat), not given levels yet: Code Red (136 bpm, A minor, two-tone siren on every beat), Lockdown (130 bpm, C minor, galloping riff, low buzzer on 2 and 4, half-time break) and Heist (138 bpm, F# minor, stop-start octave riff, rising dive klaxon on each bar). Tim: say which ones to keep and where they play. Source is `soundtrack/songs7.py` in the claude.ai project
+- [ ] Atlantis: use Alarm Call (key `alarmcall`, or `alarmcall2` for the alarm on every other beat). Whoever builds Atlantis: set the stage's `music` to that key. Tim: say which version
+
+#### Music available for new levels
+All in `web/music/` and registered in `TRACKS` (index.html, after the main table), so a new stage only needs `music: '<key>'`. Each is a seamless loop of about a minute. Source is in the claude.ai project under `soundtrack/`.
+
+| Key | Track | Style | Source |
+|---|---|---|---|
+| `alarmcall` | Alarm Call (alarm every beat) | Spy-thriller 2-step garage, 134 bpm, G minor, guitar-style chip riff, blaring alarm on the beat. Tim's favourite; earmarked for Atlantis | songs5.py |
+| `alarmcall2` | Alarm Call (alarm every other beat) | The same with the alarm on beats 1 and 3 only | songs5.py |
+| `codered` | Code Red | 136 bpm, A minor, chugging riff, two-tone police siren on every beat (chase feel) | songs7.py |
+| `lockdown` | Lockdown | 130 bpm, C minor, heavy galloping riff, low buzzer on 2 and 4, half-time breakdown | songs7.py |
+| `heist` | Heist | 138 bpm, F# minor, stop-start octave riff, rising dive klaxon on every bar | songs7.py |
+| `deepcover` | Deep Cover | Four-channel NES-style chiptune 2-step, 132 bpm, E minor, plucky pulse riff, triangle sub with glides | songs6.py |
+
+- [ ] When a level takes one of these, note it here; when a track is clearly not going to be used, delete its file from `web/music/` and its line in `TRACKS` so the app stays small
 
 ## Carried over from the build plan
 
