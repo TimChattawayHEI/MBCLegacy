@@ -217,6 +217,17 @@ Tim asked for quality of life ideas, then for all six
 - [x] Found while testing: a how-to card appearing mid-punch left the punch stuck (a glitch message on screen); fixed
 - [ ] Tim: try AUTO-TURN on the phone and say if it turns you when you didn't want it to
 
+### Menus redesign (31 October, mockups)
+Tim: the title goes straight into character select, the options along the bottom are cluttered and hard to read, and the level select is messy now Orpington 2001 is in (the chapter tabs wrap onto two lines). Mockups on a claude.ai Design canvas ("MBC Legacies menu redesign"): a start menu, the lad select, two takes on the level select, and a Ready screen
+- [x] Mock up: a start menu between the title and the lads (CARRY ON with the saved run, NEW GAME, PLAY ONLINE, THE HARVEST MOON, TROPHIES, SCORES, SETTINGS; the name and sound top right), so the bottom bar goes
+- [x] Mock up: lad select with faces in the roster, the steps as 1 LAD / 2 STAGE / 3 GO, PLAY AS TIM on the card, BACK to the menu top left, nothing else along the bottom
+- [x] Mock up: level select A (chapters down the side with a picture each, the chapter's stages as picture cards, START HERE) and B (the years as postcards on a timeline, the stages listed under it)
+- [x] Mock up: a Ready screen with the difficulty folded in (Language moves to Settings)
+- [x] Tim: pick a level select (A or B) and say what to change, then build it into the 3D title's HTML layer (#t3)
+  - Done (V82): Tim picked A. Built into the real menus over the 3D street: the start menu (the lads lined up on the road to its right, the logo above it), the header on the select screens (back, the steps that tick off with what you picked, your name), faces in the roster, the chapters down the side with NEW on Orpington 2001 until you've a rank there, the stages as picture cards, START HERE, then 3 GO. SETTINGS on the menu opens the settings panel on its own. Language moves to Settings
+- [x] Tim: Byron's roster picture was just his head next to the others' head and shoulders (his card is a smaller, big-headed figure). Done (V82): each lad's face is framed from his own card (`tools/v82/faces.json`), so they all match
+- [ ] Tim: try the new menus on the phone (the start menu buttons, the roster faces, the chapter list)
+
 ### Hits and specials that look powerful (31 October, idea from Streets of Rage 4)
 Tim asked if Meshy could make the attack and hit effects look as clear and strong as SoR4's. Meshy isn't the tool for it: it paints single pictures, and an effect needs 4 to 8 frames that match each other on a see-through background. PixelLab's VFX workbench is built for exactly this (free on the subscription), and most of the SoR4 feel comes from code, not art. What the game has now: one small star spark (`fx/hit.png`) and a round burst (`fx/hitbig.png`), both the same whichever way the hit goes, plus hitstop, shake and the white flash already in place.
 - [x] Swoosh trails: a bright arc that follows the fist or foot on every attack (curved for hooks and spins, straight for jabs and kicks), white core, coloured edge, drawn with 'lighter' blending and fading over 3 or 4 frames. Biggest single change
