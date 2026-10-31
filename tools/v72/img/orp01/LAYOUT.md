@@ -13,4 +13,4 @@ then the sky eased across two joins (x 2715 and 3015) and the extra moons filled
 
 Blacksmiths inside (pub_strip.webp): bi0@0 (front door, seating, fruit machines), bi1@1032 (the bar in the corner of the L, bell over it), bi2@2064 (pool room, fire exit).
 
-Atlantis: at0 (outside, DJ EZ posters, NO TRAINERS), ai0 (inside, DJ EZ banner and booth silhouette).
+Atlantis: at0 (outside, DJ EZ posters, NO TRAINERS), ai1 (inside, DJ EZ banner and booth silhouette, gold merman crest; ai0 is the first go, whose crest came out as an elephant).

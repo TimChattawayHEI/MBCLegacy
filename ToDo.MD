@@ -117,6 +117,7 @@ Real street order, left to right (the mirror shop is past the Blacksmiths, not b
 
 ### Characters (PixelLab, Tim has topped up credits)
 - [ ] Mick (big, fat, bald, old, East End landlord), Sue (2000s older landlady, short blonde going grey), Alan (thin, blonde, unkempt, always half-cut), Jeff (huge, short dark hair, dirty polo shirt). Lightly tweaked names, since the APK gets passed round
+  - Looks made (31 Oct), ids in `tools/v72/pixellab_ids.md`. Tim to sign off before animating
 - [ ] Atlantis bouncers, Ram Ba Ba door staff, a rival crew at the bus stop, clubbers
 - [ ] Brick phone (Kelly's Snake), pool cue, horseshoe, wagon wheel weapon and pickup sprites
 
@@ -132,7 +133,8 @@ Real street order, left to right (the mirror shop is past the Blacksmiths, not b
   - Done (first pass): at0. The canopy's wave ribs run off the right edge; paint one more panel if the stage needs to scroll
 - [x] Atlantis inside: dance floor, strobes, the DJ booth with a DJ EZ silhouette (posters and silhouette only, not his likeness or voice)
   - Done (first pass): ai0, DJ EZ banner over the booth
-- [ ] Atlantis inside: the gold crest on the wall came out looking like an elephant, not a merman. Repaint that bit
+- [x] Atlantis inside: the gold crest on the wall came out looking like an elephant, not a merman. Repaint that bit
+  - Done: ai1, a gold merman with a crown and trident
 - [ ] Tim: check the panels look right to you (anything missing or wrong from real life), before they go in the game
 - [ ] Floors: the strip's pavement and road are painted in perspective near the roundabout; cut a flat walkable floor (as V60 did) when the stage goes in
 - [ ] Wire the panels into stages.json / MESHY_BG once the strip is signed off
