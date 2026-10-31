@@ -82,8 +82,18 @@
   - Done (V70). Shows on the next APK, not an in-app update
 - [ ] Tim: say if any foreground piece gets in the way in a fight; it's one line per piece to move or drop
 
+### Story (30 October, late night)
+- [x] Comic pages at the big moments: Seb's loft and the jump to 1999, midnight on the millennium, landing on Elba, the Espace, Orpington station 2006, home to the present, arriving at Denise's, the fireball, and Big Gary at the end
+  - Done (V71): painted in Meshy (tools/v71/comics.py); captions and speech are in COMIC_PAGES in tools/v71/v71.js, easy to change
+- [x] An ending for every lad: finish the campaign as him to collect his, and they go up on a WHERE ARE THEY NOW wall at the Harvest Moon (past the trophy cabinet), where you can read them again
+  - Done (V71)
+- [x] The damage report after the endings: knockouts, food (and kebabs), specials, times Sam fell asleep, times on the floor, weapons thrown, bosses, rounds bought, lives lost, time, with Marc on the numbers
+  - Done (V71)
+- [ ] Tim: write the ending line for each lad (Tim, Seb, Pearcy, Byron, Kelly, Marc, Sam, Ash, Thet). Until then each shows "To be continued...". They go in ENDINGS in tools/v71/v71.js, or send them in chat
+- [ ] Check the comic pages and endings in an online game (built for one phone; online they're shown on each phone on its own)
+
 ### For whoever builds next
-- [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V70 patch the page directly for that reason
+- [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
 
 ## Carried over from the build plan
 
