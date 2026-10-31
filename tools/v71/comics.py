@@ -44,7 +44,7 @@ PAGES = {
     ]),
     'pespace': ('L2', [
         ('4:3', [], "A silver Renault Espace people carrier nose-down in a ditch beside a winding Italian country road at dusk, on fire, black smoke rising, cypress trees and a sunset sky, a hire car sticker on the back window."),
-        ('4:3', ['sam'], "Sam, {sam}, standing beside the burning people carrier at dusk holding the car keys, his face lit orange by the flames, utterly blank and puzzled."),
+        ('4:3', ['sam'], "Sam, {sam}, standing on the left of the picture beside the burning people carrier at dusk, holding up the car keys, his face lit orange by the flames, puzzled, with his eyes wide open and clearly drawn (pupils, eyebrows raised), looking at the viewer. Open sky above his head."),
     ]),
     'p2006': ('L2', [
         ('4:3', ['byron'], "Byron, {byron}, standing alone under the big clock of a small suburban railway station entrance at night, October 2006, checking his watch, the clock reading five to nine, wet pavement, streetlights."),
