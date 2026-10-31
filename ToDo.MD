@@ -98,6 +98,7 @@
 ### Music (31 October)
 - [ ] Alarm Call is the music for the Atlantis level (Tim likes it). Spy-thriller garage, 134 bpm, 2-step, an original guitar-style chip riff (distorted square-wave power chords) and a blaring alarm on the beat. Both versions are in `web/music/`: `alarm-call-every-beat.mp3` and `alarm-call-every-other-beat.mp3`, loop 57.313424 s. Whoever builds Atlantis: add it to `TRACKS` (e.g. `atlantis: { src: 'music/alarm-call-every-beat.mp3', loop: 57.313424 }`), set the stage's `music` to that key, and delete the version not used. Tim: say which version (every beat or every other beat). Source is `soundtrack/songs5.py` in the claude.ai project
 - [ ] Deep Cover: a second new track, strict four-channel chiptune 2-step (pulse ostinato, pulse arpeggios, triangle sub bass with octave glides, noise drums), E minor, 132 bpm, about 60% swing. Not given a level yet. Tim: listen and say where it goes. Source is `soundtrack/songs6.py` in the claude.ai project
+- [ ] Three more in the Alarm Call style (swung 2-step, guitar-style chip riff, an alarm on the beat), not given levels yet: Code Red (136 bpm, A minor, two-tone siren on every beat), Lockdown (130 bpm, C minor, galloping riff, low buzzer on 2 and 4, half-time break) and Heist (138 bpm, F# minor, stop-start octave riff, rising dive klaxon on each bar). Tim: say which ones to keep and where they play. Source is `soundtrack/songs7.py` in the claude.ai project
 
 ## Carried over from the build plan
 
