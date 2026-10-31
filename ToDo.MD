@@ -195,6 +195,14 @@ Tim: build a bunch of new, unique NPCs with different attacks. Done (V76): ten l
 - [x] Props drawn by hand: the scooter, a bar stool, the 3310 (`tools/v76/props.py`)
 - [ ] Tim: play the chapter on a phone and say which of them are too much or too little
 
+### Orpington 2001: lighting (V77, 31 October)
+Tim asked what Meshy could do with lighting: it has no live lighting, but it can paint a light map of each place, and the game moves it. Tim chose the glow layers and lighting on the fighters
+- [x] Glow layers for all nine places: Meshy repaints each backdrop with only its lights left (windows, lamps, signs, neon, the stage lights); the layer takes its colours from the painting itself so it sits exactly on it (`tools/v77/glow.py`, 81 Meshy credits plus one re-roll for Ram Ba Ba, which Meshy had shifted)
+- [x] The places dim a little for the time of night and the glow moves: street lamps flicker, the pub glow breathes, the Atlantis neon buzzes now and then, the dance floor pulses on the beat; a car's headlights sweep along the pavement and shop fronts at the bus stop, Ram Ba Ba and outside the Blacksmiths every so often
+- [x] Lighting on the fighters (players, the lads, every foe and NPC): night blue on the street, warm in the pub, purple in the club, and the nearest lights fall on them from their side (street lamps, windows, the pool table lamp, the fruit machines changing colour, headlights, the crossing's cars, the club's sweeping beams). Walk under a lamp and you light up
+- [ ] Tim: check it on a phone, that it isn't too dark on the street and that the dance floor (14 dancers, all lit) still runs smoothly
+- [ ] Next if wanted: painted lit/unlit pairs for the big moments (Atlantis at 2am with the house lights up, last orders dimming the Blacksmiths)
+
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
 
