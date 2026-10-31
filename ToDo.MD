@@ -117,7 +117,8 @@ Real street order, left to right (the mirror shop is past the Blacksmiths, not b
 
 ### Characters (PixelLab, Tim has topped up credits)
 - [ ] Mick (big, fat, bald, old, East End landlord), Sue (2000s older landlady, short blonde going grey), Alan (thin, blonde, unkempt, always half-cut), Jeff (huge, short dark hair, dirty polo shirt). Lightly tweaked names, since the APK gets passed round
-  - Looks made (31 Oct), ids in `tools/v72/pixellab_ids.md`. Tim to sign off before animating
+  - Done (31 Oct): looks signed off; idle, walk, attack, hurt and knockdown for all four, plus Sue's shout and Mick's belly charge. Sheets in `tools/v72/src/`, notes in `tools/v72/pixellab_ids.md`
+- [ ] Build the game sheets for Mick, Sue, Alan and Jeff (as `tools/v53/foe_sheets.py` does), skipping the hit-smear frames noted in pixellab_ids.md
 - [ ] Atlantis bouncers, Ram Ba Ba door staff, a rival crew at the bus stop, clubbers
 - [ ] Brick phone (Kelly's Snake), pool cue, horseshoe, wagon wheel weapon and pickup sprites
 
