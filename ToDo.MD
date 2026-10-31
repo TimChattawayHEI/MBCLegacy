@@ -99,26 +99,35 @@ A group night out before the 2006 chapter: meet at the Pizza Express bus stop, o
 Real street order, left to right (the mirror shop is past the Blacksmiths, not before it): Pizza Express corner (bus stop) | mini roundabout | Ram Ba Ba (corner of Church Hill, then the Young's frontage) | car park | Blacksmiths' single storey wing | Ye Olde Blacksmith | the mirror and lamp shop with PRIVATE PROPERTY! NO PARKING on its gable.
 
 ### Story and chapter
-- [ ] Decide where it sits in the campaign: between 1999 and Elba 2002 (it's 2001), with the time travel arc landing the lads there
+- [x] Decide where it sits in the campaign: between 1999 and Elba 2002 (it's 2001), with the time travel arc landing the lads there
+  - Done (V72): between 1999 and Elba in ROUTE, its own chapter tab (ORPINGTON 2001) on the select screen and the route picker. Stages renumbered (ranks are kept by name, so nothing is lost)
 - [ ] Group chat opener in 2001 SMS speak on brick phones ("c u @ pizza xpress 8, dnt b l8"); a present-day chat flashback (the Blacksmiths is now Aksular, Ram Ba Ba became Fiesta Mexicana)
 - [ ] Comic pages: Kelly knocked back at the Ram Ba Ba door; the coach to Croydon (replaces a coach fight, since the N47 is already a bus fight); 2am, everyone back on the coach and Kelly asleep on it
 - [ ] Tim: confirm the night's details (what time the coach left, any other Blacksmiths or Atlantis stories worth a moment)
 
 ### Stages and mechanics (not just left to right)
-- [ ] 1. Pizza Express bus stop: lads arrive one at a time while you hold the stop against a rival crew
-- [ ] 2. The mini roundabout: a short Frogger-style crossing (zebra, Belisha beacons, Corsas, the red estate, a bus)
-- [ ] 3. Ram Ba Ba, first pass: no fight; a chalkboard by the shutter says ATLANTIS COACH 10.30 and starts the night's clock on screen
-- [ ] 4. The Blacksmiths, getting served: stealth in the L-shaped bar. The bar is in the corner so whoever's serving sees down both arms; keep Byron (looks like a kid) out of Sue's eyeline behind fruit machines and seating while the oldest-looking lad goes up
-- [ ] 5. The Blacksmiths, it kicks off: Alan and Jeff start it round the pool table at the top of the L. Throwable horseshoes, pool cues and balls, wagon wheels off the walls rolling as hazards, the fruit machine gives a hold/nudge bonus when hit. Boss: Mick ringing the bell, Sue's "OI!" from behind the bar as a stun
+- [x] 1. Pizza Express bus stop: lads arrive one at a time while you hold the stop against a rival crew
+  - First pass (V72): THE HIGH STREET opens with a fight at the bus stop (HOLD THE BUS STOP). The lads arriving one at a time is still to do
+- [x] 2. The mini roundabout: a short Frogger-style crossing (zebra, Belisha beacons, Corsas, the red estate, a bus)
+  - First pass (V72): cars come round the roundabout along the road (the moped hazard with a horn first); keep to the pavement. A proper Frogger crossing with its own screen is still to do
+- [x] 3. Ram Ba Ba, first pass: no fight; a chalkboard by the shutter says ATLANTIS COACH 10.30 and starts the night's clock on screen
+  - Done (V72): ATLANTIS COACH 10.30 pops up passing Ram Ba Ba. The on-screen clock is still to do
+- [x] 4. The Blacksmiths, getting served: stealth in the L-shaped bar. The bar is in the corner so whoever's serving sees down both arms; keep Byron (looks like a kid) out of Sue's eyeline behind fruit machines and seating while the oldest-looking lad goes up
+  - Done (V72): Sue pours with her back turned, turns round with a "!" and TURNING..., then WATCHING. Move in her sight (away from the fruit machines) and she clocks you and sends you back to the door; three strikes and it kicks off anyway; reach the bar for SERVED! and 2,000
+- [x] 5. The Blacksmiths, it kicks off: Alan and Jeff start it round the pool table at the top of the L. Throwable horseshoes, pool cues and balls, wagon wheels off the walls rolling as hazards, the fruit machine gives a hold/nudge bonus when hit. Boss: Mick ringing the bell, Sue's "OI!" from behind the bar as a stun
+  - First pass (V72): Alan (with regulars), Jeff as a mini-boss with his own card, then Mick: haymaker, belly barge down your lane, and LAST ORDERS (the bell brings two regulars in) when he's angry. Sue shouts "OI!" from behind the bar every few seconds: ears ringing for anyone on the floor (jump it). A cue and the fruit machine are there; horseshoes and rolling wagon wheels still to do
 - [ ] 6. The run back: auto-runner up the High Street to make the coach (bollards, bins, people); miss it and restart the run
-- [ ] 7. Ram Ba Ba door: blag mini-game with a nerve meter, tapping to keep Kelly's Mass Head from inflating. Scripted to fail (it's canon): Kelly is refused and sits on the coach till 2am. Playing as Kelly: Snake on his brick phone, with a board
-- [ ] 8. Atlantis: rhythm brawler, hits land harder on the 2-step beat, strobes reveal foes; ends at 2am
+- [x] 7. Ram Ba Ba door: blag mini-game with a nerve meter, tapping to keep Kelly's Mass Head from inflating. Scripted to fail (it's canon): Kelly is refused and sits on the coach till 2am. Playing as Kelly: Snake on his brick phone, with a board
+  - First pass (V72): at the Atlantis door, the bouncers let the lads in and turn Kelly away; playing as Kelly, he sits the night out on the coach and the stage ends. The nerve-meter blag and Kelly's Snake are still to do
+- [x] 8. Atlantis: rhythm brawler, hits land harder on the 2-step beat, strobes reveal foes; ends at 2am
+  - First pass (V72): inside, a BEAT ring at the bottom of the screen; hits landed on the beat do 1.6x (ON BEAT!), and a strobe flashes every bar. The 2am finale and the coach home chat are in. Needs a garage track at the right tempo (it uses the Elba club music for now)
 - [ ] Mini-games 6 and 7 go in the Harvest Moon arcade once met, like the others
 
 ### Characters (PixelLab, Tim has topped up credits)
 - [ ] Mick (big, fat, bald, old, East End landlord), Sue (2000s older landlady, short blonde going grey), Alan (thin, blonde, unkempt, always half-cut), Jeff (huge, short dark hair, dirty polo shirt). Lightly tweaked names, since the APK gets passed round
   - Done (31 Oct): looks signed off; idle, walk, attack, hurt and knockdown for all four, plus Sue's shout and Mick's belly charge. Sheets in `tools/v72/src/`, notes in `tools/v72/pixellab_ids.md`
-- [ ] Build the game sheets for Mick, Sue, Alan and Jeff (as `tools/v53/foe_sheets.py` does), skipping the hit-smear frames noted in pixellab_ids.md
+- [x] Build the game sheets for Mick, Sue, Alan and Jeff (as `tools/v53/foe_sheets.py` does), skipping the hit-smear frames noted in pixellab_ids.md
+  - Done (V72): `tools/v72/foe_sheets.py` -> web/sprites/{mick,jeff,sue,alan}.png; the template falls and get-ups stitched into one knockdown row
 - [ ] Atlantis bouncers, Ram Ba Ba door staff, a rival crew at the bus stop, clubbers
 - [ ] Brick phone (Kelly's Snake), pool cue, horseshoe, wagon wheel weapon and pickup sprites
 
@@ -138,7 +147,17 @@ Real street order, left to right (the mirror shop is past the Blacksmiths, not b
   - Done: ai1, a gold merman with a crown and trident
 - [ ] Tim: check the panels look right to you (anything missing or wrong from real life), before they go in the game
 - [ ] Floors: the strip's pavement and road are painted in perspective near the roundabout; cut a flat walkable floor (as V60 did) when the stage goes in
-- [ ] Wire the panels into stages.json / MESHY_BG once the strip is signed off
+- [x] Wire the panels into stages.json / MESHY_BG once the strip is signed off
+  - Done (V72): `tools/v72/orp_bg.py` fits and tiles them into web/bg/meshy/orp_*.png (drawn by the V64 Meshy code). Atlantis outside and inside joined with a cut-away of the club wall (door2.webp)
+
+### Orpington 2001: still to do after V72
+- [ ] Tim: play the chapter on a phone (THE HIGH STREET, YE OLDE BLACKSMITH, ATLANTIS) and say what feels off
+- [ ] The run back up the High Street to make the coach (auto-runner), between the Blacksmiths and Atlantis
+- [ ] A garage track for Atlantis at a steady 2-step tempo (the beat is set to 132 bpm in STAGES.orp_atlantis.beat)
+- [ ] Comic pages for the chapter (Kelly at the door, the coach, 2am) in tools/v71/comics.py
+- [ ] A trophy for finishing the chapter, like the other chapters'
+- [ ] Mick's boss card art (bosscard/) and Jeff's
+- [ ] Sue: only her top half shows over the bar, clipped by a fixed line; check it sits right on a phone
 
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason

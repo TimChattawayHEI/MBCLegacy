@@ -15,11 +15,13 @@ const T3 = (() => {
   const BOSS = { frequency: 'The Parkie', soundz: 'Master Control', airport: 'No boss. Make the taxi rank.', road: 'No boss. Wreck the Espace.',
     divebar: 'Il Carabiniere, then I Fratelli', beach: 'Don Vito', club: 'Big Tony and Little Nicky', arrival: 'The Far Bank (two of them)',
     naval: 'No boss. Survive the night.', social: 'Nozzer, then Denise', pegnine: 'Big Gary', ramsden: 'Big Gaz, then Lady Addict',
-    nl_station: 'The Ticket Inspector', nl_train: 'Lewisham Lenny', nl_cx: 'No boss. Make the barriers.', nl_alley: 'The Jeweller', nl_bus: 'No boss. Hold the top deck.' };
-  const iE = ROUTE.indexOf('airport'), iN = ROUTE.indexOf('nl_station'), iC = ROUTE.indexOf('arrival');
+    nl_station: 'The Ticket Inspector', nl_train: 'Lewisham Lenny', nl_cx: 'No boss. Make the barriers.', nl_alley: 'The Jeweller', nl_bus: 'No boss. Hold the top deck.',
+    orp_street: 'No boss. Hold the bus stop.', orp_pub: 'Jeff, then Mick (and Sue)', orp_atlantis: 'No boss. Last one standing at 2am.' };
+  const iO = ROUTE.indexOf('orp_street'), iE = ROUTE.indexOf('airport'), iN = ROUTE.indexOf('nl_station'), iC = ROUTE.indexOf('arrival');
   // each chapter tints the street while you browse it: world, sky, fog and lamp light
   const CHAPS = [
-    { id: '1999', name: '1999', keys: ROUTE.slice(0, iE), mood: { world: [1, 1, 1], sky: [1, 1, 1], fog: 0x160b70, light: [1, 1, 1] } },
+    { id: '1999', name: '1999', keys: ROUTE.slice(0, iO), mood: { world: [1, 1, 1], sky: [1, 1, 1], fog: 0x160b70, light: [1, 1, 1] } },
+    { id: 'orp2001', name: 'ORPINGTON 2001', keys: ROUTE.slice(iO, iE), mood: { world: [1.04, 0.94, 1.02], sky: [0.86, 0.84, 1.12], fog: 0x1c0d4a, light: [1.15, 0.95, 0.8] } },
     { id: 'elba', name: 'ELBA 2002', keys: ROUTE.slice(iE, iN), mood: { world: [1.22, 0.98, 0.82], sky: [1.18, 0.9, 0.72], fog: 0x34115e, light: [1.1, 1, 0.85] } },
     { id: 'nightlife', name: 'NIGHTLIFE 2006', keys: ROUTE.slice(iN, iC), mood: { world: [0.82, 0.86, 1.18], sky: [0.7, 0.78, 1.25], fog: 0x0a0a3a, light: [1.15, 0.85, 1.05] } },
     { id: 'carpdiem', name: 'CARP DIEM', keys: ROUTE.slice(iC), mood: { world: [0.86, 1.08, 1.02], sky: [0.78, 1.04, 1.12], fog: 0x0f2c55, light: [0.85, 1.05, 1] } },

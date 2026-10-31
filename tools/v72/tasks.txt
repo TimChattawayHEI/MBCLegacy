@@ -22,3 +22,5 @@ b7 01a1919d-a0e8-73eb-803b-d52a00594b22 The first image is a wide pixel art back
 b8 01a1919f-1b54-7554-b114-11f16d2dfc47 The first image is a wide pixel art background for a side-scrolling beat 'em up game. Its left third and right third are
 g1 01a191a1-57fd-76d5-ba7d-1fa6f7fb8867 The first image is a wide pixel art background for a side-scrolling beat 'em up game: a night street in Orpington. Keep 
 ai1 01a191a6-8f11-75df-9599-c367857cbd14 The first image is a pixel art background for a side-scrolling beat 'em up game: inside the Atlantis nightclub. Keep the
+door 01a191cd-006f-7645-8b65-251c12a77a53 The first image is a wide pixel art background for a side-scrolling beat 'em up game. Its left third is the outside of t
+door2 01a191ce-65d9-759e-b00b-eaaad6d03a42 The first image is a wide pixel art background for a side-scrolling beat 'em up game. Its left third is the entrance of 
