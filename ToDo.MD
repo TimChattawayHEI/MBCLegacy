@@ -158,8 +158,10 @@ Real street order, left to right (the mirror shop is past the Blacksmiths, not b
   - Done: Alarm Call, 134 bpm; the BEAT ring follows the song itself (its loop is exactly 128 beats), so ON BEAT! lands with the music
 - [x] Comic pages for the chapter (Kelly at the door, the coach, 2am) in tools/v71/comics.py
   - Done (V73): five pages, `tools/v73/comics.py`
-- [ ] A trophy for finishing the chapter, like the other chapters'
-- [ ] Mick's boss card art (bosscard/) and Jeff's
+- [x] A trophy for finishing the chapter, like the other chapters'
+  - Done (V74): UNDERAGE (finish Orpington 2001), and NOKIA ROYALTY (300 in Snake)
+- [x] Mick's boss card art (bosscard/) and Jeff's
+  - Done (V74): Alan, Jeff and Mick, painted in Meshy from their sprites (`tools/v74/bosscards.py`)
 - [ ] Sue: only her top half shows over the bar, clipped by a fixed line; check it sits right on a phone (looked right in the headless phone shot)
 
 ### Orpington 2001 rebuilt (V73, from Tim's play-test)
@@ -172,7 +174,9 @@ Real street order, left to right (the mirror shop is past the Blacksmiths, not b
 - [x] Comic pages: the bus stop (start), the spilt pint (it kicks off), Mick's last orders, the door, 2am (end)
 - [x] Every new mechanic opens with a how-to card (HIT to go)
 - [ ] Tim: play it again on a phone. Expected length now around 20 minutes for the chapter
-- [ ] More depth still on the list: the run back to the coach, Kelly's Snake, horseshoes and wagon wheels as weapons in the pub
+- [x] Kelly's Snake: a bonus round after Atlantis (Kelly on the coach, 11pm to 2am, his Nokia, the battery dies after 90 seconds), then a SNAKE cabinet at the far end of the Harvest Moon with its own board (V74)
+- [x] Horseshoes and cart wheels in the pub: horseshoes to pick up, swing or throw (CLANG!); cart wheels roll across the pool room and come off the wall when Mick rings the bell, with an arrow first, and flatten whoever they meet, foes too (V74)
+- [ ] Still on the list: the run back up the High Street to make the coach
 
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason

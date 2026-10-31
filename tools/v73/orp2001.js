@@ -48,19 +48,19 @@ const ORP_SCENES = {
         { at: 0, final: true, groups: [orpG(['regular', 'R'], ['chunk', 'L'], ['regular', 'R'], ['darts', 'L']), orpG(['darts', 'R'], ['regular', 'L'], ['bouncer', 'R'])], food: 'chips' }] },
   ],
   orp_pub: [
-    { bg: 'lounge', ft: 380, fb: 506, label: 'THE LOUNGE', block: [[140, 900, 404]],
+    { bg: 'lounge', ft: 380, fb: 506, label: 'THE LOUNGE', block: [[140, 900, 404]], items: [{ w: 'horseshoe', x: 700, y: 470 }],
       waves: [{ event: 'lounge' }, { event: 'exit', dir: 1, to: 1, label: 'THE BAR' }] },
-    { bg: 'bar', ft: 380, fb: 506, label: 'THE BAR', sue: true, block: [[250, 772, 448]],
+    { bg: 'bar', ft: 380, fb: 506, label: 'THE BAR', sue: true, block: [[250, 772, 448]], items: [{ w: 'horseshoe', x: 860, y: 470 }],
       waves: [{ event: 'served' }, { event: 'kickoff' },
         { at: 0, mini: true, miniKind: 'alan', title: 'ALAN', groups: [orpG(['alan', 'R'], ['regular', 'L'], ['regular', 'R']), orpG(['regular', 'R'], ['darts', 'L'])] },
         { at: 0, groups: [orpG(['regular', 'L'], ['regular', 'R'], ['darts', 'R']), orpG(['regular', 'L'], ['chunk', 'R'])], food: 'chips' },
         { event: 'exit', dir: 1, to: 2, label: 'THE POOL ROOM' }] },
     { bg: 'pool', ft: 380, fb: 506, label: 'THE POOL ROOM', block: [[380, 772, 436]], fruit: 860,
-      items: [{ w: 'cue', x: 260, y: 470 }, { w: 'cue', x: 840, y: 480 }], breakables: [{ type: 'keg', x: 140, y: 484, drop: 'chips' }],
+      items: [{ w: 'cue', x: 260, y: 470 }, { w: 'horseshoe', x: 600, y: 490 }, { w: 'horseshoe', x: 880, y: 470 }], breakables: [{ type: 'keg', x: 140, y: 484, drop: 'chips' }], wheels: true,
       waves: [{ at: 0, groups: [orpG(['darts', 'R'], ['regular', 'L'], ['darts', 'R']), orpG(['regular', 'R'], ['regular', 'L'])] },
         { at: 0, mini: true, miniKind: 'jeff', title: 'JEFF', groups: [orpG(['jeff', 'R'], ['regular', 'L']), orpG(['darts', 'R'], ['regular', 'R'], ['regular', 'L'])], food: 'chips' },
         { event: 'mickComing' }, { event: 'exit', dir: -1, to: 3, label: 'THE BAR' }] },
-    { bg: 'bar', ft: 380, fb: 506, label: 'THE BAR', sue: true, block: [[250, 772, 448]], items: [{ w: 'cue', x: 160, y: 480 }],
+    { bg: 'bar', ft: 380, fb: 506, label: 'THE BAR', sue: true, block: [[250, 772, 448]], items: [{ w: 'cue', x: 160, y: 480 }, { w: 'horseshoe', x: 840, y: 490 }, { w: 'horseshoe', x: 120, y: 460 }],
       waves: [{ event: 'mickPage' }, { at: 0, boss: 'mick', title: 'MICK' }] },
   ],
   orp_atlantis: [
@@ -158,7 +158,7 @@ function orpGoScene(i, fromDir) {
   (sc.breakables || []).forEach(b => breakables.push({ ...b, hp: 3, flash: 0, half: 22 }));
   FLOOR_BLOCK[S.key] = sc.block || [];
   S.fruit = sc.fruit ? { x: sc.fruit, hits: 0, spin: 0, paid: false, flash: 0 } : null;
-  S.frog = null; S.served = null; S.queue = null; S.dance = null; S.sue = null; S.howto = null; S.carry = 0;
+  S.frog = null; S.served = null; S.queue = null; S.dance = null; S.sue = null; S.howto = null; S.carry = 0; S.wheelT = sc.wheels ? 7 : null;
   if (sc.sue) orpMakeSue();
   const dir = fromDir || 1;
   for (const p of players()) {
@@ -195,6 +195,7 @@ function updateOrp(dt) {
   if (S.sue) orpSueTick(dt);
   if (S.queue) orpQueueTick(dt);
   if (S.dance) orpDanceTick(dt);
+  orpWheelsTick(dt);
 }
 function orpAnnounce(text, life) { S.ann = { text, t: 0, life: life || 3.2 }; sfx('page'); }
 function orpComic(id, then) {   // a comic page in the middle of a stage, then straight back to the fight
@@ -477,7 +478,7 @@ function orpMick(b, dt, rage) {
       if ((b.face > 0 && b.x > cam.x + W - 60) || (b.face < 0 && b.x < cam.x + 60) || b.t > 1.2) { b.vx = 0; addShake(5); if (b.hitP) { b.state = 'rest'; b.t = 0; } else bDaze(b, 1.3, 'PUFFED OUT!'); }
       return true;
     case 'bellWind': b.vx = b.vy = 0; if (b.t > 0.5) { b.state = 'bell'; b.t = 0; sfx('clink'); setTimeout0(() => sfx('clink'), 0.18); setTimeout0(() => sfx('clink'), 0.36);
-      popWord(b.x, b.y, 200, 'DING DING DING!', true); spawnGroup([['regular', 'L'], ['regular', 'R']]); } return true;
+      popWord(b.x, b.y, 200, 'DING DING DING!', true); spawnGroup([['regular', 'L'], ['regular', 'R']]); setTimeout0(() => orpWheel(), 0.8); } return true;
     case 'bell': if (b.t > 0.8) { b.state = 'rest'; b.t = 0; } return true;
   }
   return false;
@@ -668,3 +669,122 @@ function orpDrawFore() {
     if (k > 0.9) pxText(w.label || '', W / 2, H / 2, 22, '#ffe08a');
   }
 }
+
+
+// ================================================================== Version 74: horseshoes, cart wheels, the boss cards, Snake
+// horseshoes off the pub walls: a short swing, a hard throw
+WEAPONS.horseshoe = { name: 'HORSESHOE', reach: 58, dmg: 12, kd: false, dur: 4, speed: 0.28, t0: 0.07, t1: 0.16, len: 24, col: '#6a6c76', throwDmg: 22, word: 'CLANG!' };
+WSPR.horseshoe = { grip: [9, 15], ang: -1.57 };
+bgImg('weapons/horseshoe'); ASSET_BG.push('weapons/horseshoe', 'orp/wheel');
+// cart wheels: one comes off the wall and rolls across the floor along a lane, a rumble and an arrow first. It flattens
+// whoever it meets, them as much as you (knock one of them into its path).
+function orpWheel(y, dir) {
+  dir = dir || (chance(0.5) ? 1 : -1); y = y || clamp(player.y + rand(-14, 14), FT + 14, FB - 10);
+  const n = makeNpc('wheel', dir > 0 ? -60 : W + 60, y); n.hp = 0; n.wheel = true; n.dirW = dir; n.warn = 1.0; n.rot = 0; n.hitSet = new Set();
+  n.draw = orpDrawWheel; S.npcs.push(n); sfx('incoming'); addShake(3);
+  n.script = (m, dt) => {
+    if (m.warn > 0) { m.warn -= dt; return; }
+    m.x += m.dirW * 520 * dt; m.rot += m.dirW * dt * 9; m.z = Math.abs(Math.sin(m.rot * 0.7)) * 4;
+    for (const e of players().concat(foes)) {
+      if (m.hitSet.has(e) || !canBeHit(e) || e.z > 30 || e.boss && e.kind !== 'mick') continue;
+      if (Math.abs(e.x - m.x) < 44 && Math.abs(e.y - m.y) < 22) {
+        m.hitSet.add(e); applyHit(m, e, { dmg: e === player || e.kind === 'player' ? 10 : 24, kd: true, kb: 380, hs: 0.06 }, m.dirW);
+        popWord(e.x, e.y, 150, e.kind === 'player' ? 'WHEELED!' : 'FLATTENED!', false); if (e.kind !== 'player') addScore(250);
+      }
+    }
+    if (m.x < -120 || m.x > W + 120) m.remove = true;
+  };
+}
+function orpWheelsTick(dt) {
+  if (S.wheelT == null || !S.wave || S.wave.event || S.done) return;
+  S.wheelT -= dt; if (S.wheelT <= 0) { S.wheelT = rand(8, 12); orpWheel(); }
+}
+function orpDrawWheel(n) {
+  const img = bgImg('orp/wheel'); const x = Math.round(n.x - cam.x), y = n.y;
+  if (n.warn > 0) {   // the warning: an arrow at the edge it comes from, along its lane
+    if (Math.floor(n.warn * 8) % 2 === 0) { const ex = n.dirW > 0 ? 40 : W - 40; ctx.fillStyle = 'rgba(8,10,24,0.8)'; ctx.fillRect(ex - 44, y - 64, 88, 34); pxText(n.dirW > 0 ? 'WHEEL →' : '← WHEEL', ex, y - 47, 12, '#ffb04a'); }
+    return;
+  }
+  shadow(x, y, 30, n.z);
+  if (!img) return;
+  ctx.save(); ctx.imageSmoothingEnabled = false; ctx.translate(x, y - img.height - n.z); ctx.rotate(Math.round(n.rot * 4) / 4);
+  ctx.drawImage(img, -img.width, -img.height, img.width * 2, img.height * 2); ctx.restore();
+}
+// the boss intro cards (painted in Meshy, tools/v74/bosscards.py)
+Object.assign(BOSS_ART, { 'ALAN': 'alan', 'JEFF': 'jeff', 'MICK': 'mick' });
+BOSS_BANNER.MICK = ['mick'];
+for (const k of ['alan', 'jeff', 'mick']) { bgImg('bosscard/' + k); ASSET_BG.push('bosscard/' + k); }
+
+// ---------------------------------------------------------------- SNAKE: Kelly on the coach, 11pm to 2am
+// A bonus round after Atlantis (Kelly's game), then a cabinet in the Harvest Moon. The Nokia's own Snake: eat the dots,
+// don't eat yourself, the walls wrap round. Faster every five. The battery dies at 2am (90 seconds).
+setTimeout(() => {
+  MINI_AFTER.orp_atlantis = 'snake';
+  MINI_DEF.snake = { title: 'SNAKE', short: 'SNAKE', lad: 'kelly', price: 1000, unit: '', board: 'TOP SCORES', music: 'nightbus', pay: s => s * 12,
+    after: 'Atlantis', how: ['11pm to 2am on the coach. Kelly has a Nokia and 23% battery.', "Eat the dots. Don't eat yourself. The walls wrap round.", 'Faster every five. The battery dies at 2am.'],
+    keys: 'Arrows to turn', touch: 'Stick to turn' };
+  MGAME.snake = {
+    init(M) {
+      const C = 21, R = 12;
+      M.s = { C, R, body: [[9, 6], [8, 6], [7, 6], [6, 6]], dir: [1, 0], q: [], step: 0.17, acc: 0, food: null, bug: null, bugT: 0, eaten: 0, endT: -1, why: '', msgT: 0, time: 90, flashT: 0 };
+      MGAME.snake.place(M.s);
+    },
+    place(s) {
+      for (let k = 0; k < 400; k++) { const f = [(Math.random() * s.C) | 0, (Math.random() * s.R) | 0]; if (!s.body.some(b => b[0] === f[0] && b[1] === f[1])) { s.food = f; return; } }
+    },
+    update(M, dt) {
+      const s = M.s; if (s.msgT > 0) s.msgT -= dt; if (s.flashT > 0) s.flashT -= dt;
+      if (s.endT >= 0) { s.endT += dt; if (s.endT > 1.4) miniEnd(s.why); return; }
+      s.time -= dt; if (s.time <= 0) { s.time = 0; s.why = 'BATTERY DIED. 2AM.'; s.endT = 0; pubFlash(s, "The lads are back. 'Good night?'", '#efe6d2', 2); return; }
+      // turning: remember up to two turns so a quick double tap works; never straight back on yourself
+      const inp = readInput(); let want = null;
+      if (inp.ix) want = [inp.ix, 0]; else if (inp.iy) want = [0, inp.iy];
+      if (!want && taps.length) { const t = taps[taps.length - 1], hx = t.x - W / 2, hy = t.y - H / 2; want = Math.abs(hx) > Math.abs(hy) ? [Math.sign(hx), 0] : [0, Math.sign(hy)]; }
+      if (want) { const last = s.q.length ? s.q[s.q.length - 1] : s.dir; if (!(want[0] === -last[0] && want[1] === -last[1]) && !(want[0] === last[0] && want[1] === last[1]) && s.q.length < 2) s.q.push(want); }
+      s.acc += dt;
+      while (s.acc >= s.step && s.endT < 0) {
+        s.acc -= s.step; if (s.q.length) s.dir = s.q.shift();
+        const h = s.body[0], n = [(h[0] + s.dir[0] + s.C) % s.C, (h[1] + s.dir[1] + s.R) % s.R];
+        if (s.body.slice(0, -1).some(b => b[0] === n[0] && b[1] === n[1])) { s.why = 'BIT YOURSELF'; s.endT = 0; sfx('ko'); pubFlash(s, 'Classic Kelly.', '#ff7a5a', 2); return; }
+        s.body.unshift(n);
+        if (s.food && n[0] === s.food[0] && n[1] === s.food[1]) {
+          s.eaten++; M.score += 10; sfx('pickup'); s.flashT = 0.12; MGAME.snake.place(s);
+          if (s.eaten % 5 === 0) { s.step = Math.max(0.07, s.step * 0.86); pubFlash(s, pick(['FASTER', "The driver's on about his divorce again", 'Still on the coach', 'One bar of battery', 'This is fine']), '#9be25a', 1.4); }
+          if (!s.bug && s.eaten % 4 === 0) { for (let k = 0; k < 50; k++) { const b = [(Math.random() * (s.C - 1)) | 0, (Math.random() * s.R) | 0]; if (!s.body.some(q => q[1] === b[1] && (q[0] === b[0] || q[0] === b[0] + 1))) { s.bug = b; s.bugT = 6; break; } } }
+        } else s.body.pop();
+        if (s.bug && n[1] === s.bug[1] && (n[0] === s.bug[0] || n[0] === s.bug[0] + 1)) { M.score += 50; s.bug = null; sfx('jackpot'); pubFlash(s, '+50 BUG!', '#ffd23f', 1.2); }
+      }
+      if (s.bug) { s.bugT -= dt; if (s.bugT <= 0) s.bug = null; }
+    },
+    draw(M) {
+      const s = M.s;
+      // the coach at night behind the phone
+      const bg = bgImg('comic/pages/pdoor_1');
+      ctx.fillStyle = '#05060c'; ctx.fillRect(0, 0, W, H);
+      if (bg) { const k = Math.max(W / bg.width, H / bg.height); ctx.save(); ctx.globalAlpha = 0.35; ctx.drawImage(bg, (W - bg.width * k) / 2, (H - bg.height * k) / 2, bg.width * k, bg.height * k); ctx.restore(); }
+      // the Nokia: a navy body, the green screen, NOKIA over it
+      const cs = 20, sw = s.C * cs, sh = s.R * cs, sx = Math.round(W / 2 - sw / 2), sy = 150;
+      ctx.fillStyle = '#1d2a44'; rrect(sx - 46, sy - 74, sw + 92, sh + 190, 40); ctx.fill(); ctx.strokeStyle = '#0b1120'; ctx.lineWidth = 4; ctx.stroke();
+      ctx.fillStyle = '#c8cdd2'; rrect(sx - 22, sy - 30, sw + 44, sh + 52, 14); ctx.fill();
+      pxText('NOKIA', W / 2, sy - 52, 14, '#d9dee6');
+      ctx.fillStyle = s.flashT > 0 ? '#c4d69a' : '#a9bd7c'; ctx.fillRect(sx - 6, sy - 18, sw + 12, sh + 24);
+      ctx.fillStyle = '#2c3a1c'; ctx.font = '800 12px ' + BODY; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+      ctx.fillText(String(M.score).padStart(4, '0'), sx, sy - 9);
+      ctx.textAlign = 'right'; ctx.fillText('BATT ' + '|'.repeat(Math.max(1, Math.ceil(s.time / 22.5))), sx + sw, sy - 9);
+      ctx.fillRect(sx - 2, sy - 2, sw + 4, 2);
+      for (let i = 0; i < s.body.length; i++) { const [x, y] = s.body[i]; ctx.fillRect(sx + x * cs + 2, sy + y * cs + 2, cs - 4, cs - 4); if (i === 0) { ctx.fillStyle = '#a9bd7c'; ctx.fillRect(sx + x * cs + (s.dir[0] > 0 ? cs - 8 : 6), sy + y * cs + (s.dir[1] > 0 ? cs - 8 : 6), 3, 3); ctx.fillStyle = '#2c3a1c'; } }
+      if (s.food) { const [x, y] = s.food, cx = sx + x * cs + cs / 2, cy = sy + y * cs + cs / 2; ctx.fillRect(cx - 2, cy - 7, 4, 4); ctx.fillRect(cx - 7, cy - 2, 4, 4); ctx.fillRect(cx + 3, cy - 2, 4, 4); ctx.fillRect(cx - 2, cy + 3, 4, 4); }
+      if (s.bug && Math.floor(time * 6) % 2) { const [x, y] = s.bug; ctx.fillRect(sx + x * cs + 3, sy + y * cs + 5, cs * 2 - 6, cs - 10); ctx.fillRect(sx + x * cs + 6, sy + y * cs + 2, 4, 4); ctx.fillRect(sx + x * cs + cs * 2 - 10, sy + y * cs + 2, 4, 4); }
+      // the keypad under the screen
+      for (let r = 0; r < 2; r++) for (let c = 0; c < 3; c++) { ctx.fillStyle = '#3a4a6a'; rrect(W / 2 - 96 + c * 70, sy + sh + 42 + r * 34, 52, 24, 10); ctx.fill(); }
+    },
+    hud(M) {
+      const s = M.s;
+      pubPanel(16, 14, 260, 70);
+      ctx.font = '800 11px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('KELLY · ON THE COACH', 30, 30);
+      ctx.fillText('2AM IN ' + Math.ceil(s.time) + 's', 30, 64);
+      textOut(fmtN(M.score), 262, 50, '24px ' + DISPLAY, '#ffd23f', OUT, 5, 'right');
+      drawGameMsg(s, 120);
+    },
+  };
+}, 0);
