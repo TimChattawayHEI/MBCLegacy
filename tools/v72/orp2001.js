@@ -20,7 +20,7 @@ BOSS_CARD.jeff = ['JEFF', "Dad! They're starting!", ['jeff']];
 // ---------------------------------------------------------------- the stages
 Object.assign(STAGES, {
   orp_street: { era: 2001, title: 'THE HIGH STREET', sub: 'Orpington. Saturday, March 2001. 8pm.', bg: 'orp_street', ft: 352, fb: 506, len: 3688,
-    music: 'garage', aggro: 2, aa: 0.3, intro: 'orpIntro',
+    music: 'codered', aggro: 2, aa: 0.3, intro: 'orpIntro',
     items: [{ w: 'cone', x: 700, y: 480 }, { w: 'alcopop', x: 1560, y: 450 }],
     breakables: [{ type: 'bin', x: 1180, y: 476, drop: 'chips' }, { type: 'bin', x: 2300, y: 460, drop: 'chips' }],
     waves: [
@@ -34,7 +34,7 @@ Object.assign(STAGES, {
       { at: 'end', final: true, groups: [[['bouncer', 'R'], ['townie', 'R'], ['vibez', 'L']], [['chunk', 'R'], ['ladette', 'L'], ['townie', 'R']]] },
     ] },
   orp_pub: { era: 2001, title: 'YE OLDE BLACKSMITH', sub: "8:40pm. Mick and Sue's. Don't let her see Byron.", bg: 'orp_pub', ft: 352, fb: 506, len: 2400,
-    music: 'social', aggro: 3, aa: 0.4, intro: 'orpPub',
+    music: 'heist', aggro: 3, aa: 0.4, intro: 'orpPub',
     items: [{ w: 'cue', x: 1980, y: 470 }, { w: 'alcopop', x: 600, y: 470 }],
     breakables: [{ type: 'keg', x: 1660, y: 484, drop: 'chips' }],
     fruit: { x: 810 },
@@ -45,7 +45,7 @@ Object.assign(STAGES, {
       { at: 'end', boss: 'mick', title: 'MICK' },
     ] },
   orp_atlantis: { era: 2001, title: 'ATLANTIS', sub: 'Croydon. 11pm. DJ EZ.', bg: 'orp_atlantis', ft: 352, fb: 506, len: 1920,
-    music: 'club', aggro: 3, aa: 0.45, intro: 'orpClub', outro: 'orpHome', beat: 132,
+    music: 'alarmcall', aggro: 3, aa: 0.45, intro: 'orpClub', outro: 'orpHome', beat: 134,
     items: [{ w: 'alcopop', x: 1200, y: 470 }],
     breakables: [{ type: 'keg', x: 1500, y: 484, drop: 'chips' }],
     waves: [
@@ -54,7 +54,10 @@ Object.assign(STAGES, {
       { at: 'end', final: true, title: '2AM', groups: [[['bouncer', 'R'], ['vibez', 'R'], ['vibez', 'L']], [['chunk', 'R'], ['ladette', 'L'], ['vibez', 'R'], ['townie', 'L']]], food: 'chips' },
     ] },
 });
+// music (the chiptune tracks made for new levels, soundtrack/songs5.py to songs7.py): Code Red down the High Street, Heist while
+// you get served, Lockdown when Mick comes for you, Alarm Call at Atlantis
 ORP_KEYS.forEach(k => { BOSS_MUSIC[k] = 'boss1999'; });
+BOSS_MUSIC.orp_pub = 'lockdown'; BOSS_KEYS.add('lockdown');
 // the chapter goes between 1999 and Elba; every stage on the route is numbered in order again
 ROUTE.splice(ROUTE.indexOf('airport'), 0, ...ORP_KEYS);
 ROUTE.forEach((k, i) => { STAGES[k].n = i + 1; });
@@ -245,7 +248,16 @@ function orpDoor() {
   S.wave = null; S.waveIdx++;
 }
 // the 2-step beat: hits that land on it do more, and a ring pulses with it
-function orpBeatPhase() { const bpm = ST && ST.beat; if (!bpm || !S || player.x < 1000) return -1; const per = 60 / bpm; return ((S.time || 0) % per) / per; }
+function orpBeatPhase() {
+  const bpm = ST && ST.beat; if (!bpm || !S || player.x < 1000) return -1;
+  const per = 60 / bpm;
+  // locked to Alarm Call itself when it's playing (its loop is exactly 128 beats), else to the stage clock
+  if (actx && trk.src && trk.key === mus.key && mus.key === ST.music) {
+    const lat = (actx.outputLatency || 0) + (actx.baseLatency || 0), el = actx.currentTime - lat - trk.t0;
+    return (((el % per) + per) % per) / per;
+  }
+  return ((S.time || 0) % per) / per;
+}
 function orpBeatMult(a, t) {
   if (!ST || !ST.beat || !a || a.kind !== 'player' || t === a) return 1;
   const ph = orpBeatPhase(); if (ph < 0) return 1;
@@ -262,7 +274,8 @@ function orpDrawFore() {
   }
   const ph = orpBeatPhase(); if (ph < 0) return;
   // strobe on the bar line, and the beat ring
-  if (Math.floor((S.time || 0) / (60 / ST.beat)) % 4 === 0 && ph < 0.12) { ctx.fillStyle = 'rgba(235,240,255,0.10)'; ctx.fillRect(0, 0, W, H); }
+  if ((S.bar = (S.lastPh > 0.5 && ph < 0.5) ? (S.bar || 0) + 1 : (S.bar || 0)) % 4 === 0 && ph < 0.12) { ctx.fillStyle = 'rgba(235,240,255,0.10)'; ctx.fillRect(0, 0, W, H); }
+  S.lastPh = ph;
   const r = 16 + (1 - ph) * 14, on = ph < 0.14 || ph > 0.9;
   ctx.save(); ctx.strokeStyle = on ? '#7cf7ff' : 'rgba(180,140,255,0.6)'; ctx.lineWidth = on ? 4 : 2; ctx.beginPath(); ctx.arc(W / 2, H - 34, r, 0, Math.PI * 2); ctx.stroke();
   ctx.fillStyle = on ? '#7cf7ff' : 'rgba(255,255,255,0.7)'; ctx.font = '800 11px ' + BODY; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('BEAT', W / 2, H - 34); ctx.restore();

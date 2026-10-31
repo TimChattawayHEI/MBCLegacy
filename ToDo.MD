@@ -153,7 +153,8 @@ Real street order, left to right (the mirror shop is past the Blacksmiths, not b
 ### Orpington 2001: still to do after V72
 - [ ] Tim: play the chapter on a phone (THE HIGH STREET, YE OLDE BLACKSMITH, ATLANTIS) and say what feels off
 - [ ] The run back up the High Street to make the coach (auto-runner), between the Blacksmiths and Atlantis
-- [ ] A garage track for Atlantis at a steady 2-step tempo (the beat is set to 132 bpm in STAGES.orp_atlantis.beat)
+- [x] A garage track for Atlantis at a steady 2-step tempo
+  - Done: Alarm Call, 134 bpm; the BEAT ring follows the song itself (its loop is exactly 128 beats), so ON BEAT! lands with the music
 - [ ] Comic pages for the chapter (Kelly at the door, the coach, 2am) in tools/v71/comics.py
 - [ ] A trophy for finishing the chapter, like the other chapters'
 - [ ] Mick's boss card art (bosscard/) and Jeff's
@@ -163,21 +164,22 @@ Real street order, left to right (the mirror shop is past the Blacksmiths, not b
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
 
 ### Music (31 October)
-- [ ] Atlantis: use Alarm Call (key `alarmcall`, or `alarmcall2` for the alarm on every other beat). Whoever builds Atlantis: set the stage's `music` to that key. Tim: say which version
+- [x] Atlantis: use Alarm Call (key `alarmcall`, or `alarmcall2` for the alarm on every other beat). Whoever builds Atlantis: set the stage's `music` to that key. Tim: say which version
+  - Done (V72): Atlantis plays `alarmcall` (alarm on every beat). Tim: say if you'd rather have `alarmcall2`; it's one word in STAGES.orp_atlantis in tools/v72/orp2001.js
 
 #### Music available for new levels
 All in `web/music/` and registered in `TRACKS` (index.html, after the main table), so a new stage only needs `music: '<key>'`. Each is a seamless loop of about a minute. Source is in the claude.ai project under `soundtrack/`.
 
 | Key | Track | Style | Source |
 |---|---|---|---|
-| `alarmcall` | Alarm Call (alarm every beat) | Spy-thriller 2-step garage, 134 bpm, G minor, guitar-style chip riff, blaring alarm on the beat. Tim's favourite; earmarked for Atlantis | songs5.py |
+| `alarmcall` | Alarm Call (alarm every beat) | Spy-thriller 2-step garage, 134 bpm, G minor, guitar-style chip riff, blaring alarm on the beat. **Used: Atlantis (V72)** | songs5.py |
 | `alarmcall2` | Alarm Call (alarm every other beat) | The same with the alarm on beats 1 and 3 only | songs5.py |
-| `codered` | Code Red | 136 bpm, A minor, chugging riff, two-tone police siren on every beat (chase feel) | songs7.py |
-| `lockdown` | Lockdown | 130 bpm, C minor, heavy galloping riff, low buzzer on 2 and 4, half-time breakdown | songs7.py |
-| `heist` | Heist | 138 bpm, F# minor, stop-start octave riff, rising dive klaxon on every bar | songs7.py |
+| `codered` | Code Red | 136 bpm, A minor, chugging riff, two-tone police siren on every beat (chase feel). **Used: The High Street, Orpington 2001 (V72)** | songs7.py |
+| `lockdown` | Lockdown | 130 bpm, C minor, heavy galloping riff, low buzzer on 2 and 4, half-time breakdown. **Used: Mick's boss fight at the Blacksmiths (V72, BOSS_MUSIC.orp_pub)** | songs7.py |
+| `heist` | Heist | 138 bpm, F# minor, stop-start octave riff, rising dive klaxon on every bar. **Used: Ye Olde Blacksmith, getting served and the fight before Mick (V72)** | songs7.py |
 | `deepcover` | Deep Cover | Four-channel NES-style chiptune 2-step, 132 bpm, E minor, plucky pulse riff, triangle sub with glides | songs6.py |
 
-- [ ] When a level takes one of these, note it here; when a track is clearly not going to be used, delete its file from `web/music/` and its line in `TRACKS` so the app stays small
+- [ ] Still free: `alarmcall2` and `deepcover` (the run back to the coach could take Deep Cover). When a level takes one of these, note it here; when a track is clearly not going to be used, delete its file from `web/music/` and its line in `TRACKS` so the app stays small
 
 ## Carried over from the build plan
 

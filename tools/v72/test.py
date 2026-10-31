@@ -26,6 +26,7 @@ with sync_playwright() as pw:
     print('route:', ev("ROUTE.slice(0, 6).join(' ')"), '| chapter of orp_pub:', ev("chapterOf('orp_pub')"), '| n:', ev("STAGES.orp_pub.n"))
     for st in ['orp_street', 'orp_pub', 'orp_atlantis']:
         ev(f"profileSet('TIM', false); newRun(0, '{st}'); startStage('{st}')"); time.sleep(6)
+        print(st, 'music', ev('mus.key'), 'file', ev('TRACKS[mus.key] && TRACKS[mus.key].src'), 'boss music', ev('bossMusic()'))
         print(st, 'mode', ev('mode'), 'meshy drawn:', ev('MESHY_BG[S.key] && bgReady(meshyFiles(S.key))'), 'len', ev('ST.len'))
         if st == 'orp_pub':
             # getting served: walk in while she pours
@@ -38,6 +39,7 @@ with sync_playwright() as pw:
             print(' after sneaking:', ev("S.served.phase"), 'tries', ev("S.served.tries"), 'score', ev("run.score")); shot('pub_served_end')
             # skip to Mick
             ev("foes.length = 0; S.wave = null; S.waveIdx = ST.waves.length - 1; S.served.phase = 'done'; player.x = ST.len - 200; cam.x = ST.len - W"); time.sleep(4)
+            print(' music in the boss fight:', ev('mus.key'))
             print(' boss:', ev("S.bosses.map(b => b.kind + ':' + b.state + ':' + b.hp).join(',')")); shot('pub_mick')
             for i in range(6): time.sleep(1.5); ev("player.hp = player.maxHp")
             print(' mick states seen:', ev("S.bosses.map(b => b.state).join(',')"), 'sue', ev("S.sue && S.sue.state")); shot('pub_mick2')
