@@ -162,6 +162,23 @@ Real street order, left to right (the mirror shop is past the Blacksmiths, not b
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
 
+### Music (31 October)
+- [ ] Atlantis: use Alarm Call (key `alarmcall`, or `alarmcall2` for the alarm on every other beat). Whoever builds Atlantis: set the stage's `music` to that key. Tim: say which version
+
+#### Music available for new levels
+All in `web/music/` and registered in `TRACKS` (index.html, after the main table), so a new stage only needs `music: '<key>'`. Each is a seamless loop of about a minute. Source is in the claude.ai project under `soundtrack/`.
+
+| Key | Track | Style | Source |
+|---|---|---|---|
+| `alarmcall` | Alarm Call (alarm every beat) | Spy-thriller 2-step garage, 134 bpm, G minor, guitar-style chip riff, blaring alarm on the beat. Tim's favourite; earmarked for Atlantis | songs5.py |
+| `alarmcall2` | Alarm Call (alarm every other beat) | The same with the alarm on beats 1 and 3 only | songs5.py |
+| `codered` | Code Red | 136 bpm, A minor, chugging riff, two-tone police siren on every beat (chase feel) | songs7.py |
+| `lockdown` | Lockdown | 130 bpm, C minor, heavy galloping riff, low buzzer on 2 and 4, half-time breakdown | songs7.py |
+| `heist` | Heist | 138 bpm, F# minor, stop-start octave riff, rising dive klaxon on every bar | songs7.py |
+| `deepcover` | Deep Cover | Four-channel NES-style chiptune 2-step, 132 bpm, E minor, plucky pulse riff, triangle sub with glides | songs6.py |
+
+- [ ] When a level takes one of these, note it here; when a track is clearly not going to be used, delete its file from `web/music/` and its line in `TRACKS` so the app stays small
+
 ## Carried over from the build plan
 
 ### Firebase rules (Tim to paste, from the README)
