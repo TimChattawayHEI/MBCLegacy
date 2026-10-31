@@ -35,6 +35,8 @@ s = put(s, '      <!-- V82 html start -->', '      <!-- V82 html end -->', read(
 FACE = json.load(open(os.path.join(HERE, 'faces.json')))
 a, b = s.index('// T3 js start'), s.index('// T3 js end')
 t3 = s[a:b]
+# faces.json can change after a build (Version 83 repainted Byron and Kelly), so refresh the FACE line if it is already in
+t3 = re.sub(r"  const FACE = \{[^\n]*\};\n", lambda m: "  const FACE = " + json.dumps(FACE, separators=(',', ':')) + ";\n", t3)
 T3_SWAPS = [
     ('data', "  const DIFF_NOTE = {",
      "  // Version 82: faces for the roster (a square on each lad's card: x, y, size, card width, card height) and a picture for each stage\n"
