@@ -206,6 +206,103 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
 #t3-stages{width:calc(var(--t3u) * 214)}
 #t3-back{white-space:nowrap;flex:0 0 auto}
 #t3-tabs{display:flex!important;flex-wrap:wrap;column-gap:calc(var(--t3u) * 5)}
+/* V80 css start */
+/* Version 80: the menus redesigned (Tim's pick, design A). A start menu between the title and the lads holds everything that
+   was along the bottom; the select screens get a header (back, the steps, who's playing) and nothing else round the edge;
+   faces in the lad roster; the chapters down the side with a picture each and the stages as picture cards; difficulty is
+   the last step, "3 GO". Sizes in --t3u (one unit is one pixel of the 480x270 screen). */
+#t3-foot{display:none!important}
+#t3-cont{display:none!important}
+#t3-head{left:calc(var(--t3u) * 10);right:calc(var(--t3u) * 10);top:calc(var(--t3u) * 7);height:calc(var(--t3u) * 22);display:flex;align-items:center;justify-content:space-between;pointer-events:none!important}
+#t3-head .t3hr{display:flex;gap:calc(var(--t3u) * 3)}
+#t3-head.on>*,#t3-head.on .t3hr>*{pointer-events:auto}
+.t3chip{height:calc(var(--t3u) * 22);min-width:calc(var(--t3u) * 22);box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:calc(var(--t3u) * 3);padding:0 calc(var(--t3u) * 6);
+  background:rgba(18,20,30,.92);border:calc(var(--t3u) * 1) solid var(--t3rule);font:700 max(calc(var(--t3m) * 10px),calc(var(--t3u) * 7.5)) var(--t3disp);letter-spacing:.06em;color:var(--t3cream);text-transform:uppercase}
+.t3chip:hover{border-color:var(--t3gold);color:var(--t3gold)}
+.t3chip svg{width:calc(var(--t3u) * 8);height:calc(var(--t3u) * 8);flex:0 0 auto}
+.t3chip.hide{visibility:hidden}
+#t3-hsound.off svg .w{display:none}
+#t3-crumbs{top:calc(var(--t3u) * 7)!important;height:calc(var(--t3u) * 22);box-sizing:border-box;background:rgba(18,20,30,.92);border:calc(var(--t3u) * 1) solid var(--t3rule);padding:0 calc(var(--t3u) * 8);gap:calc(var(--t3u) * 6)!important}
+#t3-crumbs span{text-shadow:none!important}
+#t3-crumbs span.now{background:var(--t3gold);color:var(--t3ink)!important;padding:calc(var(--t3u) * 1.5) calc(var(--t3u) * 4)}
+#t3-crumbs span.done{color:var(--t3gold)!important}
+#t3-crumbs i.done{background:var(--t3gold)}
+
+/* the start menu */
+#t3-menu{left:0;top:0;bottom:0;width:calc(var(--t3u) * 232);box-sizing:border-box;padding:calc(var(--t3u) * 92) calc(var(--t3u) * 22) 0 calc(var(--t3u) * 24);display:flex;flex-direction:column;gap:calc(var(--t3u) * 5)}
+#t3-menu .t3mi{display:flex;align-items:center;justify-content:space-between;gap:calc(var(--t3u) * 6);height:calc(var(--t3u) * 24);box-sizing:border-box;padding:0 calc(var(--t3u) * 9);
+  background:rgba(18,20,30,.92);border:calc(var(--t3u) * 1) solid var(--t3rule);color:var(--t3cream);text-align:left}
+#t3-menu .t3mt{font:700 max(calc(var(--t3m) * 12px),calc(var(--t3u) * 10)) var(--t3disp);letter-spacing:.05em;white-space:nowrap}
+#t3-menu .t3ms{font:500 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 6)) var(--t3body);color:#c9c2b0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+#t3-menu .t3mi:hover,#t3-menu .t3mi.sel{border-color:var(--t3gold);box-shadow:inset 0 0 0 calc(var(--t3u) * 1) var(--t3gold)}
+#t3-menu .t3mi.prim{border-color:var(--t3gold)}
+#t3-menu .t3mi.prim .t3mt{color:var(--t3gold)}
+#t3-mcarry{height:calc(var(--t3u) * 30)!important;flex-direction:column;align-items:flex-start!important;justify-content:center!important;gap:calc(var(--t3u) * 1)!important;
+  background:var(--t3gold)!important;color:var(--t3ink)!important;border-color:var(--t3ink)!important;box-shadow:0 calc(var(--t3u) * 2) 0 #a8780f}
+#t3-mcarry .t3ms{color:#3a2a08}
+#t3-mcarry.sel,#t3-mcarry:hover{box-shadow:0 calc(var(--t3u) * 2) 0 #a8780f,0 0 0 calc(var(--t3u) * 1) #fff!important}
+#t3-mcarry[hidden],#t3-monline[hidden]{display:none!important}
+.t3mrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:calc(var(--t3u) * 5)}
+.t3mrow .t3mi{flex-direction:column;justify-content:center!important;padding:0!important;gap:0!important}
+.t3mrow .t3mt{font-size:max(calc(var(--t3m) * 10px),calc(var(--t3u) * 7.5))!important}
+.t3mrow .t3ms{color:var(--t3orange)!important}
+#t3-mtip{position:absolute;left:calc(var(--t3u) * 24);bottom:calc(var(--t3u) * 7);margin:0;font:500 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 6)) var(--t3body);color:#a7b3b1}
+#t3-mtip:empty{display:none}
+
+/* the lads: faces in the roster */
+#t3-lad{top:calc(var(--t3u) * 36)!important}
+#t3-roster{left:calc(var(--t3u) * 10)!important;right:calc(var(--t3u) * 10);bottom:calc(var(--t3u) * 7)!important;display:grid!important;grid-template-columns:repeat(9,minmax(0,1fr));gap:calc(var(--t3u) * 4)!important}
+#t3-roster button{position:relative;height:calc(var(--t3u) * 46);padding:0!important;overflow:hidden;background:#1b2030!important;border:calc(var(--t3u) * 1) solid var(--t3rule)!important;color:var(--t3cream)!important}
+#t3-roster button i{position:absolute;inset:0;background-repeat:no-repeat;image-rendering:pixelated}
+#t3-roster button.lock i{filter:brightness(0)}
+#t3-roster button span{position:absolute;left:0;right:0;bottom:0;height:calc(var(--t3u) * 11);display:flex;align-items:center;justify-content:center;background:rgba(10,11,20,.86);
+  font:700 max(calc(var(--t3m) * 9px),calc(var(--t3u) * 6.5)) var(--t3disp);letter-spacing:.05em}
+#t3-roster button[aria-pressed="true"]{background:#1b2030!important;border:calc(var(--t3u) * 1.5) solid var(--t3gold)!important;box-shadow:0 0 0 calc(var(--t3u) * 1) var(--t3ink),0 calc(var(--t3u) * 3) 0 #a8780f}
+#t3-roster button[aria-pressed="true"] span{color:var(--t3gold)}
+#t3-roster button:hover{border-color:var(--t3gold)!important}
+
+/* where to start: the chapters down the side */
+#t3-stages{left:calc(var(--t3u) * 10)!important;top:calc(var(--t3u) * 36)!important;width:calc(var(--t3u) * 150)!important;display:flex!important;flex-direction:column;gap:calc(var(--t3u) * 3)!important;
+  background:none!important;border:0!important;border-image:none!important;padding:0!important;box-shadow:none!important}
+#t3-tabs{display:flex!important;flex-direction:column;gap:calc(var(--t3u) * 3)!important}
+#t3-tabs button{width:100%;overflow:hidden;display:flex!important;align-items:center;gap:calc(var(--t3u) * 5);height:calc(var(--t3u) * 29);box-sizing:border-box;padding:0 calc(var(--t3u) * 5) 0 calc(var(--t3u) * 4)!important;
+  background:rgba(18,20,30,.92)!important;border:calc(var(--t3u) * 1) solid #3b4254!important;text-align:left;text-transform:none!important;letter-spacing:0!important;color:var(--t3cream)!important}
+#t3-tabs button img{width:calc(var(--t3u) * 36);height:calc(var(--t3u) * 20);object-fit:cover;image-rendering:pixelated;border:calc(var(--t3u) * .5) solid #000;flex:0 0 auto}
+#t3-tabs .cw{display:flex;flex-direction:column;gap:calc(var(--t3u) * .5);min-width:0}
+#t3-tabs .cn{font:700 max(calc(var(--t3m) * 9px),calc(var(--t3u) * 7.5)) var(--t3disp);letter-spacing:.04em;white-space:nowrap}
+#t3-tabs .cs{font:500 max(calc(var(--t3m) * 7px),calc(var(--t3u) * 5.5)) var(--t3body);color:#a7b3b1;white-space:nowrap}
+#t3-tabs button[aria-selected="true"]{background:#3a3220!important;border-color:var(--t3gold)!important}
+#t3-tabs button[aria-selected="true"] .cn{color:var(--t3gold)}
+#t3-tabs .new{margin-left:auto;padding:calc(var(--t3u) * 1) calc(var(--t3u) * 3);background:var(--t3orange);color:var(--t3ink);font:700 max(calc(var(--t3m) * 7px),calc(var(--t3u) * 5.5)) var(--t3disp);letter-spacing:.05em}
+#t3-tabs .lock img{filter:brightness(.15)}
+#t3-list{display:none!important}
+/* the chapter's stages as pictures of the places */
+#t3-scards{left:calc(var(--t3u) * 168);right:calc(var(--t3u) * 10);top:calc(var(--t3u) * 36)}
+#t3-scap{margin:0 0 calc(var(--t3u) * 4);font:800 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 6)) var(--t3body);letter-spacing:.14em;color:var(--t3orange);text-shadow:0 1px 0 var(--t3ink)}
+#t3-sgrid{display:grid;gap:calc(var(--t3u) * 6)}
+#t3-sgrid button{display:block;padding:0;overflow:hidden;background:rgba(18,20,30,.94);border:calc(var(--t3u) * 1) solid var(--t3rule);text-align:left;color:var(--t3cream)}
+#t3-sgrid button .im{display:block;width:100%;aspect-ratio:16/9;background-size:cover;background-position:center;image-rendering:pixelated}
+#t3-sgrid button .tx{display:flex;flex-direction:column;gap:calc(var(--t3u) * 1);padding:calc(var(--t3u) * 4) calc(var(--t3u) * 5) calc(var(--t3u) * 5)}
+#t3-sgrid .sn{font:800 max(calc(var(--t3m) * 7px),calc(var(--t3u) * 5)) var(--t3body);letter-spacing:.12em;color:#a7b3b1}
+#t3-sgrid .st{font:700 max(calc(var(--t3m) * 9px),calc(var(--t3u) * 7.5)) var(--t3disp);letter-spacing:.04em;line-height:1.1}
+#t3-sgrid .sb{font:500 max(calc(var(--t3m) * 7px),calc(var(--t3u) * 5.5)) var(--t3body);color:#c9c2b0;line-height:1.25}
+#t3-sgrid .rk{font:700 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 6)) var(--t3disp);color:var(--t3gold)}
+#t3-sgrid button[aria-pressed="true"]{border:calc(var(--t3u) * 1.5) solid var(--t3gold);box-shadow:0 calc(var(--t3u) * 2.5) 0 #a8780f}
+#t3-sgrid button[aria-pressed="true"] .st{color:var(--t3gold)}
+#t3-sgrid button:hover{border-color:var(--t3gold)}
+#t3-sgrid button:disabled{cursor:default}
+#t3-sgrid.small .sb{display:none}
+/* the stage you're on, with START HERE */
+#t3-info{left:calc(var(--t3u) * 168)!important;right:calc(var(--t3u) * 10)!important;top:auto!important;bottom:calc(var(--t3u) * 8)!important;width:auto!important;
+  grid-template-columns:minmax(0,1fr) auto;column-gap:calc(var(--t3u) * 10);row-gap:calc(var(--t3u) * 2)!important;align-items:center}
+#t3-info>*{grid-column:1}
+#t3-info #t3-here{grid-column:2;grid-row:1 / span 5;align-self:center;margin:0!important;white-space:nowrap}
+#t3-stitle{font-size:calc(var(--t3u) * 13)!important;color:var(--t3gold)}
+#t3-snum{display:none}
+/* 3 GO: the language toggle lives in Settings now */
+#t3-lang{display:none!important}
+#t3-diff .t3row{justify-content:flex-end}
+/* V80 css end */
 /* T3 css end */
 </style>
 
@@ -257,6 +354,28 @@ html.phone-port .overlay{position:fixed;inset:0 auto auto 0;width:100%;height:va
         <p class="t3txt" id="t3-cline"></p>
         <div class="t3row"><button class="t3ghost" id="t3-new" type="button">New run</button><button class="t3go" id="t3-carry" type="button">CARRY ON</button></div>
       </section>
+      <!-- V80 html start -->
+      <section class="t3sel" id="t3-menu" aria-label="Main menu">
+        <button type="button" class="t3mi" id="t3-mcarry"><span class="t3mt">CARRY ON</span><span class="t3ms" id="t3-mcline"></span></button>
+        <button type="button" class="t3mi prim" id="t3-mnew"><span class="t3mt">NEW GAME</span><span class="t3ms">Pick a lad, pick a year</span></button>
+        <button type="button" class="t3mi" id="t3-monline"><span class="t3mt">PLAY ONLINE</span><span class="t3ms">Two phones, one fight</span></button>
+        <button type="button" class="t3mi" id="t3-mpub"><span class="t3mt">THE HARVEST MOON</span><span class="t3ms" id="t3-mpline">The pub · mini-games</span></button>
+        <div class="t3mrow">
+          <button type="button" class="t3mi" id="t3-mtrophy"><span class="t3mt">TROPHIES</span><span class="t3ms" id="t3-mtline"></span></button>
+          <button type="button" class="t3mi" id="t3-mboard"><span class="t3mt">SCORES</span></button>
+          <button type="button" class="t3mi" id="t3-mset"><span class="t3mt">SETTINGS</span></button>
+        </div>
+        <p id="t3-mtip"></p>
+      </section>
+      <div class="t3sel" id="t3-head">
+        <button type="button" class="t3chip" id="t3-hback"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M15 5l-7 7 7 7"></path></svg><span id="t3-hbackl">Menu</span></button>
+        <div class="t3hr">
+          <button type="button" class="t3chip" id="t3-hme"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#ffd23f" stroke-width="2.5"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg><span id="t3-hmel">You</span></button>
+          <button type="button" class="t3chip" id="t3-hsound" aria-label="Sound on" aria-pressed="true"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 9h4l5-4v14l-5-4H4z"></path><path class="w" d="M16 9c1.5 1.5 1.5 4.5 0 6"></path><path class="w" d="M19 6c3 3 3 9 0 12"></path></svg></button>
+        </div>
+      </div>
+      <section class="t3sel" id="t3-scards" aria-live="polite"><p id="t3-scap"></p><div id="t3-sgrid"></div></section>
+      <!-- V80 html end -->
       <div class="t3sel" id="t3-foot">
         <button class="t3ghost" id="t3-back" type="button">&lsaquo; Back</button>
         <p class="t3cap" id="t3-hint"></p>
@@ -10266,6 +10385,7 @@ let pauseFocus = 'left', setSel = 0, restartConfirm = false;
 let pauseSel = 0, pauseTab = 'info', pauseConfirm = false, pausedMusic = null, lastPlateW = 150;
 function pauseBtn(plateW) { if (plateW) lastPlateW = plateW; return { x: W - 12 - lastPlateW - 28, y: 34, r: 20 }; }
 function pauseItems() {
+  if (menuSettings) return [{ id: 'menuback', label: 'BACK TO MENU', x: 64, y: 150, w: 300, h: 44 }];   // Version 80
   const items = [
     { id: 'resume', label: 'RESUME' },
     { id: 'restart', label: restartConfirm ? 'SURE? START AGAIN' : 'RESTART STAGE' },
@@ -10277,13 +10397,18 @@ function pauseItems() {
   items.forEach((it, i) => { it.x = 64; it.y = 150 + i * 56; it.w = 300; it.h = 44; });
   return items;
 }
+// Version 80: SETTINGS on the start menu opens the pause screen's settings panel on its own
+let menuSettings = false;
+function openMenuSettings() { menuSettings = true; mode = 'pause'; modeT = 0; pauseSel = 0; pauseTab = 'settings'; pauseFocus = 'right'; setSel = 0; pauseConfirm = false; restartConfirm = false; held.clear(); pointers.clear(); sfx('page'); }
+function closeMenuSettings() { menuSettings = false; mode = 'select'; modeT = 0; held.clear(); pointers.clear(); sfx('page'); }
 function openPause() {
   if (mode !== 'play') return;
   mode = 'pause'; modeT = 0; pauseSel = 0; pauseTab = 'info'; pauseConfirm = false; restartConfirm = false; pauseFocus = 'left';
   held.clear(); pointers.clear(); pausedMusic = mus.key; musicSet(null); sfx('page');
 }
-function resumeGame() { mode = 'play'; held.clear(); pointers.clear(); musicSet(pausedMusic, true); sfx('page'); canvas.focus(); }
+function resumeGame() { if (menuSettings) { closeMenuSettings(); return; } mode = 'play'; held.clear(); pointers.clear(); musicSet(pausedMusic, true); sfx('page'); canvas.focus(); }
 function pauseAct(id) {
+  if (id === 'menuback') { closeMenuSettings(); return; }
   if (id !== 'quit') pauseConfirm = false;
   if (id !== 'restart') restartConfirm = false;
   if (id === 'resume') resumeGame();
@@ -10385,7 +10510,7 @@ function updatePause() {
 function drawPause() {
   if (NET.on) { ctx.fillStyle = 'rgba(10,14,16,0.75)'; ctx.fillRect(0, 0, W, H); textOut('PAUSED', W / 2, H / 2 - 20, '44px ' + DISPLAY, '#f2a23a', OUT, 7, 'center'); ctx.font = '700 15px ' + BODY; ctx.fillStyle = '#efe6d2'; ctx.textAlign = 'center'; ctx.fillText('Either of you: press pause or HIT to carry on', W / 2, H / 2 + 30); return; }
   ctx.fillStyle = 'rgba(10,14,16,0.82)'; ctx.fillRect(0, 0, W, H);
-  textOut('PAUSED', 64, 96, '44px ' + DISPLAY, '#f2a23a', OUT, 7, 'left');
+  textOut(menuSettings ? 'SETTINGS' : 'PAUSED', 64, 96, '44px ' + DISPLAY, '#f2a23a', OUT, 7, 'left');
   pauseItems().forEach((it, i) => {
     const on = i === pauseSel;
     rrect(it.x, it.y, it.w, it.h, 10); ctx.fillStyle = on ? '#f2a23a' : 'rgba(24,36,42,0.95)'; ctx.fill(); ctx.strokeStyle = on ? '#f2a23a' : '#2b3b42'; ctx.lineWidth = 2; ctx.stroke();
@@ -10394,7 +10519,7 @@ function drawPause() {
   ctx.font = '600 12px ' + BODY; ctx.fillStyle = '#93a3a1'; ctx.textAlign = 'left';
   ctx.fillText(touchUI ? (pauseTab === 'settings' ? 'Tap a setting to change it.' : 'Tap an option.') : pauseTab === 'settings' ? (pauseFocus === 'right' ? '\u2191 \u2193 pick, \u2190 \u2192 change, Esc back.' : '\u2192 into settings. P or Esc to carry on.') : 'Arrows and J to pick. P or Esc to carry on.', 64, 448);
   // right: the run so far, and how to score
-  const x = 430, dd = DIFFS[run.diff] || DIFFS.normal;
+  const x = 430, dd = DIFFS[run && run.diff] || DIFFS.normal;
   rrect(x, 70, 470, 404, 12); ctx.fillStyle = 'rgba(24,36,42,0.95)'; ctx.fill(); ctx.strokeStyle = '#2b3b42'; ctx.lineWidth = 2; ctx.stroke();
   if (pauseTab === 'scores') { drawPauseScores(x, dd); return; }
   if (pauseTab === 'settings') { drawPauseSettings(x); return; }
@@ -12420,6 +12545,7 @@ function render() {
   if (mode === 'board') { drawBoard(); return; }
   if (mode === 'pub' || (mode === 'name' && pubNameCb && pubNameMode === 'pub')) { drawPub(); return; }   // Version 55
   if (mode === 'mini' || (mode === 'name' && pubNameCb)) { drawMiniGame(); return; }
+  if (mode === 'pause' && menuSettings) { ctx.fillStyle = '#0d0f17'; ctx.fillRect(0, 0, W, H); drawPause(); return; }   // Version 80
   drawWorldPixel();
   if (!cutin) { drawHUD(); drawDeniseHUD(); if (ST && ST.drive && mode === 'play') drawDriveHud(); kebabHud(); }
   if (S && S.card && (mode === 'play' || mode === 'pause')) drawBossCard();
@@ -13670,7 +13796,7 @@ function profileAdopt() {
   if (ch2) lsSet('carpdiem.scores', board.local);
 }
 setTimeout(profileAdopt, 0);
-function profileFoot() { const b = document.getElementById('t3-me'); if (b) b.textContent = PROFILE.name ? 'You: ' + PROFILE.name : 'Pick a name'; hubFoot(); }
+function profileFoot() { const b = document.getElementById('t3-me'); if (b) b.textContent = PROFILE.name ? 'You: ' + PROFILE.name : 'Pick a name'; const h = document.getElementById('t3-hmel'); if (h) h.textContent = PROFILE.name || 'Pick a name'; hubFoot(); }
 // the name box (the same overlay the high scores used)
 function profileAsk(first, then, why) {
   const el = nameEls; if (!el.overlay || !el.form || PROFILE.asking) return;
@@ -14897,6 +15023,14 @@ const T3 = (() => {
     { id: 'ramsden', name: 'RAMSDEN', keys: ['ramsden'], hidden: true, mood: { world: [1.3, 0.68, 0.62], sky: [1.35, 0.58, 0.55], fog: 0x3a0620, light: [1.3, 0.55, 0.4] } },
   ];
   const FLAT = CHAPS.flatMap((c, ci) => c.keys.map(k => ({ k, ci })));
+  // Version 80: faces for the roster (a square on each lad's card: x, y, size, card width, card height) and a picture for each stage
+  const FACE = {"tim":[29,0,61,112,150],"seb":[31,0,54,118,150],"byron":[0,0,74,74,150],"pearcy":[32,0,61,130,150],"kelly":[24,0,60,103,150],"marc":[24,0,60,104,150],"sam":[19,0,66,103,150],"thet":[16,0,88,108,150],"ash":[14,0,66,102,150]};
+  const THUMB = { frequency: 'meshy/frequency_0', soundz: 'meshy/soundz_0', orp_street: 'orp/busstop', orp_pub: 'orp/bar', orp_atlantis: 'orp/floor', airport: 'meshy/airport_0',
+    road: 'meshy/road_loop', divebar: 'meshy/divebar_0', beach: 'meshy/beach_0', club: 'meshy/club_1', nl_station: 'meshy/nl_station_0', nl_train: 'nightlife/tr_wall',
+    nl_cx: 'meshy/nl_cx_0', nl_alley: 'meshy/nl_alley_0', nl_bus: 'nightlife/bus_deck', arrival: 'meshy/arrival_0', naval: 'meshy/naval_loop', social: 'meshy/social_0',
+    pegnine: 'meshy/pegnine_0', ramsden: 'meshy/ramsden_0' };
+  const CH_SUB = { '1999': 'The Frequency', orp2001: 'A night out', elba: 'The holiday', nightlife: 'Up town', carpdiem: 'The fishery', ramsden: 'Off the route' };
+  let menuSel = 0;
   const DIFF_NOTE = { easy: 'Softer hits, more food.', normal: 'The way the lads played it.', hard: 'More of them. They hit harder.' };
   // a chapter's first stage starts the chapter (so the lobby and labels read as before); any other stage starts there
   const startFor = k => { const c = CHAPS.find(ch => ch.keys[0] === k); return c ? c.id : k; };
@@ -15157,7 +15291,7 @@ const T3 = (() => {
     diffSel = Math.max(0, DIFF_ORDER.indexOf(settings.diff));
     intro = false; sent = false; shared.fade.value = 0; fadeTarget = 1;
     for (const L of lads) { L.state = 'idle'; L.wait = 0; L.m.position.set(L.tx, KERB - 1, L.tz); }
-    setView('lad');
+    menuSel = 0; setView('menu');
     selectPose(); cam.pos.copy(tgt.pos); cam.look.copy(tgt.look); cam.fov = tgt.fov;
     Object.assign(lg, { x: -PW / 2 + 60, y: PH / 2 - 13, s: 0.4, ry: 0, rx: 0 });
   }
@@ -15165,6 +15299,7 @@ const T3 = (() => {
     view = v; viewT = 0;
     const L = chosen();
     if (v !== 'lad') picking = null;
+    if (v === 'menu') for (const o of lads) { o.gx = o.tx; o.gz = o.tz; }
     if (v === 'lad' || v === 'cont') for (const o of lads) { o.gx = o.tx; o.gz = o.tz + (o === L ? 30 : 0); }
     if (v === 'lad') flex(L);
     else if (v === 'stage') {
@@ -15184,9 +15319,9 @@ const T3 = (() => {
       if (t < T_READY) { restart(true); return; }
       sfx('start'); mode = 'select'; modeT = 0; lastMode = 'select';
       // a run saved when the app closed: offer to carry on with it first (Version 45)
-      const sr = savedRun();
-      if (sr && !ladLocked(PLAYABLE[sr.ci])) { li = Math.max(0, ORDER.indexOf(PLAYABLE[sr.ci].id)); setView('cont'); } else setView('lad');
+      menuSel = 0; setView('menu');   // Version 80: the start menu (the saved run is its first button)
     } else if (view === 'cont') carryOn();
+    else if (view === 'menu') { const it = menuItems()[menuSel]; if (it) menuAct(it); }
     else if (view === 'lad') {
       if (picking) { picking = null; sfx('page'); setView('stage'); return; }   // pressed again: skip the show
       pick();
@@ -15194,7 +15329,7 @@ const T3 = (() => {
     else if (view === 'stage') { if (stageLocked()) { sfx('nope'); return; } sfx('page'); setView('diff'); }
     else if (view === 'diff') { sfx('start'); commit(); setView('go'); }
   }
-  function carryOn() { if (!savedRun()) { setView('lad'); return; } sfx('start'); carry = true; setView('go'); }
+  function carryOn() { const sr = savedRun(); if (!sr) { setView('lad'); return; } li = Math.max(0, ORDER.indexOf(PLAYABLE[sr.ci].id)); sfx('start'); carry = true; setView('go'); }
   function newInstead() { sfx('page'); setView('lad'); }
   function pick() {
     const L = chosen(), id = L.id, P = PICK[id] || ['', 'start'];
@@ -15217,8 +15352,8 @@ const T3 = (() => {
   function flex(L) { if (!L.act && !L.a.pose) act(L, 'mini'); }   // lads with a pose turn to face you instead
   function back() {
     if (picking) { picking = null; const L = chosen(); L.act = null; sfx('page'); renderLad(); return true; }
-    if (view === 'cont') { sfx('page'); mode = 'title'; modeT = 0; lastMode = 'title'; restart(true); return true; }
-    if (view === 'lad') { sfx('page'); mode = 'title'; modeT = 0; lastMode = 'title'; restart(true); }
+    if (view === 'cont' || view === 'menu') { sfx('page'); mode = 'title'; modeT = 0; lastMode = 'title'; restart(true); return true; }
+    if (view === 'lad') { sfx('page'); setView('menu'); }
     else if (view === 'stage') { sfx('page'); setView('lad'); }
     else if (view === 'diff') { sfx('page'); setView('stage'); }
     return true;
@@ -15241,20 +15376,54 @@ const T3 = (() => {
   function moveChap(d) { const ci = (FLAT[stageSel].ci + d + CHAPS.length) % CHAPS.length; stageSel = FLAT.findIndex(f => f.ci === ci); sfx('swing'); renderStage(); }
   function setDiff(d) { if (d === diffSel) return; diffSel = d; sfx('swing'); renderDiff(); }
   function toggleSound() { settings.sound = !settings.sound; saveSettings(); applySound(); sfx('page'); renderFoot(); }
+  // ---------------------------------------------------------------- the start menu (Version 80)
+  function menuItems() {
+    const sr = savedRun(), carryOk = !!(sr && !ladLocked(PLAYABLE[sr.ci]));
+    return ['mcarry', 'mnew', 'monline', 'mpub', 'mtrophy', 'mboard', 'mset'].filter(id => (id !== 'mcarry' || carryOk) && (id !== 'monline' || netAvailable()));
+  }
+  function menuAct(id) {
+    audioInit();
+    if (id === 'mcarry') carryOn();
+    else if (id === 'mnew') { sfx('page'); setView('lad'); }
+    else if (id === 'monline') { if (netAvailable()) { sfx('page'); openNetLobby(); } }
+    else if (id === 'mpub') pubFromSelect(chosen().id);
+    else if (id === 'mtrophy') trophyOpen('select');
+    else if (id === 'mboard') { sfx('page'); openBoard(null, 'select'); }
+    else if (id === 'mset') openMenuSettings();
+  }
+  function renderMenu() {
+    const items = menuItems(), sr = savedRun();
+    if (menuSel >= items.length) menuSel = 0;
+    q('mcarry').hidden = !items.includes('mcarry'); q('monline').hidden = !items.includes('monline');
+    q('mnew').classList.toggle('prim', !items.includes('mcarry'));
+    if (sr && items.includes('mcarry')) { const st = STAGES[sr.route[sr.idx]], d = DIFFS[sr.diff] || DIFFS.normal; q('mcline').textContent = (st.hidden ? 'Hidden stage' : 'Stage ' + st.n) + ' \u00b7 ' + st.title + ' \u00b7 ' + PLAYABLE[sr.ci].name + ' \u00b7 ' + d.label; }
+    q('mtline').textContent = achCount() + ' / ' + ACH_LIST.length;
+    const n = HUB.kind ? hubPeople().length : 0, u = chatUnread();
+    q('mpline').textContent = n || u ? [n ? n + ' online' : '', u ? u + ' new' : ''].filter(Boolean).join(' \u00b7 ') : 'The pub \u00b7 mini-games';
+    ['mcarry', 'mnew', 'monline', 'mpub', 'mtrophy', 'mboard', 'mset'].forEach(id => q(id).classList.toggle('sel', items[menuSel] === id && !touchUI));
+    q('mtip').textContent = hint();
+  }
+  function moveMenu(d) { const n = menuItems().length; menuSel = (menuSel + d + n) % n; sfx('swing'); renderMenu(); }
   function toast(msg, cls) { const el = q('toast'); el.textContent = msg; el.className = ''; void el.offsetWidth; el.classList.add('on'); if (cls) el.classList.add(cls); }
 
   // ---------------------------------------------------------------- menus
   function sync() {
     const on = (id, v) => { const el = q(id); el.classList.toggle('on', v); el.inert = !v; if (!v && el.contains(document.activeElement)) document.activeElement.blur(); };
     const menu = view === 'lad' || view === 'stage' || view === 'diff';
-    on('crumbs', menu); on('foot', menu || view === 'cont'); on('cont', view === 'cont');
+    on('crumbs', menu); on('foot', false); on('cont', false);
+    on('menu', view === 'menu'); on('head', menu || view === 'menu');
     on('lad', view === 'lad'); on('roster', view === 'lad');
-    on('stages', view === 'stage'); on('info', view === 'stage'); on('diff', view === 'diff');
+    on('stages', view === 'stage'); on('scards', view === 'stage'); on('info', view === 'stage'); on('diff', view === 'diff');
+    q('hback').classList.toggle('hide', view === 'menu'); q('hsound').classList.toggle('hide', view !== 'menu');
+    q('hbackl').textContent = view === 'stage' ? 'Lads' : view === 'diff' ? 'Stages' : 'Menu';
     if (view !== 'title') ['sub', 'start', 'tag'].forEach(id => q(id).classList.remove('on', 'blink'));
-    root.querySelectorAll('#t3-crumbs span').forEach(s => {
-      const steps = ['lad', 'stage', 'diff'], i = steps.indexOf(s.dataset.step), cur = steps.indexOf(view);
-      s.className = i === cur ? 'now' : i < cur ? 'done' : '';
-    });
+    { const steps = ['lad', 'stage', 'diff'], cur = steps.indexOf(view), f = FLAT[stageSel], c = CHAR_BY_ID[chosen().id];   // Version 80: done steps say what you picked
+      root.querySelectorAll('#t3-crumbs span').forEach(s => {
+        const i = steps.indexOf(s.dataset.step);
+        s.className = i === cur ? 'now' : i < cur ? 'done' : '';
+        s.textContent = i < cur ? '\u2713 ' + (i === 0 ? c.name : STAGES[f.k].hidden ? 'HIDDEN' : 'STAGE ' + STAGES[f.k].n) : ['1 LAD', '2 STAGE', '3 GO'][i];
+      });
+      root.querySelectorAll('#t3-crumbs i').forEach((el, i) => el.classList.toggle('done', i < cur)); }
     q('start').textContent = padOn() ? 'HIT TO START' : touchUI ? 'TAP TO START' : 'PRESS START';
     q('hint').textContent = hint();
     renderFoot();
@@ -15262,6 +15431,7 @@ const T3 = (() => {
     if (view === 'stage') renderStage();
     if (view === 'diff') renderDiff();
     if (view === 'cont') renderCont();
+    if (view === 'menu') renderMenu();
   }
   function renderCont() {
     const r = savedRun(); if (!r) return;
@@ -15273,6 +15443,7 @@ const T3 = (() => {
     const pad = padOn(), tch = touchUI && !pad;
     return ({
       // Version 67: no hint on a touch screen (the footer is full and it was cut off; tapping is obvious)
+      menu: pad ? 'Stick to choose · HIT to go' : tch ? '' : '↑ ↓ choose · J go · Esc back to the title',
       lad: pad ? 'Stick to choose · HIT to pick · BACK' : tch ? '' : '← → choose · J pick · Esc back',
       stage: pad ? 'Stick for chapter · HIT to start here' : tch ? '' : '← → ↑ ↓ choose · J start',
       diff: pad ? 'Stick for difficulty · HIT to go' : tch ? '' : '← → choose · J go · F language',
@@ -15283,6 +15454,8 @@ const T3 = (() => {
     q('sound').textContent = 'Sound ' + (settings.sound ? 'on' : 'off');
     q('sound').setAttribute('aria-pressed', String(!!settings.sound)); q('sound').classList.toggle('off', !settings.sound);
     q('online').hidden = !netAvailable();
+    { const hs = q('hsound'); hs.classList.toggle('off', !settings.sound); hs.setAttribute('aria-pressed', String(!!settings.sound)); hs.setAttribute('aria-label', 'Sound ' + (settings.sound ? 'on' : 'off')); }
+    q('hmel').textContent = PROFILE.name || 'Pick a name';
     profileFoot();
     q('hint').textContent = hint();
   }
@@ -15295,22 +15468,30 @@ const T3 = (() => {
     q('special').textContent = lk ? '???' : c.special; q('blurb').textContent = lk ? '' : c.blurb;
     q('mini').textContent = lk ? '???' : mm ? mm.name : '';
     q('minicap').textContent = 'Mini special · ' + (touchUI ? 'hold HIT, let go' : 'hold J, let go');
-    q('pick').textContent = lk ? 'LOCKED' : 'PICK ' + c.name; q('pick').disabled = lk;
-    q('roster').innerHTML = ORDER.map((id, i) => `<button type="button" data-i="${i}" aria-pressed="${i === li}" style="--c:${ladLocked(CHAR_BY_ID[id]) ? '#5a6068' : CHAR_BY_ID[id].color}">${ladLocked(CHAR_BY_ID[id]) ? '???' : CHAR_BY_ID[id].name}</button>`).join('');
+    q('pick').textContent = lk ? 'LOCKED' : 'PLAY AS ' + c.name; q('pick').disabled = lk;
+    q('roster').innerHTML = ORDER.map((id, i) => { const lk2 = ladLocked(CHAR_BY_ID[id]), F = FACE[id] || [0, 0, 60, 110, 150];   // Version 80: faces
+      const bs = (F[3] / F[2] * 100).toFixed(1) + '%', px = F[3] > F[2] ? (F[0] / (F[3] - F[2]) * 100).toFixed(1) + '%' : '50%', py = F[4] > F[2] ? (F[1] / (F[4] - F[2]) * 100).toFixed(1) + '%' : '0%';
+      return `<button type="button" data-i="${i}" aria-pressed="${i === li}" aria-label="${lk2 ? 'Locked' : CHAR_BY_ID[id].name}"${lk2 ? ' class="lock"' : ''}><i style="background-image:url(bg/ladcard/${id}.png);background-size:${bs} auto;background-position:${px} ${py}"></i><span>${lk2 ? '???' : CHAR_BY_ID[id].name}</span></button>`; }).join('');
   }
   function stageNo(k) { return STAGES[k].hidden ? 'Hidden stage' : 'Stage ' + STAGES[k].n + ' of ' + ROUTE.length; }
   function renderStage() {
     const f = FLAT[stageSel], ch = CHAPS[f.ci], locked = stageLocked(), st = STAGES[f.k];
-    q('tabs').innerHTML = CHAPS.map((c, i) => `<button type="button" role="tab" data-c="${i}" aria-selected="${i === f.ci}">${c.name}</button>`).join('');
     const RK = typeof stageRanks === 'function' ? stageRanks() : {};   // best rank per stage (Version 49)
-    q('list').innerHTML = ch.keys.map(k => {
+    // Version 80: the chapters down the side with a picture each, the chapter's stages as picture cards
+    const span = c => { const ns = c.keys.map(k => STAGES[k].n).filter(Boolean); return c.hidden || !ns.length ? 'Bonus' : ns.length > 1 ? 'Stages ' + ns[0] + '–' + ns[ns.length - 1] : 'Stage ' + ns[0]; };
+    q('tabs').innerHTML = CHAPS.map((c, i) => { const lk = c.hidden && !settings.unlocked, fresh = !lk && c.id === 'orp2001' && !c.keys.some(k => RK[k]);
+      return `<button type="button" role="tab" data-c="${i}" aria-selected="${i === f.ci}"${lk ? ' class="lock"' : ''}><img src="bg/${THUMB[c.keys[0]] || 'meshy/frequency_0'}.png" alt=""><span class="cw"><span class="cn">${lk ? '? ? ?' : c.name}</span><span class="cs">${lk ? 'Hidden' : span(c) + ' · ' + (CH_SUB[c.id] || '')}</span></span>${fresh ? '<span class="new">NEW</span>' : ''}</button>`; }).join('');
+    const n = ch.keys.length;
+    q('sgrid').style.gridTemplateColumns = 'repeat(' + Math.max(n, 3) + ',minmax(0,1fr))'; q('sgrid').classList.toggle('small', n > 3);
+    q('scap').textContent = locked ? ch.name : ch.name + ' · ' + span(ch);
+    q('sgrid').innerHTML = ch.keys.map(k => {
       const fi = FLAT.findIndex(x => x.k === k), s = STAGES[k];
-      return `<li><button type="button" data-f="${fi}" aria-pressed="${fi === stageSel}"${locked ? ' disabled' : ''}><span class="n">${s.hidden ? '?' : String(s.n).padStart(2, '0')}</span>${locked ? 'LOCKED' : s.title}${!locked && RK[k] ? `<span class="rk r${RK[k]}" aria-label="Best rank ${RK[k]}">${RK[k]}</span>` : ''}</button></li>`;
+      return `<button type="button" data-f="${fi}" aria-pressed="${fi === stageSel}"${locked ? ' disabled' : ''}><span class="im" style="background-image:url(bg/${THUMB[k] || 'meshy/frequency_0'}.png)${locked ? ';filter:brightness(.1)' : ''}"></span><span class="tx"><span class="sn">${s.hidden ? 'HIDDEN STAGE' : 'STAGE ' + String(s.n).padStart(2, '0')}${!locked && RK[k] ? ` · <span class="rk">${RK[k]}</span>` : ''}</span><span class="st">${locked ? '? ? ?' : s.title}</span><span class="sb">${locked ? '' : BOSS[k] || ''}</span></span></button>`;
     }).join('');
     q('snum').textContent = locked ? ch.name : stageNo(f.k) + ' · ' + ch.name;
     q('stitle').textContent = locked ? '? ? ?' : st.title;
     q('ssub').textContent = locked ? 'Hidden. Find the way in.' : st.sub;
-    q('sboss').innerHTML = locked ? '' : '<span class="t3cap">Boss</span><br>' + BOSS[f.k];
+    q('sboss').innerHTML = locked ? '' : '<span class="t3cap">Boss</span> ' + BOSS[f.k];
     const r = routeFrom(startFor(f.k));
     q('snote').textContent = locked ? '' : r.length === 1 ? 'Just this stage.' : r.length + ' stages from here to the end of the run.';
     q('here').disabled = locked;
@@ -15344,6 +15525,7 @@ const T3 = (() => {
     if (P('online') && netAvailable()) { sfx('page'); openNetLobby(); return; }
     if (P('escape') || P('back')) { back(); return; }
     if (P('punch') || P('start')) { next(); return; }
+    if (view === 'menu') { if (P('up') || P('left')) moveMenu(-1); if (P('down') || P('right')) moveMenu(1); return; }
     if (view === 'cont') { if (P('jump')) newInstead(); return; }
     if (view === 'lad' && !picking) { const n = ORDER.length; if (P('left')) chooseLad((li + n - 1) % n); if (P('right')) chooseLad((li + 1) % n); }
     else if (view === 'stage') { if (P('left')) moveChap(-1); if (P('right')) moveChap(1); if (P('up')) moveStage(-1); if (P('down')) moveStage(1); }
@@ -15390,6 +15572,11 @@ const T3 = (() => {
   click('me', () => profileAsk(false));   // Version 56
   click('trophy', () => trophyOpen('select'));   // Version 62
   click('online', () => { if (netAvailable()) { sfx('page'); openNetLobby(); } });
+  ['mcarry', 'mnew', 'monline', 'mpub', 'mtrophy', 'mboard', 'mset'].forEach(id => click(id, () => menuAct(id)));   // Version 80
+  click('hback', back);
+  click('hme', () => profileAsk(false));
+  click('hsound', toggleSound);
+  click('sgrid', e => { const b = e.target.closest('button'); if (!b || b.disabled) return; const f = +b.dataset.f; if (f === stageSel) next(); else { stageSel = f; sfx('swing'); renderStage(); } });
 
   // ---------------------------------------------------------------- camera poses
   function titlePose() {
@@ -15401,6 +15588,7 @@ const T3 = (() => {
   }
   function selectPose() {
     const L = chosen();
+    if (view === 'menu') { tgt.pos.set(-70, 58, 300); tgt.look.set(-70, 46, -330); tgt.fov = 50; return; }   // Version 80: the line-up, off to the right of the menu
     if (view === 'lad' || view === 'cont') {
       // picking: the camera leans in on him and swings round to centre him
       const k = picking && !reduceMotion ? easeInOut(clamp(picking.t / 0.5, 0, 1)) : 0;
@@ -15486,8 +15674,8 @@ const T3 = (() => {
       L.m.rotation.y = Math.atan2(cam.pos.x - L.m.position.x, cam.pos.z - L.m.position.z); L.m.scale.x = L.face;
       L.m.scale.y = facing && !L.act && !reduceMotion ? 1 + Math.sin(t * 3.1) * 0.012 : 1;   // breathing while he faces you
       L.sh.visible = L.m.visible; L.sh.position.set(L.m.position.x, KERB + 0.8, L.m.position.z);
-      const pick = L === chosen() && view !== 'title';
-      const tt = view === 'title' || view === 'go' ? [0.86, 0.8, 0.98] : pick ? [1, 0.95, 1.04] : view === 'lad' || view === 'cont' ? [0.42, 0.38, 0.6] : [0.62, 0.56, 0.78];
+      const pick = L === chosen() && view !== 'title' && view !== 'menu';
+      const tt = view === 'title' || view === 'go' || view === 'menu' ? [0.86, 0.8, 0.98] : pick ? [1, 0.95, 1.04] : view === 'lad' || view === 'cont' ? [0.42, 0.38, 0.6] : [0.62, 0.56, 0.78];
       if (ladLocked(CHAR_BY_ID[L.id])) tt.fill(0.04);   // a black silhouette until he's unlocked
       L.tint.lerp(V3(...tt), damp(L.act && L.act.kind === 'pick' ? 3 : 5, dt)); L.m.material.uniforms.tint.value.copy(L.tint);
     }
@@ -15505,7 +15693,7 @@ const T3 = (() => {
       Object.assign(lg, { x: 0, y: PH / 2 - 50, s: 1 + 2.2 * (1 - (1 - (1 - k) ** 3)), ry: -Math.PI * 2.5 * (1 - easeBack(k)), rx: 0 });
       logo.visible = t > T_LOGO;
     } else {
-      const g = view !== 'title' ? { x: -PW / 2 + 52, y: PH / 2 - 17, s: 0.36, ry: 0, rx: 0 } : { x: 0, y: PH / 2 - 50, s: 1, ry: Math.sin(t * 0.9) * 0.16 * wob, rx: Math.sin(t * 0.7) * 0.07 * wob };
+      const g = view === 'menu' ? { x: -PW / 2 + 116, y: PH / 2 - 48, s: 0.86, ry: 0, rx: 0 } : view !== 'title' ? { x: -PW / 2 + 52, y: PH / 2 + 70, s: 0.36, ry: 0, rx: 0 } : { x: 0, y: PH / 2 - 50, s: 1, ry: Math.sin(t * 0.9) * 0.16 * wob, rx: Math.sin(t * 0.7) * 0.07 * wob };
       const k = damp(5, dt); for (const key in g) lg[key] += (g[key] - lg[key]) * k;
       logo.visible = true;
     }

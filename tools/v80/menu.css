@@ -1,0 +1,95 @@
+/* Version 80: the menus redesigned (Tim's pick, design A). A start menu between the title and the lads holds everything that
+   was along the bottom; the select screens get a header (back, the steps, who's playing) and nothing else round the edge;
+   faces in the lad roster; the chapters down the side with a picture each and the stages as picture cards; difficulty is
+   the last step, "3 GO". Sizes in --t3u (one unit is one pixel of the 480x270 screen). */
+#t3-foot{display:none!important}
+#t3-cont{display:none!important}
+#t3-head{left:calc(var(--t3u) * 10);right:calc(var(--t3u) * 10);top:calc(var(--t3u) * 7);height:calc(var(--t3u) * 22);display:flex;align-items:center;justify-content:space-between;pointer-events:none!important}
+#t3-head .t3hr{display:flex;gap:calc(var(--t3u) * 3)}
+#t3-head.on>*,#t3-head.on .t3hr>*{pointer-events:auto}
+.t3chip{height:calc(var(--t3u) * 22);min-width:calc(var(--t3u) * 22);box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:calc(var(--t3u) * 3);padding:0 calc(var(--t3u) * 6);
+  background:rgba(18,20,30,.92);border:calc(var(--t3u) * 1) solid var(--t3rule);font:700 max(calc(var(--t3m) * 10px),calc(var(--t3u) * 7.5)) var(--t3disp);letter-spacing:.06em;color:var(--t3cream);text-transform:uppercase}
+.t3chip:hover{border-color:var(--t3gold);color:var(--t3gold)}
+.t3chip svg{width:calc(var(--t3u) * 8);height:calc(var(--t3u) * 8);flex:0 0 auto}
+.t3chip.hide{visibility:hidden}
+#t3-hsound.off svg .w{display:none}
+#t3-crumbs{top:calc(var(--t3u) * 7)!important;height:calc(var(--t3u) * 22);box-sizing:border-box;background:rgba(18,20,30,.92);border:calc(var(--t3u) * 1) solid var(--t3rule);padding:0 calc(var(--t3u) * 8);gap:calc(var(--t3u) * 6)!important}
+#t3-crumbs span{text-shadow:none!important}
+#t3-crumbs span.now{background:var(--t3gold);color:var(--t3ink)!important;padding:calc(var(--t3u) * 1.5) calc(var(--t3u) * 4)}
+#t3-crumbs span.done{color:var(--t3gold)!important}
+#t3-crumbs i.done{background:var(--t3gold)}
+
+/* the start menu */
+#t3-menu{left:0;top:0;bottom:0;width:calc(var(--t3u) * 232);box-sizing:border-box;padding:calc(var(--t3u) * 92) calc(var(--t3u) * 22) 0 calc(var(--t3u) * 24);display:flex;flex-direction:column;gap:calc(var(--t3u) * 5)}
+#t3-menu .t3mi{display:flex;align-items:center;justify-content:space-between;gap:calc(var(--t3u) * 6);height:calc(var(--t3u) * 24);box-sizing:border-box;padding:0 calc(var(--t3u) * 9);
+  background:rgba(18,20,30,.92);border:calc(var(--t3u) * 1) solid var(--t3rule);color:var(--t3cream);text-align:left}
+#t3-menu .t3mt{font:700 max(calc(var(--t3m) * 12px),calc(var(--t3u) * 10)) var(--t3disp);letter-spacing:.05em;white-space:nowrap}
+#t3-menu .t3ms{font:500 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 6)) var(--t3body);color:#c9c2b0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+#t3-menu .t3mi:hover,#t3-menu .t3mi.sel{border-color:var(--t3gold);box-shadow:inset 0 0 0 calc(var(--t3u) * 1) var(--t3gold)}
+#t3-menu .t3mi.prim{border-color:var(--t3gold)}
+#t3-menu .t3mi.prim .t3mt{color:var(--t3gold)}
+#t3-mcarry{height:calc(var(--t3u) * 30)!important;flex-direction:column;align-items:flex-start!important;justify-content:center!important;gap:calc(var(--t3u) * 1)!important;
+  background:var(--t3gold)!important;color:var(--t3ink)!important;border-color:var(--t3ink)!important;box-shadow:0 calc(var(--t3u) * 2) 0 #a8780f}
+#t3-mcarry .t3ms{color:#3a2a08}
+#t3-mcarry.sel,#t3-mcarry:hover{box-shadow:0 calc(var(--t3u) * 2) 0 #a8780f,0 0 0 calc(var(--t3u) * 1) #fff!important}
+#t3-mcarry[hidden],#t3-monline[hidden]{display:none!important}
+.t3mrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:calc(var(--t3u) * 5)}
+.t3mrow .t3mi{flex-direction:column;justify-content:center!important;padding:0!important;gap:0!important}
+.t3mrow .t3mt{font-size:max(calc(var(--t3m) * 10px),calc(var(--t3u) * 7.5))!important}
+.t3mrow .t3ms{color:var(--t3orange)!important}
+#t3-mtip{position:absolute;left:calc(var(--t3u) * 24);bottom:calc(var(--t3u) * 7);margin:0;font:500 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 6)) var(--t3body);color:#a7b3b1}
+#t3-mtip:empty{display:none}
+
+/* the lads: faces in the roster */
+#t3-lad{top:calc(var(--t3u) * 36)!important}
+#t3-roster{left:calc(var(--t3u) * 10)!important;right:calc(var(--t3u) * 10);bottom:calc(var(--t3u) * 7)!important;display:grid!important;grid-template-columns:repeat(9,minmax(0,1fr));gap:calc(var(--t3u) * 4)!important}
+#t3-roster button{position:relative;height:calc(var(--t3u) * 46);padding:0!important;overflow:hidden;background:#1b2030!important;border:calc(var(--t3u) * 1) solid var(--t3rule)!important;color:var(--t3cream)!important}
+#t3-roster button i{position:absolute;inset:0;background-repeat:no-repeat;image-rendering:pixelated}
+#t3-roster button.lock i{filter:brightness(0)}
+#t3-roster button span{position:absolute;left:0;right:0;bottom:0;height:calc(var(--t3u) * 11);display:flex;align-items:center;justify-content:center;background:rgba(10,11,20,.86);
+  font:700 max(calc(var(--t3m) * 9px),calc(var(--t3u) * 6.5)) var(--t3disp);letter-spacing:.05em}
+#t3-roster button[aria-pressed="true"]{background:#1b2030!important;border:calc(var(--t3u) * 1.5) solid var(--t3gold)!important;box-shadow:0 0 0 calc(var(--t3u) * 1) var(--t3ink),0 calc(var(--t3u) * 3) 0 #a8780f}
+#t3-roster button[aria-pressed="true"] span{color:var(--t3gold)}
+#t3-roster button:hover{border-color:var(--t3gold)!important}
+
+/* where to start: the chapters down the side */
+#t3-stages{left:calc(var(--t3u) * 10)!important;top:calc(var(--t3u) * 36)!important;width:calc(var(--t3u) * 150)!important;display:flex!important;flex-direction:column;gap:calc(var(--t3u) * 3)!important;
+  background:none!important;border:0!important;border-image:none!important;padding:0!important;box-shadow:none!important}
+#t3-tabs{display:flex!important;flex-direction:column;gap:calc(var(--t3u) * 3)!important}
+#t3-tabs button{width:100%;overflow:hidden;display:flex!important;align-items:center;gap:calc(var(--t3u) * 5);height:calc(var(--t3u) * 29);box-sizing:border-box;padding:0 calc(var(--t3u) * 5) 0 calc(var(--t3u) * 4)!important;
+  background:rgba(18,20,30,.92)!important;border:calc(var(--t3u) * 1) solid #3b4254!important;text-align:left;text-transform:none!important;letter-spacing:0!important;color:var(--t3cream)!important}
+#t3-tabs button img{width:calc(var(--t3u) * 36);height:calc(var(--t3u) * 20);object-fit:cover;image-rendering:pixelated;border:calc(var(--t3u) * .5) solid #000;flex:0 0 auto}
+#t3-tabs .cw{display:flex;flex-direction:column;gap:calc(var(--t3u) * .5);min-width:0}
+#t3-tabs .cn{font:700 max(calc(var(--t3m) * 9px),calc(var(--t3u) * 7.5)) var(--t3disp);letter-spacing:.04em;white-space:nowrap}
+#t3-tabs .cs{font:500 max(calc(var(--t3m) * 7px),calc(var(--t3u) * 5.5)) var(--t3body);color:#a7b3b1;white-space:nowrap}
+#t3-tabs button[aria-selected="true"]{background:#3a3220!important;border-color:var(--t3gold)!important}
+#t3-tabs button[aria-selected="true"] .cn{color:var(--t3gold)}
+#t3-tabs .new{margin-left:auto;padding:calc(var(--t3u) * 1) calc(var(--t3u) * 3);background:var(--t3orange);color:var(--t3ink);font:700 max(calc(var(--t3m) * 7px),calc(var(--t3u) * 5.5)) var(--t3disp);letter-spacing:.05em}
+#t3-tabs .lock img{filter:brightness(.15)}
+#t3-list{display:none!important}
+/* the chapter's stages as pictures of the places */
+#t3-scards{left:calc(var(--t3u) * 168);right:calc(var(--t3u) * 10);top:calc(var(--t3u) * 36)}
+#t3-scap{margin:0 0 calc(var(--t3u) * 4);font:800 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 6)) var(--t3body);letter-spacing:.14em;color:var(--t3orange);text-shadow:0 1px 0 var(--t3ink)}
+#t3-sgrid{display:grid;gap:calc(var(--t3u) * 6)}
+#t3-sgrid button{display:block;padding:0;overflow:hidden;background:rgba(18,20,30,.94);border:calc(var(--t3u) * 1) solid var(--t3rule);text-align:left;color:var(--t3cream)}
+#t3-sgrid button .im{display:block;width:100%;aspect-ratio:16/9;background-size:cover;background-position:center;image-rendering:pixelated}
+#t3-sgrid button .tx{display:flex;flex-direction:column;gap:calc(var(--t3u) * 1);padding:calc(var(--t3u) * 4) calc(var(--t3u) * 5) calc(var(--t3u) * 5)}
+#t3-sgrid .sn{font:800 max(calc(var(--t3m) * 7px),calc(var(--t3u) * 5)) var(--t3body);letter-spacing:.12em;color:#a7b3b1}
+#t3-sgrid .st{font:700 max(calc(var(--t3m) * 9px),calc(var(--t3u) * 7.5)) var(--t3disp);letter-spacing:.04em;line-height:1.1}
+#t3-sgrid .sb{font:500 max(calc(var(--t3m) * 7px),calc(var(--t3u) * 5.5)) var(--t3body);color:#c9c2b0;line-height:1.25}
+#t3-sgrid .rk{font:700 max(calc(var(--t3m) * 8px),calc(var(--t3u) * 6)) var(--t3disp);color:var(--t3gold)}
+#t3-sgrid button[aria-pressed="true"]{border:calc(var(--t3u) * 1.5) solid var(--t3gold);box-shadow:0 calc(var(--t3u) * 2.5) 0 #a8780f}
+#t3-sgrid button[aria-pressed="true"] .st{color:var(--t3gold)}
+#t3-sgrid button:hover{border-color:var(--t3gold)}
+#t3-sgrid button:disabled{cursor:default}
+#t3-sgrid.small .sb{display:none}
+/* the stage you're on, with START HERE */
+#t3-info{left:calc(var(--t3u) * 168)!important;right:calc(var(--t3u) * 10)!important;top:auto!important;bottom:calc(var(--t3u) * 8)!important;width:auto!important;
+  grid-template-columns:minmax(0,1fr) auto;column-gap:calc(var(--t3u) * 10);row-gap:calc(var(--t3u) * 2)!important;align-items:center}
+#t3-info>*{grid-column:1}
+#t3-info #t3-here{grid-column:2;grid-row:1 / span 5;align-self:center;margin:0!important;white-space:nowrap}
+#t3-stitle{font-size:calc(var(--t3u) * 13)!important;color:var(--t3gold)}
+#t3-snum{display:none}
+/* 3 GO: the language toggle lives in Settings now */
+#t3-lang{display:none!important}
+#t3-diff .t3row{justify-content:flex-end}

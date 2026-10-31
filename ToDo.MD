@@ -223,7 +223,10 @@ Tim: the title goes straight into character select, the options along the bottom
 - [x] Mock up: lad select with faces in the roster, the steps as 1 LAD / 2 STAGE / 3 GO, PLAY AS TIM on the card, BACK to the menu top left, nothing else along the bottom
 - [x] Mock up: level select A (chapters down the side with a picture each, the chapter's stages as picture cards, START HERE) and B (the years as postcards on a timeline, the stages listed under it)
 - [x] Mock up: a Ready screen with the difficulty folded in (Language moves to Settings)
-- [ ] Tim: pick a level select (A or B) and say what to change, then build it into the 3D title's HTML layer (#t3)
+- [x] Tim: pick a level select (A or B) and say what to change, then build it into the 3D title's HTML layer (#t3)
+  - Done (V80): Tim picked A. Built into the real menus over the 3D street: the start menu (the lads lined up on the road to its right, the logo above it), the header on the select screens (back, the steps that tick off with what you picked, your name), faces in the roster, the chapters down the side with NEW on Orpington 2001 until you've a rank there, the stages as picture cards, START HERE, then 3 GO. SETTINGS on the menu opens the settings panel on its own. Language moves to Settings
+- [x] Tim: Byron's roster picture was just his head next to the others' head and shoulders (his card is a smaller, big-headed figure). Done (V80): each lad's face is framed from his own card (`tools/v80/faces.json`), so they all match
+- [ ] Tim: try the new menus on the phone (the start menu buttons, the roster faces, the chapter list)
 
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
