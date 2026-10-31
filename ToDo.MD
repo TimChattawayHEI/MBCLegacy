@@ -219,14 +219,18 @@ Tim asked for quality of life ideas, then for all six
 
 ### Hits and specials that look powerful (31 October, idea from Streets of Rage 4)
 Tim asked if Meshy could make the attack and hit effects look as clear and strong as SoR4's. Meshy isn't the tool for it: it paints single pictures, and an effect needs 4 to 8 frames that match each other on a see-through background. PixelLab's VFX workbench is built for exactly this (free on the subscription), and most of the SoR4 feel comes from code, not art. What the game has now: one small star spark (`fx/hit.png`) and a round burst (`fx/hitbig.png`), both the same whichever way the hit goes, plus hitstop, shake and the white flash already in place.
-- [ ] Swoosh trails: a bright arc that follows the fist or foot on every attack (curved for hooks and spins, straight for jabs and kicks), white core, coloured edge, drawn with 'lighter' blending and fading over 3 or 4 frames. Biggest single change
+- [x] Swoosh trails: a bright arc that follows the fist or foot on every attack (curved for hooks and spins, straight for jabs and kicks), white core, coloured edge, drawn with 'lighter' blending and fading over 3 or 4 frames. Biggest single change
+  - Done for Tim (V80): every combo hit (jab, jab, hook, kick) leaves a glowing trail in his colour that follows his fist or foot, white core, snapped to three colours so it sits with the pixel art; the finishing kick's is wider and lingers longer. Shapes are in SWOOSH in `tools/v80/fx.js` (knee and swing are there for Kelly and Sam). Not yet on jump kicks, dashes, weapons or mini specials
 - [ ] Each lad's own effect colour, the way SoR4 gives each fighter one (start from the colour his name already has on the select screen, V67); used on swooshes, sparks and his special. Tim to say if he wants different ones
-- [ ] Directional hit sparks: new spark sheets in PixelLab's VFX workbench that spray the way the hit travels, a light one for jabs and a big one for combo enders, knockdowns and specials. Flip with the attacker's facing
-- [ ] Combo enders feel heavier: longer hitstop (about 0.1s against 0.05s now), the victim flashes white then the lad's colour, a short sharp shake, and speed lines behind the knockback
+  - Started (V80): Tim uses his select-screen blue (#6aa8e8) on his trails and sparks. The others follow once Tim's happy with his
+- [x] Directional hit sparks: new spark sheets in PixelLab's VFX workbench that spray the way the hit travels, a light one for jabs and a big one for combo enders, knockdowns and specials. Flip with the attacker's facing
+  - Done for Tim (V80): a light spark (flash, ring, forward streak, sparks spraying on) and a heavy one for the finisher and knockdowns, both in his blue. In his PixelLab My effects as "Tim hit spark (light)" and "(heavy)" if he wants to move the sliders; `web/fx/tim_spark.png` and `tim_spark_big.png`
+- [ ] Combo enders feel heavier: the finisher's freeze is already 0.09s (0.12s for Seb and Pearcy) against 0.05s for other hits, so this is the victim flashing white then the lad's colour, a short sharp shake, and speed lines behind the knockback
 - [ ] Landing: a ground shockwave ring and dust when someone hits the floor hard
 - [ ] Specials and supers: a big swirl or burst in the lad's colour at the start, and the screen darkened slightly behind him for a moment (SoR4's star moves do this)
 - [ ] Check it on a phone: effects must stay readable in a crowd and not drop frames on the dance floor
 - Where Meshy could still help: painted stills, e.g. a backdrop behind each lad's super cut-in
+- [ ] Tim: play a few fights as Tim on the phone (the update after V80) and say if the trails and sparks feel right: too big, too bright, wrong colour, or not enough. Then roll them out to the other lads (add each lad to FX_LADS in `tools/v80/fx.js` and make his sparks in the VFX workbench in his colour)
 
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
