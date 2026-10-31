@@ -176,6 +176,8 @@ Real street order, left to right (the mirror shop is past the Blacksmiths, not b
 - [ ] Tim: play it again on a phone. Expected length now around 20 minutes for the chapter
 - [x] Kelly's Snake: a bonus round after Atlantis (Kelly on the coach, 11pm to 2am, his Nokia, the battery dies after 90 seconds), then a SNAKE cabinet at the far end of the Harvest Moon with its own board (V74)
 - [x] Horseshoes and cart wheels in the pub: horseshoes to pick up, swing or throw (CLANG!); cart wheels roll across the pool room and come off the wall when Mick rings the bell, with an arrow first, and flatten whoever they meet, foes too (V74)
+- [x] Tim's notes on 1.81 (31 Oct): the lamp posts outside Pizza Express and the Blacksmiths blocked a big strip of the screen; you could walk up the shopfronts at the bus stop, Ram Ba Ba and the Blacksmiths; the Ram Ba Ba bouncer looked out of place; the Atlantis queue went up faster than it came down (past 50)
+  - Done (V75): posts block only a small spot at their foot and are drawn over anyone behind them (you can walk round the back); the street places' floor line moved down to where the buildings actually meet the pavement (FT 406); the bouncer is gone; queue-jumpers no longer add to the queue, it only counts down (10 to the door), with four lots of them pushing in along the way
 - [ ] Still on the list: the run back up the High Street to make the coach
 
 ### For whoever builds next

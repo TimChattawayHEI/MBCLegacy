@@ -7978,7 +7978,7 @@ BOSS_CARD.alan = ['ALAN', "Wassat? WASSAT?", ['alan']];
 const orpG = (...a) => a;
 const ORP_SCENES = {
   orp_street: [
-    { bg: 'busstop', ft: 380, fb: 506, label: 'THE BUS STOP', block: [[340, 362, 452], [384, 404, 458]],
+    { bg: 'busstop', ft: 406, fb: 506, label: 'THE BUS STOP', posts: [{ x: 349, foot: 443, w: 10, top: 300 }, { x: 394, foot: 447, w: 16, top: 286 }],
       items: [{ w: 'cone', x: 640, y: 470 }], breakables: [{ type: 'bin', x: 520, y: 476, drop: 'chips' }],
       waves: [{ event: 'busstopHow' },
         { at: 0, groups: [orpG(['townie', 'R'], ['townie', 'L'], ['ladette', 'R']), orpG(['vibez', 'R'], ['townie', 'L'])] }, { event: 'lad' },
@@ -7987,14 +7987,14 @@ const ORP_SCENES = {
         { event: 'ladsGo' }, { event: 'exit', dir: 1, to: 1, label: 'THE CROSSING' }] },
     { bg: 'cross', ft: 209, fb: 522, label: 'THE CROSSING', frog: true,
       waves: [{ event: 'frog' }, { event: 'exit', dir: 1, to: 2, label: 'RAM BA BA' }] },
-    { bg: 'rambaba', ft: 380, fb: 506, label: 'RAM BA BA',
+    { bg: 'rambaba', ft: 406, fb: 506, label: 'RAM BA BA', posts: [{ x: 126, foot: 474, w: 12, top: 300 }, { x: 360, foot: 474, w: 26, top: 404 }],
       items: [{ w: 'alcopop', x: 520, y: 470 }], breakables: [{ type: 'bin', x: 760, y: 480, drop: 'w:alcopop' }],
       waves: [{ event: 'rambaba' },
         { at: 0, groups: [orpG(['townie', 'R'], ['vibez', 'R'], ['ladette', 'L']), orpG(['townie', 'R'], ['vibez', 'L'])] },
         { at: 0, groups: [orpG(['chunk', 'R'], ['ladette', 'L'], ['vibez', 'R']), orpG(['townie', 'L'], ['townie', 'R'], ['vibez', 'R'])], food: 'chips' },
         { at: 0, mini: true, miniKind: 'chunk', title: 'THE PETTS WOOD MASSIVE', groups: [orpG(['chunk', 'R'], ['chunk', 'L']), orpG(['vibez', 'R'], ['ladette', 'L'], ['townie', 'R'])] },
         { event: 'exit', dir: 1, to: 3, label: 'YE OLDE BLACKSMITH' }] },
-    { bg: 'front', ft: 380, fb: 506, label: 'YE OLDE BLACKSMITH', block: [[772, 792, 470]],
+    { bg: 'front', ft: 406, fb: 506, label: 'YE OLDE BLACKSMITH', posts: [{ x: 782, foot: 460, w: 16, top: 326 }],
       items: [{ w: 'guinness', x: 300, y: 470 }], breakables: [{ type: 'keg', x: 640, y: 484, drop: 'chips' }],
       waves: [{ event: 'smokers' },
         { at: 0, groups: [orpG(['regular', 'R'], ['regular', 'L'], ['darts', 'R']), orpG(['regular', 'R'], ['townie', 'L'])] },
@@ -8110,6 +8110,7 @@ function orpGoScene(i, fromDir) {
   (sc.items || []).forEach(it => dropItemWeapon(it.w, it.x, it.y));
   (sc.breakables || []).forEach(b => breakables.push({ ...b, hp: 3, flash: 0, half: 22 }));
   FLOOR_BLOCK[S.key] = sc.block || [];
+  for (const q of (sc.posts || [])) { const n = makeNpc('post', q.x, q.foot); n.hp = 0; n.post = q; n.draw = orpDrawPost; S.npcs.push(n); }
   S.fruit = sc.fruit ? { x: sc.fruit, hits: 0, spin: 0, paid: false, flash: 0 } : null;
   S.frog = null; S.served = null; S.queue = null; S.dance = null; S.sue = null; S.howto = null; S.carry = 0; S.wheelT = sc.wheels ? 7 : null;
   if (sc.sue) orpMakeSue();
@@ -8149,6 +8150,7 @@ function updateOrp(dt) {
   if (S.queue) orpQueueTick(dt);
   if (S.dance) orpDanceTick(dt);
   orpWheelsTick(dt);
+  orpPostsTick();
 }
 function orpAnnounce(text, life) { S.ann = { text, t: 0, life: life || 3.2 }; sfx('page'); }
 function orpComic(id, then) {   // a comic page in the middle of a stage, then straight back to the fight
@@ -8272,10 +8274,8 @@ function orpDrawCar(n) {
 
 // ================================================================== Ram Ba Ba and the Blacksmiths' front
 function orpRamBaBa() {
-  const d = makeNpc('bouncer', 268, FT + 16); d.face = 1; d.state = 'idle'; d.hp = 0; S.npcs.push(d);
   orpAnnounce('RAM BA BA · ATLANTIS COACH 10.30 · WRISTBANDS AT THE DOOR', 4);
-  setTimeout0(() => say(d, 'Coach at half ten, lads. Wristbands on. No wristband, no coach.', 2.8, true), 0.6);
-  setTimeout0(() => say(player, 'Petts Wood lot are following us.', 2, true), 3.4);
+  setTimeout0(() => say(player, 'Coach at half ten. Petts Wood lot are following us.', 2.4, true), 1.2);
 }
 function orpLounge() {
   orpAnnounce('THE BLACKSMITHS · THE LADS ARE AT A TABLE BY THE BAR', 3.4);
@@ -8444,8 +8444,8 @@ const ORP_DOOR_X = 760;
 function orpQueueStart() {
   orpHowto('THE QUEUE', ['It goes right down the road. Ram Ba Ba wristbands on, nobody checks ID.',
     'Every few seconds the bouncers let one more in, but only when it\'s calm. Queue-jumpers push in: sort them out and the queue moves again.'], () => {
-    const n = 12;
-    S.queue = { ahead: n, t: 3.2, jumpT: 4, jumpers: 0, waves: 0 };
+    const n = 10;
+    S.queue = { ahead: n, t: 2.4, waves: 0, drops: 0 };
     const kinds = ['clubm', 'clubf', 'vibez', 'ladette', 'townie'];
     S.qNpcs = [];
     for (let i = 0; i < 9; i++) { const k = kinds[i % kinds.length], q = makeNpc(k, ORP_DOOR_X - 60 - i * 58, FT + 22 + (i % 2) * 6); q.face = 1; q.state = 'idle'; q.hp = 0; q.slot = i; S.npcs.push(q); S.qNpcs.push(q); }
@@ -8459,23 +8459,22 @@ function orpQueueStart() {
 function orpQueueTick(dt) {
   const Q = S.queue;
   const alive = foes.filter(f => f.state !== 'dead' && !f.remove && f.state !== 'beaten').length;
-  // queue-jumpers: groups that walk in from the door end and push in
-  Q.jumpT -= dt;
-  if (Q.jumpT <= 0 && alive === 0 && Q.ahead > 1) {
-    Q.waves++; Q.jumpT = rand(7, 10);
-    const grp = [orpG(['vibez', 'R'], ['townie', 'R']), orpG(['clubm', 'R'], ['ladette', 'R'], ['townie', 'L']), orpG(['chunk', 'R'], ['vibez', 'R'], ['clubf', 'L']), orpG(['clubm', 'R'], ['clubm', 'R'], ['vibez', 'L'], ['ladette', 'R'])][Math.min(3, Q.waves - 1)];
-    const out = spawnGroup(grp); Q.ahead += out.length; popWord(ORP_DOOR_X - 100, FT + 30, 190, 'PUSHING IN!', true); sfx('incoming');
+  // queue-jumpers: a lot walks in and pushes in every couple of moves (four lots in all); the queue stops till they're sorted
+  if (alive === 0 && Q.waves < 4 && Q.drops >= 2 && Q.ahead > 1) {
+    Q.waves++; Q.drops = 0;
+    const grp = [orpG(['vibez', 'R'], ['townie', 'R']), orpG(['clubm', 'R'], ['ladette', 'R'], ['townie', 'L']), orpG(['chunk', 'R'], ['vibez', 'R'], ['clubf', 'L']), orpG(['clubm', 'R'], ['clubm', 'R'], ['vibez', 'L'], ['ladette', 'R'])][Q.waves - 1];
+    const out = spawnGroup(grp); popWord(ORP_DOOR_X - 100, FT + 30, 190, 'PUSHING IN!', true); sfx('incoming');
     for (const f of out) if (f.def.lines && chance(0.5)) f.sayIn = rand(0.2, 1);
-    setTimeout0(() => { if (S.qMates && S.qMates[0]) say(S.qMates[0], pick(['Oi! There\'s a queue!', 'They just pushed in!', 'Back of the queue, mate!']), 2, true); }, 0.8);
+    setTimeout0(() => { if (S.qMates && S.qMates[0]) say(S.qMates[0], pick(["Oi! There's a queue!", 'They just pushed in!', 'Back of the queue, mate!']), 2, true); }, 0.8);
+    return;
   }
   // the queue moves while it's calm
   if (alive === 0) {
     Q.t -= dt;
     if (Q.t <= 0 && Q.ahead > 0) {
-      Q.ahead--; Q.t = 2.6; sfx('clink');
+      Q.ahead--; Q.drops++; Q.t = 1.8; sfx('clink');
       const front = S.qNpcs.shift(); if (front) { front.script = (n, dt2) => { npcWalkTo(n, ORP_DOOR_X + 60, FT + 6, 120, dt2); if (n.x > ORP_DOOR_X + 40) n.remove = true; }; }
       for (const n of S.qNpcs) { n.slot--; const tx = ORP_DOOR_X - 60 - n.slot * 58; n.script = (m, dt2) => { if (Math.abs(m.x - tx) > 3) npcWalkTo(m, tx, m.y, 90, dt2); else { m.state = 'idle'; m.face = 1; } }; }
-      if (Q.ahead > 0 && S.qNpcs.length < Math.min(9, Q.ahead)) { const k = pick(['clubm', 'clubf', 'vibez', 'ladette']), q = makeNpc(k, -40, FT + 22); q.face = 1; q.slot = S.qNpcs.length; q.hp = 0; S.npcs.push(q); S.qNpcs.push(q); const tx = ORP_DOOR_X - 60 - q.slot * 58; q.script = (m, dt2) => { if (Math.abs(m.x - tx) > 3) npcWalkTo(m, tx, m.y, 90, dt2); else { m.state = 'idle'; m.face = 1; } }; }
     }
   }
   if (Q.ahead <= 0 && alive === 0) { S.queue = null; S.wave = null; S.waveIdx++; orpAnnounce("YOU'RE AT THE FRONT", 2); }
@@ -8484,7 +8483,8 @@ function orpDrawQueue() {
   const Q = S.queue; if (!Q) return;
   ctx.fillStyle = 'rgba(8,10,24,0.82)'; ctx.fillRect(W / 2 - 170, H - 62, 340, 30);
   const calm = !foes.some(f => f.state !== 'dead' && !f.remove && f.state !== 'beaten');
-  pxText((Q.ahead > 0 ? Q.ahead + ' AHEAD OF YOU' : 'NEXT IN') + (calm ? '   ·   QUEUE MOVING' : '   ·   QUEUE STOPPED'), W / 2, H - 47, 12, calm ? '#9fe8ff' : '#ff8a8a');
+  const pushed = foes.filter(f => f.state !== 'dead' && !f.remove && f.state !== 'beaten').length;
+  pxText((Q.ahead > 0 ? Q.ahead + ' AHEAD OF YOU' : 'NEXT IN') + (calm ? '   ·   QUEUE MOVING' : '   ·   ' + pushed + ' PUSHED IN · QUEUE STOPPED'), W / 2, H - 47, 12, calm ? '#9fe8ff' : '#ff8a8a');
 }
 // at the door: everyone in except Kelly (if you're playing as Kelly, he talks his way in through the fire exit at one)
 function orpDoor() {
@@ -8741,6 +8741,31 @@ setTimeout(() => {
     },
   };
 }, 0);
+
+
+// ---------------------------------------------------------------- lamp posts and poles (Version 75)
+// A post only blocks a small spot where it meets the pavement, and it's drawn again, cut from the painting, over anyone
+// standing behind it (an NPC in the depth order at its foot), so you can walk round the back of it.
+function orpPostsTick() {
+  const sc = orpSc(); if (!sc || !sc.posts) return;
+  const ents = players().concat(foes, allies);
+  for (const q of sc.posts) {
+    const hw = q.w / 2 + 10;
+    for (const e of ents) {
+      if (!e || e.z > 40 || e.state === 'dead') continue;
+      const dx = e.x - q.x, dy = e.y - q.foot;
+      if (Math.abs(dx) < hw && Math.abs(dy) < 8) {
+        if (hw - Math.abs(dx) < 8 - Math.abs(dy)) e.x = q.x + Math.sign(dx || 1) * hw;   // out sideways
+        else e.y = q.foot + Math.sign(dy || 1) * 8;                                          // or in front of / behind it
+      }
+    }
+  }
+}
+function orpDrawPost(n) {
+  const img = bgImg('orp/' + S.scBg), q = n.post; if (!img) return;
+  const x0 = Math.floor((q.x - q.w / 2) / 2), x1 = Math.ceil((q.x + q.w / 2) / 2), y0 = Math.floor(q.top / 2), y1 = Math.ceil((q.foot + 4) / 2);
+  ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(img, x0, y0, x1 - x0, y1 - y0, x0 * 2, y0 * 2, (x1 - x0) * 2, (y1 - y0) * 2); ctx.restore();
+}
 // V72 js end
 function artPending() {
   for (const k in bgImgs) { const b = bgImgs[k]; if (!b.ready && !b.failed) return true; }
