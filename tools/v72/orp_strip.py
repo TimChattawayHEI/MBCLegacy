@@ -1,9 +1,8 @@
 """Stitch the Orpington 2001 High Street strip from the Meshy panels: python3 tools/v72/orp_strip.py <panel dir> <out.png> [x0:x1:y1,...]
 
 Panels are pasted in order at their raw x (later ones on top), then the ground repaint g1 is laid over with feathered
-sides, then the sky is evened out: each sky pixel (one close to its row's sky colour) is moved onto one shared gradient
-boxes given as x0:x1:y1 (moons, sky joins) are filled
-with a blend of the sky either side."""
+sides, then the sky is eased across two panel joins (SHIFTS), and boxes given as x0:x1:y1 (extra moons) are filled with a
+blend of the sky either side."""
 import sys
 import numpy as np
 from PIL import Image
