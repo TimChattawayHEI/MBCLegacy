@@ -151,14 +151,28 @@ Real street order, left to right (the mirror shop is past the Blacksmiths, not b
   - Done (V72): `tools/v72/orp_bg.py` fits and tiles them into web/bg/meshy/orp_*.png (drawn by the V64 Meshy code). Atlantis outside and inside joined with a cut-away of the club wall (door2.webp)
 
 ### Orpington 2001: still to do after V72
-- [ ] Tim: play the chapter on a phone (THE HIGH STREET, YE OLDE BLACKSMITH, ATLANTIS) and say what feels off
+- [x] Tim: play the chapter on a phone (THE HIGH STREET, YE OLDE BLACKSMITH, ATLANTIS) and say what feels off
+  - Done (31 Oct): the joins didn't blend, the High Street strip didn't work at all, you could walk up the walls, the crossing was over too quickly, the stealth wasn't explained (ran to the bar and nothing happened), Atlantis's outside to inside join was horrible, under 5 minutes for the lot. All reworked in V73, below
 - [ ] The run back up the High Street to make the coach (auto-runner), between the Blacksmiths and Atlantis
 - [x] A garage track for Atlantis at a steady 2-step tempo
   - Done: Alarm Call, 134 bpm; the BEAT ring follows the song itself (its loop is exactly 128 beats), so ON BEAT! lands with the music
-- [ ] Comic pages for the chapter (Kelly at the door, the coach, 2am) in tools/v71/comics.py
+- [x] Comic pages for the chapter (Kelly at the door, the coach, 2am) in tools/v71/comics.py
+  - Done (V73): five pages, `tools/v73/comics.py`
 - [ ] A trophy for finishing the chapter, like the other chapters'
 - [ ] Mick's boss card art (bosscard/) and Jeff's
-- [ ] Sue: only her top half shows over the bar, clipped by a fixed line; check it sits right on a phone
+- [ ] Sue: only her top half shows over the bar, clipped by a fixed line; check it sits right on a phone (looked right in the headless phone shot)
+
+### Orpington 2001 rebuilt (V73, from Tim's play-test)
+- [x] No more stitched strips: every place is one screen made from one Meshy painting, with a wipe to the next (`tools/v73/scenes.py`, web/bg/orp/). The High Street is four places (the bus stop, the crossing, Ram Ba Ba, outside the Blacksmiths); the Blacksmiths four (the lounge, the bar, the pool room, back to the bar for Mick); Atlantis two (the queue, the dance floor). Walk off the side the GO arrow points to
+- [x] Walking up the walls: each place's floor line measured from its own painting, and the bar, the pool table, the lounge seating and the lamp posts block you
+- [x] Bus stop: hold it against the Petts Wood lot; after each wave a lad turns up and fights with you (Sam last: "Bus was late"); they go on ahead to the Blacksmiths
+- [x] The crossing is a proper Frogger on its own painted screen: four lanes, three crossings (over, back for Sam's phone, over again with the 61 bus), a hit sends you back to the kerb, mopeds can be jumped
+- [x] Getting served explained with a how-to card, Sue's gaze drawn on the floor when she's watching, HIDE spots marked, an ID meter over your head that fills (not instant), an ORDER HERE spot, then carry the pints back to the lads' table (walk, don't run, dodge Alan). Six pints in three trips; IDed three times and it kicks off anyway. Byron gets IDed twice as fast
+- [x] Atlantis: a queue down the road that moves only when it's calm; queue-jumpers push in and you sort them out; at the door Kelly is turned away (comic page), then a cut inside. The dance floor is packed with dancers on the beat; a few at a time stop (a "!") and come for you, five waves, then 2am lights on and the last lot
+- [x] Comic pages: the bus stop (start), the spilt pint (it kicks off), Mick's last orders, the door, 2am (end)
+- [x] Every new mechanic opens with a how-to card (HIT to go)
+- [ ] Tim: play it again on a phone. Expected length now around 20 minutes for the chapter
+- [ ] More depth still on the list: the run back to the coach, Kelly's Snake, horseshoes and wagon wheels as weapons in the pub
 
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
