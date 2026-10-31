@@ -92,6 +92,42 @@
 - [ ] Tim: write the ending line for each lad (Tim, Seb, Pearcy, Byron, Kelly, Marc, Sam, Ash, Thet). Until then each shows "To be continued...". They go in ENDINGS in tools/v71/v71.js, or send them in chat
 - [ ] Check the comic pages and endings in an online game (built for one phone; online they're shown on each phone on its own)
 
+## New (31 October): Orpington 2001
+
+A group night out before the 2006 chapter: meet at the Pizza Express bus stop, over the mini roundabout, past Ram Ba Ba, into the Blacksmiths, back to Ram Ba Ba for the coach, then Atlantis in Croydon. Full design in `tools/v72/ORPINGTON_2001.md`; Tim's photos (cleaned crops) in `tools/v72/ref/`.
+
+Real street order, left to right: Pizza Express corner (bus stop) | mini roundabout | Ram Ba Ba (corner of Church Hill, then the Young's frontage) | car park | Blacksmiths' single storey wing | Ye Olde Blacksmith | the mirror and lamp shop with PRIVATE PROPERTY! NO PARKING on its gable.
+
+### Story and chapter
+- [ ] Decide where it sits in the campaign: between 1999 and Elba 2002 (it's 2001), with the time travel arc landing the lads there
+- [ ] Group chat opener in 2001 SMS speak on brick phones ("c u @ pizza xpress 8, dnt b l8"); a present-day chat flashback (the Blacksmiths is now Aksular, Ram Ba Ba became Fiesta Mexicana)
+- [ ] Comic pages: Kelly knocked back at the Ram Ba Ba door; the coach to Croydon (replaces a coach fight, since the N47 is already a bus fight); 2am, everyone back on the coach and Kelly asleep on it
+- [ ] Tim: confirm the night's details (what time the coach left, any other Blacksmiths or Atlantis stories worth a moment)
+
+### Stages and mechanics (not just left to right)
+- [ ] 1. Pizza Express bus stop: lads arrive one at a time while you hold the stop against a rival crew
+- [ ] 2. The mini roundabout: a short Frogger-style crossing (zebra, Belisha beacons, Corsas, the red estate, a bus)
+- [ ] 3. Ram Ba Ba, first pass: no fight; a chalkboard by the shutter says ATLANTIS COACH 10.30 and starts the night's clock on screen
+- [ ] 4. The Blacksmiths, getting served: stealth in the L-shaped bar. The bar is in the corner so whoever's serving sees down both arms; keep Byron (looks like a kid) out of Sue's eyeline behind fruit machines and seating while the oldest-looking lad goes up
+- [ ] 5. The Blacksmiths, it kicks off: Alan and Jeff start it round the pool table at the top of the L. Throwable horseshoes, pool cues and balls, wagon wheels off the walls rolling as hazards, the fruit machine gives a hold/nudge bonus when hit. Boss: Mick ringing the bell, Sue's "OI!" from behind the bar as a stun
+- [ ] 6. The run back: auto-runner up the High Street to make the coach (bollards, bins, people); miss it and restart the run
+- [ ] 7. Ram Ba Ba door: blag mini-game with a nerve meter, tapping to keep Kelly's Mass Head from inflating. Scripted to fail (it's canon): Kelly is refused and sits on the coach till 2am. Playing as Kelly: Snake on his brick phone, with a board
+- [ ] 8. Atlantis: rhythm brawler, hits land harder on the 2-step beat, strobes reveal foes; ends at 2am
+- [ ] Mini-games 6 and 7 go in the Harvest Moon arcade once met, like the others
+
+### Characters (PixelLab, Tim has topped up credits)
+- [ ] Mick (big, fat, bald, old, East End landlord), Sue (2000s older landlady, short blonde going grey), Alan (thin, blonde, unkempt, always half-cut), Jeff (huge, short dark hair, dirty polo shirt). Lightly tweaked names, since the APK gets passed round
+- [ ] Atlantis bouncers, Ram Ba Ba door staff, a rival crew at the bus stop, clubbers
+- [ ] Brick phone (Kelly's Snake), pool cue, horseshoe, wagon wheel weapon and pickup sprites
+
+### Backdrops (Meshy, kept true to the photos, same style as the other stages)
+- [ ] Street strip: Pizza Express corner (dormers, white corner bay, blue roundel, TO LET board, barbers) to the roundabout, Ram Ba Ba (Young's fascia, roller shutter, Church Hill sign, X-pattern window rails, the 2nd floor TO LET board, IB 798 bollard), the car park, the Blacksmiths' wing, Ye Olde Blacksmith (black shutters, anvil and smith bracket sign, brass lanterns, barrel planters, chalkboards, flagpole, planted roof on the wing) and the mirror shop's NO PARKING gable
+- [ ] No St George bunting on the Blacksmiths (that was the 2002 World Cup); a faded "Artichoke Inn" ghost sign as an easter egg
+- [ ] Blacksmiths inside: the L-shaped room, bar in the corner, pool table at the top of the L, blacksmith's tools, wagon wheels and horse brasses on the walls, fruit machines, seating round the edges
+- [ ] Atlantis outside: gold ATLANTIS on the navy oval with the merman crest, blue NIGHTCLUB, the white wave-shaped canopy, yellow brick with brown bands, blue bollards, DJ EZ posters in the ornate frames, a NO TRAINERS sign
+- [ ] Atlantis inside: dance floor, strobes, the DJ booth with a DJ EZ silhouette (posters and silhouette only, not his likeness or voice)
+- [ ] Wire the panels into stages.json / MESHY_BG once the strip is signed off
+
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
 
