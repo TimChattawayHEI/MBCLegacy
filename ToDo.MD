@@ -122,6 +122,7 @@ Real street order, left to right (the mirror shop is past the Blacksmiths, not b
 
 ### Backdrops (Meshy, kept true to the photos, same style as the other stages)
 - [x] Street strip: Pizza Express corner (dormers, white corner bay, blue roundel, TO LET board, barbers) to the roundabout, Ram Ba Ba (Young's fascia, roller shutter, Church Hill sign, X-pattern window rails, the 2nd floor TO LET board, IB 798 bollard), the car park, the Blacksmiths' wing, Ye Olde Blacksmith (black shutters, anvil and smith bracket sign, brass lanterns, barrel planters, chalkboards, flagpole, planted roof on the wing) and the mirror shop's NO PARKING gable
+  - Fixed (31 Oct, Tim's notes): the road past Ram Ba Ba ran into a fence and there were flower beds in it. Ram Ba Ba repainted flat on, the Church Hill junction, the car park behind its wall, and the pavement widening smoothly to the pub; the road now runs straight through to the Blacksmiths
   - Done (first pass, 31 Oct): five panels and three bridges, one 5408 px strip with no visible joins, in `tools/v72/img/orp01/` (see LAYOUT.md there). Painted from the photos with `tools/v72/orp_panel.py`; joins with `tools/v72/bridge.py` (MIX=0 when a bridge keeps the cut)
 - [x] No St George bunting on the Blacksmiths (that was the 2002 World Cup); a faded "Artichoke Inn" ghost sign as an easter egg
   - Done: no bunting; the ghost sign is on the end wall
