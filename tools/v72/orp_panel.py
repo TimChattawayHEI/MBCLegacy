@@ -23,7 +23,7 @@ STYLE = ("in exactly the art style of the night-time pixel art street background
 if prev == '-':
     prompt = ("A wide pixel art background for a side-scrolling beat 'em up game. Paint the real buildings in the first image (a photo) as faithfully "
               "as the style allows, keeping their shape, materials, windows, roofs and signs, " + STYLE + " " + what)
-    refs = ','.join([ph, look, street])
+    refs = ','.join([ph] + ([os.path.join(D, os.environ['STYLE_PANEL'] + '_raw.png')] if os.environ.get('STYLE_PANEL') else []) + [look, street])
 else:
     pv = Image.open(os.path.join(D, prev + '_raw.png')).convert('RGB'); w, h = pv.size; q = w // 4
     g = Image.open(ph).convert('RGB'); s = h / g.height; g = g.resize((max(w, int(g.width * s)), h), Image.BILINEAR)

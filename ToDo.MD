@@ -96,7 +96,7 @@
 
 A group night out before the 2006 chapter: meet at the Pizza Express bus stop, over the mini roundabout, past Ram Ba Ba, into the Blacksmiths, back to Ram Ba Ba for the coach, then Atlantis in Croydon. Full design in `tools/v72/ORPINGTON_2001.md`; Tim's photos (cleaned crops) in `tools/v72/ref/`.
 
-Real street order, left to right: Pizza Express corner (bus stop) | mini roundabout | Ram Ba Ba (corner of Church Hill, then the Young's frontage) | car park | Blacksmiths' single storey wing | Ye Olde Blacksmith | the mirror and lamp shop with PRIVATE PROPERTY! NO PARKING on its gable.
+Real street order, left to right (the mirror shop is past the Blacksmiths, not before it): Pizza Express corner (bus stop) | mini roundabout | Ram Ba Ba (corner of Church Hill, then the Young's frontage) | car park | Blacksmiths' single storey wing | Ye Olde Blacksmith | the mirror and lamp shop with PRIVATE PROPERTY! NO PARKING on its gable.
 
 ### Story and chapter
 - [ ] Decide where it sits in the campaign: between 1999 and Elba 2002 (it's 2001), with the time travel arc landing the lads there
@@ -121,11 +121,19 @@ Real street order, left to right: Pizza Express corner (bus stop) | mini roundab
 - [ ] Brick phone (Kelly's Snake), pool cue, horseshoe, wagon wheel weapon and pickup sprites
 
 ### Backdrops (Meshy, kept true to the photos, same style as the other stages)
-- [ ] Street strip: Pizza Express corner (dormers, white corner bay, blue roundel, TO LET board, barbers) to the roundabout, Ram Ba Ba (Young's fascia, roller shutter, Church Hill sign, X-pattern window rails, the 2nd floor TO LET board, IB 798 bollard), the car park, the Blacksmiths' wing, Ye Olde Blacksmith (black shutters, anvil and smith bracket sign, brass lanterns, barrel planters, chalkboards, flagpole, planted roof on the wing) and the mirror shop's NO PARKING gable
-- [ ] No St George bunting on the Blacksmiths (that was the 2002 World Cup); a faded "Artichoke Inn" ghost sign as an easter egg
-- [ ] Blacksmiths inside: the L-shaped room, bar in the corner, pool table at the top of the L, blacksmith's tools, wagon wheels and horse brasses on the walls, fruit machines, seating round the edges
-- [ ] Atlantis outside: gold ATLANTIS on the navy oval with the merman crest, blue NIGHTCLUB, the white wave-shaped canopy, yellow brick with brown bands, blue bollards, DJ EZ posters in the ornate frames, a NO TRAINERS sign
-- [ ] Atlantis inside: dance floor, strobes, the DJ booth with a DJ EZ silhouette (posters and silhouette only, not his likeness or voice)
+- [x] Street strip: Pizza Express corner (dormers, white corner bay, blue roundel, TO LET board, barbers) to the roundabout, Ram Ba Ba (Young's fascia, roller shutter, Church Hill sign, X-pattern window rails, the 2nd floor TO LET board, IB 798 bollard), the car park, the Blacksmiths' wing, Ye Olde Blacksmith (black shutters, anvil and smith bracket sign, brass lanterns, barrel planters, chalkboards, flagpole, planted roof on the wing) and the mirror shop's NO PARKING gable
+  - Done (first pass, 31 Oct): five panels and three bridges, one 5408 px strip with no visible joins, in `tools/v72/img/orp01/` (see LAYOUT.md there). Painted from the photos with `tools/v72/orp_panel.py`; joins with `tools/v72/bridge.py` (MIX=0 when a bridge keeps the cut)
+- [x] No St George bunting on the Blacksmiths (that was the 2002 World Cup); a faded "Artichoke Inn" ghost sign as an easter egg
+  - Done: no bunting; the ghost sign is on the end wall
+- [x] Blacksmiths inside: the L-shaped room, bar in the corner, pool table at the top of the L, blacksmith's tools, wagon wheels and horse brasses on the walls, fruit machines, seating round the edges
+  - Done (first pass): bi0, bi1, bi2, a 3440 px strip: door and seating, the bar jutting out of the corner with a bell over it (Mick's), the pool room with a fire exit
+- [x] Atlantis outside: gold ATLANTIS on the navy oval with the merman crest, blue NIGHTCLUB, the white wave-shaped canopy, yellow brick with brown bands, blue bollards, DJ EZ posters in the ornate frames, a NO TRAINERS sign
+  - Done (first pass): at0. The canopy's wave ribs run off the right edge; paint one more panel if the stage needs to scroll
+- [x] Atlantis inside: dance floor, strobes, the DJ booth with a DJ EZ silhouette (posters and silhouette only, not his likeness or voice)
+  - Done (first pass): ai0, DJ EZ banner over the booth
+- [ ] Atlantis inside: the gold crest on the wall came out looking like an elephant, not a merman. Repaint that bit
+- [ ] Tim: check the panels look right to you (anything missing or wrong from real life), before they go in the game
+- [ ] Floors: the strip's pavement and road are painted in perspective near the roundabout; cut a flat walkable floor (as V60 did) when the stage goes in
 - [ ] Wire the panels into stages.json / MESHY_BG once the strip is signed off
 
 ### For whoever builds next
