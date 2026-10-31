@@ -50,8 +50,10 @@ with sync_playwright() as pw:
     play(1)
     ok('playing as someone else', ev('player.def.id') != 'tim')
     setup(1); ev("startPunch(player)"); time.sleep(0.15)
-    ok('no swoosh for lads not switched on yet', ev("!parts.some(p => p.k === 'swoosh')"))
-    ok('they keep the old spark', ev("parts.some(p => p.k === 'fx' && (p.fx === 'hit' || p.fx === 'hitbig'))"))
+    if ev("Object.keys(FX_LADS).length > 1"): print('SKIP other lads unchanged: Version 81 switched every lad on (tools/v81/test.py checks them)')
+    else:
+        ok('no swoosh for lads not switched on yet', ev("!parts.some(p => p.k === 'swoosh')"))
+        ok('they keep the old spark', ev("parts.some(p => p.k === 'fx' && (p.fx === 'hit' || p.fx === 'hitbig'))"))
     shot('other_lad')
     print('errors:', errs[:5] if errs else 'none')
     b.close()
