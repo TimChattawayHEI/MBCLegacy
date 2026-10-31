@@ -1,10 +1,10 @@
-"""Walks the redesigned menus headless with WebGL on: python3 tools/v80/test.py [out_dir]
+"""Walks the redesigned menus headless with WebGL on: python3 tools/v82/test.py [out_dir]
 Title -> start menu -> SETTINGS and back -> NEW GAME -> the lads (Byron picked to check his face) -> where to start
 (Orpington 2001) -> 3 GO, a screenshot at each, and checks the steps, the back buttons and that a run starts."""
 import http.server, os, socketserver, sys, threading, time
 from playwright.sync_api import sync_playwright
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-OUT = sys.argv[1] if len(sys.argv) > 1 else '/tmp/v80test'; os.makedirs(OUT, exist_ok=True)
+OUT = sys.argv[1] if len(sys.argv) > 1 else '/tmp/v82test'; os.makedirs(OUT, exist_ok=True)
 
 
 class Q(http.server.SimpleHTTPRequestHandler):
