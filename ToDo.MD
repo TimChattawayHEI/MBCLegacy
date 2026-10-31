@@ -95,6 +95,9 @@
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
 
+### Music (31 October)
+- [ ] Alarm Call: a new spy-thriller garage track (134 bpm, 2-step) with an original guitar-style chip riff (distorted square-wave power chords) and a blaring alarm on the beat. Two versions made: alarm on every beat, or every other beat. Tim: pick one and say which stage or boss it should play on, then it goes in `web/music/` and `TRACKS`. Source is `soundtrack/songs5.py` in the claude.ai project
+
 ## Carried over from the build plan
 
 ### Firebase rules (Tim to paste, from the README)
