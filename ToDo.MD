@@ -217,6 +217,14 @@ Tim asked for quality of life ideas, then for all six
 - [x] Found while testing: a how-to card appearing mid-punch left the punch stuck (a glitch message on screen); fixed
 - [ ] Tim: try AUTO-TURN on the phone and say if it turns you when you didn't want it to
 
+### Menus redesign (31 October, mockups)
+Tim: the title goes straight into character select, the options along the bottom are cluttered and hard to read, and the level select is messy now Orpington 2001 is in (the chapter tabs wrap onto two lines). Mockups on a claude.ai Design canvas ("MBC Legacies menu redesign"): a start menu, the lad select, two takes on the level select, and a Ready screen
+- [x] Mock up: a start menu between the title and the lads (CARRY ON with the saved run, NEW GAME, PLAY ONLINE, THE HARVEST MOON, TROPHIES, SCORES, SETTINGS; the name and sound top right), so the bottom bar goes
+- [x] Mock up: lad select with faces in the roster, the steps as 1 LAD / 2 STAGE / 3 GO, PLAY AS TIM on the card, BACK to the menu top left, nothing else along the bottom
+- [x] Mock up: level select A (chapters down the side with a picture each, the chapter's stages as picture cards, START HERE) and B (the years as postcards on a timeline, the stages listed under it)
+- [x] Mock up: a Ready screen with the difficulty folded in (Language moves to Settings)
+- [ ] Tim: pick a level select (A or B) and say what to change, then build it into the 3D title's HTML layer (#t3)
+
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
 
