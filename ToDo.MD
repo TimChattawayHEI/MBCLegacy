@@ -217,6 +217,17 @@ Tim asked for quality of life ideas, then for all six
 - [x] Found while testing: a how-to card appearing mid-punch left the punch stuck (a glitch message on screen); fixed
 - [ ] Tim: try AUTO-TURN on the phone and say if it turns you when you didn't want it to
 
+### Hits and specials that look powerful (31 October, idea from Streets of Rage 4)
+Tim asked if Meshy could make the attack and hit effects look as clear and strong as SoR4's. Meshy isn't the tool for it: it paints single pictures, and an effect needs 4 to 8 frames that match each other on a see-through background. PixelLab's VFX workbench is built for exactly this (free on the subscription), and most of the SoR4 feel comes from code, not art. What the game has now: one small star spark (`fx/hit.png`) and a round burst (`fx/hitbig.png`), both the same whichever way the hit goes, plus hitstop, shake and the white flash already in place.
+- [ ] Swoosh trails: a bright arc that follows the fist or foot on every attack (curved for hooks and spins, straight for jabs and kicks), white core, coloured edge, drawn with 'lighter' blending and fading over 3 or 4 frames. Biggest single change
+- [ ] Each lad's own effect colour, the way SoR4 gives each fighter one (start from the colour his name already has on the select screen, V67); used on swooshes, sparks and his special. Tim to say if he wants different ones
+- [ ] Directional hit sparks: new spark sheets in PixelLab's VFX workbench that spray the way the hit travels, a light one for jabs and a big one for combo enders, knockdowns and specials. Flip with the attacker's facing
+- [ ] Combo enders feel heavier: longer hitstop (about 0.1s against 0.05s now), the victim flashes white then the lad's colour, a short sharp shake, and speed lines behind the knockback
+- [ ] Landing: a ground shockwave ring and dust when someone hits the floor hard
+- [ ] Specials and supers: a big swirl or burst in the lad's colour at the start, and the screen darkened slightly behind him for a moment (SoR4's star moves do this)
+- [ ] Check it on a phone: effects must stay readable in a crowd and not drop frames on the dance floor
+- Where Meshy could still help: painted stills, e.g. a backdrop behind each lad's super cut-in
+
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
 
