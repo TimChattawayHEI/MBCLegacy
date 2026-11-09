@@ -270,6 +270,31 @@ All in `web/music/` and registered in `TRACKS` (index.html, after the main table
 
 - [ ] Still free: `alarmcall2` and `deepcover` (the run back to the coach could take Deep Cover). When a level takes one of these, note it here; when a track is clearly not going to be used, delete its file from `web/music/` and its line in `TRACKS` so the app stays small
 
+## New (9 November): voice chat in online co-op
+
+Tim asked if voice chat was possible. It is: the co-op link is already a direct WebRTC connection, and voice can ride on it. Two-player co-op first; the Harvest Moon later if it gets used. Full plan in `tools/v84/VOICE_CHAT.md`.
+
+### Tim
+- [ ] Say yes to the defaults, or change them: open mic with a mute button (not push to talk), voice off until you switch it on in the lobby, music ducks while your mate talks
+- [ ] Sign up for Metered's free Open Relay (20 GB a month) and send the login details, so voice works on networks that block a direct link (it also speeds up the backup for button presses)
+- [ ] Install the new APK when it's out. The mic permission can't come through an in-app update, and both phones need it for voice
+
+### Build (V84)
+- [ ] Android: mic permission in the manifest, a `WebChromeClient` that grants the mic only, sound kept on the loudspeaker while voice is live, `MBCNative.canVoice()`, mic off when the app goes to the background
+- [ ] An audio slot in the lobby's WebRTC offer and answer (`rtcStart`), the mic attached later so muting never touches the connection. Mono Opus at about 24 kbps
+- [ ] The relay server in `iceServers` (details in `web/net.json`); HUD shows DIRECT, RELAY or VIA SERVER
+- [ ] Mate's voice through the game's mixer with its own volume; music ducks while they talk
+- [ ] Lobby VOICE pills, a mic button on the HUD, a speaker mark on your mate's HUD face when they talk, M to mute
+- [ ] Pause menu: MUTE MIC, MUTE MATE. Settings: VOICE VOLUME, VOICE default, DUCK MUSIC
+- [ ] An old app on the other phone still plays (no voice, the lobby says to update)
+- [ ] Tests: two pages with a fake mic over the test relay (audio flows, mute, ducking, checksums and delay unchanged), an old-app guest, relay-only
+
+### Real phone checks
+- [ ] Two phones on wifi and on 4G: you can hear each other, game sound stays on the speaker, no echo with the sound up, the mic light goes off on mute and when the app closes
+
+### Later
+- [ ] Voice in the Harvest Moon (needs a hosted voice service; proximity voice at the bar would be the fun bit)
+
 ## Carried over from the build plan
 
 ### Firebase rules (Tim to paste, from the README)
