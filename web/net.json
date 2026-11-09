@@ -1,0 +1,4 @@
+{
+  "_about": "Version 84: the relay server (TURN) for online co-op and voice. Put the login from Metered's Open Relay (or Cloudflare) in iceServers, e.g. {\"urls\": [\"turn:a.relay.metered.ca:80\", \"turn:a.relay.metered.ca:443\", \"turns:a.relay.metered.ca:443?transport=tcp\"], \"username\": \"...\", \"credential\": \"...\"}. Empty: direct links only (Google STUN), with Firebase as the backup for button presses.",
+  "iceServers": []
+}

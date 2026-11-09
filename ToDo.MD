@@ -270,6 +270,34 @@ All in `web/music/` and registered in `TRACKS` (index.html, after the main table
 
 - [ ] Still free: `alarmcall2` and `deepcover` (the run back to the coach could take Deep Cover). When a level takes one of these, note it here; when a track is clearly not going to be used, delete its file from `web/music/` and its line in `TRACKS` so the app stays small
 
+## New (9 November): voice chat in online co-op
+
+Tim asked if voice chat was possible. It is: the co-op link is already a direct WebRTC connection, and voice rides on it. Two-player co-op first; the Harvest Moon later if it gets used. Plan in `tools/v84/VOICE_CHAT.md`.
+
+### Tim
+- [x] Go ahead with the defaults: open mic with a mute button (not push to talk), voice off until you switch it on in the lobby (then it remembers), music dips while your mate talks
+- [ ] Sign up for Metered's free Open Relay (20 GB a month) and send the login details. They go in `web/net.json` (format in the README) and reach phones as an in-app update. Until then voice only works where the phones can connect directly
+- [ ] Install the new APK when it's out (the update card will offer the download, not an in-app update: the mic permission needs a real APK). Both phones need it for voice
+
+### Build (V84)
+- [x] Android: mic permission in the manifest, a `WebChromeClient` that grants the mic only, sound kept on the loudspeaker while your mic is live (unless headphones are in), `MBCNative.canVoice()`, mic off when the app goes to the background and back on when it returns
+  - Done (V84): `android/`. Java not compiled here; the branch's APK build is the check
+- [x] An audio slot in the lobby's WebRTC offer and answer (`rtcStart`), the mic attached later so muting never touches the connection. Mono Opus, 24 kbps, silence sends nothing
+- [x] The relay server in `iceServers` (from `web/net.json`, empty for now); HUD shows DIRECT, RELAY or VIA SERVER, the lobby LINK: THROUGH THE RELAY
+- [x] Mate's voice with its own volume; music dips while they talk
+- [x] Lobby VOICE pill (top right) and each lad's voice status, a mic button by pause, a speaker mark on your mate's panel when they talk (tap the panel to mute them), M to flip your mic
+- [x] Settings: VOICE VOLUME, MUSIC WHEN TALKING (only on an app that can do voice). The online pause is shared with no menu, so mute lives on the HUD instead of in pause
+- [x] An old app on the other phone still plays (no voice, the lobby says they need the new app, your mic stays closed)
+- [x] Tests: `tools/v84/test.py`, two pages with Chrome's fake mic over the test relay: voice both ways, mute (nothing sent, the mic released), unmute, the music dip, the speaker mark, a full fight with voice on staying in step, the HUD buttons, background and back, quitting, settings, an old-app guest, relay-only with no relay server (falls back to the server). All pass. Headless, the second page runs slow, so its input delay climbs to 11 or 12 frames with or without voice; real phones are the real test
+
+### Real phone checks
+- [ ] Two phones on wifi and on 4G: you can hear each other, game sound stays on the speaker, no echo with the sound up, the mic light goes off on mute and when the app closes
+- [ ] The input delay (shown on the HUD) is no worse with voice on than off
+- [ ] With headphones in, sound stays in the headphones
+
+### Later
+- [ ] Voice in the Harvest Moon (needs a hosted voice service; proximity voice at the bar would be the fun bit)
+
 ## Carried over from the build plan
 
 ### Firebase rules (Tim to paste, from the README)

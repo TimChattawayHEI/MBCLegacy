@@ -1,13 +1,20 @@
 package uk.mbc.legacies;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.media.AudioDeviceInfo;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
+import android.webkit.PermissionRequest;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
@@ -34,6 +41,10 @@ public class MainActivity extends Activity {
     private static final String OTA_RAW = "https://raw.githubusercontent.com/TimChattawayHEI/MBCLegacy/";
     private WebView web;
     private Ota ota;
+    // Version 84: voice chat. A mic request from the page waiting on Android's own permission prompt
+    private static final int ASK_MIC = 84;
+    private PermissionRequest micAsk;
+    private boolean voiceOn;
 
     @Override
     protected void onCreate(Bundle state) {
@@ -91,6 +102,28 @@ public class MainActivity extends Activity {
             }
         });
 
+        // Version 84: the page may use the microphone (voice chat in online co-op), and nothing else
+        web.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onPermissionRequest(final PermissionRequest req) {
+                boolean mic = false;
+                for (String r : req.getResources()) if (PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(r)) mic = true;
+                if (!mic) { req.deny(); return; }
+                if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                    req.grant(new String[] { PermissionRequest.RESOURCE_AUDIO_CAPTURE });
+                    return;
+                }
+                if (micAsk != null) { try { micAsk.deny(); } catch (Exception e) { /* gone */ } }
+                micAsk = req;
+                requestPermissions(new String[] { Manifest.permission.RECORD_AUDIO }, ASK_MIC);
+            }
+
+            @Override
+            public void onPermissionRequestCanceled(PermissionRequest req) {
+                if (req == micAsk) micAsk = null;
+            }
+        });
+
         if (state != null) web.restoreState(state);
         else web.loadUrl(HOME);
     }
@@ -138,6 +171,60 @@ public class MainActivity extends Activity {
             runOnUiThread(() -> { if (web != null) web.loadUrl(HOME); });
             return true;
         }
+        /** Version 84: this app can do voice chat (older APKs have no mic permission). */
+        @JavascriptInterface public boolean canVoice() { return true; }
+        /** Version 84: voice is live (or not): keep the sound on the loudspeaker while it is. */
+        @JavascriptInterface public void voice(final boolean on) { runOnUiThread(() -> voiceRoute(on)); }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int code, String[] perms, int[] res) {
+        super.onRequestPermissionsResult(code, perms, res);
+        if (code != ASK_MIC || micAsk == null) return;
+        PermissionRequest r = micAsk; micAsk = null;
+        boolean ok = res.length > 0 && res[0] == PackageManager.PERMISSION_GRANTED;
+        try {
+            if (ok) r.grant(new String[] { PermissionRequest.RESOURCE_AUDIO_CAPTURE });
+            else r.deny();
+        } catch (Exception e) { /* the page stopped asking */ }
+    }
+
+    /**
+     * When a phone opens its mic for a call, Android switches to call mode, which on some phones quietens the game
+     * or sends it to the earpiece. While voice is live, sound goes to the loudspeaker (unless headphones are in)
+     * and the volume buttons work on what's playing. Back to normal after.
+     */
+    @SuppressWarnings("deprecation")
+    private void voiceRoute(boolean on) {
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        if (am == null || on == voiceOn) return;
+        voiceOn = on;
+        try {
+            if (on) {
+                am.setMode(AudioManager.MODE_IN_COMMUNICATION);
+                if (!headphonesIn(am)) {
+                    if (Build.VERSION.SDK_INT >= 31) {
+                        for (AudioDeviceInfo d : am.getAvailableCommunicationDevices())
+                            if (d.getType() == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER) { am.setCommunicationDevice(d); break; }
+                    } else am.setSpeakerphoneOn(true);
+                }
+                setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
+            } else {
+                if (Build.VERSION.SDK_INT >= 31) am.clearCommunicationDevice(); else am.setSpeakerphoneOn(false);
+                am.setMode(AudioManager.MODE_NORMAL);
+                setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
+            }
+        } catch (Exception e) { /* leave the phone as it is */ }
+    }
+
+    private static boolean headphonesIn(AudioManager am) {
+        for (AudioDeviceInfo d : am.getDevices(AudioManager.GET_DEVICES_OUTPUTS)) {
+            int t = d.getType();
+            if (t == AudioDeviceInfo.TYPE_WIRED_HEADSET || t == AudioDeviceInfo.TYPE_WIRED_HEADPHONES || t == AudioDeviceInfo.TYPE_USB_HEADSET
+                    || t == AudioDeviceInfo.TYPE_BLUETOOTH_SCO || t == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP
+                    || (Build.VERSION.SDK_INT >= 31 && t == AudioDeviceInfo.TYPE_BLE_HEADSET)) return true;
+        }
+        return false;
     }
 
     @Override
@@ -155,13 +242,14 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (web != null) web.onPause();
+        if (web != null) { web.evaluateJavascript("window.__voicePause && window.__voicePause()", null); web.onPause(); }
+        voiceRoute(false);   // the page turns the mic off when it's hidden, and back on (and asks for the speaker again) when it's back
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (web != null) web.onResume();
+        if (web != null) { web.onResume(); web.evaluateJavascript("window.__voiceResume && window.__voiceResume()", null); }
         hideBars();
     }
 
