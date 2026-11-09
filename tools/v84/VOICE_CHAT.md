@@ -29,7 +29,8 @@ Right now, if two phones can't connect directly (some 4G networks, strict home r
 ## 3. In the game (`tools/v84/voice.js`, `tools/v84_build.py`)
 
 - Mic: echo cancellation, noise suppression and auto gain on. Open mic with a mute button, not push to talk (no spare thumbs mid-fight).
-- Your mate's voice plays through its own `<audio>` element with its own volume (VOICE VOLUME), so the phone's echo cancelling treats it as a call. A level meter on it drives the speaker mark and the music dip.
+- Your mate's voice plays through Web Audio at 3x into a limiter (about 5x for ordinary speech with the limiter's make-up gain, loud voices held under full scale), with VOICE VOLUME to turn it down. The `<audio>` element only feeds it (muted). Version 84 played it through the element, which can't go above full volume: Tim found it very quiet. A level meter drives the speaker mark and the music dip (to a quarter).
+- With the mic open, Android plays everything at call volume. The app raises the call volume to at least where the media volume is while voice is on, and puts it back after.
 - Music ducks to about 40% while your mate is talking and comes back over half a second. Effects aren't ducked.
 - Lobby: a VOICE pill top right (it remembers your choice for next time), and VOICE ON / MIC OFF / TALKING / NO VOICE ON THEIR APP over each lad. The first time you switch it on, one line says why it wants the mic, then Android asks. Talking works from the lobby, so you can chat while picking lads.
 - HUD: a mic button by pause (tap to mute, crossed out when muted, a green ring while you talk). Your mate's panel gets a speaker mark while they talk; tap the panel to mute them (a crossed speaker). M flips your mic on a keyboard.

@@ -290,6 +290,9 @@ Tim asked if voice chat was possible. It is: the co-op link is already a direct 
 - [x] An old app on the other phone still plays (no voice, the lobby says they need the new app, your mic stays closed)
 - [x] Tests: `tools/v84/test.py`, two pages with Chrome's fake mic over the test relay: voice both ways, mute (nothing sent, the mic released), unmute, the music dip, the speaker mark, a full fight with voice on staying in step, the HUD buttons, background and back, quitting, settings, an old-app guest, relay-only with no relay server (falls back to the server). All pass. Headless, the second page runs slow, so its input delay climbs to 11 or 12 frames with or without voice; real phones are the real test
 
+- [x] Tim (first two-phone test): "all works but it's very quiet". Done (V84.1): the voice played through an audio element, which can't go above full volume, against a loud game. It now plays through Web Audio at 3x into a limiter, so ordinary speech comes out about five times louder and loud voices can't clip (VOICE VOLUME turns it down). The music dips further while your mate talks (to a quarter, was 0.4). And with the mic open the phone plays everything at call volume, which is often left low: the app now raises the call volume to at least where the media volume is while voice is on, and puts it back after. The volume buttons control it mid-game. Needs the new APK for the call volume part
+- [ ] Tim: try it again on the two phones and say if it's loud enough now, or too loud
+
 ### Real phone checks
 - [ ] Two phones on wifi and on 4G: you can hear each other, game sound stays on the speaker, no echo with the sound up, the mic light goes off on mute and when the app closes
 - [ ] The input delay (shown on the HUD) is no worse with voice on than off

@@ -45,6 +45,7 @@ public class MainActivity extends Activity {
     private static final int ASK_MIC = 84;
     private PermissionRequest micAsk;
     private boolean voiceOn;
+    private int callVolBefore = -1;   // Version 84.1: the call volume to put back when voice stops
 
     @Override
     protected void onCreate(Bundle state) {
@@ -209,7 +210,15 @@ public class MainActivity extends Activity {
                     } else am.setSpeakerphoneOn(true);
                 }
                 setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
+                // Version 84.1 (Tim: "very quiet"): with the mic open the phone plays everything at call volume,
+                // which is often left low. Bring it up to at least where the media volume is, and put it back after
+                int cMax = am.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL), mMax = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+                int cNow = am.getStreamVolume(AudioManager.STREAM_VOICE_CALL), mNow = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+                int want = mMax > 0 ? (int) Math.ceil((double) cMax * mNow / mMax) : cNow;
+                if (want > cNow) { callVolBefore = cNow; am.setStreamVolume(AudioManager.STREAM_VOICE_CALL, Math.min(cMax, want), 0); }
+                else callVolBefore = -1;
             } else {
+                if (callVolBefore >= 0) { am.setStreamVolume(AudioManager.STREAM_VOICE_CALL, callVolBefore, 0); callVolBefore = -1; }
                 if (Build.VERSION.SDK_INT >= 31) am.clearCommunicationDevice(); else am.setSpeakerphoneOn(false);
                 am.setMode(AudioManager.MODE_NORMAL);
                 setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);

@@ -12566,19 +12566,42 @@ function voxBitrate(sender) {
 }
 
 // ------------------------------------------------------------------ your mate's voice
+// Version 84.1 (Tim: "very quiet"): an <audio> element can't go above full volume, and the game is loud. So the voice
+// plays through Web Audio instead: 3x gain into a limiter (whose own make-up gain adds about 1.75x), so ordinary speech
+// comes out about five times louder and loud voices are held under full scale; the element stays muted
+// (Chrome only feeds a WebRTC stream to Web Audio while it's on an element). Without Web Audio, the element plays it.
+const VOX_BOOST = 3;
 function voxRemote(stream) {
   VOX.stream = stream;
   if (!VOX.el) {
     const el = document.createElement('audio'); el.autoplay = true; el.setAttribute('playsinline', ''); el.style.display = 'none';
     document.body.appendChild(el); VOX.el = el;
   }
-  VOX.el.srcObject = stream; voxVolume();
-  VOX.el.play().catch(() => {});
-  // a level meter on it (for the speaker mark and the music dip); it plays through the <audio> element, not this
+  VOX.el.srcObject = stream;
   audioInit(); VOX.an = null;
-  if (actx) { try { const src = actx.createMediaStreamSource(stream), an = actx.createAnalyser(); an.fftSize = 512; src.connect(an); VOX.an = an; } catch (e) { /* no meter */ } }
+  if (VOX.src) { try { VOX.src.disconnect(); } catch (e) { /* gone */ } VOX.src = null; }
+  if (actx) {
+    try {
+      const src = actx.createMediaStreamSource(stream), an = actx.createAnalyser(); an.fftSize = 512; src.connect(an); VOX.an = an; VOX.src = src;
+      if (!VOX.vg) {
+        const vg = actx.createGain(), lim = actx.createDynamicsCompressor(), out = actx.createAnalyser();
+        lim.threshold.value = -10; lim.knee.value = 4; lim.ratio.value = 14; lim.attack.value = 0.002; lim.release.value = 0.12;
+        out.fftSize = 512; vg.connect(lim); lim.connect(actx.destination); lim.connect(out);
+        VOX.vg = vg; VOX.outAn = out;
+      }
+      src.connect(VOX.vg);
+    } catch (e) { VOX.vg = null; }
+  }
+  voxVolume();
+  VOX.el.play().catch(() => {});
 }
-function voxVolume() { if (VOX.el) { VOX.el.volume = clamp((settings.vox ?? 10) / 10, 0, 1); VOX.el.muted = VOX.mateMuted; } }
+function voxVolume() {
+  const v = clamp((settings.vox ?? 10) / 10, 0, 1);
+  if (VOX.vg && VOX.src) {   // through Web Audio, boosted
+    if (VOX.el) VOX.el.muted = true;
+    VOX.vg.gain.setTargetAtTime(VOX.mateMuted ? 0 : v * VOX_BOOST, actx.currentTime, 0.03);
+  } else if (VOX.el) { VOX.el.volume = v; VOX.el.muted = VOX.mateMuted; }
+}
 function voxLevel(an) {
   if (!an) return 0;
   if (!VOX.buf || VOX.buf.length !== an.fftSize) VOX.buf = new Float32Array(an.fftSize);
@@ -12591,7 +12614,7 @@ function voxMeTalking() { return !!VOX.track && performance.now() < VOX.meT; }
 function voxDuck(on) {
   if (!actx || !musBus) return;
   if (!VOX.duck) { VOX.duck = actx.createGain(); try { musBus.disconnect(); } catch (e) { /* not connected */ } musBus.connect(VOX.duck); VOX.duck.connect(actx.destination); }
-  const g = on && settings.vduck !== false ? 0.4 : 1;
+  const g = on && settings.vduck !== false ? 0.25 : 1;   // Version 84.1: dips further (was 0.4)
   if (g !== VOX.duckG) { VOX.duckG = g; VOX.duck.gain.setTargetAtTime(g, actx.currentTime, g < 1 ? 0.05 : 0.18); }
 }
 
@@ -12685,7 +12708,7 @@ window.addEventListener('keydown', e => {
 const voxRtcStop = rtcStop;
 rtcStop = function () {
   if (VOX.track) voxMicStop();
-  VOX.stream = null; VOX.an = null; VOX.mateT = 0; if (VOX.el) { try { VOX.el.srcObject = null; } catch (e) { /* gone */ } }
+  VOX.stream = null; VOX.an = null; VOX.mateT = 0; if (VOX.src) { try { VOX.src.disconnect(); } catch (e) { /* gone */ } VOX.src = null; } if (VOX.el) { try { VOX.el.srcObject = null; } catch (e) { /* gone */ } }
   VOX.denied = false; VOX.mateMuted = false; voxDuck(false);
   RTC.atr = null; RTC.relay = false;
   return voxRtcStop.apply(this, arguments);

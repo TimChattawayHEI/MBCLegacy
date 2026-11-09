@@ -96,7 +96,17 @@ with sync_playwright() as pw:
     ok('voice flows host to guest', wait(B, 'VOX.inBytes > 2000', 12))
     ok('voice flows guest to host', wait(A, 'VOX.inBytes > 2000', 12))
     ok('your mate talking is picked up (speaker mark)', wait(A, 'voxMateTalking()', 10) and wait(B, 'voxMateTalking()', 10))
-    ok('the music dips while they talk', wait(B, 'VOX.duckG === 0.4', 5))
+    ok('the music dips while they talk', wait(B, 'VOX.duckG === 0.25', 5))
+    ok('voice plays through Web Audio, boosted (the element only feeds it)', ev(B, 'VOX.el.muted && !!VOX.vg') and abs(ev(B, 'VOX.vg.gain.value') - 3) < 0.05)
+    # a quiet voice (like real speech after the mic's auto gain) comes out about five times louder: 3x gain, plus the
+    # limiter's own make-up gain (about 1.75x). Loud voices are held at about 0.75 peak, so it never clips
+    r = ev(B, """(() => { VOX.src.disconnect(VOX.vg); const o = actx.createOscillator(), g = actx.createGain(), inA = actx.createAnalyser(); inA.fftSize = 512;
+      o.frequency.value = 220; g.gain.value = 0.04; o.connect(g); g.connect(VOX.vg); g.connect(inA); o.start(); window.__q = { o, g, inA }; return 1; })()""")
+    time.sleep(0.6)
+    r = ev(B, "[voxLevel(window.__q.inA), voxLevel(VOX.outAn)]")
+    ev(B, "window.__q.o.stop(); window.__q.g.disconnect(); VOX.src.connect(VOX.vg)")
+    ok(f"a quiet voice comes out about 5x louder ({round(r[0], 4)} in, {round(r[1], 4)} out)", 4.2 < r[1] / max(r[0], 1e-6) < 6.2)
+    ok('the limiter stops it clipping', ev(B, 'VOX.outAn && (() => { const b = new Float32Array(512); VOX.outAn.getFloatTimeDomainData(b); return Math.max(...b.map(Math.abs)); })()') <= 1.0)
     time.sleep(0.3); shot(A, 'lobby_on'); shot(B, 'lobby_on_guest')
 
     # mute the guest's mic: the host stops getting voice
@@ -139,7 +149,7 @@ with sync_playwright() as pw:
     ok('the HUD mic button mutes you', wait(A, '!VOX.track'))
     ok('the tap did not pause the game', ev(A, "mode") == 'play')
     ev(B, "taps.push({ x: 450, y: 30 })")
-    ok("tapping your mate's panel mutes them", wait(B, 'VOX.mateMuted && VOX.el.muted'))
+    ok("tapping your mate's panel mutes them", wait(B, 'VOX.mateMuted && VOX.vg.gain.value < 0.05'))
     time.sleep(0.3); shot(A, 'hud_muted'); shot(B, 'hud_mate_muted')
     # the app goes to the background: the mic goes off, and comes back with it
     ev(B, 'window.__voicePause()')
