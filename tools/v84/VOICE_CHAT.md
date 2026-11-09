@@ -1,4 +1,4 @@
-# Voice chat in online co-op (plan, 9 November)
+# Voice chat in online co-op (plan 9 November, built as Version 84 the same day)
 
 Two players in an online game can talk to each other. Not the Harvest Moon (a pub full of people needs a hosted voice service in the middle; see the end).
 
@@ -7,7 +7,7 @@ Two players in an online game can talk to each other. Not the Harvest Moon (a pu
 - The co-op link is one WebRTC connection made in the lobby (`rtcStart` in `web/index.html`). Today it carries only the `game` data channel (button presses). Voice goes over the same connection as a second stream, so there's no new server for the audio itself.
 - The connection details are swapped once through Firebase (`rtc_offer`, `rtc_answer`), with no renegotiation after. So the audio slot has to be in the offer from the start: the host adds an audio transceiver before `createOffer`, the guest turns its one to send and receive when it answers. The mic is attached later with `replaceTrack`, so switching voice on or off mid-game never touches the connection.
 - Voice sits outside the lockstep game, like music and particles. It can't knock the phones out of sync. It does share the connection with the button presses, so it's kept small (mono, about 24 kbps, silence sends next to nothing).
-- An old app on the other phone just answers without audio. The game plays as before and the lobby says their app needs updating for voice.
+- An old app on the other phone just answers without audio. The game plays as before, the lobby says their app needs updating for voice, and your mic stays closed (they couldn't hear it anyway).
 - App only, like PLAY ONLINE. The claude.ai copy doesn't get it.
 
 ## 1. The Android app (needs a full APK, not an in-app update)
@@ -29,11 +29,11 @@ Right now, if two phones can't connect directly (some 4G networks, strict home r
 ## 3. In the game (`tools/v84/voice.js`, `tools/v84_build.py`)
 
 - Mic: echo cancellation, noise suppression and auto gain on. Open mic with a mute button, not push to talk (no spare thumbs mid-fight).
-- Your mate's voice goes through the game's own mixer so it has its own volume. (Chrome only plays WebRTC audio through Web Audio if the stream is also on a muted `<audio>` element. Known quirk, handled.)
+- Your mate's voice plays through its own `<audio>` element with its own volume (VOICE VOLUME), so the phone's echo cancelling treats it as a call. A level meter on it drives the speaker mark and the music dip.
 - Music ducks to about 40% while your mate is talking and comes back over half a second. Effects aren't ducked.
-- Lobby: a VOICE pill for each player. The first time you switch it on, one line says why it wants the mic, then Android asks. Talking works from the lobby, so you can chat while picking lads.
-- HUD: a mic button by pause (tap to mute, crossed out when muted). Your mate's face in the HUD gets a speaker mark while they talk. M mutes on a keyboard.
-- Pause menu: MUTE MIC, MUTE MATE. Settings: VOICE VOLUME, VOICE (on or off by default), DUCK MUSIC.
+- Lobby: a VOICE pill top right (it remembers your choice for next time), and VOICE ON / MIC OFF / TALKING / NO VOICE ON THEIR APP over each lad. The first time you switch it on, one line says why it wants the mic, then Android asks. Talking works from the lobby, so you can chat while picking lads.
+- HUD: a mic button by pause (tap to mute, crossed out when muted, a green ring while you talk). Your mate's panel gets a speaker mark while they talk; tap the panel to mute them (a crossed speaker). M flips your mic on a keyboard.
+- The online pause screen is shared and has no menu, so the mute buttons live on the HUD rather than in pause. Settings: VOICE VOLUME, MUSIC WHEN TALKING (DIPS or STAYS); voice on or off is the lobby pill, remembered.
 - Your mate drops for 20 seconds: voice goes with them, as everything else does now.
 - Voice is phone to phone and never stored. The mic is only open in an online game after you've switched it on, and Android shows its own mic light.
 
