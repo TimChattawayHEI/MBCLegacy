@@ -43,5 +43,71 @@
     3
    ]
   }
+ },
+ "dti": {
+  "skip": {
+   "attack": [
+    5
+   ],
+   "hurt": [
+    1,
+    2
+   ],
+   "hurt2": [
+    2,
+    3
+   ],
+   "knockdown": [
+    1,
+    2
+   ]
+  }
+ },
+ "angler": {
+  "skip": {
+   "hurt2": [
+    2
+   ],
+   "knockdown": [
+    1
+   ],
+   "upper": [
+    4,
+    5
+   ]
+  }
+ },
+ "warden": {
+  "skip": {
+   "hurt": [
+    1,
+    2
+   ],
+   "hurt2": [
+    1
+   ],
+   "upper": [
+    3,
+    5
+   ],
+   "knockdown": [
+    13
+   ]
+  }
+ },
+ "mc": {
+  "skip": {
+   "hurt": [
+    1,
+    2
+   ],
+   "hurt2": [
+    1,
+    2
+   ],
+   "knockdown": [
+    1
+   ]
+  }
  }
 }

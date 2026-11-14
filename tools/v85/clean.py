@@ -21,8 +21,26 @@ def clean_frame(f, keep_min=40):
     return out
 
 
+def red_set(kind):
+    """colours of the idle strip; bright reds that are not among them are impact sprays"""
+    ps = glob.glob(os.path.join(HERE, 'src', kind, 'q_idle@*.png'))
+    if not ps: return None
+    a = np.array(Image.open(ps[0]).convert('RGBA')); return {tuple(c) for c in a[a[..., 3] > 0][:, :3]}
+
+
+def drop_red(f, known):
+    if known is None: return f
+    rgb = f[..., :3].astype(int); r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+    red = (f[..., 3] > 0) & (r > 150) & (g < 90) & (b < 90)
+    ys, xs = np.nonzero(red); out = f.copy()
+    for y, x in zip(ys, xs):
+        if tuple(f[y, x, :3]) not in known: out[y, x] = 0
+    return out
+
+
+known = red_set(sys.argv[1])
 for anim in sys.argv[2:]:
     for p in glob.glob(os.path.join(HERE, 'src', sys.argv[1], 'q_%s@*.png' % anim)):
         w = int(p.rsplit('@', 1)[1][:-4]); im = np.array(Image.open(p).convert('RGBA'))
-        frames = [clean_frame(im[:, k * w:(k + 1) * w]) for k in range(im.shape[1] // w)]
+        frames = [clean_frame(drop_red(im[:, k * w:(k + 1) * w], known)) for k in range(im.shape[1] // w)]
         Image.fromarray(np.concatenate(frames, 1), 'RGBA').save(p); print('cleaned', p)

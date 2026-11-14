@@ -113,7 +113,7 @@
   "ai": "ranged",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/73b902cb-d39a-4bc4-857b-91f7341d4319/animations/60ad76dc-fb5c-447d-8685-eecbadc5f041/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: flings an official letter"
  },
  "mc": {
@@ -138,7 +138,7 @@
   "ai": null,
   "boss": true,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/5dc3d370-9c99-4acf-a7e9-ee1846ca2455/animations/92d30161-f721-435e-989d-c8f6109fa7b2/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: two-handed swing with aerial; close: holds up red air horn and blasts; far: overarm throw free hand"
  },
  "angler": {
@@ -161,7 +161,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/423a756c-83b0-464d-bd49-372e39f5c57e/animations/1ceec791-7be3-425d-9118-f9225f4c9c3d/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: right punch"
  },
  "warden": {
@@ -184,7 +184,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/6787fec7-c7d0-40fa-a37a-37a27433b0f8/animations/082d5918-a339-43d1-948b-d6aaf6c586ca/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: two-handed shove"
  },
  "carpbro": {
@@ -206,9 +206,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/632ac96f-9edf-4c4a-9c84-ed1d00f54fa7/animations/d85a2481-851d-4e79-960c-349e60f86f31/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: winds right fist back, lunging straight punch"
  },
  "farbank": {
   "id": "a3650cde-41a7-4aba-a075-fe104c7904ec",
@@ -229,9 +229,9 @@
   "weapon": "stick",
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/a3650cde-41a7-4aba-a075-fe104c7904ec/animations/9f490988-377c-4c1b-b1bb-9d8223b49ce7/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: raises right arm high and clubs down overhand"
  },
  "regular": {
   "id": "8bd10b8c-3c2f-4f8c-8814-6db227db40b0",
@@ -252,9 +252,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/8bd10b8c-3c2f-4f8c-8814-6db227db40b0/animations/201057c4-37b9-40b5-92e7-d83c9724e02b/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: pulls right fist back, lunging straight punch"
  },
  "darts": {
   "id": "58feaf54-05ad-4eee-ac8c-694449f33d85",
@@ -275,9 +275,9 @@
   "weapon": null,
   "ai": "ranged",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/58feaf54-05ad-4eee-ac8c-694449f33d85/animations/66211bf6-ede0-4a29-a6b0-8572a45f012a/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: raises right hand beside head and throws a dart"
  },
  "nozzer": {
   "id": "5f8c95dd-1430-42ed-bc93-ae45d85e9019",
@@ -298,9 +298,9 @@
   "weapon": null,
   "ai": "nozzer",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/5f8c95dd-1430-42ed-bc93-ae45d85e9019/animations/cda03fb1-2e4b-4ee6-879b-bc93ac885fca/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: jabs finger forward accusingly, keeps walking stick"
  },
  "denise": {
   "id": "13270c0d-d285-4379-a196-a732c7c19b24",
@@ -321,9 +321,9 @@
   "weapon": null,
   "ai": null,
   "boss": true,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/13270c0d-d285-4379-a196-a732c7c19b24/animations/10f37c03-9f2d-44d4-b627-11c2a0e52a15/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: raises both hands together overhead and hammers down"
  },
  "tracksuit": {
   "id": "7d66ec49-7010-4a03-91b2-3df85c96a07b",
@@ -344,9 +344,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/7d66ec49-7010-4a03-91b2-3df85c96a07b/animations/90590c29-7dee-400a-aa7d-e9fca5971825/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: pulls right fist back, quick straight punch"
  },
  "hoodie": {
   "id": "20bc6c4a-f474-4dac-98d4-db2fcf1d446b",
