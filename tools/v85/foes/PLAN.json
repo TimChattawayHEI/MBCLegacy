@@ -1247,9 +1247,9 @@
   "weapon": null,
   "ai": null,
   "boss": false,
-  "stance": null,
-  "status": "todo",
-  "notes": ""
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/a303c518-acb5-40cd-bef8-bb7c4a1aea9c/animations/cc0cabf3-7428-4743-8691-ffd5803a38b5/east/8.png",
+  "status": "done",
+  "notes": "bystander: idle, walk is a panicked hurry"
  },
  "oldboy": {
   "id": "7ca61462-0ec6-4e88-837c-3670f3bee1de",
@@ -1267,9 +1267,9 @@
   "weapon": null,
   "ai": null,
   "boss": false,
-  "stance": null,
-  "status": "todo",
-  "notes": ""
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/7ca61462-0ec6-4e88-837c-3670f3bee1de/animations/e1d718d4-b88a-46fc-9324-15311296143a/east/8.png",
+  "status": "done",
+  "notes": "bystander: idle reading newspaper, walk is a panicked hurry"
  },
  "smiler": {
   "id": "f54ab650-be80-4bfd-8626-de9f63b5cf80",
@@ -1288,9 +1288,9 @@
   "weapon": null,
   "ai": null,
   "boss": false,
-  "stance": null,
-  "status": "todo",
-  "notes": ""
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/f54ab650-be80-4bfd-8626-de9f63b5cf80/animations/aacec4c3-463c-4dc1-99da-f69593211ebf/east/8.png",
+  "status": "done",
+  "notes": "bystander; throw: small underarm lob"
  },
  "inspector": {
   "id": "68cf9fda-bd30-4b27-90eb-ececf58564d4",
@@ -1314,9 +1314,9 @@
   "weapon": null,
   "ai": null,
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/68cf9fda-bd30-4b27-90eb-ececf58564d4/animations/476b7667-57e8-45ab-b149-2d1643beb795/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: lunging punch; attack2: raises clipboard overhead and chops down; block: palm out stop; shout: points and shouts"
  },
  "lenny": {
   "id": "2fa20501-1fd3-43c8-be55-1c34c9c5382c",
@@ -1340,9 +1340,9 @@
   "weapon": null,
   "ai": null,
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/2fa20501-1fd3-43c8-be55-1c34c9c5382c/animations/92207d5a-0fbd-4ce5-b277-5902ef2cf4e9/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: heavy straight punch; attack2: jumps up and kicks forward; pull: pulls a flick-knife and holds it out; charge: low shoulder charge"
  },
  "jeweller": {
   "id": "8ae7fa8a-b8ec-4276-9e30-a5126b6948d4",
@@ -1365,9 +1365,9 @@
   "weapon": null,
   "ai": null,
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/8ae7fa8a-b8ec-4276-9e30-a5126b6948d4/animations/93d2b507-6c24-41b2-b096-4d026823bc25/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: whips a long gold chain forward; glint: admires his watch and rings; grab: lunges forward grabbing with both hands"
  },
  "alan": {
   "id": "391b1264-9c21-43e1-b6f0-1f08abd7fa53",
@@ -1437,7 +1437,7 @@
   "boss": false,
   "stance": null,
   "status": "todo",
-  "notes": ""
+  "notes": "attack: punch; shout: hand to mouth shouting"
  },
  "mick": {
   "id": "823b7757-670f-4f3c-afd2-6715958b61aa",
@@ -1461,7 +1461,7 @@
   "boss": false,
   "stance": null,
   "status": "todo",
-  "notes": ""
+  "notes": "attack: heavy punch; belly: belly-barge charge forward"
  },
  "kappa": {
   "id": "91ca982f-ad53-4866-8a31-01d34a081d67",

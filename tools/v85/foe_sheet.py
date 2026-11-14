@@ -62,6 +62,7 @@ def config(kind):
         if p['aa'] and 'upper' not in ex: ex.append('upper')
         cfg['extra'] = ex + cfg.get('more', [])
     if p and p['boss'] and 'base' not in cfg: cfg['base'] = [r for r in BASE if r != 'held']
+    if p and 'hurt' not in p['old_rows'] and 'base' not in cfg: cfg['base'] = ['idle', 'walk']   # bystanders: no fight rows
     return cfg
 
 
@@ -120,8 +121,14 @@ def picks(kind, info, skip, cfg, rows_list):
     for row in rows_list:
         if row in LOOPS or row in ('hurt', 'hurt2', 'knockdown'): continue
         F[row] = strike(info[row], ok(row), len(info[row]), up=(row == 'upper'))
-    F['hurt'] = ok('hurt'); F['hurt2'] = ok('hurt2')
     F['_all'] = {row: ok(row) for row in rows_list}   # for remapping an old loop onto the new frames
+    if 'hurt' not in rows_list:   # a bystander never fights: the same placeholders the old sheet had
+        F.update({'hurt': [1, 1], 'fall': [1], 'lie': 1, 'up': [1], 'attack': {'pre': [1], 'hit': 1, 'post': [1]}, 'fallFlip': True})
+        for k in ('ownWeapon', 'wind', 'hits', 'loop', 'lean'):
+            if k in cfg: F[k] = cfg[k]
+        F.update(cfg.get('frames', {})); F['deep'] = 1
+        return F
+    F['hurt'] = ok('hurt'); F['hurt2'] = ok('hurt2')
     kd = ok('knockdown'); hs = {i: info['knockdown'][i]['h'] for i in kd}; stand = info['knockdown'][0]['h']
     flat = [i for i in kd if hs[i] < stand * 0.45]
     if not flat:   # a bulky one lies taller than that: take the lowest run
