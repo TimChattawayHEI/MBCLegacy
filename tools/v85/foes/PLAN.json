@@ -1129,7 +1129,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/f3faa323-8a76-4071-a7a2-cd662364ba9e/animations/51e6649b-1501-4184-8049-b2f6c77e2c3e/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: straight punch; jab: quick lead jab; c2"
  },
  "shades": {
@@ -1155,7 +1155,7 @@
   "boss": false,
   "stance": null,
   "status": "todo",
-  "notes": ""
+  "notes": "attack: lunging punch; leap: crouch, spring and dive forward through the air arms out; land: belly-flop on the ground, push back up"
  },
  "denim": {
   "id": "929864a1-6425-44cd-8074-cdd2b145ba70",
@@ -1180,7 +1180,7 @@
   "boss": false,
   "stance": null,
   "status": "todo",
-  "notes": ""
+  "notes": "attack: straight punch; flykick: running flying kick; slide: running slide tackle feet first"
  },
  "shellsuit": {
   "id": "518fbf7a-d55f-4a69-be13-dadddf318acc",
@@ -1205,7 +1205,7 @@
   "boss": false,
   "stance": null,
   "status": "todo",
-  "notes": ""
+  "notes": "attack: lunging punch holding spray can; spray: holds can out and sprays forward; throw: overarm bottle throw"
  },
  "tuba": {
   "id": "c37105dd-346f-4c63-a39d-87cf0fb4beb7",
@@ -1229,7 +1229,7 @@
   "boss": false,
   "stance": null,
   "status": "todo",
-  "notes": ""
+  "notes": "carries a tuba: attack swings the tuba bell forward; blast: blows the tuba hard, bell pointed forward"
  },
  "commuter": {
   "id": "a303c518-acb5-40cd-bef8-bb7c4a1aea9c",
