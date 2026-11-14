@@ -298,6 +298,28 @@ Tim asked if voice chat was possible. It is: the co-op link is already a direct 
 ### Later
 - [ ] Voice in the Harvest Moon (needs a hosted voice service; proximity voice at the bar would be the fun bit)
 
+## New (14 November): deeper lad animations, three-quarters on (V85)
+
+Tim asked to spend the spare PixelLab allowance on the lads: more depth, cleaner moves. Every lad is redrawn standing three-quarters on to the camera (Streets of Rage style), with more frames per move and seven new moves. Enemies are unchanged.
+
+### Build (V85)
+- [x] Stance picked with Tim from a pilot of Tim side on against three-quarters on: three-quarters on
+- [x] All nine lads (Tim, Seb, Byron, Pearcy, Kelly, Marc, Sam, Thet, Ash) redrawn from one three-quarter stance frame each, so every move starts from the same pose: idle, walk, run, jab, cross, kick, flying kick, knockdown and get up, special, mini, grab, knee, throw, pickup, swing, back kick
+  - Done (V85): 8 to 12 frames a move where most had 4 to 6; 23 rows a lad. Each lad keeps his own moves (Thet's jumping uppercut and leg sweep, Ash's kicks, Sam's yawn, Kelly's Mass Head, Seb's spring headbutt)
+- [x] New moves: a proper jump (crouch, rise, hang, drop, land), the flying kick played right through, a body-shot hurt that alternates with the head shot, a dazed sway (stunned, drowsy), a struggle when netted or grabbed, the dash attack, and a victory pose when the stage is won
+- [x] Hit flashes, speed lines and stray specks the generator drew in are cleaned out or left out of the picks
+- [x] Ash's GINGER SNAP: the new sheet draws the spin itself, so the old left-right flip is off for him
+- [x] `tools/v85/lad_sheet.py` builds each sheet and its frame picks, `tools/v85_build.py` patches the page (re-runnable), `tools/v85/test.py` puts each lad through every state headless. All nine pass with no page errors
+- PixelLab: 273 of this cycle's 2,000 generations used (resets 13 December)
+
+### Tim
+- [ ] Play each lad on a phone and say which moves look off (wrong frame on the hit, a pose that turns his back, size)
+- [ ] Thet came out a little smaller than before (37 px tall, was 42). Say if he should be bigger
+- [ ] Merge the PR when happy (main publishes the release and the in-app update)
+
+### Later
+- [ ] The swooshes (`SW_FIT`) were placed for the old side-on sprites: check they still sit on the new fists and feet
+
 ## Carried over from the build plan
 
 ### Firebase rules (Tim to paste, from the README)
