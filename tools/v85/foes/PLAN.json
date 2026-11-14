@@ -390,9 +390,9 @@
   "weapon": null,
   "ai": null,
   "boss": true,
-  "stance": null,
-  "status": "todo",
-  "notes": ""
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/846ea0fd-f5a5-4bd2-8337-5760410f698a/animations/0fa98826-f5fc-4f60-bd82-d8b14d00d0e7/east/8.png",
+  "status": "done",
+  "notes": "attack: lifts right knee high then stamps a front kick"
  },
  "sec": {
   "id": "ede257a4-3806-44e2-bff2-e6033c324fce",
@@ -413,9 +413,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
-  "status": "todo",
-  "notes": ""
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/ede257a4-3806-44e2-bff2-e6033c324fce/animations/07651319-5675-4347-9bfb-cfa3974deefe/east/8.png",
+  "status": "done",
+  "notes": "attack: pulls right fist back, lunging punch"
  },
  "handler": {
   "id": "fb9ac77d-2ef4-4c14-956a-7a51dcafa2d0",
@@ -436,9 +436,9 @@
   "weapon": null,
   "ai": "ranged",
   "boss": false,
-  "stance": null,
-  "status": "todo",
-  "notes": ""
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/fb9ac77d-2ef4-4c14-956a-7a51dcafa2d0/animations/06fbbbd3-f9f9-4232-bb49-e6f672b6eefd/east/8.png",
+  "status": "done",
+  "notes": "attack: winds both arms back over his head and hurls a suitcase"
  },
  "ragazzo": {
   "id": "add0fa26-5256-4bc0-bcd5-ee617f993c0f",
@@ -459,9 +459,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/add0fa26-5256-4bc0-bcd5-ee617f993c0f/animations/1c497a26-c528-4791-928a-fbdc816d56d3/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: quick jab then a hard right hook"
  },
  "ragazza": {
   "id": "19eb83a1-b2a4-4c0b-a888-08808f9675c9",
@@ -482,9 +482,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/19eb83a1-b2a4-4c0b-a888-08808f9675c9/animations/00b64fe6-4d4f-4248-95f4-f2a0546cd23c/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: fast open-handed slap"
  },
  "carab": {
   "id": "e5afb135-801f-45d2-9ec0-29f02d5473c9",
@@ -507,9 +507,9 @@
   "weapon": null,
   "ai": null,
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/e5afb135-801f-45d2-9ec0-29f02d5473c9/animations/c8680cda-6fb0-4262-a88c-b186efff6a92/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: big punch; close: leans back then thrusts; far: draws pistol and fires"
  },
  "gianni": {
   "id": "19aa211b-bdc2-4a4b-9612-e14f8fcbac55",
@@ -531,9 +531,9 @@
   "weapon": null,
   "ai": null,
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/19aa211b-bdc2-4a4b-9612-e14f8fcbac55/animations/58a5e392-c39e-422b-ac4a-12d4e7a50a06/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: pulls back fist then throws a punch; close: leaps forward driving a flying knee"
  },
  "marco": {
   "id": "883ce06d-924b-47ab-b9ff-b08823ba8825",
