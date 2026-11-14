@@ -914,7 +914,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/e3d6cc0a-72b1-45af-b003-c533638c396d/animations/f9769a53-2c25-45c4-9547-e2e338e9f84c/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: straight punch; c2"
  },
  "puffer": {
