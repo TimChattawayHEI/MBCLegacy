@@ -1228,7 +1228,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/c37105dd-346f-4c63-a39d-87cf0fb4beb7/animations/9c024992-139f-456c-93b1-91cf962bf775/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "carries a tuba: attack swings the tuba bell forward; blast: blows the tuba hard, bell pointed forward"
  },
  "commuter": {
