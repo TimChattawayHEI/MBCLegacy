@@ -1034,7 +1034,7 @@
   "ai": "ranged",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/e635e5f6-6918-44c4-bedb-c04d07d033cc/animations/aca9c828-757f-4c42-a186-e3a07eed83bd/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: lobs a bottle underarm; whistle: fingers to mouth, whistles"
  },
  "stag": {
@@ -1057,9 +1057,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/5cfe5fba-0397-4541-9793-959f8d6442b6/animations/e1a4260e-97b0-4114-ac60-06301924602e/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: drunken swing; stagger: drunken wobble"
  },
  "groom": {
   "id": "49977129-d3e6-4e98-8c56-6eb658ddef71",
@@ -1109,7 +1109,7 @@
   "notes": ""
  },
  "leathers": {
-  "id": "f3a57785-846e-4bf1-b06f-733e44bc501e",
+  "id": "f3faa323-8a76-4071-a7a2-cd662364ba9e",
   "kinds": [
    "leathers"
   ],
@@ -1128,9 +1128,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/f3faa323-8a76-4071-a7a2-cd662364ba9e/animations/51e6649b-1501-4184-8049-b2f6c77e2c3e/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: straight punch; jab: quick lead jab; c2"
  },
  "shades": {
   "id": "a8916c62-6caa-45d5-b4bf-6c5680912ac5",
