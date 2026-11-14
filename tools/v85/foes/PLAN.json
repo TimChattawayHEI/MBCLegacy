@@ -985,7 +985,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/f3cfcd78-5cd1-4403-a19c-2d46a2d70105/animations/0965ae63-f714-42bb-ab9f-e366493f1c58/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: lunging grab; hold: bear hug squeeze"
  },
  "dipper": {
