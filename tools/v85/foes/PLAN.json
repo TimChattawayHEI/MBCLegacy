@@ -508,7 +508,7 @@
   "ai": null,
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/e5afb135-801f-45d2-9ec0-29f02d5473c9/animations/c8680cda-6fb0-4262-a88c-b186efff6a92/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: big punch; close: leans back then thrusts; far: draws pistol and fires"
  },
  "gianni": {
@@ -555,9 +555,9 @@
   "weapon": null,
   "ai": null,
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/883ce06d-924b-47ab-b9ff-b08823ba8825/animations/c50f044f-c103-4e41-9325-65336c7c83f9/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: quick jab then a high roundhouse kick; close: spinning back kick"
  },
  "luca": {
   "id": "6e14f603-98c8-4e77-a94a-3a7c99f62862",
