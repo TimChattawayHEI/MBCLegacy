@@ -673,7 +673,7 @@
   "ai": "ranged",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/65de4171-0c7d-410d-8021-768baa5a44ff/animations/ee273c04-4e55-4767-8961-208d133ff6e1/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: winds up and throws (sun cream) overarm"
  },
  "mafioso": {
@@ -698,7 +698,7 @@
   "ai": null,
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/c4f7ac34-62fd-4d3d-9b5b-f5ffcc454ab0/animations/a77af544-0504-471b-afb5-92725d55e5bc/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: draws right arm back then backhand slap; close: crouches low then lunges far forward; far: raises empty right hand up (signal)"
  },
  "clubm": {
