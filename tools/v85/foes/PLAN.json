@@ -1483,9 +1483,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
-  "status": "todo",
-  "notes": "attack: punch; whip: cracks a thin belt whip forward; aa c2"
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/91ca982f-ad53-4866-8a31-01d34a081d67/animations/ba855be8-5807-4e66-b075-e0120c697cd1/east/8.png",
+  "status": "done",
+  "notes": "attack: fast cocky one-two jabs; whip: swings arm back high and cracks a belt forward; aa c2"
  },
  "razor": {
   "id": "b2ad5e57-b521-4dad-923c-1fae6feaeb70",
@@ -1508,9 +1508,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/b2ad5e57-b521-4dad-923c-1fae6feaeb70/animations/628ae9ad-544a-4d62-80d0-1b93a025d4a3/east/8.png",
   "status": "todo",
-  "notes": "attack: punch; ride: crouched speeding lunge forward; kick: running kick; aa"
+  "notes": "attack: quick two-handed shove; ride: riding a kick scooter forward; kick: draws leg back and kicks; aa"
  },
  "frosted": {
   "id": "a8f9bda4-6d5c-43ee-9a11-8324c4b992b0",
@@ -1533,9 +1533,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/a8f9bda4-6d5c-43ee-9a11-8324c4b992b0/animations/881db6da-7d25-4ef1-aeb1-b7490bb3cd89/east/8.png",
   "status": "todo",
-  "notes": "attack: punch; spin: spinning back kick; slide: low slide tackle; aa"
+  "notes": "attack: showy spinning backfist; spin: roundhouse kick; slide: running slide; aa"
  },
  "scrunchie": {
   "id": "78f6ff62-3fac-4585-bcd0-d6d65d34784c",
@@ -1557,9 +1557,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/78f6ff62-3fac-4585-bcd0-d6d65d34784c/animations/5d18f11b-f985-48dd-8d81-8df0d07c0f26/east/8.png",
   "status": "todo",
-  "notes": "attack: punch; throw: underarm throw; aa c2"
+  "notes": "attack: fast open-hand slap; throw: underarm throw; aa c2"
  },
  "garagemc": {
   "id": "34b58eab-356b-4df4-9865-a4e3a62a3a93",
@@ -1581,9 +1581,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/34b58eab-356b-4df4-9865-a4e3a62a3a93/animations/e7a9f5d1-9eac-4191-a830-7d7b886935d6/east/8.png",
   "status": "todo",
-  "notes": "attack: swings the microphone on its cable; bars: raps into the mic bobbing"
+  "notes": "holds a mic: attack quick jab with free left hand; bars: holds the mic up to his mouth rapping, bobbing"
  },
  "builder": {
   "id": "c713ce1e-b80a-4f88-93cc-68dd51e020ba",
@@ -1606,9 +1606,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/c713ce1e-b80a-4f88-93cc-68dd51e020ba/animations/7f169c18-1314-4bb0-b29c-8d8db109a09f/east/8.png",
   "status": "todo",
-  "notes": "attack: heavy punch; barge: shoulder barge charge; throw: lifts a brick overhead and throws"
+  "notes": "attack: heavy slow overhand right; barge: head down shoulder charge; throw: lifts a heavy brick overhead and hurls it"
  },
  "codger": {
   "id": "c492d4e0-dd5a-435d-b144-2f47842a65e8",
@@ -1630,9 +1630,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/c492d4e0-dd5a-435d-b144-2f47842a65e8/animations/e753dc1f-cc5e-4da0-b99f-8cf155695006/east/8.png",
   "status": "todo",
-  "notes": "walking stick: attack pokes the stick forward; hook: hooks the crook of the stick forward and yanks"
+  "notes": "old man with walking stick: attack sharp headbutt; hook: reaches far forward with the crook of his stick and yanks back"
  },
  "shark": {
   "id": "452ae620-53dd-4f6c-a802-e8387f8e0f2e",
