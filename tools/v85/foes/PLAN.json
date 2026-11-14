@@ -1534,7 +1534,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/a8f9bda4-6d5c-43ee-9a11-8324c4b992b0/animations/881db6da-7d25-4ef1-aeb1-b7490bb3cd89/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: showy spinning backfist; spin: roundhouse kick; slide: running slide; aa"
  },
  "scrunchie": {
@@ -1654,9 +1654,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/452ae620-53dd-4f6c-a802-e8387f8e0f2e/animations/59ed20db-3f55-4285-aa52-9c851546b333/east/8.png",
   "status": "todo",
-  "notes": "pool cue: attack jabs the cue forward; break: lunging cue break shot"
+  "notes": "cue"
  },
  "moschino": {
   "id": "63aaf8c0-e186-41eb-8199-7e543cc4fbe4",
@@ -1678,9 +1678,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/63aaf8c0-e186-41eb-8199-7e543cc4fbe4/animations/9609c986-2519-4851-a967-d3a56c9e0786/east/8.png",
   "status": "todo",
-  "notes": "bottle: attack swings a bottle; spray: shakes bottle and sprays it forward"
+  "notes": "bottle"
  },
  "raver": {
   "id": "be428fc7-7ff1-46a0-aa8e-f1d164824138",
@@ -1702,8 +1702,8 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/be428fc7-7ff1-46a0-aa8e-f1d164824138/animations/711fa4b4-bde8-4b1f-82a4-9af60383bd4d/east/8.png",
   "status": "todo",
-  "notes": "glowsticks: attack swings glowsticks; whistle: blows a whistle dancing; aa"
+  "notes": "glowsticks"
  }
 }
