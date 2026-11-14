@@ -532,7 +532,7 @@
   "ai": null,
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/19aa211b-bdc2-4a4b-9612-e14f8fcbac55/animations/58a5e392-c39e-422b-ac4a-12d4e7a50a06/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: pulls back fist then throws a punch; close: leaps forward driving a flying knee"
  },
  "marco": {
@@ -556,7 +556,7 @@
   "ai": null,
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/883ce06d-924b-47ab-b9ff-b08823ba8825/animations/c50f044f-c103-4e41-9325-65336c7c83f9/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: quick jab then a high roundhouse kick; close: spinning back kick"
  },
  "luca": {
@@ -579,9 +579,9 @@
   "weapon": null,
   "ai": null,
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/6e14f603-98c8-4e77-a94a-3a7c99f62862/animations/9df6e459-04a0-492e-a33c-306dc1f0c4a2/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: big looping punch; far: lowers head and shoulder and charges"
  },
  "paolo": {
   "id": "65c66655-f32a-478f-9262-33af4eab2faa",
@@ -603,9 +603,9 @@
   "weapon": null,
   "ai": null,
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/65c66655-f32a-478f-9262-33af4eab2faa/animations/92b18fc9-3c10-43b2-85bc-9f9e16d1dbd8/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: quick jab then a hard front kick; close: runs and drops into a feet-first slide tackle"
  },
  "lifeguard": {
   "id": "24b944a5-7efc-453c-a5de-961b79457f10",
