@@ -746,7 +746,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/faee84ca-6acf-4dca-9a6e-0bbb0bddc6ed/animations/4f84255a-1e91-44d4-af8e-dcd74df472cb/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: crouches then leaps up and forward with a flying kick"
  },
  "beast": {
