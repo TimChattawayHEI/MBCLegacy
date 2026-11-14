@@ -1412,7 +1412,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/7a5e3b22-b166-48a9-ac38-5b90002d436d/animations/4f849341-23c0-4fd5-b0f4-ed316bb7bd06/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "heavy: attack slow wound-up heavy punch; walk heavy lumbering"
  },
  "sue": {
@@ -1485,7 +1485,7 @@
   "boss": false,
   "stance": null,
   "status": "todo",
-  "notes": ""
+  "notes": "attack: punch; whip: cracks a thin belt whip forward; aa c2"
  },
  "razor": {
   "id": "b2ad5e57-b521-4dad-923c-1fae6feaeb70",
@@ -1510,7 +1510,7 @@
   "boss": false,
   "stance": null,
   "status": "todo",
-  "notes": ""
+  "notes": "attack: punch; ride: crouched speeding lunge forward; kick: running kick; aa"
  },
  "frosted": {
   "id": "a8f9bda4-6d5c-43ee-9a11-8324c4b992b0",
@@ -1535,7 +1535,7 @@
   "boss": false,
   "stance": null,
   "status": "todo",
-  "notes": ""
+  "notes": "attack: punch; spin: spinning back kick; slide: low slide tackle; aa"
  },
  "scrunchie": {
   "id": "78f6ff62-3fac-4585-bcd0-d6d65d34784c",
@@ -1559,7 +1559,7 @@
   "boss": false,
   "stance": null,
   "status": "todo",
-  "notes": ""
+  "notes": "attack: punch; throw: underarm throw; aa c2"
  },
  "garagemc": {
   "id": "34b58eab-356b-4df4-9865-a4e3a62a3a93",
@@ -1583,7 +1583,7 @@
   "boss": false,
   "stance": null,
   "status": "todo",
-  "notes": ""
+  "notes": "attack: swings the microphone on its cable; bars: raps into the mic bobbing"
  },
  "builder": {
   "id": "c713ce1e-b80a-4f88-93cc-68dd51e020ba",
@@ -1608,7 +1608,7 @@
   "boss": false,
   "stance": null,
   "status": "todo",
-  "notes": ""
+  "notes": "attack: heavy punch; barge: shoulder barge charge; throw: lifts a brick overhead and throws"
  },
  "codger": {
   "id": "c492d4e0-dd5a-435d-b144-2f47842a65e8",
@@ -1632,7 +1632,7 @@
   "boss": false,
   "stance": null,
   "status": "todo",
-  "notes": ""
+  "notes": "walking stick: attack pokes the stick forward; hook: hooks the crook of the stick forward and yanks"
  },
  "shark": {
   "id": "452ae620-53dd-4f6c-a802-e8387f8e0f2e",
@@ -1656,7 +1656,7 @@
   "boss": false,
   "stance": null,
   "status": "todo",
-  "notes": ""
+  "notes": "pool cue: attack jabs the cue forward; break: lunging cue break shot"
  },
  "moschino": {
   "id": "63aaf8c0-e186-41eb-8199-7e543cc4fbe4",
@@ -1680,7 +1680,7 @@
   "boss": false,
   "stance": null,
   "status": "todo",
-  "notes": ""
+  "notes": "bottle: attack swings a bottle; spray: shakes bottle and sprays it forward"
  },
  "raver": {
   "id": "be428fc7-7ff1-46a0-aa8e-f1d164824138",
@@ -1704,6 +1704,6 @@
   "boss": false,
   "stance": null,
   "status": "todo",
-  "notes": ""
+  "notes": "glowsticks: attack swings glowsticks; whistle: blows a whistle dancing; aa"
  }
 }
