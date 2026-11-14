@@ -92,6 +92,17 @@ def evenly(seq, n):
     return [seq[round(i * (len(seq) - 1) / (n - 1))] for i in range(n)]
 
 
+GROUND = ('knockdown', 'jump', 'jumpkick')
+
+
+def ground(row, f, ox, oy):
+    """where a frame is drawn: on its row's frame-0 spot, except where the game lifts him itself (knocked flying,
+    jumping), which would double the height. Those frames sit on the ground, and a knockdown is centred on his spot."""
+    if row not in GROUND: return ox, oy
+    b = bbox(f)
+    return (-round((b[0] + b[2]) / 2) if row == 'knockdown' else ox), -(b[3] + 1)
+
+
 def build(lad):
     cfg = LADS.get(lad, {}); skip = cfg.get('skip', {})
     src_dir = os.path.join(HERE, 'src', lad)
@@ -110,8 +121,9 @@ def build(lad):
         ox, oy = -round(cx0), -(b0[3] + 1)          # this file's frame 0 lands on the anchor
         placed[row] = []
         for f in fr:
-            placed[row].append((f, ox, oy))
-            b = bbox(f); lo_x = min(lo_x, b[0] + ox); hi_x = max(hi_x, b[2] + ox); lo_y = min(lo_y, b[1] + oy); hi_y = max(hi_y, b[3] + oy)
+            dx, dy = ground(row, f, ox, oy)
+            placed[row].append((f, ox, oy, dx, dy))
+            b = bbox(f); lo_x = min(lo_x, b[0] + dx); hi_x = max(hi_x, b[2] + dx); lo_y = min(lo_y, b[1] + dy); hi_y = max(hi_y, b[3] + dy)
     span = max(hi_x - lo_x + 1, hi_y - lo_y + 1)
     cell = int(np.ceil((span + 4) / 4) * 4)
     ax = -lo_x + (cell - (hi_x - lo_x + 1)) // 2; ay = -lo_y + (cell - (hi_y - lo_y + 1))   # feet near the bottom
@@ -120,12 +132,12 @@ def build(lad):
     rows, fist, info = {}, {}, {}
     for ri, row in enumerate(ROWS):
         fist[row] = []; info[row] = []
-        for k, (f, ox, oy) in enumerate(placed[row]):
+        for k, (f, ox, oy, dx, dy) in enumerate(placed[row]):
             ys, xs = np.where(f[..., 3] > 0)
-            ty, tx = ys + oy + ay, xs + ox + ax
+            ty, tx = ys + dy + ay, xs + dx + ax
             sheet[ri * cell + ty, k * cell + tx] = f[ys, xs]
             hx, hy = hand(f, -ox, row in ('pickup', 'knockdown', 'throw'))
-            fist[row].append([int(hx + ox + ax), int(hy + oy + ay)])
+            fist[row].append([int(hx + dx + ax), int(hy + dy + ay)])
             b = bbox(f); info[row].append({'reach': b[2] + ox, 'top': b[1] + oy, 'h': b[3] - b[1] + 1, 'w': b[2] - b[0] + 1})
         rows[row] = [ri, len(placed[row])]
     out_png = os.path.join(ROOT, 'web', 'sprites', lad + '.png')

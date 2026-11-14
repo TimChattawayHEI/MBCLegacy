@@ -313,7 +313,11 @@ Tim asked to spend the spare PixelLab allowance on the lads: more depth, cleaner
 - [x] Weapons and effects lined up with the new art (Tim: "special effects and weapons are off a bit")
   - Done (V85): a new two-handed swing row for every lad (`bat`), used for weapon swings and the weapon dash, so a stick or net now swings flat at chest height instead of into the floor. Fist points now ignore boots and Ash's chinos, so a held weapon stays in his hand on every frame. Combo swooshes are placed from each lad's actual fist or foot on the hit frame (`tools/v85/strike.py`, worked out in `tools/v85_build.py`), with an uppercut swoosh for Thet. Kelly's MASS HEAD redrawn (the old run hid his face behind a giant fist and drew its own blast) and the big head now lifts just his head. Kelly's hook lost a stretched-arm smear frame. Kelly's BMX 360 spins again (the Ash fix had switched it off)
   - `tools/v85/fxtest.py` freezes the clock and shoots every lad holding a weapon, mid-swoosh, mid-mini and mid-special, for before and after sheets (`--root` another checkout)
-- PixelLab: 286 of this cycle's 2,000 generations used (resets 13 December)
+- [x] Enemies three-quarters on, pilot: the Townie and the Parkie
+  - Done (V85): each kind gets its own three-quarter stance, then idle, walk, attack, both hurts (head and body take turns), a knockdown that lands flat and gets up, dazed and a struggle when grabbed. The Townie also gets a wild haymaker for the second hit of his combo and a jumping uppercut for his anti-air; the Parkie a litter picker stab (the claw forward this time; the first stance held it backwards), his whistle and an overarm lob for the balls. `tools/v85/foe_sheet.py` builds the sheets, `tools/v85_foes_build.py` patches the page (foeFrame learns the new rows only for kinds marked deep, so everyone else draws as before), `tools/v85/foetest.py` freezes the game and shoots each kind in every state
+  - Knockdowns (lads and enemies) and the lads' jumps are now drawn on the ground: the game already lifts them, so the art's own height was doubling it
+- [ ] The rest of the enemies and bosses the same way, once Tim has seen the pilot (roughly 12 to 15 generations a kind)
+- PixelLab: 323 of this cycle's 2,000 generations used (resets 13 December)
 
 ### Tim
 - [ ] Play each lad on a phone and say which moves look off (wrong frame on the hit, a pose that turns his back, size)
