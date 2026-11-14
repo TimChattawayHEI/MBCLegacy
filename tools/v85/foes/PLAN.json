@@ -580,7 +580,7 @@
   "ai": null,
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/6e14f603-98c8-4e77-a94a-3a7c99f62862/animations/9df6e459-04a0-492e-a33c-306dc1f0c4a2/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: big looping punch; far: lowers head and shoulder and charges"
  },
  "paolo": {
@@ -626,9 +626,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/24b944a5-7efc-453c-a5de-961b79457f10/animations/1bdd99f7-54dc-40c7-8d84-7074930decc6/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: pulls back fist then punches (holds rescue float)"
  },
  "beachm": {
   "id": "94a86c87-588d-4f56-a1d0-0b40f8cb4606",
@@ -649,9 +649,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/94a86c87-588d-4f56-a1d0-0b40f8cb4606/animations/8f1bc689-0a0a-40be-9067-1c2a387e2254/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: pulls back fist then punches"
  },
  "beachf": {
   "id": "65de4171-0c7d-410d-8021-768baa5a44ff",
@@ -672,9 +672,9 @@
   "weapon": null,
   "ai": "ranged",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/65de4171-0c7d-410d-8021-768baa5a44ff/animations/ee273c04-4e55-4767-8961-208d133ff6e1/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: winds up and throws (sun cream) overarm"
  },
  "mafioso": {
   "id": "c4f7ac34-62fd-4d3d-9b5b-f5ffcc454ab0",
@@ -697,9 +697,9 @@
   "weapon": null,
   "ai": null,
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/c4f7ac34-62fd-4d3d-9b5b-f5ffcc454ab0/animations/a77af544-0504-471b-afb5-92725d55e5bc/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: draws right arm back then backhand slap; close: crouches low then lunges far forward; far: raises empty right hand up (signal)"
  },
  "clubm": {
   "id": "88ed971f-144c-4699-86ed-e3e83c5a105b",
@@ -722,9 +722,9 @@
   "weapon": "helmet",
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/88ed971f-144c-4699-86ed-e3e83c5a105b/animations/f53a2e3b-2648-4aaf-aada-eb1e5bcb3e54/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: pulls right fist back then punches"
  },
  "clubf": {
   "id": "faee84ca-6acf-4dca-9a6e-0bbb0bddc6ed",
@@ -745,9 +745,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/faee84ca-6acf-4dca-9a6e-0bbb0bddc6ed/animations/4f84255a-1e91-44d4-af8e-dcd74df472cb/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: crouches then leaps up and forward with a flying kick"
  },
  "beast": {
   "id": "9379da0b-2607-4c42-a928-6cf3363a8345",
