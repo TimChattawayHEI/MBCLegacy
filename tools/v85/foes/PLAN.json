@@ -961,7 +961,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/ee50e935-d7b2-4392-a50d-13270b729250/animations/431315df-0f14-400f-9d93-6f178effec9b/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: quick hook; aa"
  },
  "grappler": {
@@ -1009,9 +1009,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/325de5e1-f71b-4b2f-bae8-55ea186ea939/animations/4077447f-c52f-4e7f-b676-ddb62328a399/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: quick flicking jab; dodge: sidesteps backwards nimbly; steal: darts a hand forward and snatches"
  },
  "lookout": {
   "id": "e635e5f6-6918-44c4-bedb-c04d07d033cc",
@@ -1033,9 +1033,9 @@
   "weapon": null,
   "ai": "ranged",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/e635e5f6-6918-44c4-bedb-c04d07d033cc/animations/aca9c828-757f-4c42-a186-e3a07eed83bd/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: lobs a bottle underarm; whistle: fingers to mouth, whistles"
  },
  "stag": {
   "id": "5cfe5fba-0397-4541-9793-959f8d6442b6",
