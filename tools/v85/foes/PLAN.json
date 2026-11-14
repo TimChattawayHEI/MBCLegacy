@@ -1509,7 +1509,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/b2ad5e57-b521-4dad-923c-1fae6feaeb70/animations/628ae9ad-544a-4d62-80d0-1b93a025d4a3/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: quick two-handed shove; ride: riding a kick scooter forward; kick: draws leg back and kicks; aa"
  },
  "frosted": {
