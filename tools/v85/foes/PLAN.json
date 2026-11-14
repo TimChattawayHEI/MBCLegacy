@@ -1179,7 +1179,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/929864a1-6425-44cd-8074-cdd2b145ba70/animations/9a3e1256-8995-456e-bcc7-cd014ee3bd7f/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: straight punch; flykick: running flying kick; slide: running slide tackle feet first"
  },
  "shellsuit": {
@@ -1203,7 +1203,7 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/518fbf7a-d55f-4a69-be13-dadddf318acc/animations/d621d1f9-7704-4d31-b1e1-30aa7b8cab66/east/8.png",
   "status": "todo",
   "notes": "attack: lunging punch holding spray can; spray: holds can out and sprays forward; throw: overarm bottle throw"
  },
