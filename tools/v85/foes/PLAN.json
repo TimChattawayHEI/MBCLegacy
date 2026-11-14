@@ -890,9 +890,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
-  "status": "todo",
-  "notes": ""
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/77856b57-de05-45bf-9009-708a9c99e2e4/animations/8e8672a2-3300-4bed-bf4f-809e555391d6/east/8.png",
+  "status": "done",
+  "notes": "attack: lunging slap; pull: reaches both arms forward, grabs and yanks back; c2"
  },
  "snood": {
   "id": "e3d6cc0a-72b1-45af-b003-c533638c396d",
@@ -913,9 +913,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/e3d6cc0a-72b1-45af-b003-c533638c396d/animations/f9769a53-2c25-45c4-9547-e2e338e9f84c/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: straight punch; c2"
  },
  "puffer": {
   "id": "5b3d5191-b2ec-419c-8ff4-d0e615e54e8a",
@@ -937,9 +937,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/5b3d5191-b2ec-419c-8ff4-d0e615e54e8a/animations/d92e0cff-fa7c-4889-baa3-de8646c42ec7/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: pulls fist back then punch; dash: crouches low and lunges forward"
  },
  "hood": {
   "id": "ee50e935-d7b2-4392-a50d-13270b729250",
@@ -960,9 +960,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/ee50e935-d7b2-4392-a50d-13270b729250/animations/431315df-0f14-400f-9d93-6f178effec9b/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: quick hook; aa"
  },
  "grappler": {
   "id": "f3cfcd78-5cd1-4403-a19c-2d46a2d70105",
@@ -984,9 +984,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/f3cfcd78-5cd1-4403-a19c-2d46a2d70105/animations/0965ae63-f714-42bb-ab9f-e366493f1c58/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: lunging grab; hold: bear hug squeeze"
  },
  "dipper": {
   "id": "325de5e1-f71b-4b2f-bae8-55ea186ea939",
