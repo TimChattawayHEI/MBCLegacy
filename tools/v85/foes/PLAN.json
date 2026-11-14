@@ -627,7 +627,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/24b944a5-7efc-453c-a5de-961b79457f10/animations/1bdd99f7-54dc-40c7-8d84-7074930decc6/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: pulls back fist then punches (holds rescue float)"
  },
  "beachm": {
@@ -650,7 +650,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/94a86c87-588d-4f56-a1d0-0b40f8cb4606/animations/8f1bc689-0a0a-40be-9067-1c2a387e2254/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: pulls back fist then punches"
  },
  "beachf": {
