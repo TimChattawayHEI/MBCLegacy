@@ -22,10 +22,19 @@ def sub_once(old, new, label):
     html = html.replace(old, new, 1)
 
 
-kinds = sorted(f[:-5] for f in os.listdir(FOES) if f.endswith('.json'))
+PLAN = json.load(open(os.path.join(FOES, 'PLAN.json')))
+OLD = json.load(open(os.path.join(FOES, 'old_frames.json')))['FF']
+kinds = sorted(f[:-5] for f in os.listdir(FOES) if f.endswith('.json') and f not in ('PLAN.json', 'old_frames.json', 'overrides.json'))
 metas, frames = {}, {}
-for k in kinds:
-    d = json.load(open(os.path.join(FOES, k + '.json'))); metas[k] = d['meta']; frames[k] = d['frames']
+for k in kinds:   # k is a sheet; every kind drawn from it (the doorman from the bouncer's) gets the picks, with its own routing
+    d = json.load(open(os.path.join(FOES, k + '.json'))); metas[k] = d['meta']; F = d['frames']; allf = F.pop('_all', {})
+    for kind in (PLAN[k]['kinds'] if k in PLAN else [k]):
+        Fk = dict(F); old = OLD.get(kind, {})
+        for key in ('wind', 'hits', 'lean', 'ownWeapon'):
+            if key in old and key not in Fk: Fk[key] = old[key]
+        if 'loop' in old and 'loop' not in Fk:
+            Fk['loop'] = {st: [row, allf[row]] for st, (row, _) in old['loop'].items() if allf.get(row)}
+        frames[kind] = Fk
 block = ('/* v85 foes */ Object.assign(SPRITE_META, ' + json.dumps(metas, separators=(',', ':')) + ');\n'
          'Object.assign(FOE_FRAMES, ' + json.dumps(frames, separators=(',', ':')) + ');\n/* v85 foes end */')
 anchor = "const SPRITE_ALIAS = { biglad: 'chunk', doorman: 'bouncer', rider: 'clubm', biker: 'clubm' };"

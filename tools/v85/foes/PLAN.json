@@ -1,0 +1,1709 @@
+{
+ "bouncer": {
+  "id": "7af8e015-e87f-4617-8d21-54ac3fd60a94",
+  "kinds": [
+   "bouncer",
+   "doorman"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/7af8e015-e87f-4617-8d21-54ac3fd60a94/animations/b0e9a272-2985-4df9-b10e-be683ef9473d/east/8.png",
+  "status": "done",
+  "notes": "attack: big heavy haymaker punch"
+ },
+ "vibez": {
+  "id": "3f4b9c3a-b5ad-42b3-96b4-7be60a73bd49",
+  "kinds": [
+   "vibez"
+  ],
+  "h": 60,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": "cd",
+  "weapon": null,
+  "ai": "ranged",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/3f4b9c3a-b5ad-42b3-96b4-7be60a73bd49/animations/1c2d62bd-a6a0-40a8-a33b-6285c84dd1f8/east/8.png",
+  "status": "done",
+  "notes": "attack: sidearm frisbee throw of a CD, empty hand"
+ },
+ "chunk": {
+  "id": "a730a2fd-693a-4fe6-b95b-bac63704c0d5",
+  "kinds": [
+   "biglad",
+   "chunk"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/a730a2fd-693a-4fe6-b95b-bac63704c0d5/animations/386388ba-33ca-4037-822a-663351dc62a3/east/8.png",
+  "status": "done",
+  "notes": "attack: belly barge"
+ },
+ "ladette": {
+  "id": "edfd6140-5a67-4047-a85b-c4177cccd478",
+  "kinds": [
+   "ladette"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/edfd6140-5a67-4047-a85b-c4177cccd478/animations/f2cfdc3b-1a41-4d8d-be74-62cd65d72df4/east/8.png",
+  "status": "done",
+  "notes": "attack: big winding slap"
+ },
+ "dti": {
+  "id": "73b902cb-d39a-4bc4-857b-91f7341d4319",
+  "kinds": [
+   "dti"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": "letter",
+  "weapon": null,
+  "ai": "ranged",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/73b902cb-d39a-4bc4-857b-91f7341d4319/animations/60ad76dc-fb5c-447d-8685-eecbadc5f041/east/8.png",
+  "status": "todo",
+  "notes": "attack: flings an official letter"
+ },
+ "mc": {
+  "id": "5dc3d370-9c99-4acf-a7e9-ee1846ca2455",
+  "kinds": [
+   "mc"
+  ],
+  "h": 75,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "close",
+   "far"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": "aerial",
+  "ai": null,
+  "boss": true,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/5dc3d370-9c99-4acf-a7e9-ee1846ca2455/animations/92d30161-f721-435e-989d-c8f6109fa7b2/east/8.png",
+  "status": "todo",
+  "notes": "attack: two-handed swing with aerial; close: holds up red air horn and blasts; far: overarm throw free hand"
+ },
+ "angler": {
+  "id": "423a756c-83b0-464d-bd49-372e39f5c57e",
+  "kinds": [
+   "angler"
+  ],
+  "h": 60,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/423a756c-83b0-464d-bd49-372e39f5c57e/animations/1ceec791-7be3-425d-9118-f9225f4c9c3d/east/8.png",
+  "status": "todo",
+  "notes": "attack: right punch"
+ },
+ "warden": {
+  "id": "6787fec7-c7d0-40fa-a37a-37a27433b0f8",
+  "kinds": [
+   "warden"
+  ],
+  "h": 60,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/6787fec7-c7d0-40fa-a37a-37a27433b0f8/animations/082d5918-a339-43d1-948b-d6aaf6c586ca/east/8.png",
+  "status": "todo",
+  "notes": "attack: two-handed shove"
+ },
+ "carpbro": {
+  "id": "632ac96f-9edf-4c4a-9c84-ed1d00f54fa7",
+  "kinds": [
+   "carpbro"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "farbank": {
+  "id": "a3650cde-41a7-4aba-a075-fe104c7904ec",
+  "kinds": [
+   "farbank"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": "stick",
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "regular": {
+  "id": "8bd10b8c-3c2f-4f8c-8814-6db227db40b0",
+  "kinds": [
+   "regular"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "darts": {
+  "id": "58feaf54-05ad-4eee-ac8c-694449f33d85",
+  "kinds": [
+   "darts"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": "dart",
+  "weapon": null,
+  "ai": "ranged",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "nozzer": {
+  "id": "5f8c95dd-1430-42ed-bc93-ae45d85e9019",
+  "kinds": [
+   "nozzer"
+  ],
+  "h": 60,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "nozzer",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "denise": {
+  "id": "13270c0d-d285-4379-a196-a732c7c19b24",
+  "kinds": [
+   "denise"
+  ],
+  "h": 75,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": true,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "tracksuit": {
+  "id": "7d66ec49-7010-4a03-91b2-3df85c96a07b",
+  "kinds": [
+   "tracksuit"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "hoodie": {
+  "id": "20bc6c4a-f474-4dac-98d4-db2fcf1d446b",
+  "kinds": [
+   "hoodie"
+  ],
+  "h": 64,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": "bottle",
+  "weapon": null,
+  "ai": "ranged",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "lady": {
+  "id": "846ea0fd-f5a5-4bd2-8337-5760410f698a",
+  "kinds": [
+   "lady"
+  ],
+  "h": 74,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": true,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "sec": {
+  "id": "ede257a4-3806-44e2-bff2-e6033c324fce",
+  "kinds": [
+   "sec"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "handler": {
+  "id": "fb9ac77d-2ef4-4c14-956a-7a51dcafa2d0",
+  "kinds": [
+   "handler"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": "case",
+  "weapon": null,
+  "ai": "ranged",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "ragazzo": {
+  "id": "add0fa26-5256-4bc0-bcd5-ee617f993c0f",
+  "kinds": [
+   "ragazzo"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "ragazza": {
+  "id": "19eb83a1-b2a4-4c0b-a888-08808f9675c9",
+  "kinds": [
+   "ragazza"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "carab": {
+  "id": "e5afb135-801f-45d2-9ec0-29f02d5473c9",
+  "kinds": [
+   "carab"
+  ],
+  "h": 76,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "close",
+   "far"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "gianni": {
+  "id": "19aa211b-bdc2-4a4b-9612-e14f8fcbac55",
+  "kinds": [
+   "gianni"
+  ],
+  "h": 77,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "close"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "marco": {
+  "id": "883ce06d-924b-47ab-b9ff-b08823ba8825",
+  "kinds": [
+   "marco"
+  ],
+  "h": 77,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "close"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "luca": {
+  "id": "6e14f603-98c8-4e77-a94a-3a7c99f62862",
+  "kinds": [
+   "luca"
+  ],
+  "h": 76,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "far"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "paolo": {
+  "id": "65c66655-f32a-478f-9262-33af4eab2faa",
+  "kinds": [
+   "paolo"
+  ],
+  "h": 76,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "close"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "lifeguard": {
+  "id": "24b944a5-7efc-453c-a5de-961b79457f10",
+  "kinds": [
+   "lifeguard"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "beachm": {
+  "id": "94a86c87-588d-4f56-a1d0-0b40f8cb4606",
+  "kinds": [
+   "beachm"
+  ],
+  "h": 64,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "beachf": {
+  "id": "65de4171-0c7d-410d-8021-768baa5a44ff",
+  "kinds": [
+   "beachf"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": "cream",
+  "weapon": null,
+  "ai": "ranged",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "mafioso": {
+  "id": "c4f7ac34-62fd-4d3d-9b5b-f5ffcc454ab0",
+  "kinds": [
+   "mafioso"
+  ],
+  "h": 77,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "close",
+   "far"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "clubm": {
+  "id": "88ed971f-144c-4699-86ed-e3e83c5a105b",
+  "kinds": [
+   "clubm",
+   "rider",
+   "biker"
+  ],
+  "h": 59,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": true,
+  "shot": null,
+  "weapon": "helmet",
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "clubf": {
+  "id": "faee84ca-6acf-4dca-9a6e-0bbb0bddc6ed",
+  "kinds": [
+   "clubf"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "beast": {
+  "id": "9379da0b-2607-4c42-a928-6cf3363a8345",
+  "kinds": [
+   "beast"
+  ],
+  "h": 78,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "close",
+   "far"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "quick": {
+  "id": "14109d09-5a81-4786-8b10-b4ef709b63c6",
+  "kinds": [
+   "quick"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "close",
+   "far"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "city": {
+  "id": "5e070ef3-d2f0-4ed8-befc-e72b479e6eea",
+  "kinds": [
+   "city"
+  ],
+  "h": 60,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "throw"
+  ],
+  "aa": false,
+  "c2": true,
+  "shot": "bottle",
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "itgirl": {
+  "id": "56f4af06-c882-47f4-9779-68ad0fdd27d2",
+  "kinds": [
+   "itgirl"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "kick"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "burb": {
+  "id": "64287cb6-c2a1-4e25-8996-6a50c5a09dc5",
+  "kinds": [
+   "burb"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "hoops": {
+  "id": "77856b57-de05-45bf-9009-708a9c99e2e4",
+  "kinds": [
+   "hoops"
+  ],
+  "h": 63,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "pull"
+  ],
+  "aa": false,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "snood": {
+  "id": "e3d6cc0a-72b1-45af-b003-c533638c396d",
+  "kinds": [
+   "snood"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "puffer": {
+  "id": "5b3d5191-b2ec-419c-8ff4-d0e615e54e8a",
+  "kinds": [
+   "puffer"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "dash"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "hood": {
+  "id": "ee50e935-d7b2-4392-a50d-13270b729250",
+  "kinds": [
+   "hood"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "grappler": {
+  "id": "f3cfcd78-5cd1-4403-a19c-2d46a2d70105",
+  "kinds": [
+   "grappler"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "hold"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "dipper": {
+  "id": "325de5e1-f71b-4b2f-bae8-55ea186ea939",
+  "kinds": [
+   "dipper"
+  ],
+  "h": 60,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "dodge",
+   "steal"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "lookout": {
+  "id": "e635e5f6-6918-44c4-bedb-c04d07d033cc",
+  "kinds": [
+   "lookout"
+  ],
+  "h": 59,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "whistle"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": "bottle",
+  "weapon": null,
+  "ai": "ranged",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "stag": {
+  "id": "5cfe5fba-0397-4541-9793-959f8d6442b6",
+  "kinds": [
+   "stag"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "stagger"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "groom": {
+  "id": "49977129-d3e6-4e98-8c56-6eb658ddef71",
+  "kinds": [
+   "groom"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "noface": {
+  "id": "124fa208-b5ab-4710-8136-8b15f7f4651a",
+  "kinds": [
+   "noface"
+  ],
+  "h": 64,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "shrug"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "leathers": {
+  "id": "f3a57785-846e-4bf1-b06f-733e44bc501e",
+  "kinds": [
+   "leathers"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "jab"
+  ],
+  "aa": false,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "shades": {
+  "id": "a8916c62-6caa-45d5-b4bf-6c5680912ac5",
+  "kinds": [
+   "shades"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "leap",
+   "land"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "denim": {
+  "id": "929864a1-6425-44cd-8074-cdd2b145ba70",
+  "kinds": [
+   "denim"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "flykick",
+   "slide"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "shellsuit": {
+  "id": "518fbf7a-d55f-4a69-be13-dadddf318acc",
+  "kinds": [
+   "shellsuit"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "spray",
+   "throw"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": "bottle",
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "tuba": {
+  "id": "c37105dd-346f-4c63-a39d-87cf0fb4beb7",
+  "kinds": [
+   "tuba"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "blast"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "commuter": {
+  "id": "a303c518-acb5-40cd-bef8-bb7c4a1aea9c",
+  "kinds": [
+   "commuter"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "oldboy": {
+  "id": "7ca61462-0ec6-4e88-837c-3670f3bee1de",
+  "kinds": [
+   "oldboy"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "smiler": {
+  "id": "f54ab650-be80-4bfd-8626-de9f63b5cf80",
+  "kinds": [
+   "smiler"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "throw"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "inspector": {
+  "id": "68cf9fda-bd30-4b27-90eb-ececf58564d4",
+  "kinds": [
+   "inspector"
+  ],
+  "h": 76,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "attack2",
+   "block",
+   "shout"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "lenny": {
+  "id": "2fa20501-1fd3-43c8-be55-1c34c9c5382c",
+  "kinds": [
+   "lenny"
+  ],
+  "h": 75,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "attack2",
+   "pull",
+   "charge"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "jeweller": {
+  "id": "8ae7fa8a-b8ec-4276-9e30-a5126b6948d4",
+  "kinds": [
+   "jeweller"
+  ],
+  "h": 78,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "glint",
+   "grab"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "alan": {
+  "id": "391b1264-9c21-43e1-b6f0-1f08abd7fa53",
+  "kinds": [
+   "alan"
+  ],
+  "h": 60,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "jeff": {
+  "id": "7a5e3b22-b166-48a9-ac38-5b90002d436d",
+  "kinds": [
+   "jeff"
+  ],
+  "h": 76,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "sue": {
+  "id": "c5fa2a6c-2cf2-4810-bce8-eb92f7d5372a",
+  "kinds": [
+   "sue"
+  ],
+  "h": 60,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "shout"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "mick": {
+  "id": "823b7757-670f-4f3c-afd2-6715958b61aa",
+  "kinds": [
+   "mick"
+  ],
+  "h": 75,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "belly"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "kappa": {
+  "id": "91ca982f-ad53-4866-8a31-01d34a081d67",
+  "kinds": [
+   "kappa"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "whip"
+  ],
+  "aa": true,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "razor": {
+  "id": "b2ad5e57-b521-4dad-923c-1fae6feaeb70",
+  "kinds": [
+   "razor"
+  ],
+  "h": 58,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "ride",
+   "kick"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "frosted": {
+  "id": "a8f9bda4-6d5c-43ee-9a11-8324c4b992b0",
+  "kinds": [
+   "frosted"
+  ],
+  "h": 56,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "spin",
+   "slide"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "scrunchie": {
+  "id": "78f6ff62-3fac-4585-bcd0-d6d65d34784c",
+  "kinds": [
+   "scrunchie"
+  ],
+  "h": 58,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "throw"
+  ],
+  "aa": true,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "garagemc": {
+  "id": "34b58eab-356b-4df4-9865-a4e3a62a3a93",
+  "kinds": [
+   "garagemc"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "bars"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "builder": {
+  "id": "c713ce1e-b80a-4f88-93cc-68dd51e020ba",
+  "kinds": [
+   "builder"
+  ],
+  "h": 78,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "barge",
+   "throw"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "codger": {
+  "id": "c492d4e0-dd5a-435d-b144-2f47842a65e8",
+  "kinds": [
+   "codger"
+  ],
+  "h": 57,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "hook"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "shark": {
+  "id": "452ae620-53dd-4f6c-a802-e8387f8e0f2e",
+  "kinds": [
+   "shark"
+  ],
+  "h": 56,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "break"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "moschino": {
+  "id": "63aaf8c0-e186-41eb-8199-7e543cc4fbe4",
+  "kinds": [
+   "moschino"
+  ],
+  "h": 57,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "spray"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ },
+ "raver": {
+  "id": "be428fc7-7ff1-46a0-aa8e-f1d164824138",
+  "kinds": [
+   "raver"
+  ],
+  "h": 59,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "whistle"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": null,
+  "status": "todo",
+  "notes": ""
+ }
+}

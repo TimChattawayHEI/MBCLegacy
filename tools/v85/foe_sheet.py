@@ -44,9 +44,30 @@ def ground(row, f, ox, oy):
     return (-round((b[0] + b[2]) / 2) if row == 'knockdown' else ox), -(b[3] + 1)
 
 
+PLAN = json.load(open(os.path.join(HERE, 'foes', 'PLAN.json')))
+_OVR = os.path.join(HERE, 'foes', 'overrides.json')   # per-kind skips and hand picks, written as each kind is checked by eye
+if os.path.exists(_OVR): FOES.update(json.load(open(_OVR)))
+OLD = os.path.join(HERE, 'foes', 'old_frames.json')   # the side-on FOE_FRAMES and SPRITE_META, for each kind's own routing
+OLD = json.load(open(OLD)) if os.path.exists(OLD) else {'FF': {}, 'SM': {}}
+BASE5 = ['idle', 'walk', 'attack', 'hurt', 'knockdown']
+
+
+def config(kind):
+    """a kind's rows and routing: its own moves from the old sheet, a second punch for combo foes, an uppercut for anti-air
+    foes, plus anything set by hand in FOES"""
+    cfg = dict(FOES.get(kind, {})); p = PLAN.get(kind)
+    if p and 'extra' not in cfg:
+        ex = [r for r in OLD['SM'].get(kind, {}).get('rows', p['old_rows']) if r not in BASE5 and r not in BASE]
+        if p['c2'] and 'attack2' not in ex: ex.append('attack2')
+        if p['aa'] and 'upper' not in ex: ex.append('upper')
+        cfg['extra'] = ex + cfg.get('more', [])
+    if p and p['boss'] and 'base' not in cfg: cfg['base'] = [r for r in BASE if r != 'held']
+    return cfg
+
+
 def build(kind):
-    cfg = FOES.get(kind, {}); skip = cfg.get('skip', {})
-    rows_list = BASE + cfg.get('extra', [])
+    cfg = config(kind); skip = cfg.get('skip', {})
+    rows_list = cfg.get('base', BASE) + [r for r in cfg.get('extra', []) if r not in cfg.get('base', BASE)]
     src_dir = os.path.join(HERE, 'src', kind)
     raw = {}
     for row in rows_list:
@@ -94,11 +115,13 @@ def strike(info, fr, n, up=False):
 def picks(kind, info, skip, cfg, rows_list):
     ok = lambda row: [i for i in range(1, len(info[row])) if i not in skip.get(row, [])]
     F = {}
-    for row in LOOPS: F[row] = ok(row)
+    for row in LOOPS:
+        if row in rows_list: F[row] = ok(row)
     for row in rows_list:
         if row in LOOPS or row in ('hurt', 'hurt2', 'knockdown'): continue
         F[row] = strike(info[row], ok(row), len(info[row]), up=(row == 'upper'))
     F['hurt'] = ok('hurt'); F['hurt2'] = ok('hurt2')
+    F['_all'] = {row: ok(row) for row in rows_list}   # for remapping an old loop onto the new frames
     kd = ok('knockdown'); hs = {i: info['knockdown'][i]['h'] for i in kd}; stand = info['knockdown'][0]['h']
     flat = [i for i in kd if hs[i] < stand * 0.45]
     F['fall'] = [i for i in kd if i < flat[0]] + [flat[0]]

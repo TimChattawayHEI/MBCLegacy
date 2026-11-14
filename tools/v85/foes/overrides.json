@@ -1,0 +1,47 @@
+{
+ "bouncer": {
+  "skip": {
+   "hurt2": [
+    1
+   ],
+   "knockdown": [
+    1,
+    2
+   ],
+   "upper": [
+    2,
+    3
+   ]
+  }
+ },
+ "chunk": {
+  "skip": {
+   "hurt": [
+    4,
+    5
+   ],
+   "hurt2": [
+    2,
+    3
+   ],
+   "upper": [
+    1
+   ]
+  }
+ },
+ "ladette": {
+  "skip": {
+   "attack2": [
+    3
+   ],
+   "upper": [
+    3
+   ],
+   "knockdown": [
+    1,
+    2,
+    3
+   ]
+  }
+ }
+}
