@@ -1081,7 +1081,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/49977129-d3e6-4e98-8c56-6eb658ddef71/animations/598e83ea-fde4-4df5-b424-58853dc88b6d/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: drunken haymaker"
  },
  "noface": {
