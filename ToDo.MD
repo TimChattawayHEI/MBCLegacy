@@ -310,7 +310,10 @@ Tim asked to spend the spare PixelLab allowance on the lads: more depth, cleaner
 - [x] Hit flashes, speed lines and stray specks the generator drew in are cleaned out or left out of the picks
 - [x] Ash's GINGER SNAP: the new sheet draws the spin itself, so the old left-right flip is off for him
 - [x] `tools/v85/lad_sheet.py` builds each sheet and its frame picks, `tools/v85_build.py` patches the page (re-runnable), `tools/v85/test.py` puts each lad through every state headless. All nine pass with no page errors
-- PixelLab: 273 of this cycle's 2,000 generations used (resets 13 December)
+- [x] Weapons and effects lined up with the new art (Tim: "special effects and weapons are off a bit")
+  - Done (V85): a new two-handed swing row for every lad (`bat`), used for weapon swings and the weapon dash, so a stick or net now swings flat at chest height instead of into the floor. Fist points now ignore boots and Ash's chinos, so a held weapon stays in his hand on every frame. Combo swooshes are placed from each lad's actual fist or foot on the hit frame (`tools/v85/strike.py`, worked out in `tools/v85_build.py`), with an uppercut swoosh for Thet. Kelly's MASS HEAD redrawn (the old run hid his face behind a giant fist and drew its own blast) and the big head now lifts just his head. Kelly's hook lost a stretched-arm smear frame. Kelly's BMX 360 spins again (the Ash fix had switched it off)
+  - `tools/v85/fxtest.py` freezes the clock and shoots every lad holding a weapon, mid-swoosh, mid-mini and mid-special, for before and after sheets (`--root` another checkout)
+- PixelLab: 285 of this cycle's 2,000 generations used (resets 13 December)
 
 ### Tim
 - [ ] Play each lad on a phone and say which moves look off (wrong frame on the hit, a pose that turns his back, size)
@@ -318,7 +321,8 @@ Tim asked to spend the spare PixelLab allowance on the lads: more depth, cleaner
 - [ ] Merge the PR when happy (main publishes the release and the in-app update)
 
 ### Later
-- [ ] The swooshes (`SW_FIT`) were placed for the old side-on sprites: check they still sit on the new fists and feet
+- [x] The swooshes (`SW_FIT`) were placed for the old side-on sprites: check they still sit on the new fists and feet
+  - Done (V85): fitted from the art, see above
 
 ## Carried over from the build plan
 
