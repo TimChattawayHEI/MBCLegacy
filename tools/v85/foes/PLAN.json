@@ -820,7 +820,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/5e070ef3-d2f0-4ed8-befc-e72b479e6eea/animations/6935d64f-0cbb-4785-93d5-cf4b084816ea/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: sharp backhand slap; throw: throws a bottle overarm"
  },
  "itgirl": {
