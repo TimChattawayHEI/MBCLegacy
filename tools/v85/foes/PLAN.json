@@ -1105,7 +1105,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/124fa208-b5ab-4710-8136-8b15f7f4651a/animations/ba93d2ff-43e5-46ed-955b-2d9a37800305/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: punch; shrug: shoulders up, palms out"
  },
  "leathers": {
