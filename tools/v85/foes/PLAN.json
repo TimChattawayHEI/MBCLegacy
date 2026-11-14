@@ -460,7 +460,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/add0fa26-5256-4bc0-bcd5-ee617f993c0f/animations/1c497a26-c528-4791-928a-fbdc816d56d3/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: quick jab then a hard right hook"
  },
  "ragazza": {
@@ -483,7 +483,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/19eb83a1-b2a4-4c0b-a888-08808f9675c9/animations/00b64fe6-4d4f-4248-95f4-f2a0546cd23c/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: fast open-handed slap"
  },
  "carab": {
