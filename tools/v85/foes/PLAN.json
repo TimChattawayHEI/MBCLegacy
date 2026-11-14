@@ -276,7 +276,7 @@
   "ai": "ranged",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/58feaf54-05ad-4eee-ac8c-694449f33d85/animations/66211bf6-ede0-4a29-a6b0-8572a45f012a/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: raises right hand beside head and throws a dart"
  },
  "nozzer": {
@@ -299,7 +299,7 @@
   "ai": "nozzer",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/5f8c95dd-1430-42ed-bc93-ae45d85e9019/animations/cda03fb1-2e4b-4ee6-879b-bc93ac885fca/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: jabs finger forward accusingly, keeps walking stick"
  },
  "denise": {
@@ -322,7 +322,7 @@
   "ai": null,
   "boss": true,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/13270c0d-d285-4379-a196-a732c7c19b24/animations/10f37c03-9f2d-44d4-b627-11c2a0e52a15/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: raises both hands together overhead and hammers down"
  },
  "tracksuit": {

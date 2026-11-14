@@ -154,5 +154,40 @@
     3
    ]
   }
+ },
+ "darts": {
+  "skip": {
+   "hurt": [
+    1
+   ],
+   "hurt2": [
+    2
+   ],
+   "knockdown": [
+    1
+   ]
+  }
+ },
+ "nozzer": {
+  "skip": {
+   "knockdown": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ "denise": {
+  "skip": {
+   "attack": [
+    5
+   ],
+   "hurt": [
+    4
+   ],
+   "hurt2": [
+    5
+   ]
+  }
  }
 }
