@@ -316,8 +316,10 @@ Tim asked to spend the spare PixelLab allowance on the lads: more depth, cleaner
 - [x] Enemies three-quarters on, pilot: the Townie and the Parkie
   - Done (V85): each kind gets its own three-quarter stance, then idle, walk, attack, both hurts (head and body take turns), a knockdown that lands flat and gets up, dazed and a struggle when grabbed. The Townie also gets a wild haymaker for the second hit of his combo and a jumping uppercut for his anti-air; the Parkie a litter picker stab (the claw forward this time; the first stance held it backwards), his whistle and an overarm lob for the balls. `tools/v85/foe_sheet.py` builds the sheets, `tools/v85_foes_build.py` patches the page (foeFrame learns the new rows only for kinds marked deep, so everyone else draws as before), `tools/v85/foetest.py` freezes the game and shoots each kind in every state
   - Knockdowns (lads and enemies) and the lads' jumps are now drawn on the ground: the game already lifts them, so the art's own height was doubling it
-- [ ] The rest of the enemies and bosses the same way, once Tim has seen the pilot (roughly 12 to 15 generations a kind)
-- PixelLab: 323 of this cycle's 2,000 generations used (resets 13 December)
+- [ ] The rest of the enemies and bosses the same way (roughly 10 to 12 generations a kind), in stage order. `tools/v85/foes/PLAN.json` tracks each sheet (stance, attack note, status); `tools/v85/foes/overrides.json` lists the frames dropped from each row; `tools/v85/clean.py` strips the blood sprays PixelLab adds to hurt frames
+  - Done so far: bouncer (and doorman), Vibez, the big lad, the ladette, the DTI man, the MC, the angler, the warden, the carp bro, the Far Bank, the regular, Darts Dad, the nozzer, Denise, the tracksuit, the hoodie
+  - Next: the lady, airport security, the baggage handler, the ragazzo and ragazza, the carabiniere, Gianni, Marco, then on through the Italy, Ibiza, city and finale casts
+- PixelLab: 503 of this cycle's 2,000 generations used (resets 13 December)
 
 ### Tim
 - [ ] Play each lad on a phone and say which moves look off (wrong frame on the hit, a pose that turns his back, size)
