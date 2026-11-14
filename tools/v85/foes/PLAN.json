@@ -1341,7 +1341,7 @@
   "ai": null,
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/2fa20501-1fd3-43c8-be55-1c34c9c5382c/animations/92207d5a-0fbd-4ce5-b277-5902ef2cf4e9/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: heavy straight punch; attack2: jumps up and kicks forward; pull: pulls a flick-knife and holds it out; charge: low shoulder charge"
  },
  "jeweller": {
