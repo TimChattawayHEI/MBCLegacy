@@ -1080,9 +1080,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/49977129-d3e6-4e98-8c56-6eb658ddef71/animations/598e83ea-fde4-4df5-b424-58853dc88b6d/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: drunken haymaker"
  },
  "noface": {
   "id": "124fa208-b5ab-4710-8136-8b15f7f4651a",
@@ -1104,9 +1104,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/124fa208-b5ab-4710-8136-8b15f7f4651a/animations/ba93d2ff-43e5-46ed-955b-2d9a37800305/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: punch; shrug: shoulders up, palms out"
  },
  "leathers": {
   "id": "f3faa323-8a76-4071-a7a2-cd662364ba9e",
