@@ -1315,7 +1315,7 @@
   "ai": null,
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/68cf9fda-bd30-4b27-90eb-ececf58564d4/animations/476b7667-57e8-45ab-b149-2d1643beb795/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: lunging punch; attack2: raises clipboard overhead and chops down; block: palm out stop; shout: points and shouts"
  },
  "lenny": {
