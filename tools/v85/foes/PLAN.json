@@ -1388,9 +1388,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/391b1264-9c21-43e1-b6f0-1f08abd7fa53/animations/f93cd9cd-67ba-429e-9b81-b93b1057d4ca/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: wild sloppy right hook; idle loose swaying; walk shambling"
  },
  "jeff": {
   "id": "7a5e3b22-b166-48a9-ac38-5b90002d436d",
