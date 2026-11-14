@@ -867,7 +867,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/64287cb6-c2a1-4e25-8996-6a50c5a09dc5/animations/1cedf03f-3b5f-4642-8401-596e22369c94/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: wild swinging haymaker"
  },
  "hoops": {
