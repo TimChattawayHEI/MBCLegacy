@@ -770,9 +770,9 @@
   "weapon": null,
   "ai": null,
   "boss": false,
-  "stance": null,
-  "status": "todo",
-  "notes": ""
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/9379da0b-2607-4c42-a928-6cf3363a8345/animations/817b660f-f38c-4b0b-b61f-9e83da0d772c/east/8.png",
+  "status": "done",
+  "notes": "attack: raises both fists together high and hammers down; close: lifts one huge leg high and stamps; far: lowers head and shoulders and charges"
  },
  "quick": {
   "id": "14109d09-5a81-4786-8b10-b4ef709b63c6",
@@ -795,9 +795,9 @@
   "weapon": null,
   "ai": null,
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/14109d09-5a81-4786-8b10-b4ef709b63c6/animations/87a20cbf-30f1-40ff-be9b-df225f332783/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: two very fast straight punches; close: hops up and forward off both feet with a flying kick; far: darts forward low and fast"
  },
  "city": {
   "id": "5e070ef3-d2f0-4ed8-befc-e72b479e6eea",
@@ -819,9 +819,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/5e070ef3-d2f0-4ed8-befc-e72b479e6eea/animations/6935d64f-0cbb-4785-93d5-cf4b084816ea/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: sharp backhand slap; throw: throws a bottle overarm"
  },
  "itgirl": {
   "id": "56f4af06-c882-47f4-9779-68ad0fdd27d2",
@@ -843,9 +843,9 @@
   "weapon": null,
   "ai": "melee",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/56f4af06-c882-47f4-9779-68ad0fdd27d2/animations/f8293f61-1f5b-4b64-a2a8-b169ed25df4f/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: swings her tiny clutch bag; kick: quick stiletto heel kick forward"
  },
  "burb": {
   "id": "64287cb6-c2a1-4e25-8996-6a50c5a09dc5",
