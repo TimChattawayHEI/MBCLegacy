@@ -345,7 +345,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/7d66ec49-7010-4a03-91b2-3df85c96a07b/animations/90590c29-7dee-400a-aa7d-e9fca5971825/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: pulls right fist back, quick straight punch"
  },
  "hoodie": {
@@ -368,7 +368,7 @@
   "ai": "ranged",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/20bc6c4a-f474-4dac-98d4-db2fcf1d446b/animations/81ad01d1-db98-433c-90c6-41965ba995a7/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: winds right arm back and throws a bottle overarm"
  },
  "lady": {
