@@ -207,7 +207,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/632ac96f-9edf-4c4a-9c84-ed1d00f54fa7/animations/d85a2481-851d-4e79-960c-349e60f86f31/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: winds right fist back, lunging straight punch"
  },
  "farbank": {
@@ -230,7 +230,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/a3650cde-41a7-4aba-a075-fe104c7904ec/animations/9f490988-377c-4c1b-b1bb-9d8223b49ce7/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: raises right arm high and clubs down overhand"
  },
  "regular": {
@@ -253,7 +253,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/8bd10b8c-3c2f-4f8c-8814-6db227db40b0/animations/201057c4-37b9-40b5-92e7-d83c9724e02b/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: pulls right fist back, lunging straight punch"
  },
  "darts": {
@@ -367,9 +367,9 @@
   "weapon": null,
   "ai": "ranged",
   "boss": false,
-  "stance": null,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/20bc6c4a-f474-4dac-98d4-db2fcf1d446b/animations/81ad01d1-db98-433c-90c6-41965ba995a7/east/8.png",
   "status": "todo",
-  "notes": ""
+  "notes": "attack: winds right arm back and throws a bottle overarm"
  },
  "lady": {
   "id": "846ea0fd-f5a5-4bd2-8337-5760410f698a",

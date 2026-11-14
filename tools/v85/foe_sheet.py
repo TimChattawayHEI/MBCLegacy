@@ -124,6 +124,8 @@ def picks(kind, info, skip, cfg, rows_list):
     F['_all'] = {row: ok(row) for row in rows_list}   # for remapping an old loop onto the new frames
     kd = ok('knockdown'); hs = {i: info['knockdown'][i]['h'] for i in kd}; stand = info['knockdown'][0]['h']
     flat = [i for i in kd if hs[i] < stand * 0.45]
+    if not flat:   # a bulky one lies taller than that: take the lowest run
+        lo = min(hs.values()); flat = [i for i in kd if hs[i] <= lo * 1.15]
     F['fall'] = [i for i in kd if i < flat[0]] + [flat[0]]
     F['lie'] = flat[len(flat) // 2]
     F['up'] = [i for i in kd if i > flat[-1]]
