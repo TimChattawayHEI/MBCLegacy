@@ -938,7 +938,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/5b3d5191-b2ec-419c-8ff4-d0e615e54e8a/animations/d92e0cff-fa7c-4889-baa3-de8646c42ec7/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: pulls fist back then punch; dash: crouches low and lunges forward"
  },
  "hood": {
