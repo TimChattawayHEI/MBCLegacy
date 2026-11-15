@@ -3677,10 +3677,12 @@ function drawBossCard() {
     const slam = clamp((t - 0.12) / 0.2, 0, 1), k = 2 * (1.35 - 0.35 * easeOut(slam)), w = art.width * k, h = art.height * k;
     ctx.save(); ctx.globalAlpha = Math.min(1, slam * 3); ctx.fillStyle = 'rgba(242,162,58,0.18)';
     for (let i = 0; i < 9; i++) { const a = -Math.PI / 2 + (i - 4) * 0.28 + Math.sin(t * 3 + i) * 0.04; ctx.beginPath(); ctx.moveTo(230, bandY + bandH); ctx.lineTo(230 + Math.cos(a - 0.06) * 420, bandY + bandH + Math.sin(a - 0.06) * 420); ctx.lineTo(230 + Math.cos(a + 0.06) * 420, bandY + bandH + Math.sin(a + 0.06) * 420); ctx.fill(); }
-    ctx.imageSmoothingEnabled = false; ctx.drawImage(art, Math.round(230 - w / 2), Math.round(bandY + bandH - h), w, h);
+    ctx.imageSmoothingEnabled = false; const tf = cardTalkFrame(c, art);   // Version 85: the boss talks
+    if (tf) ctx.drawImage(tf.strip, tf.sx, 0, art.width, art.height, Math.round(230 - w / 2), Math.round(bandY + bandH - h), w, h);
+    else ctx.drawImage(art, Math.round(230 - w / 2), Math.round(bandY + bandH - h), w, h);
     if (slam >= 1 && t < 0.42) { ctx.globalAlpha = (0.42 - t) / 0.1; ctx.fillStyle = '#fff6dc'; ctx.fillRect(0, bandY, W, bandH); }
     ctx.restore();
-    if (slam >= 1 && !c.slammed) { c.slammed = true; addShake(8); sfx('thud'); }
+    if (slam >= 1 && !c.slammed) { c.slammed = true; addShake(8); sfx('thud'); tauntPlay(c); }
   } else c.spr.forEach((id, i) => drawCardSprite(id, 230 + (i - (n - 1) / 2) * gap, bandY + bandH - 12, sk));
   ctx.font = '800 13px ' + BODY; ctx.fillStyle = '#f2a23a'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('BOSS', 470, bandY + 50);
   textOut(c.name, 470, bandY + 98, (c.name.length > 20 ? '24px ' : c.name.length > 14 ? '30px ' : '40px ') + DISPLAY, '#ffd23f', OUT, 7, 'left');
@@ -5945,11 +5947,11 @@ function startWave(w) {
   if (nlStartWave(w)) return;
   if (w.boss === 'inspector' || w.boss === 'lenny' || w.boss === 'jeweller' || w.boss === 'mick') {   // Version 72: Mick   // Nightlife 2006 bosses (Version 53)
     const d = FOES[w.boss], b = makeEBoss(w.boss, cam.x + W + 80, laneY(1), d.hp, { group: w.boss, hx: cam.x + W * 0.68, half: 28, poise: 70, poiseMax: 70 });
-    foes.push(b); S.bosses = [b]; musicSet(bossMusic()); if (!FOE_FEMALE.has(b.kind)) sfx('roar'); showBanner(d.name, d.sub || '', 2.4); setTimeout0(() => ladSay('boss', 1, true), 3); return;
+    foes.push(b); S.bosses = [b]; musicSet(bossMusic()); if (!FOE_FEMALE.has(b.kind)) bossRoar(); showBanner(d.name, d.sub || '', 2.4); setTimeout0(() => ladSay('boss', 1, true), 3); return;
   }
   if (w.raid) { showBanner('RAID!', 'The DTI are shutting down pirate radio', 2.2); sfx('siren'); }
   if (w.boss === 'gary' || w.boss === 'gaz') { const g = makeFish(w.boss); foes.push(g); S.bosses = [g]; musicSet(bossMusic()); setTimeout0(() => ladSay('boss', 1, true), 3); return; }
-  if (w.boss === 'parkie' || w.boss === 'mc') { const b = makeHB(w.boss); foes.push(b); S.bosses = [b]; musicSet(bossMusic()); sfx('roar'); setTimeout0(() => ladSay('boss', 1, true), 3); return; }
+  if (w.boss === 'parkie' || w.boss === 'mc') { const b = makeHB(w.boss); foes.push(b); S.bosses = [b]; musicSet(bossMusic()); bossRoar(); setTimeout0(() => ladSay('boss', 1, true), 3); return; }
   if (w.boss === 'lady') { const l = makeLady(); foes.push(l); S.bosses = [l]; musicSet('lady'); return; }
   if (w.fish) { const g = makeFish(w.fish); g.hp = g.maxHp = Math.round(440 * D().boss); g.poise = g.poiseMax = 60; g.mini = true; foes.push(g); S.bosses = [g]; musicSet(bossMusic()); if (w.groups) spawnGroup(w.groups[0]); return; }
   if (w.boss === 'bros') { startCarScene(); return; }
@@ -10419,6 +10421,46 @@ function talkBubbleFace(b, bx, by, bw, bh, bs) {
   drawPortrait(id, Math.round(x), Math.round(y), s, (SPEAKERS[id] || SPEAKERS.sys || {}).color, talkFrame(b.text, b.t - 0.1));
 }
 // V85 talk end
+// V85 bosstalk start
+// ================================================================== Version 85: the bosses talk
+// Each boss intro card has a strip of five cards, web/bg/bosscard/<id>_talk.png: the painted card (mouth shut), then the
+// mouth open (a), round (o), teeth (e) and lip-bite (f). PixelLab's mouth tool drew the mouths on a 64px crop of the head;
+// only the mouth area was pasted back onto the painted card (tools/v85/bossmouths.py), so the card is otherwise untouched.
+// Once the card has slammed in, the mouth follows the letters of the boss's line (the same timing as the lads' faces)
+// and the boss lets out their own sound, web/sfx/taunt_<id>.wav (PixelLab sound effects: a cackle, a bellow, a fish
+// roar...), in place of the generic boss roar.
+const BOSS_TALK = ['alan', 'bros', 'carab', 'denise', 'duo', 'farbank', 'gary', 'gaz', 'inspector', 'jeff', 'jeweller', 'lady',
+  'lenny', 'mafioso', 'mc', 'mick', 'nozzer', 'parkie'];
+const TAUNT_VOL = {"alan":0.26,"bros":0.27,"carab":0.23,"denise":0.28,"duo":0.29,"farbank":0.26,"gary":0.28,"gaz":0.28,"inspector":0.25,"jeff":0.27,"jeweller":0.3,"lady":0.3,"lenny":0.3,"mafioso":0.32,"mc":0.31,"mick":0.26,"nozzer":0.29,"parkie":0.27};   // levelled so each sits with the other voices, a little over the music
+setTimeout(() => BOSS_TALK.forEach(k => { bgImg('bosscard/' + k + '_talk'); ASSET_BG.push('bosscard/' + k + '_talk'); }), 0);
+const taunt = { bufs: {}, loading: false };
+function tauntLoad() {
+  if (taunt.loading || !actx || (typeof sfxClassic !== 'undefined' && sfxClassic)) return; taunt.loading = true;
+  BOSS_TALK.forEach(k => fetch('sfx/taunt_' + k + '.wav').then(r => r.ok ? r.arrayBuffer() : Promise.reject(r.status))
+    .then(b => new Promise((ok, no) => { const p = actx.decodeAudioData(b, ok, no); if (p && p.then) p.then(ok, no); }))
+    .then(buf => { taunt.bufs[k] = buf; }).catch(() => {}));
+}
+// load once the sound is on (checked each second, so the start-up code needn't change)
+const tauntWait = setInterval(() => { if (actx) { tauntLoad(); clearInterval(tauntWait); } }, 1000);
+const cardTalkId = name => { const k = BOSS_ART[name]; return k && BOSS_TALK.includes(k) ? k : null; };
+// the card's picture at the current mouth (null: draw the plain card)
+function cardTalkFrame(c, art) {
+  const k = cardTalkId(c.name); if (!k) return null;
+  const strip = bgImg('bosscard/' + k + '_talk'); if (!strip || strip.width !== art.width * 5) return null;
+  const f = c.slammed ? talkFrame(c.line || '', c.t - 0.45) : 0;
+  return { strip, sx: f * art.width };
+}
+// true when the boss on the card about to show (or showing) has its own sound
+function cardHasTaunt() { return !!(S && S.card && cardTalkId(S.card.name) && taunt.bufs[cardTalkId(S.card.name)]); }
+function tauntPlay(c) {
+  const k = cardTalkId(c.name), b = k && taunt.bufs[k];
+  if (!b || !actx || !settings.sound) return false;
+  const src = actx.createBufferSource(), g = actx.createGain();
+  src.buffer = b; g.gain.value = TAUNT_VOL[k] || 0.28; src.connect(g); g.connect(sfxBus); src.start(); return true;
+}
+// the generic roar, unless the card coming up has the boss's own sound (the card is set just after the boss spawns)
+function bossRoar() { setTimeout0(() => { if (!cardHasTaunt()) sfx('roar'); }, 0.05); }
+// V85 bosstalk end
 // V85 music start
 // The new soundtrack (Version 85): every stage and boss theme made again with PixelLab's music, in the style of the title
 // theme Tim rated best by a lot. Each file plays its intro once, then loops from `from` for `loop` seconds; `end` is the
