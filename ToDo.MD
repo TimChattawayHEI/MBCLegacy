@@ -290,7 +290,8 @@ Tim upgraded PixelLab to Tier 2 (sound and music need it; the allowance went to 
 - [ ] Tim: listen on the sound board artifact (Carp Diem sound board, in your artifacts) and say which takes to redo, and once merged, whether any are too loud or quiet in play (one number each in SFX_VOL)
 - [x] Batch 2 (V85): enemies now have voices. A grunt on about a third of their hurts, a cry when knocked down, one voice at a time so a crowd doesn't babble; women (ladette, Lady Addict, ragazza, sunbather, club girl, IT girl, Denise, Sue, Scrunchie) get their own. Also eating (food pickups), picking up a weapon, a jump, a crowd cheer at every stage clear, and a roar when a boss arrives (not on Denise, Sue or Lady Addict). 14 more takes, 15 generations
 - [x] Title theme (V85): a new garage track from PixelLab music in the soundtrack's style (132 bpm, FM bass and swung beat lead, sparse square riff), made into a loop: the intro plays once, then 39.1 s to 93.4 s repeats. Plays on the title screen (it was silent), the select screen, the group chats and the endings; the old sequencer tune stays as the fallback. `web/music/title-theme.mp3`, key `title` (with from/end in TRACKS). The second take was refused by PixelLab's music service as too close to a catalogue recording, so it wasn't used
-- [ ] Tim: listen to the title theme and the new voices on the sound board and say if they fit
+- [x] Tim on the title theme: "amazing, best so far by a lot" (15 November). Worth using PixelLab music for more tracks in the same style
+- [ ] Tim: listen to the new voices on the sound board and say if they fit
 
 ### Talking portraits (15 November)
 - [x] The 12 portraits (the lads, Denise, Jo, Nozzer) talk (V85). When one of them says something in a stage, their face pops up beside the speech bubble and the mouth follows the letters of the line, then shuts; in the WhatsApp-style group chat the newest message's face talks. The Nokia text chats stay still (they're texts)
