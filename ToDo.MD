@@ -33,6 +33,10 @@
 ### Updates
 - [x] In-app updates: the app downloads only the changed game files from GitHub and restarts itself, no APK download. A full APK only when the Android side changes
   - Done (V66): the card says UPDATE READY and Restart switches it in (or it goes in next time the app opens). Everyone needs this one APK the old way first; the first real in-app update will be the build after it. Not yet tried on a real phone
+- [x] 15 November, Tim: "Updates in game are not working anymore", after build 181 (the new soundtrack). Checked: the release, its file list and all 87 changed files on GitHub are right, and the app's own updater code (Ota.java, run off the phone against the live release) takes 175 to 181 in 10 s and an older APK to 181 in 25 s. What changed is the size: 47 MB (62 MB from an older APK) against about 16 MB before, and the game showed nothing until all of it had downloaded, said nothing if it stopped, and waited 20 minutes before trying again. Closing the app throws away a part-done download
+  - Done (V85, page only, so no new APK needed): on the menus the card now says DOWNLOADING with files and MB done; if it stops, UPDATE STOPPED with the reason and Try again, and it tries again by itself after a minute. `tools/v85_upd_build.py`, test `tools/v85/updtest.py` (fakes the app's updater; passes)
+  - A phone still on 175 has to get 181 the old way first (keep the game open on a menu on wifi for a few minutes until UPDATE READY shows, or install the APK from the releases page); after that the card shows progress
+- [ ] Android side, next time an APK is needed anyway: keep a part-done download across restarts (Ota.startup deletes `stage`), so a big update can finish over several sessions. Not worth forcing a full APK on its own
 - [ ] Online lobby: warn when the two phones are on different versions (they'd drift out of sync), with an update button
 
 ### Tidy-ups (30 October evening)
