@@ -307,6 +307,15 @@ Tim upgraded PixelLab to Tier 2 (sound and music need it; the allowance went to 
 - [ ] Tim: listen on the sound board (Carp Diem sound board, now with a soundtrack section: each track new, a 12 second clip across its loop seam, and the old one) and name any to redo. Redoing one costs about 14 generations
 - [ ] The app grows by 41 MB with both soundtracks inside it, and the next in-app update downloads it. Once Tim is happy with the new ones, the old files the new ones replace (about 24 MB in `web/music/`) can go, which also drops `?oldmusic` and the old-file fallback. Keep `alarmcall2`, `deepcover` and `title-theme.mp3`
 
+### Music for the moments and the pub (15 November)
+- [x] In the Smoking Area's style, as Tim asked (dark half-time grime, 140 bpm: sparse heavy drums, sub bass slides, dry low stabs, no lead). PixelLab music, about 170 generations (V85; 2,762 left until 13 December)
+  - Stings, played once over silence: a stage cleared, the last boss down (the clear sting waits if the boss one is still going), game over, ON THE TAB (then the stage's music comes back after 3.4 s) and each chapter's title page. PixelLab returned full loops rather than endings, so each is the first two bars of take 1 (three for game over) from the downbeat, with a fade. Before this those moments were silent or cut the music dead
+  - Own loops for the pub (it played the Social's), darts and the fruit machine, penalties, kiss chase, stay awake, the long drive, Snake, and Kebab Siege (it had the N47's). `?oldmusic` gives each the track it had; a file that won't load falls back to it too
+  - Stay Awake's first version had a drone and PixelLab couldn't loop it (twice, not charged); remade with a steady beat. Four loops clicked at the join (pens worst); blended as before
+  - `tools/v85/stings.js`, patched in by `tools/v85_stings_build.py` (which runs the music build first); prompts and ids in `tools/v85/music_prompts.json`. Test: `tools/v85/stingtest.py` (13 checks) and `musictest.py` (now 34 tracks). Both pass
+- [ ] Tim: listen on the sound board (new sections: the pub and its games, and Moments with both takes of each sting) and say which to swap or redo
+- [ ] Garage-style first tries of the pub, pub games and clear sting were made before Tim asked for the Smoking Area style (30 generations); not used
+
 ### Talking portraits (15 November)
 - [x] The 12 portraits (the lads, Denise, Jo, Nozzer) talk (V85). When one of them says something in a stage, their face pops up beside the speech bubble and the mouth follows the letters of the line, then shuts; in the WhatsApp-style group chat the newest message's face talks. The Nokia text chats stay still (they're texts)
   - PixelLab drew five mouths per face (shut, a, o, e, f; 3 generations each, 36 in all); only the mouth area was pasted onto the original portraits (`tools/v85/mouths.py`), so the faces stay the hand-made ones. Strips in `tools/v85/talk_src`, code in `tools/v85/talk.js`, patched by `tools/v85_talk_build.py`
