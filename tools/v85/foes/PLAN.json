@@ -1703,7 +1703,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/be428fc7-7ff1-46a0-aa8e-f1d164824138/animations/711fa4b4-bde8-4b1f-82a4-9af60383bd4d/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "glowsticks"
  }
 }
