@@ -3523,6 +3523,7 @@ function buzz(ms) {
 function knockDown(t, dir, kb) { if (t.kind === 'player') runStat('floored'); t.state = 'down'; t.t = 0; t.vz = 430; t.z = Math.max(t.z, 1); t.vx = dir * kb; t.vy = 0; t.atk = null; t.landed = false; }
 function bossHit(b, k, dir, big) {
   addShake(big ? 6 : 2);
+  b.hurtAt = time; b._bh = (b._bh || 0) + 1;   // Version 85: a boss flinches on the hit (looks only, the AI carries on)
   if (b.hp <= 0) { b.hp = 0; bossDefeated(b); return; }
   if (b.dazedT > 0 || (b.kind === 'denise' && /Wind$|^fine$|^hold$/.test(b.state))) return;   // dazed bosses soak up the beating; Denise does not flinch mid-move
   if (b.poiseCd > 0) return;
@@ -6362,6 +6363,7 @@ function ladFrame(e, F, rows) {
 const V85_VIC = new Map();
 const FOE_WIND = { ruleWind: 'attack', raffleWind: 'attack', castWind: 'attack', fineWind: 'attack', windup: 'attack', meleeWind: 'attack', rushWind: 'attack', throwWind: 'attack', talkWind: 'attack', aim: 'attack', sweepWind: 'attack', scoopWind: 'attack', blastWind: 'attack', hugWind: 'attack', stompWind: 'attack', closeWind: 'close', farWind: 'far', bellyWind: 'close', kneeWind: 'close', spinWind: 'close', chargeWind: 'far', slideWind: 'close', slashWind: 'attack', lungeWind: 'close', throwKWind: 'far', stompWind: 'attack', bloodWind: 'attack', dartWind: 'attack', hopWind: 'attack', leapWind: 'attack', snatchWind: 'attack', ballWind: 'attack', dropWind: 'close', spodWind: 'attack', castWind: 'attack', pincerWarn: 'attack', photoWind: 'attack', rewindWind: 'attack', dropCount: 'attack' };
 const FOE_HIT = { attack: 'attack', melee: 'attack', rush: 'attack', throw: 'attack', talk: 'attack', sweep: 'attack', scoop: 'attack', blast: 'attack', hug: 'attack', stomp: 'attack', close: 'close', charge: 'far', shootWind: 'far', belly: 'close', knee: 'close', spin: 'close', slide: 'close', slash: 'attack', lunge: 'close', bloodRush: 'attack', dart: 'attack', hop: 'attack', leapKick: 'attack', charging: 'attack', snatch: 'attack', cast: 'attack', reelIn: 'attack', pincer: 'attack', onAir: 'close' };
+const BOSS_NOFLINCH = new Set(['down', 'thrown', 'dead', 'beaten', 'getup', 'enter', 'grabbed', 'netted', 'stunned', 'drowsy', 'dazed', 'recover']);
 function foeFrame(e, F, rows) {
   const st = e.state, t = e.t || 0;
   const has = a => !!(rows && rows[a]);
@@ -6373,6 +6375,11 @@ function foeFrame(e, F, rows) {
   if (st === 'rest' && t < 0.3) {
     const after = { melee: 'attack', attack: 'attack', close: 'close', farWind: 'far' }[e._from];
     if (after) { const [a, M] = mv(after); const seq = after === 'far' ? [M.hit].concat(M.post) : (M.post.length ? M.post : [M.hit]); return [a, seq[Math.min(seq.length - 1, Math.floor(t / 0.3 * seq.length))]]; }
+  }
+  // Version 85: a boss shows a quick flinch from its hurt rows when hit, unless it is winding up, striking, down or held
+  if (e.boss && F.deep && e.hurtAt != null && time - e.hurtAt < 0.24 && Math.abs(e.vx || 0) < 200 && !BOSS_NOFLINCH.has(st) && !(F.wind && F.wind[st]) && !(F.hits && F.hits[st]) && !FOE_WIND[st] && !FOE_HIT[st] && !(F.loop && F.loop[st])) {
+    const body = F.hurt2 && has('hurt2') && (e._bh || 0) % 2 === 0, H = (body ? F.hurt2 : F.hurt).slice(0, 3);
+    return [body ? 'hurt2' : 'hurt', H[Math.min(H.length - 1, Math.floor((time - e.hurtAt) / 0.24 * H.length))]];
   }
   // a kind can send a state to its own row (F.wind / F.hits) ahead of the shared maps
   if (F.loop && F.loop[st] && has(F.loop[st][0])) { const [r, fr] = F.loop[st]; return [r, fr[Math.floor(t * 10) % fr.length]]; }   // Version 76
