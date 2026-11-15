@@ -1582,7 +1582,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/34b58eab-356b-4df4-9865-a4e3a62a3a93/animations/e7a9f5d1-9eac-4191-a830-7d7b886935d6/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "holds a mic: attack quick jab with free left hand; bars: holds the mic up to his mouth rapping, bobbing"
  },
  "builder": {
