@@ -1,0 +1,170 @@
+{
+ "_about": "Version 85 sound effects: PixelLab create_sound_effect prompts. tools/v85_sfx_build.py notes how they were processed.",
+ "sounds": {
+  "hit_1": {
+   "prompt": "a punch landing on a face, short punchy arcade beat em up hit, dry, no reverb",
+   "seconds": 0.5,
+   "pixellab_id": "31adbb01-20eb-4399-8b0a-4a5acc4615c7"
+  },
+  "hit_2": {
+   "prompt": "a fist punching a face, slap and thump, short punchy arcade beat em up hit, dry, no reverb",
+   "seconds": 0.5,
+   "pixellab_id": "282fb160-720d-4d33-9bf0-746662aed73e"
+  },
+  "hit_3": {
+   "prompt": "a quick jab punch hitting a body, meaty smack, 90s arcade beat em up, dry",
+   "seconds": 0.5,
+   "pixellab_id": "2dc1bc1f-aa04-4f63-9a83-caefc68daefd"
+  },
+  "heavy_1": {
+   "prompt": "a heavy kick landing hard on a body, deep thump with a crunch, 90s arcade beat em up, dry",
+   "seconds": 0.6,
+   "pixellab_id": "16f06bfa-3efd-4fa9-a3ae-4b48c687dce3"
+  },
+  "heavy_2": {
+   "prompt": "a big finishing uppercut connecting, heavy bass impact with a crack, arcade fighting game, dry",
+   "seconds": 0.7,
+   "pixellab_id": "36c5a14d-f6aa-44a7-a909-593970684779"
+  },
+  "swing_1": {
+   "prompt": "a quick fist whoosh through the air, short swish, no impact",
+   "seconds": 0.5,
+   "pixellab_id": "65b4a28f-730b-4d21-a6c0-f0435591eea6"
+  },
+  "swing_2": {
+   "prompt": "a fast kick swooshing through the air, short whoosh, no impact",
+   "seconds": 0.5,
+   "pixellab_id": "2ec3aace-2aed-45ce-9ed7-218c813de61e"
+  },
+  "fall_1": {
+   "prompt": "a man's body slamming onto a hard pavement, heavy thud, dry",
+   "seconds": 0.8,
+   "pixellab_id": "f7e2fd98-ece1-40e7-8e7c-dbdab091a089"
+  },
+  "fall_2": {
+   "prompt": "a person knocked down crashing onto a wooden floor, body thump and a little bounce",
+   "seconds": 0.8,
+   "pixellab_id": "4ed66933-64a7-4a03-a04f-048cb797624b"
+  },
+  "ko": {
+   "prompt": "knockout punch, huge deep boom impact with a crack, arcade beat em up KO hit, short tail",
+   "seconds": 1.2,
+   "pixellab_id": "9a57a8d3-250b-4dd2-80f9-ea7d1c530a3a"
+  },
+  "smash": {
+   "prompt": "a glass window smashing and shards falling on pavement",
+   "seconds": 1.2,
+   "pixellab_id": "453e3498-570c-47a6-87b6-6fa440445f2a"
+  },
+  "break": {
+   "prompt": "a wooden crate smashed apart, splintering cracking wood, debris clatter",
+   "seconds": 0.9,
+   "pixellab_id": "cc0bc378-7f28-4142-9ebd-fb680aabff1a"
+  },
+  "ouch_1": {
+   "prompt": "a man grunting in pain when punched, short oof, British bloke, no words",
+   "seconds": 0.5,
+   "pixellab_id": "6c9338c4-3cf1-4093-a214-db0888f80227"
+  },
+  "ouch_2": {
+   "prompt": "a man getting winded by a punch to the stomach, short ugh grunt, no words",
+   "seconds": 0.5,
+   "pixellab_id": "46087c83-9802-4b46-9ee9-df28a4de38d6"
+  },
+  "grab": {
+   "prompt": "grabbing someone by the collar, quick cloth rustle and a scuffle",
+   "seconds": 0.5,
+   "pixellab_id": "a6c2a3df-e239-4599-87d7-1d0450091c57"
+  },
+  "throw": {
+   "prompt": "throwing a man through the air, effort heave and a big whoosh",
+   "seconds": 0.7,
+   "pixellab_id": "358401fa-f3ae-4a3f-a4bd-b69d5c1397e3"
+  },
+  "land": {
+   "prompt": "trainers landing on concrete after a jump, light scuff thud",
+   "seconds": 0.5,
+   "pixellab_id": "84177fd4-55aa-4590-9de5-32e2373b56c5"
+  },
+  "splash": {
+   "prompt": "something big falling into a lake, heavy splash of water",
+   "seconds": 1.2,
+   "pixellab_id": "249805a9-5b8a-4eb1-8f06-afb532fa6814"
+  },
+  "boom": {
+   "prompt": "short punchy explosion, boom with debris, video game",
+   "seconds": 1.5,
+   "pixellab_id": "c86d569e-e6df-4ccc-bc44-e327f050b11b"
+  },
+  "airhorn": {
+   "prompt": "UK garage rave airhorn, three short blasts",
+   "seconds": 1.5,
+   "pixellab_id": "dd1cb070-69ef-430a-9ece-02eb39ac1f8d"
+  },
+  "scratch": {
+   "prompt": "a DJ scratching a vinyl record back and forth, short scratch",
+   "seconds": 0.8,
+   "pixellab_id": "b8ac443b-41c9-44d6-9630-c789b6619264"
+  },
+  "clink": {
+   "prompt": "two pint glasses clinking together in a pub",
+   "seconds": 0.6,
+   "pixellab_id": "3a61ce6c-09fc-4b9a-af6f-d8d36a6e0d3a"
+  },
+  "dart": {
+   "prompt": "a dart thudding into a cork dartboard",
+   "seconds": 0.5,
+   "pixellab_id": "bc9e1c74-f6df-4085-90de-8d2e0b1a03c5"
+  },
+  "thunk": {
+   "prompt": "a thrown bottle or object thunking hard against someone, hollow knock",
+   "seconds": 0.5,
+   "pixellab_id": "5b6248d1-8594-4371-b584-b16494544eb6"
+  },
+  "whistle": {
+   "prompt": "a referee blowing a pea whistle, one sharp blast",
+   "seconds": 0.8,
+   "pixellab_id": "36427763-8ecc-4533-985f-3aee005f1269"
+  },
+  "special": {
+   "prompt": "fighting game super move, rising energy whoosh that ends in a big bass impact",
+   "seconds": 1.2,
+   "pixellab_id": "63a6b812-c30b-4739-8ce4-327dc27c3ca4"
+  },
+  "door": {
+   "prompt": "a heavy door slamming shut",
+   "seconds": 0.8,
+   "pixellab_id": "6195a1e9-5211-47d6-a63d-16b4ad96aa0e"
+  },
+  "engine": {
+   "prompt": "a small Italian moped scooter engine revving up",
+   "seconds": 1.5,
+   "pixellab_id": "e61e8cd3-daa4-4203-bab4-b5bae2ade5a5"
+  },
+  "honk": {
+   "prompt": "an old small car horn honking twice, beep beep",
+   "seconds": 0.7,
+   "pixellab_id": "b93af620-4117-4b68-9185-6a6f28328087"
+  },
+  "bang": {
+   "prompt": "a single pistol gunshot, sharp crack",
+   "seconds": 0.8,
+   "pixellab_id": "e2929380-a861-4c4f-b8b3-0f52358059c3"
+  },
+  "snore": {
+   "prompt": "a man snoring loudly, one long snore in and out, comedic",
+   "seconds": 1.6,
+   "pixellab_id": "ab650794-23b2-4895-b335-01913241cf94"
+  },
+  "fire": {
+   "prompt": "flames bursting up with a whoosh and crackling",
+   "seconds": 1.2,
+   "pixellab_id": "8979c7c6-d9ee-47e2-b343-615c6ae5c403"
+  },
+  "hiss": {
+   "prompt": "a spray can hissing for a moment",
+   "seconds": 0.8,
+   "pixellab_id": "5397add4-c4ff-48ea-af83-792f70800b54"
+  }
+ }
+}

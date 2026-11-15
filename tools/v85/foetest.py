@@ -1,4 +1,4 @@
-"""Version 85 enemies check, headless: python3 tools/v85/foetest.py townie parkie [--out dir] [--root repo]
+"""Version 85 enemies check, headless: python3 tools/v85/foetest.py townie parkie [--out dir] [--root repo] [--only dazed,grabbed]
 Freezes the game, puts each kind on screen in every state that has a row (idle, walk, the wind-ups and hits, a combo's
 second punch, the anti-air uppercut, both hurts, falling, flat, getting up, grabbed, dazed, a boss's own moves) and
 saves a contact sheet per kind. --root points at another checkout for a before and after. Fails on any page error."""
@@ -8,7 +8,8 @@ from PIL import Image, ImageDraw
 opt = lambda k, d: sys.argv[sys.argv.index(k) + 1] if k in sys.argv else d
 ROOT = opt('--root', os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 OUT = opt('--out', '/tmp/v85foes')
-skip = {opt('--root', None), opt('--out', None)}
+skip = {opt('--root', None), opt('--out', None), opt('--only', None)}
+ONLY = [w.strip() for w in opt('--only', '').split(',') if w.strip()]   # e.g. --only dazed,grabbed,uppercut: just those states
 KINDS = [a for a in sys.argv[1:] if not a.startswith('--') and a not in skip] or ['townie']
 os.makedirs(OUT, exist_ok=True)
 
@@ -40,7 +41,7 @@ with sync_playwright() as pw:
     ev("window.__realStep = window.__realStep || step; step = dt => false")
     for kind in KINDS:
         boss = kind in BOSS; crops = []
-        for label, js in COMMON[:2] + (BOSS[kind] if boss else MELEE) + COMMON[2:]:
+        for label, js in [r for r in COMMON[:2] + (BOSS[kind] if boss else MELEE) + COMMON[2:] if not ONLY or r[0] in ONLY]:
             ok = ev(f"""(() => {{ try {{ foes.length = 0; parts.length = 0; const p = player; p.x = cam.x + 140; p.y = 470; p.state = 'idle';
               const f = {"makeHB('" + kind + "')" if boss else "makeFoe('" + kind + "', 0, 0, 'idle')"}; f.x = cam.x + 520; f.y = 470; f.z = 0; f.face = -1; f.vx = f.vy = 0; f.t = 0;
               f.inv = 0; f.flash = 0; f.say = null; f.combo2n = 0; f.uppercut = false; f._ps = null; foes.push(f); {js}; render(); return 'ok'; }} catch (e) {{ return String(e); }} }})()""")

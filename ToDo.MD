@@ -282,6 +282,32 @@ The Meshy paintings stay exactly as they are: the movement is a layer drawn on t
   - `tools/v85/alivetest.py` shoots every stage at three clock times with no page errors; bot clears the beach, the fishery, Charing Cross and the alley as before
 - [ ] Tim: play a few of them on the phone and say if anything is too busy, too small to notice, or in the wrong place (every position is one number in ALIVE in `tools/v85/alive.js`)
 
+### Sound effects (15 November)
+Tim upgraded PixelLab to Tier 2 (sound and music need it; the allowance went to 4,800 generations this cycle).
+- [x] 33 recorded takes made in PixelLab (V85) for 27 sounds: punches (3 takes), heavy hits, swings and falls (2 each), KO, ouch (2), grab, throw, landing, the special, glass smash, wood breaking, thunk, dart, pint clink, splash, boom, gunshot, fire, airhorn, record scratch, whistle, door, moped, car horn, snore, spray hiss. Each play picks a take and nudges the pitch a little. Sounds without a take (pickups, the special bar, jumps, the fruit machine, sirens, the jokes) keep their arcade bleeps, and so does every sound while the files load
+  - Code in `tools/v85/sfx.js`, patched in by `tools/v85_sfx_build.py`; takes in `web/sfx` (24 kHz mono WAV, trimmed and levelled, 1.3 MB); prompts and PixelLab ids in `tools/v85/sfx_prompts.json`. `?classicsfx` in the address plays only the old sounds, to compare
+  - PixelLab's file host is blocked from Claude's sessions, so the files came through a PixelLab sandbox packed into an image; worth knowing if more are made
+- [ ] Tim: listen on the sound board artifact (Carp Diem sound board, in your artifacts) and say which takes to redo, and once merged, whether any are too loud or quiet in play (one number each in SFX_VOL)
+- [x] Batch 2 (V85): enemies now have voices. A grunt on about a third of their hurts, a cry when knocked down, one voice at a time so a crowd doesn't babble; women (ladette, Lady Addict, ragazza, sunbather, club girl, IT girl, Denise, Sue, Scrunchie) get their own. Also eating (food pickups), picking up a weapon, a jump, a crowd cheer at every stage clear, and a roar when a boss arrives (not on Denise, Sue or Lady Addict). 14 more takes, 15 generations
+- [x] Title theme (V85): a new garage track from PixelLab music in the soundtrack's style (132 bpm, FM bass and swung beat lead, sparse square riff), made into a loop: the intro plays once, then 39.1 s to 93.4 s repeats. Plays on the title screen (it was silent), the select screen, the group chats and the endings; the old sequencer tune stays as the fallback. `web/music/title-theme.mp3`, key `title` (with from/end in TRACKS). The second take was refused by PixelLab's music service as too close to a catalogue recording, so it wasn't used
+- [x] Tim on the title theme: "amazing, best so far by a lot" (15 November). Worth using PixelLab music for more tracks in the same style
+- [ ] Tim: listen to the new voices on the sound board and say if they fit
+
+### The new soundtrack (15 November)
+- [x] Every stage and boss track made again with PixelLab music in the title theme's style (V85, Tim: "Yes do them all"): 20 stage keys (garage, soundz, arrival, naval, social, pegnine, airport, road, divebar, beach, club, ramsden, platform, train, terminus, smoking, nightbus, codered, heist, alarmcall) and 6 boss themes (boss, boss1999, bosselba, boss2006, lockdown, lady). Each was asked for in the old track's tempo and feel, then made into a loop: the intro plays once, then the main part repeats, as the title theme does. 356 generations (2,964 left until 13 December)
+  - Files in `web/music/v85/<key>.mp3` (128k, cut at the loop end, 41 MB). Loop points, file lengths and loudness-matched volumes in `tools/v85/music.json`; code in `tools/v85/music.js`, patched in by `tools/v85_music_build.py`. Prompts and PixelLab ids in the work notes and the claude.ai project's `soundtrack/README.md`
+  - Atlantis: the new Alarm Call is 134.12 bpm with its loop exactly 154 beats, so the BEAT ring follows the new track's own tempo and first beat (measured, not assumed)
+  - Coming back from a mini-boss picks up inside the loop, not the intro. A new file that won't load falls back to the old track. `?oldmusic` in the address plays the old tracks everywhere, to compare
+  - Six loops clicked at the join (smoking worst, then boss, nightbus, train, arrival, bosselba); the 10 ms before each loop end now blends into the audio before the loop start, and smoking's loop moved 40 ms earlier off a drum hit, so all six join as smoothly as continuous audio
+  - Test: `tools/v85/musictest.py` (all 26 decode at the right length, loop points, gain, mini-boss resume, fallback, ?oldmusic, beat phase). Passes
+- [ ] Tim: listen on the sound board (Carp Diem sound board, now with a soundtrack section: each track new, a 12 second clip across its loop seam, and the old one) and name any to redo. Redoing one costs about 14 generations
+- [ ] The app grows by 41 MB with both soundtracks inside it, and the next in-app update downloads it. Once Tim is happy with the new ones, the old files the new ones replace (about 24 MB in `web/music/`) can go, which also drops `?oldmusic` and the old-file fallback. Keep `alarmcall2`, `deepcover` and `title-theme.mp3`
+
+### Talking portraits (15 November)
+- [x] The 12 portraits (the lads, Denise, Jo, Nozzer) talk (V85). When one of them says something in a stage, their face pops up beside the speech bubble and the mouth follows the letters of the line, then shuts; in the WhatsApp-style group chat the newest message's face talks. The Nokia text chats stay still (they're texts)
+  - PixelLab drew five mouths per face (shut, a, o, e, f; 3 generations each, 36 in all); only the mouth area was pasted onto the original portraits (`tools/v85/mouths.py`), so the faces stay the hand-made ones. Strips in `tools/v85/talk_src`, code in `tools/v85/talk.js`, patched by `tools/v85_talk_build.py`
+- [ ] Tim: say if the face beside the speech bubble is too much in a busy fight (it can be limited to story lines, or made smaller)
+
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
 
@@ -354,8 +380,9 @@ Tim asked to spend the spare PixelLab allowance on the lads: more depth, cleaner
   - Still to do: nothing. Worth a play-through to spot any frame that reads oddly in motion (hurt rows on shark, moschino and raver had a stray attacker's fist drawn in, so those frames are dropped or re-rolled)
 - [x] Bot playthrough of every stage (headless, god mode, tools at /home/claude/work/play in the session): 19 of 21 stages cleared with no page errors and no frame out of range. The Social timed out on Denise (the bot can't wear her down; she clears fine once beaten) and the Kebab Siege is endless by design. The Frogger crossing was skipped. Fixed from the review: the attack wind-up showed the punch already out on razor, garagemc, quick, grappler and tuba (now the stance, then the hit), kappa's whip now cracks on the extended frame, and Big Tony's charge and Don Vito's far move use the right frames
 - [x] Bosses now flinch on a hit: a quarter of a second from their hurt rows (head, then body, alternating), skipped while they wind up, strike, charge, lie down or are held, so the AI and the telegraphs are unchanged
-- [ ] Rows the bot hardly reached and worth a hand check: dazed (only after the SENT OFF special), held on bosses, the anti-air uppercut (needs a jump-in), mick's belly barge, denim's slide, dipper's steal
-- PixelLab: 1,374 of this cycle's 2,000 generations used (resets 13 December)
+- [x] Rows the bot hardly reached, hand-checked with frozen-clock shots (15 November): dazed, grabbed and the anti-air uppercut on all 76 kinds, plus Mick's belly, Denim's slide, the Dipper's steal and dodge, and every boss being held. All read correctly; nothing needed fixing. `tools/v85/foetest.py <kinds> --only dazed,grabbed,uppercut` repeats it
+  - Small note: Mick's belly wind-up and barge use his stance rather than a row of their own (the belly itself has one). Fine as is
+- PixelLab: about 1,480 of this cycle's 4,800 generations used (Tier 2 from 15 November; resets 13 December)
 
 ### Tim
 - [ ] Play each lad on a phone and say which moves look off (wrong frame on the hit, a pose that turns his back, size)

@@ -1,0 +1,247 @@
+{
+ "_note": "Version 85 soundtrack, made with PixelLab create_music then make_music_loop. Each: bpm asked, style prompt, the takes' song ids, the loop take used (song id where logged, and its file path). Exclude list for all: vocals, singing, fade out, orchestra, pads, guitar solo. Length asked: 70 s.",
+ "garage": {
+  "bpm": 128,
+  "prompt": "16-bit Mega Drive FM chiptune 2-step UK garage stage theme: swung shuffling drum machine and a bouncy growling FM bass carry it, short dry syncopated organ-style chord stabs, a sparse quiet square-wave riff late on, no long soaring melody; cold December night on an Orpington high street in 1999, loops cleanly.",
+  "takes": [
+   "abc90e0f-5dcf-4809-8d2c-3149d600fab0",
+   "17f5d9dd-d199-4540-88dc-322017ecc22e"
+  ],
+  "loop": "9c4549e3-1ea4-4d18-bdf4-fc3ed0d1a873",
+  "file": "286c2b50-9640-4506-87ad-14b61406a9d1/mbc-garage-loop.mp3"
+ },
+ "soundz": {
+  "bpm": 132,
+  "prompt": "16-bit Mega Drive FM chiptune speed garage stage theme: driving four-to-the-floor drums with shuffled hats, a big warping FM bass that wobbles on the off-beats, dry vocal-chop style stabs, quiet short square blips, no long melody; pirate radio station in a tower block flat, loops cleanly.",
+  "takes": [
+   "9da163f3-0d31-48b0-b0cb-183a8ed05f83",
+   "c51ffe81-29f9-4d45-a97e-2484ada96bfc"
+  ],
+  "loop": "3fc0c572-664d-43ba-be78-5518d219a54b",
+  "file": "4294d284-b8a7-4ada-bc34-b7b970cae2c2/mbc-soundz-loop.mp3"
+ },
+ "codered": {
+  "bpm": 136,
+  "prompt": "16-bit Mega Drive FM chiptune 2-step garage stage theme with a spy-thriller edge: swung drums, a low overdriven guitar-like square riff of power chord chugs, a two-tone siren sound on every beat kept quiet, sub bass, no soaring melody; chaos on a 2001 high street, loops cleanly.",
+  "takes": [
+   "39690760-cabb-4e1a-bfab-3c5ead9ee39f",
+   "0f8c2e37-9f0f-4bb0-84f8-70c72d04f187"
+  ],
+  "loop": "0b83dd07-1073-414e-8174-c641b4a7b9b1",
+  "file": "c6dda241-de37-4e8a-bccb-d31947c5e15b/mbc-codered-loop.mp3"
+ },
+ "heist": {
+  "bpm": 138,
+  "prompt": "16-bit Mega Drive FM chiptune 2-step garage stage theme: tight swung drums, a stop-start low distorted square riff jumping the octave, a dive klaxon bend once a bar, deep sub bass, no long melody; sneaking through a rowdy old pub, loops cleanly.",
+  "takes": [
+   "aad65be7-29f8-49c2-9f71-0101acbd5544",
+   "cd4181e1-d05e-4fd6-92f0-6e51362ba471"
+  ],
+  "loop": "3b1da6d5-aa5e-42b2-8292-c4d2227cdd4f",
+  "file": "83625186-c69f-4a3d-a4ac-259a631e0694/mbc-heist-loop.mp3"
+ },
+ "alarmcall": {
+  "bpm": 134,
+  "prompt": "16-bit Mega Drive FM chiptune spy-thriller 2-step garage theme: swung drums, a low distorted guitar-like square riff of power chords and palm-muted chugs from the start, a blaring two-note alarm on the beat, sub bass, a breakdown with long chords, no soaring melody; a heist in a seaside nightclub, loops cleanly.",
+  "takes": [
+   "4da507ec-d546-413c-bf41-1424316a0e8e",
+   "ede0976b-75de-49a3-814d-247919cb7c69"
+  ],
+  "loop": "3487bb5a-6be8-47d2-8cde-c00cb882a84b",
+  "file": "d378c275-4824-4ca2-b0f6-921dfb3c33a5/mbc-alarmcall-loop.mp3"
+ },
+ "airport": {
+  "bpm": 126,
+  "prompt": "16-bit Mega Drive FM chiptune funky house stage theme: groovy four-to-the-floor drums with congas, a funky slap FM bass, short dry chord chops, a three-note airport chime motif now and then, no long melody; arriving at a sunny Italian island airport in 2002, loops cleanly.",
+  "takes": [
+   "785b6ca3-ea6d-41e4-9a3e-961187a0a206",
+   "96bc1ada-62e8-4366-a0ab-db6210388cd8"
+  ],
+  "loop": "063bbf89-1cf8-4f3b-9f61-87b6fe85c709",
+  "file": "3414b0a7-f706-447b-b823-e333dd9bb749/mbc-airport-loop.mp3"
+ },
+ "road": {
+  "bpm": 144,
+  "prompt": "16-bit Mega Drive FM chiptune driving theme: fast pumping drums, a rolling octave FM bass, a quick quiet square arpeggio, a half-time middle section, no long melody; racing a battered people carrier along a coast road in the sun, loops cleanly.",
+  "takes": [
+   "f9cd227c-54a8-4d17-aca3-8336cfbdecce",
+   "dd99d2aa-61f4-4a2d-a46a-a7753e55e48c"
+  ],
+  "loop": "49feda32-998c-4f85-b612-097350084b70",
+  "file": "41a37833-4c78-4742-9182-734b232e36bc/mbc-road-loop.mp3"
+ },
+ "divebar": {
+  "bpm": 116,
+  "prompt": "16-bit Mega Drive FM chiptune dark Italo funk theme: laid-back funky drums, a slap FM bass that carries the tune, short organ chops, sparse muted guitar-like plucks, no long melody; a smoky Italian dive bar with shady regulars, loops cleanly.",
+  "takes": [
+   "c3104b61-7c4a-42f1-8899-1fb4dff1bed7",
+   "263855d4-3714-41ac-a074-e20e823e39a5"
+  ],
+  "loop": "552df894-5d78-43a5-a1ae-d92517224905",
+  "file": "335f7e1d-199e-41e9-8b3a-4ea07d7c9748/mbc-divebar-loop.mp3"
+ },
+ "beach": {
+  "bpm": 122,
+  "prompt": "16-bit Mega Drive FM chiptune Latin house theme: four-to-the-floor drums with congas and shakers, a bouncy FM bass, short dry organ chops, quiet marimba-like square plucks, no long melody; a packed Italian beach at midday, loops cleanly.",
+  "takes": [
+   "39a40def-8ccf-44ff-9a0b-73322ba6ae89",
+   "b69f1c88-2258-4f40-aa32-4daa5e818ffd"
+  ],
+  "loop": "fdef85cf-d7f2-4a14-a611-925913415a0c",
+  "file": "4acb8915-f4d6-48bb-a43f-dd2131e1edf3/mbc-beach-loop.mp3"
+ },
+ "club": {
+  "bpm": 138,
+  "prompt": "16-bit Mega Drive FM chiptune early 2000s trance club theme: pounding four-to-the-floor kick, rolling off-beat FM bass, a quiet fast square arpeggio, big snare build-ups, no lead melody and no pads; the biggest club on the island at 2am, loops cleanly.",
+  "takes": [
+   "b0b07508-b7f8-493c-b5a3-70cdca925409",
+   "0d9142cb-149f-45ce-9db0-3365fcf45693"
+  ],
+  "loop": "98d4bba8-a539-4a01-ac34-5e2398b4ff24",
+  "file": "22c4276a-716e-4f72-9077-ff6a29a9c5ba/mbc-club-loop.mp3"
+ },
+ "platform": {
+  "bpm": 128,
+  "prompt": "16-bit Mega Drive FM chiptune electro house theme: punchy four-to-the-floor drums, a driving sixteenth-note FM bass, an off-beat slap stab layer, short square bleeps, no long melody; a London suburban train station at night in 2006, loops cleanly.",
+  "takes": [
+   "88622182-a919-4ee8-845d-60b9143c0204"
+  ],
+  "loop": "aa69e954-67dc-47bf-bbec-01737df96dd6",
+  "file": "0ab5dc87-1b07-4aca-980e-3129b2440889/mbc-platform-loop.mp3"
+ },
+ "train": {
+  "bpm": 138,
+  "prompt": "16-bit Mega Drive FM chiptune bassline house theme: shuffling drums with clickety-clack train-like hats, a warping wobbling FM bass that carries the tune, short dry stabs, no long melody; a late train rattling into London, loops cleanly.",
+  "takes": [
+   "6098a46b-ce54-49a0-b72b-516a912d4c1c"
+  ],
+  "loop": "ff944d9f-34e3-406e-8a30-b43a6919ce4f",
+  "file": "95bd7484-b7d2-4eb3-bc95-6b4ff6f1fbb3/mbc-train-loop.mp3"
+ },
+ "terminus": {
+  "bpm": 126,
+  "prompt": "16-bit Mega Drive FM chiptune UK funky house theme: syncopated drums with congas, a slap FM bass, short organ chops, no long melody; a busy London terminus station concourse at night, loops cleanly.",
+  "takes": [
+   "f51a634f-0512-4589-959a-da4dbcce562a"
+  ],
+  "loop": "f59fceac-6bf0-44cc-b55d-ebe54821cc97",
+  "file": "37ac8406-6839-42ea-84f5-ba041b7981b8/mbc-terminus-loop.mp3"
+ },
+ "smoking": {
+  "bpm": 140,
+  "prompt": "16-bit Mega Drive FM chiptune dark half-time grime theme: sparse heavy drums, deep sub bass slides, single dry low stabs, no beeping lead and no melody; a dark alley smoking area behind a club, menacing, loops cleanly.",
+  "takes": [
+   "bc88ada3-166e-454b-b4fd-0ed7fd81776a"
+  ],
+  "loop": "97459414-c0dc-454d-8f2c-aa428544ef3f",
+  "file": "9f61932a-9c1e-4ae5-81af-86c4fdef6af2/mbc-smoking-loop.mp3"
+ },
+ "nightbus": {
+  "bpm": 132,
+  "prompt": "16-bit Mega Drive FM chiptune late-night 2-step garage theme: heavily swung drums, a warm rolling FM bass, soft short organ chops, no long melody; the night bus home at 3am, tired but still buzzing, loops cleanly.",
+  "takes": [
+   "9ef41697-547a-45f5-94f4-eb9db94bcabc"
+  ],
+  "loop": "1514830b-65d0-42ba-b717-b43e407cfdf8",
+  "file": "0ab31478-4f3c-42c5-99a2-f093d6521c61/mbc-nightbus-loop.mp3"
+ },
+ "arrival": {
+  "bpm": 124,
+  "prompt": "16-bit Mega Drive FM chiptune house theme: steady four-to-the-floor drums, a bouncy FM bass, short dry chord stabs, quiet square plucks, no long melody; arriving at a fishing lake on a sunny morning for a week of carp fishing, loops cleanly.",
+  "takes": [
+   "5049570c-e889-4f3d-90aa-55fa1ed4e8a4"
+  ],
+  "loop": "5b59009d-baad-4be2-8136-11328d7e1e40",
+  "file": "57f3eaf4-0d09-455c-9642-d2c7344cd0b0/mbc-arrival-loop.mp3"
+ },
+ "naval": {
+  "bpm": 130,
+  "prompt": "16-bit Mega Drive FM chiptune 2-step garage theme: swung drums, a deep rolling FM bass, sparse watery plucks, short dry stabs, no long melody; a midnight raid across a lake in a dinghy, sneaky, loops cleanly.",
+  "takes": [
+   "13d0cc5a-598b-434c-948d-c01b505af79e"
+  ],
+  "loop": "0959d3a5-f574-47d3-b443-a0f4f20952cf",
+  "file": "2e2f08ed-96a2-4814-8452-6524fae777dc/mbc-naval-loop.mp3"
+ },
+ "social": {
+  "bpm": 134,
+  "prompt": "16-bit Mega Drive FM chiptune dark bassline garage theme: swung drums, a gritty warping FM bass that carries it, short dark stabs, no long melody; last orders at a rough fishing club social bar, loops cleanly.",
+  "takes": [
+   "6e3d2d2c-420a-4519-81d0-9f136352f12b"
+  ],
+  "loop": "32e95668-023b-4627-8d6f-f309eba478f9",
+  "file": "53008cb5-7ef8-4c3e-932d-1c443e44c14d/mbc-social-loop.mp3"
+ },
+ "pegnine": {
+  "bpm": 120,
+  "prompt": "16-bit Mega Drive FM chiptune synthwave theme: steady drum machine with gated snare, a pulsing eighth-note FM bass, short dry chord stabs, a quiet square arpeggio, no long soaring melody; a dawn standoff over a fishing peg by a misty lake, loops cleanly.",
+  "takes": [
+   "f7bb11ab-ae4a-407e-8d5e-3b31850e28b7"
+  ],
+  "loop": "de2ba7b0-4db8-435b-8414-1084ca8a5264",
+  "file": "561dd14d-f55e-4ed0-8387-bf4581b77844/mbc-pegnine-loop.mp3"
+ },
+ "ramsden": {
+  "bpm": 140,
+  "prompt": "16-bit Mega Drive FM chiptune grime theme: hard sparse drums, a deep sub bass, a dry jagged square-wave riff, no long melody; a run-down estate on fire at night, loops cleanly.",
+  "takes": [
+   "523c41bf-db7f-4e73-9104-8fe1d467ace3"
+  ],
+  "loop": "93818592-05b0-4b3e-925d-9c7a94634e3c",
+  "file": "c7378482-5517-425f-9628-a25c09e45a66/mbc-ramsden-loop.mp3"
+ },
+ "boss1999": {
+  "bpm": 140,
+  "prompt": "16-bit Mega Drive FM chiptune boss theme: hard breakbeat drums, dark low chord stabs, a growling FM drone bass, no beeping lead and no melody; a menacing pirate radio MC boss fight, loops cleanly.",
+  "takes": [
+   "d0463a44-b9d3-4acf-8af5-a97daebe0551"
+  ],
+  "loop": "af3477e9-cee8-44af-968b-48560c79197b",
+  "file": "4502343e-fb2f-46cd-adb6-55fcfe613e97/mbc-boss1999-loop.mp3"
+ },
+ "lockdown": {
+  "bpm": 130,
+  "prompt": "16-bit Mega Drive FM chiptune boss theme: driving drums, a galloping low distorted guitar-like square riff, a low buzzer alarm on beats two and four, sub bass, a half-time breakdown, no soaring melody; fighting a huge pub landlord, loops cleanly.",
+  "takes": [
+   "c05231a6-655d-4790-9378-e1c134eb33a1"
+  ],
+  "loop": "2dd28abc-8a5a-4558-9c3a-ce670ba11e1f",
+  "file": "42b68eda-f8ab-4c51-9ebc-09e2d50d04cb/mbc-lockdown-loop.mp3"
+ },
+ "bosselba": {
+  "bpm": 150,
+  "prompt": "16-bit Mega Drive FM chiptune boss theme: fast pounding techno drums, a harmonic minor riff on a mandolin-like pluck doubled by a dry square, driving sixteenth FM bass, orchestra hits, no long melody; fighting Italian mafia bosses, loops cleanly.",
+  "takes": [
+   "d8d39e9c-387e-4770-85f1-f1f76a7bf8f8"
+  ],
+  "loop": null,
+  "file": "87188133-8eee-4282-aff6-f7014e4b58c9/mbc-bosselba-loop.mp3"
+ },
+ "boss2006": {
+  "bpm": 150,
+  "prompt": "16-bit Mega Drive FM chiptune boss theme: hammering drums, driving sixteenth-note FM bass, octave stab riffs, orchestra hits, a short drum break, no FM lead melody; fighting a gangster in a London station, loops cleanly.",
+  "takes": [
+   "32e2d5ed-4b0d-47ec-a31c-cf4ec0137bad"
+  ],
+  "loop": null,
+  "file": "673260f0-a01e-4840-9b81-b6e4e099b42d/mbc-boss2006-loop.mp3"
+ },
+ "boss": {
+  "bpm": 148,
+  "prompt": "16-bit Mega Drive FM chiptune boss theme: hammering riffs on dry stabs, orchestra hits, a driving sixteenth-note FM bass, pounding drums, no soaring melody; the final showdown with a legendary giant carp, loops cleanly.",
+  "takes": [
+   "a91f306c-e375-4e9a-8f29-6c266b3966b7"
+  ],
+  "loop": null,
+  "file": "51b9dffd-b2f9-41f7-9621-c5a699c41390/mbc-boss-loop.mp3"
+ },
+ "lady": {
+  "bpm": 172,
+  "prompt": "16-bit Mega Drive FM chiptune jungle boss theme: fast chopped breakbeats, a deep rolling sub bass, dark stabs, a record rewind effect now and then, no melody; a pirate radio DJ boss fight on an estate rooftop, loops cleanly.",
+  "takes": [
+   "5547796d-6e48-4fd1-9472-464a9432b60e"
+  ],
+  "loop": "fb2f6796-a253-4b70-b56f-fde8bc3acef9",
+  "file": "3d3aef10-c450-4e98-ae83-8edc89dfa98f/mbc-lady-loop.mp3"
+ }
+}
