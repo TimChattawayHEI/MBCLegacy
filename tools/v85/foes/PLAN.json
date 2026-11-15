@@ -1,0 +1,1709 @@
+{
+ "bouncer": {
+  "id": "7af8e015-e87f-4617-8d21-54ac3fd60a94",
+  "kinds": [
+   "bouncer",
+   "doorman"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/7af8e015-e87f-4617-8d21-54ac3fd60a94/animations/b0e9a272-2985-4df9-b10e-be683ef9473d/east/8.png",
+  "status": "done",
+  "notes": "attack: big heavy haymaker punch"
+ },
+ "vibez": {
+  "id": "3f4b9c3a-b5ad-42b3-96b4-7be60a73bd49",
+  "kinds": [
+   "vibez"
+  ],
+  "h": 60,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": "cd",
+  "weapon": null,
+  "ai": "ranged",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/3f4b9c3a-b5ad-42b3-96b4-7be60a73bd49/animations/1c2d62bd-a6a0-40a8-a33b-6285c84dd1f8/east/8.png",
+  "status": "done",
+  "notes": "attack: sidearm frisbee throw of a CD, empty hand"
+ },
+ "chunk": {
+  "id": "a730a2fd-693a-4fe6-b95b-bac63704c0d5",
+  "kinds": [
+   "biglad",
+   "chunk"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/a730a2fd-693a-4fe6-b95b-bac63704c0d5/animations/386388ba-33ca-4037-822a-663351dc62a3/east/8.png",
+  "status": "done",
+  "notes": "attack: belly barge"
+ },
+ "ladette": {
+  "id": "edfd6140-5a67-4047-a85b-c4177cccd478",
+  "kinds": [
+   "ladette"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/edfd6140-5a67-4047-a85b-c4177cccd478/animations/f2cfdc3b-1a41-4d8d-be74-62cd65d72df4/east/8.png",
+  "status": "done",
+  "notes": "attack: big winding slap"
+ },
+ "dti": {
+  "id": "73b902cb-d39a-4bc4-857b-91f7341d4319",
+  "kinds": [
+   "dti"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": "letter",
+  "weapon": null,
+  "ai": "ranged",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/73b902cb-d39a-4bc4-857b-91f7341d4319/animations/60ad76dc-fb5c-447d-8685-eecbadc5f041/east/8.png",
+  "status": "done",
+  "notes": "attack: flings an official letter"
+ },
+ "mc": {
+  "id": "5dc3d370-9c99-4acf-a7e9-ee1846ca2455",
+  "kinds": [
+   "mc"
+  ],
+  "h": 75,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "close",
+   "far"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": "aerial",
+  "ai": null,
+  "boss": true,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/5dc3d370-9c99-4acf-a7e9-ee1846ca2455/animations/92d30161-f721-435e-989d-c8f6109fa7b2/east/8.png",
+  "status": "done",
+  "notes": "attack: two-handed swing with aerial; close: holds up red air horn and blasts; far: overarm throw free hand"
+ },
+ "angler": {
+  "id": "423a756c-83b0-464d-bd49-372e39f5c57e",
+  "kinds": [
+   "angler"
+  ],
+  "h": 60,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/423a756c-83b0-464d-bd49-372e39f5c57e/animations/1ceec791-7be3-425d-9118-f9225f4c9c3d/east/8.png",
+  "status": "done",
+  "notes": "attack: right punch"
+ },
+ "warden": {
+  "id": "6787fec7-c7d0-40fa-a37a-37a27433b0f8",
+  "kinds": [
+   "warden"
+  ],
+  "h": 60,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/6787fec7-c7d0-40fa-a37a-37a27433b0f8/animations/082d5918-a339-43d1-948b-d6aaf6c586ca/east/8.png",
+  "status": "done",
+  "notes": "attack: two-handed shove"
+ },
+ "carpbro": {
+  "id": "632ac96f-9edf-4c4a-9c84-ed1d00f54fa7",
+  "kinds": [
+   "carpbro"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/632ac96f-9edf-4c4a-9c84-ed1d00f54fa7/animations/d85a2481-851d-4e79-960c-349e60f86f31/east/8.png",
+  "status": "done",
+  "notes": "attack: winds right fist back, lunging straight punch"
+ },
+ "farbank": {
+  "id": "a3650cde-41a7-4aba-a075-fe104c7904ec",
+  "kinds": [
+   "farbank"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": "stick",
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/a3650cde-41a7-4aba-a075-fe104c7904ec/animations/9f490988-377c-4c1b-b1bb-9d8223b49ce7/east/8.png",
+  "status": "done",
+  "notes": "attack: raises right arm high and clubs down overhand"
+ },
+ "regular": {
+  "id": "8bd10b8c-3c2f-4f8c-8814-6db227db40b0",
+  "kinds": [
+   "regular"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/8bd10b8c-3c2f-4f8c-8814-6db227db40b0/animations/201057c4-37b9-40b5-92e7-d83c9724e02b/east/8.png",
+  "status": "done",
+  "notes": "attack: pulls right fist back, lunging straight punch"
+ },
+ "darts": {
+  "id": "58feaf54-05ad-4eee-ac8c-694449f33d85",
+  "kinds": [
+   "darts"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": "dart",
+  "weapon": null,
+  "ai": "ranged",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/58feaf54-05ad-4eee-ac8c-694449f33d85/animations/66211bf6-ede0-4a29-a6b0-8572a45f012a/east/8.png",
+  "status": "done",
+  "notes": "attack: raises right hand beside head and throws a dart"
+ },
+ "nozzer": {
+  "id": "5f8c95dd-1430-42ed-bc93-ae45d85e9019",
+  "kinds": [
+   "nozzer"
+  ],
+  "h": 60,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "nozzer",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/5f8c95dd-1430-42ed-bc93-ae45d85e9019/animations/cda03fb1-2e4b-4ee6-879b-bc93ac885fca/east/8.png",
+  "status": "done",
+  "notes": "attack: jabs finger forward accusingly, keeps walking stick"
+ },
+ "denise": {
+  "id": "13270c0d-d285-4379-a196-a732c7c19b24",
+  "kinds": [
+   "denise"
+  ],
+  "h": 75,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": true,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/13270c0d-d285-4379-a196-a732c7c19b24/animations/10f37c03-9f2d-44d4-b627-11c2a0e52a15/east/8.png",
+  "status": "done",
+  "notes": "attack: raises both hands together overhead and hammers down"
+ },
+ "tracksuit": {
+  "id": "7d66ec49-7010-4a03-91b2-3df85c96a07b",
+  "kinds": [
+   "tracksuit"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/7d66ec49-7010-4a03-91b2-3df85c96a07b/animations/90590c29-7dee-400a-aa7d-e9fca5971825/east/8.png",
+  "status": "done",
+  "notes": "attack: pulls right fist back, quick straight punch"
+ },
+ "hoodie": {
+  "id": "20bc6c4a-f474-4dac-98d4-db2fcf1d446b",
+  "kinds": [
+   "hoodie"
+  ],
+  "h": 64,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": "bottle",
+  "weapon": null,
+  "ai": "ranged",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/20bc6c4a-f474-4dac-98d4-db2fcf1d446b/animations/81ad01d1-db98-433c-90c6-41965ba995a7/east/8.png",
+  "status": "done",
+  "notes": "attack: winds right arm back and throws a bottle overarm"
+ },
+ "lady": {
+  "id": "846ea0fd-f5a5-4bd2-8337-5760410f698a",
+  "kinds": [
+   "lady"
+  ],
+  "h": 74,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": true,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/846ea0fd-f5a5-4bd2-8337-5760410f698a/animations/0fa98826-f5fc-4f60-bd82-d8b14d00d0e7/east/8.png",
+  "status": "done",
+  "notes": "attack: lifts right knee high then stamps a front kick"
+ },
+ "sec": {
+  "id": "ede257a4-3806-44e2-bff2-e6033c324fce",
+  "kinds": [
+   "sec"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/ede257a4-3806-44e2-bff2-e6033c324fce/animations/07651319-5675-4347-9bfb-cfa3974deefe/east/8.png",
+  "status": "done",
+  "notes": "attack: pulls right fist back, lunging punch"
+ },
+ "handler": {
+  "id": "fb9ac77d-2ef4-4c14-956a-7a51dcafa2d0",
+  "kinds": [
+   "handler"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": "case",
+  "weapon": null,
+  "ai": "ranged",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/fb9ac77d-2ef4-4c14-956a-7a51dcafa2d0/animations/06fbbbd3-f9f9-4232-bb49-e6f672b6eefd/east/8.png",
+  "status": "done",
+  "notes": "attack: winds both arms back over his head and hurls a suitcase"
+ },
+ "ragazzo": {
+  "id": "add0fa26-5256-4bc0-bcd5-ee617f993c0f",
+  "kinds": [
+   "ragazzo"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/add0fa26-5256-4bc0-bcd5-ee617f993c0f/animations/1c497a26-c528-4791-928a-fbdc816d56d3/east/8.png",
+  "status": "done",
+  "notes": "attack: quick jab then a hard right hook"
+ },
+ "ragazza": {
+  "id": "19eb83a1-b2a4-4c0b-a888-08808f9675c9",
+  "kinds": [
+   "ragazza"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/19eb83a1-b2a4-4c0b-a888-08808f9675c9/animations/00b64fe6-4d4f-4248-95f4-f2a0546cd23c/east/8.png",
+  "status": "done",
+  "notes": "attack: fast open-handed slap"
+ },
+ "carab": {
+  "id": "e5afb135-801f-45d2-9ec0-29f02d5473c9",
+  "kinds": [
+   "carab"
+  ],
+  "h": 76,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "close",
+   "far"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/e5afb135-801f-45d2-9ec0-29f02d5473c9/animations/c8680cda-6fb0-4262-a88c-b186efff6a92/east/8.png",
+  "status": "done",
+  "notes": "attack: big punch; close: leans back then thrusts; far: draws pistol and fires"
+ },
+ "gianni": {
+  "id": "19aa211b-bdc2-4a4b-9612-e14f8fcbac55",
+  "kinds": [
+   "gianni"
+  ],
+  "h": 77,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "close"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/19aa211b-bdc2-4a4b-9612-e14f8fcbac55/animations/58a5e392-c39e-422b-ac4a-12d4e7a50a06/east/8.png",
+  "status": "done",
+  "notes": "attack: pulls back fist then throws a punch; close: leaps forward driving a flying knee"
+ },
+ "marco": {
+  "id": "883ce06d-924b-47ab-b9ff-b08823ba8825",
+  "kinds": [
+   "marco"
+  ],
+  "h": 77,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "close"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/883ce06d-924b-47ab-b9ff-b08823ba8825/animations/c50f044f-c103-4e41-9325-65336c7c83f9/east/8.png",
+  "status": "done",
+  "notes": "attack: quick jab then a high roundhouse kick; close: spinning back kick"
+ },
+ "luca": {
+  "id": "6e14f603-98c8-4e77-a94a-3a7c99f62862",
+  "kinds": [
+   "luca"
+  ],
+  "h": 76,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "far"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/6e14f603-98c8-4e77-a94a-3a7c99f62862/animations/9df6e459-04a0-492e-a33c-306dc1f0c4a2/east/8.png",
+  "status": "done",
+  "notes": "attack: big looping punch; far: lowers head and shoulder and charges"
+ },
+ "paolo": {
+  "id": "65c66655-f32a-478f-9262-33af4eab2faa",
+  "kinds": [
+   "paolo"
+  ],
+  "h": 76,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "close"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/65c66655-f32a-478f-9262-33af4eab2faa/animations/92b18fc9-3c10-43b2-85bc-9f9e16d1dbd8/east/8.png",
+  "status": "done",
+  "notes": "attack: quick jab then a hard front kick; close: runs and drops into a feet-first slide tackle"
+ },
+ "lifeguard": {
+  "id": "24b944a5-7efc-453c-a5de-961b79457f10",
+  "kinds": [
+   "lifeguard"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/24b944a5-7efc-453c-a5de-961b79457f10/animations/1bdd99f7-54dc-40c7-8d84-7074930decc6/east/8.png",
+  "status": "done",
+  "notes": "attack: pulls back fist then punches (holds rescue float)"
+ },
+ "beachm": {
+  "id": "94a86c87-588d-4f56-a1d0-0b40f8cb4606",
+  "kinds": [
+   "beachm"
+  ],
+  "h": 64,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/94a86c87-588d-4f56-a1d0-0b40f8cb4606/animations/8f1bc689-0a0a-40be-9067-1c2a387e2254/east/8.png",
+  "status": "done",
+  "notes": "attack: pulls back fist then punches"
+ },
+ "beachf": {
+  "id": "65de4171-0c7d-410d-8021-768baa5a44ff",
+  "kinds": [
+   "beachf"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": "cream",
+  "weapon": null,
+  "ai": "ranged",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/65de4171-0c7d-410d-8021-768baa5a44ff/animations/ee273c04-4e55-4767-8961-208d133ff6e1/east/8.png",
+  "status": "done",
+  "notes": "attack: winds up and throws (sun cream) overarm"
+ },
+ "mafioso": {
+  "id": "c4f7ac34-62fd-4d3d-9b5b-f5ffcc454ab0",
+  "kinds": [
+   "mafioso"
+  ],
+  "h": 77,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "close",
+   "far"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/c4f7ac34-62fd-4d3d-9b5b-f5ffcc454ab0/animations/a77af544-0504-471b-afb5-92725d55e5bc/east/8.png",
+  "status": "done",
+  "notes": "attack: draws right arm back then backhand slap; close: crouches low then lunges far forward; far: raises empty right hand up (signal)"
+ },
+ "clubm": {
+  "id": "88ed971f-144c-4699-86ed-e3e83c5a105b",
+  "kinds": [
+   "clubm",
+   "rider",
+   "biker"
+  ],
+  "h": 59,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": true,
+  "shot": null,
+  "weapon": "helmet",
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/88ed971f-144c-4699-86ed-e3e83c5a105b/animations/f53a2e3b-2648-4aaf-aada-eb1e5bcb3e54/east/8.png",
+  "status": "done",
+  "notes": "attack: pulls right fist back then punches"
+ },
+ "clubf": {
+  "id": "faee84ca-6acf-4dca-9a6e-0bbb0bddc6ed",
+  "kinds": [
+   "clubf"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/faee84ca-6acf-4dca-9a6e-0bbb0bddc6ed/animations/4f84255a-1e91-44d4-af8e-dcd74df472cb/east/8.png",
+  "status": "done",
+  "notes": "attack: crouches then leaps up and forward with a flying kick"
+ },
+ "beast": {
+  "id": "9379da0b-2607-4c42-a928-6cf3363a8345",
+  "kinds": [
+   "beast"
+  ],
+  "h": 78,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "close",
+   "far"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/9379da0b-2607-4c42-a928-6cf3363a8345/animations/817b660f-f38c-4b0b-b61f-9e83da0d772c/east/8.png",
+  "status": "done",
+  "notes": "attack: raises both fists together high and hammers down; close: lifts one huge leg high and stamps; far: lowers head and shoulders and charges"
+ },
+ "quick": {
+  "id": "14109d09-5a81-4786-8b10-b4ef709b63c6",
+  "kinds": [
+   "quick"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "close",
+   "far"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/14109d09-5a81-4786-8b10-b4ef709b63c6/animations/87a20cbf-30f1-40ff-be9b-df225f332783/east/8.png",
+  "status": "done",
+  "notes": "attack: two very fast straight punches; close: hops up and forward off both feet with a flying kick; far: darts forward low and fast"
+ },
+ "city": {
+  "id": "5e070ef3-d2f0-4ed8-befc-e72b479e6eea",
+  "kinds": [
+   "city"
+  ],
+  "h": 60,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "throw"
+  ],
+  "aa": false,
+  "c2": true,
+  "shot": "bottle",
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/5e070ef3-d2f0-4ed8-befc-e72b479e6eea/animations/6935d64f-0cbb-4785-93d5-cf4b084816ea/east/8.png",
+  "status": "done",
+  "notes": "attack: sharp backhand slap; throw: throws a bottle overarm"
+ },
+ "itgirl": {
+  "id": "56f4af06-c882-47f4-9779-68ad0fdd27d2",
+  "kinds": [
+   "itgirl"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "kick"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/56f4af06-c882-47f4-9779-68ad0fdd27d2/animations/f8293f61-1f5b-4b64-a2a8-b169ed25df4f/east/8.png",
+  "status": "done",
+  "notes": "attack: swings her tiny clutch bag; kick: quick stiletto heel kick forward"
+ },
+ "burb": {
+  "id": "64287cb6-c2a1-4e25-8996-6a50c5a09dc5",
+  "kinds": [
+   "burb"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/64287cb6-c2a1-4e25-8996-6a50c5a09dc5/animations/1cedf03f-3b5f-4642-8401-596e22369c94/east/8.png",
+  "status": "done",
+  "notes": "attack: wild swinging haymaker"
+ },
+ "hoops": {
+  "id": "77856b57-de05-45bf-9009-708a9c99e2e4",
+  "kinds": [
+   "hoops"
+  ],
+  "h": 63,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "pull"
+  ],
+  "aa": false,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/77856b57-de05-45bf-9009-708a9c99e2e4/animations/8e8672a2-3300-4bed-bf4f-809e555391d6/east/8.png",
+  "status": "done",
+  "notes": "attack: lunging slap; pull: reaches both arms forward, grabs and yanks back; c2"
+ },
+ "snood": {
+  "id": "e3d6cc0a-72b1-45af-b003-c533638c396d",
+  "kinds": [
+   "snood"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/e3d6cc0a-72b1-45af-b003-c533638c396d/animations/f9769a53-2c25-45c4-9547-e2e338e9f84c/east/8.png",
+  "status": "done",
+  "notes": "attack: straight punch; c2"
+ },
+ "puffer": {
+  "id": "5b3d5191-b2ec-419c-8ff4-d0e615e54e8a",
+  "kinds": [
+   "puffer"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "dash"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/5b3d5191-b2ec-419c-8ff4-d0e615e54e8a/animations/d92e0cff-fa7c-4889-baa3-de8646c42ec7/east/8.png",
+  "status": "done",
+  "notes": "attack: pulls fist back then punch; dash: crouches low and lunges forward"
+ },
+ "hood": {
+  "id": "ee50e935-d7b2-4392-a50d-13270b729250",
+  "kinds": [
+   "hood"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/ee50e935-d7b2-4392-a50d-13270b729250/animations/431315df-0f14-400f-9d93-6f178effec9b/east/8.png",
+  "status": "done",
+  "notes": "attack: quick hook; aa"
+ },
+ "grappler": {
+  "id": "f3cfcd78-5cd1-4403-a19c-2d46a2d70105",
+  "kinds": [
+   "grappler"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "hold"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/f3cfcd78-5cd1-4403-a19c-2d46a2d70105/animations/0965ae63-f714-42bb-ab9f-e366493f1c58/east/8.png",
+  "status": "done",
+  "notes": "attack: lunging grab; hold: bear hug squeeze"
+ },
+ "dipper": {
+  "id": "325de5e1-f71b-4b2f-bae8-55ea186ea939",
+  "kinds": [
+   "dipper"
+  ],
+  "h": 60,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "dodge",
+   "steal"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/325de5e1-f71b-4b2f-bae8-55ea186ea939/animations/4077447f-c52f-4e7f-b676-ddb62328a399/east/8.png",
+  "status": "done",
+  "notes": "attack: quick flicking jab; dodge: sidesteps backwards nimbly; steal: darts a hand forward and snatches"
+ },
+ "lookout": {
+  "id": "e635e5f6-6918-44c4-bedb-c04d07d033cc",
+  "kinds": [
+   "lookout"
+  ],
+  "h": 59,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "whistle"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": "bottle",
+  "weapon": null,
+  "ai": "ranged",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/e635e5f6-6918-44c4-bedb-c04d07d033cc/animations/aca9c828-757f-4c42-a186-e3a07eed83bd/east/8.png",
+  "status": "done",
+  "notes": "attack: lobs a bottle underarm; whistle: fingers to mouth, whistles"
+ },
+ "stag": {
+  "id": "5cfe5fba-0397-4541-9793-959f8d6442b6",
+  "kinds": [
+   "stag"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "stagger"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/5cfe5fba-0397-4541-9793-959f8d6442b6/animations/e1a4260e-97b0-4114-ac60-06301924602e/east/8.png",
+  "status": "done",
+  "notes": "attack: drunken swing; stagger: drunken wobble"
+ },
+ "groom": {
+  "id": "49977129-d3e6-4e98-8c56-6eb658ddef71",
+  "kinds": [
+   "groom"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/49977129-d3e6-4e98-8c56-6eb658ddef71/animations/598e83ea-fde4-4df5-b424-58853dc88b6d/east/8.png",
+  "status": "done",
+  "notes": "attack: drunken haymaker"
+ },
+ "noface": {
+  "id": "124fa208-b5ab-4710-8136-8b15f7f4651a",
+  "kinds": [
+   "noface"
+  ],
+  "h": 64,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "shrug"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/124fa208-b5ab-4710-8136-8b15f7f4651a/animations/ba93d2ff-43e5-46ed-955b-2d9a37800305/east/8.png",
+  "status": "done",
+  "notes": "attack: punch; shrug: shoulders up, palms out"
+ },
+ "leathers": {
+  "id": "f3faa323-8a76-4071-a7a2-cd662364ba9e",
+  "kinds": [
+   "leathers"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "jab"
+  ],
+  "aa": false,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/f3faa323-8a76-4071-a7a2-cd662364ba9e/animations/51e6649b-1501-4184-8049-b2f6c77e2c3e/east/8.png",
+  "status": "done",
+  "notes": "attack: straight punch; jab: quick lead jab; c2"
+ },
+ "shades": {
+  "id": "a8916c62-6caa-45d5-b4bf-6c5680912ac5",
+  "kinds": [
+   "shades"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "leap",
+   "land"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/a8916c62-6caa-45d5-b4bf-6c5680912ac5/animations/17743831-5caa-48a4-842e-96737be37e40/east/8.png",
+  "status": "done",
+  "notes": "attack: lunging punch; leap: crouch, spring and dive forward through the air arms out; land: belly-flop on the ground, push back up"
+ },
+ "denim": {
+  "id": "929864a1-6425-44cd-8074-cdd2b145ba70",
+  "kinds": [
+   "denim"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "flykick",
+   "slide"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/929864a1-6425-44cd-8074-cdd2b145ba70/animations/9a3e1256-8995-456e-bcc7-cd014ee3bd7f/east/8.png",
+  "status": "done",
+  "notes": "attack: straight punch; flykick: running flying kick; slide: running slide tackle feet first"
+ },
+ "shellsuit": {
+  "id": "518fbf7a-d55f-4a69-be13-dadddf318acc",
+  "kinds": [
+   "shellsuit"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "spray",
+   "throw"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": "bottle",
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/518fbf7a-d55f-4a69-be13-dadddf318acc/animations/d621d1f9-7704-4d31-b1e1-30aa7b8cab66/east/8.png",
+  "status": "done",
+  "notes": "attack: lunging punch holding spray can; spray: holds can out and sprays forward; throw: overarm bottle throw"
+ },
+ "tuba": {
+  "id": "c37105dd-346f-4c63-a39d-87cf0fb4beb7",
+  "kinds": [
+   "tuba"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "blast"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/c37105dd-346f-4c63-a39d-87cf0fb4beb7/animations/9c024992-139f-456c-93b1-91cf962bf775/east/8.png",
+  "status": "done",
+  "notes": "carries a tuba: attack swings the tuba bell forward; blast: blows the tuba hard, bell pointed forward"
+ },
+ "commuter": {
+  "id": "a303c518-acb5-40cd-bef8-bb7c4a1aea9c",
+  "kinds": [
+   "commuter"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/a303c518-acb5-40cd-bef8-bb7c4a1aea9c/animations/cc0cabf3-7428-4743-8691-ffd5803a38b5/east/8.png",
+  "status": "done",
+  "notes": "bystander: idle, walk is a panicked hurry"
+ },
+ "oldboy": {
+  "id": "7ca61462-0ec6-4e88-837c-3670f3bee1de",
+  "kinds": [
+   "oldboy"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/7ca61462-0ec6-4e88-837c-3670f3bee1de/animations/e1d718d4-b88a-46fc-9324-15311296143a/east/8.png",
+  "status": "done",
+  "notes": "bystander: idle reading newspaper, walk is a panicked hurry"
+ },
+ "smiler": {
+  "id": "f54ab650-be80-4bfd-8626-de9f63b5cf80",
+  "kinds": [
+   "smiler"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "throw"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/f54ab650-be80-4bfd-8626-de9f63b5cf80/animations/aacec4c3-463c-4dc1-99da-f69593211ebf/east/8.png",
+  "status": "done",
+  "notes": "bystander; throw: small underarm lob"
+ },
+ "inspector": {
+  "id": "68cf9fda-bd30-4b27-90eb-ececf58564d4",
+  "kinds": [
+   "inspector"
+  ],
+  "h": 76,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "attack2",
+   "block",
+   "shout"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/68cf9fda-bd30-4b27-90eb-ececf58564d4/animations/476b7667-57e8-45ab-b149-2d1643beb795/east/8.png",
+  "status": "done",
+  "notes": "attack: lunging punch; attack2: raises clipboard overhead and chops down; block: palm out stop; shout: points and shouts"
+ },
+ "lenny": {
+  "id": "2fa20501-1fd3-43c8-be55-1c34c9c5382c",
+  "kinds": [
+   "lenny"
+  ],
+  "h": 75,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "attack2",
+   "pull",
+   "charge"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/2fa20501-1fd3-43c8-be55-1c34c9c5382c/animations/92207d5a-0fbd-4ce5-b277-5902ef2cf4e9/east/8.png",
+  "status": "done",
+  "notes": "attack: heavy straight punch; attack2: jumps up and kicks forward; pull: pulls a flick-knife and holds it out; charge: low shoulder charge"
+ },
+ "jeweller": {
+  "id": "8ae7fa8a-b8ec-4276-9e30-a5126b6948d4",
+  "kinds": [
+   "jeweller"
+  ],
+  "h": 78,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "glint",
+   "grab"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/8ae7fa8a-b8ec-4276-9e30-a5126b6948d4/animations/93d2b507-6c24-41b2-b096-4d026823bc25/east/8.png",
+  "status": "done",
+  "notes": "attack: whips a long gold chain forward; glint: admires his watch and rings; grab: lunges forward grabbing with both hands"
+ },
+ "alan": {
+  "id": "391b1264-9c21-43e1-b6f0-1f08abd7fa53",
+  "kinds": [
+   "alan"
+  ],
+  "h": 60,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/391b1264-9c21-43e1-b6f0-1f08abd7fa53/animations/f93cd9cd-67ba-429e-9b81-b93b1057d4ca/east/8.png",
+  "status": "done",
+  "notes": "attack: wild sloppy right hook; idle loose swaying; walk shambling"
+ },
+ "jeff": {
+  "id": "7a5e3b22-b166-48a9-ac38-5b90002d436d",
+  "kinds": [
+   "jeff"
+  ],
+  "h": 76,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/7a5e3b22-b166-48a9-ac38-5b90002d436d/animations/4f849341-23c0-4fd5-b0f4-ed316bb7bd06/east/8.png",
+  "status": "done",
+  "notes": "heavy: attack slow wound-up heavy punch; walk heavy lumbering"
+ },
+ "sue": {
+  "id": "c5fa2a6c-2cf2-4810-bce8-eb92f7d5372a",
+  "kinds": [
+   "sue"
+  ],
+  "h": 60,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "shout"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/c5fa2a6c-2cf2-4810-bce8-eb92f7d5372a/animations/49208c7a-7ce0-44e2-936e-94c727f326d1/east/8.png",
+  "status": "done",
+  "notes": "landlady: idle hands on hips; walk brisk angry; attack sharp open slap; shout leans forward shouting"
+ },
+ "mick": {
+  "id": "823b7757-670f-4f3c-afd2-6715958b61aa",
+  "kinds": [
+   "mick"
+  ],
+  "h": 75,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "belly"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": null,
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/823b7757-670f-4f3c-afd2-6715958b61aa/animations/66776e9c-c002-4ca2-879c-d5557cffb6e6/east/8.png",
+  "status": "done",
+  "notes": "landlord: attack huge slow overarm haymaker; belly: leans back then lunges belly-first"
+ },
+ "kappa": {
+  "id": "91ca982f-ad53-4866-8a31-01d34a081d67",
+  "kinds": [
+   "kappa"
+  ],
+  "h": 61,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "whip"
+  ],
+  "aa": true,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/91ca982f-ad53-4866-8a31-01d34a081d67/animations/ba855be8-5807-4e66-b075-e0120c697cd1/east/8.png",
+  "status": "done",
+  "notes": "attack: fast cocky one-two jabs; whip: swings arm back high and cracks a belt forward; aa c2"
+ },
+ "razor": {
+  "id": "b2ad5e57-b521-4dad-923c-1fae6feaeb70",
+  "kinds": [
+   "razor"
+  ],
+  "h": 58,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "ride",
+   "kick"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/b2ad5e57-b521-4dad-923c-1fae6feaeb70/animations/628ae9ad-544a-4d62-80d0-1b93a025d4a3/east/8.png",
+  "status": "done",
+  "notes": "attack: quick two-handed shove; ride: riding a kick scooter forward; kick: draws leg back and kicks; aa"
+ },
+ "frosted": {
+  "id": "a8f9bda4-6d5c-43ee-9a11-8324c4b992b0",
+  "kinds": [
+   "frosted"
+  ],
+  "h": 56,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "spin",
+   "slide"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/a8f9bda4-6d5c-43ee-9a11-8324c4b992b0/animations/881db6da-7d25-4ef1-aeb1-b7490bb3cd89/east/8.png",
+  "status": "done",
+  "notes": "attack: showy spinning backfist; spin: roundhouse kick; slide: running slide; aa"
+ },
+ "scrunchie": {
+  "id": "78f6ff62-3fac-4585-bcd0-d6d65d34784c",
+  "kinds": [
+   "scrunchie"
+  ],
+  "h": 58,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "throw"
+  ],
+  "aa": true,
+  "c2": true,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/78f6ff62-3fac-4585-bcd0-d6d65d34784c/animations/5d18f11b-f985-48dd-8d81-8df0d07c0f26/east/8.png",
+  "status": "done",
+  "notes": "attack: fast open-hand slap; throw: underarm throw; aa c2"
+ },
+ "garagemc": {
+  "id": "34b58eab-356b-4df4-9865-a4e3a62a3a93",
+  "kinds": [
+   "garagemc"
+  ],
+  "h": 62,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "bars"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/34b58eab-356b-4df4-9865-a4e3a62a3a93/animations/e7a9f5d1-9eac-4191-a830-7d7b886935d6/east/8.png",
+  "status": "done",
+  "notes": "holds a mic: attack quick jab with free left hand; bars: holds the mic up to his mouth rapping, bobbing"
+ },
+ "builder": {
+  "id": "c713ce1e-b80a-4f88-93cc-68dd51e020ba",
+  "kinds": [
+   "builder"
+  ],
+  "h": 78,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "barge",
+   "throw"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/c713ce1e-b80a-4f88-93cc-68dd51e020ba/animations/7f169c18-1314-4bb0-b29c-8d8db109a09f/east/8.png",
+  "status": "done",
+  "notes": "attack: heavy slow overhand right; barge: head down shoulder charge; throw: lifts a heavy brick overhead and hurls it"
+ },
+ "codger": {
+  "id": "c492d4e0-dd5a-435d-b144-2f47842a65e8",
+  "kinds": [
+   "codger"
+  ],
+  "h": 57,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "hook"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/c492d4e0-dd5a-435d-b144-2f47842a65e8/animations/e753dc1f-cc5e-4da0-b99f-8cf155695006/east/8.png",
+  "status": "done",
+  "notes": "old man with walking stick: attack sharp headbutt; hook: reaches far forward with the crook of his stick and yanks back"
+ },
+ "shark": {
+  "id": "452ae620-53dd-4f6c-a802-e8387f8e0f2e",
+  "kinds": [
+   "shark"
+  ],
+  "h": 56,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "break"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/452ae620-53dd-4f6c-a802-e8387f8e0f2e/animations/59ed20db-3f55-4285-aa52-9c851546b333/east/8.png",
+  "status": "done",
+  "notes": "cue"
+ },
+ "moschino": {
+  "id": "63aaf8c0-e186-41eb-8199-7e543cc4fbe4",
+  "kinds": [
+   "moschino"
+  ],
+  "h": 57,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "spray"
+  ],
+  "aa": false,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/63aaf8c0-e186-41eb-8199-7e543cc4fbe4/animations/9609c986-2519-4851-a967-d3a56c9e0786/east/8.png",
+  "status": "done",
+  "notes": "bottle"
+ },
+ "raver": {
+  "id": "be428fc7-7ff1-46a0-aa8e-f1d164824138",
+  "kinds": [
+   "raver"
+  ],
+  "h": 59,
+  "old_rows": [
+   "idle",
+   "walk",
+   "attack",
+   "hurt",
+   "knockdown",
+   "whistle"
+  ],
+  "aa": true,
+  "c2": false,
+  "shot": null,
+  "weapon": null,
+  "ai": "melee",
+  "boss": false,
+  "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/be428fc7-7ff1-46a0-aa8e-f1d164824138/animations/711fa4b4-bde8-4b1f-82a4-9af60383bd4d/east/8.png",
+  "status": "done",
+  "notes": "glowsticks"
+ }
+}

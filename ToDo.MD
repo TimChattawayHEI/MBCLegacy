@@ -238,9 +238,14 @@ Tim asked if Meshy could make the attack and hit effects look as clear and stron
 - [x] Every lad's trails fitted to his own moves (V81): the heavies hit higher, Kelly's knee and Sam's big swing have their own shapes, Thet's are half size, and Ash's are all kicks (a low kick and a roundhouse). SW_FIT in `tools/v81/fx.js`
 - [x] Directional hit sparks: new spark sheets in PixelLab's VFX workbench that spray the way the hit travels, a light one for jabs and a big one for combo enders, knockdowns and specials. Flip with the attacker's facing
   - Done for Tim (V80): a light spark (flash, ring, forward streak, sparks spraying on) and a heavy one for the finisher and knockdowns, both in his blue. In his PixelLab My effects as "Tim hit spark (light)" and "(heavy)" if he wants to move the sliders; `web/fx/tim_spark.png` and `tim_spark_big.png`
-- [ ] Combo enders feel heavier: the finisher's freeze is already 0.09s (0.12s for Seb and Pearcy) against 0.05s for other hits, so this is the victim flashing white then the lad's colour, a short sharp shake, and speed lines behind the knockback
-- [ ] Landing: a ground shockwave ring and dust when someone hits the floor hard
-- [ ] Specials and supers: a big swirl or burst in the lad's colour at the start, and the screen darkened slightly behind him for a moment (SoR4's star moves do this)
+- [x] Combo enders feel heavier: the finisher's freeze is already 0.09s (0.12s for Seb and Pearcy) against 0.05s for other hits, so this is the victim flashing white then the lad's colour, a short sharp shake, and speed lines behind the knockback
+  - Done (V85): any knockdown or big hit from a lad. The victim flashes white, then his colour for a moment; a sharp shake; streaks in white and his colour trail behind the body as it flies. Code in `tools/v85/hitfx.js`, patched in by `tools/v85_hitfx_build.py`
+- [x] Landing: a ground shockwave ring and dust when someone hits the floor hard
+  - Done (V85): a dust ring along the floor and puffs rolling out both sides whenever a body lands hard (knockdowns, throws, KOs), with a small shake for bosses and big lads. In Tim's My effects as "Carp Diem ground slam"
+- [x] Specials and supers: a big swirl or burst in the lad's colour at the start, and the screen darkened slightly behind him for a moment (SoR4's star moves do this)
+  - Done (V85): a flash, rays, a ring and three arcs whirling out behind him in his colour ("Tim special burst" in his My effects, recoloured for the others by `tools/v85/hitfx_art.py`), and the stage dims for half a second while the fighters stay bright
+- [x] Weapon hits and head shots (V85): a hit with a weapon throws a chunky orange THWACK with grit instead of the lad's spark ("Carp Diem weapon thwack"), and a head shot flicks sweat off the back of the head the way the hit travels ("Carp Diem sweat spray"). `tools/v85/hitfxtest.py` shoots each one with the clock frozen
+- [ ] Tim: play a few fights and say if the colour flash, the speed lines, the dust ring or the dim are too much or too little
 - [x] Mini specials (hold HIT): a signature effect for each lad, made in PixelLab's VFX workbench (in Tim's My effects as "<Lad> mini: ..."), plus a flash of his colour over the screen on the last hit
   - Done (V81): Tim a whirl ring round him and a shockwave at his feet; Seb a BONK burst with cartoon stars; Byron turf and dust sprayed along the slide; Pearcy a white powder cloud with gold glitter; Kelly tyre tracks and sparks off the wheels; Marc a red tornado; Sam a big heart blown forward that bursts into little ones; Thet snapping teeth at ankle height; Ash fiery spinning kicks with a flame ring. Timing and placing in MINI_FX in `tools/v81/fx.js`. The flash is skipped when screen shake is set to less
 - [ ] Tim: try each lad's mini special on the phone and say which ones need to be bigger, smaller or different
@@ -248,6 +253,34 @@ Tim asked if Meshy could make the attack and hit effects look as clear and stron
 - Where Meshy could still help: painted stills, e.g. a backdrop behind each lad's super cut-in
 - [x] Tim: play a few fights as Tim and say if the trails and sparks feel right, then roll them out to the other lads
   - Done: Tim was happy with V80; V81 gives every lad his own
+
+### Things to smash (15 November)
+- [x] Every breakable gets three looks from PixelLab: whole, dented and wrecked (V85). One hit dents it, the third breaks it: a white pop, the dust ring, bits in its colour (plus glass for the phone box, vending machine and pub table), the food or weapon jumps out and lands on the side you hit it from, and the wreck stays on the floor for the rest of the stage (the phone box and vending machine still stand, so they sort by depth with the fighters)
+  - New kinds, styled off the old bin: red phone box (drawn at 3x so it stands taller than the lads), newspaper A-board, wooden crate, drinks vending machine, pub table with pints, shopping trolley, striped deckchair. The old bin, keg, cool box and suitcase got dented and wrecked looks too (scaled down to match their size)
+  - Placed: Frequency (phone box, A-board), Soundz (crate), the fishery and Peg Nine (crate, deckchair), the Social, Dive Bar, Club and both pub rooms (pub table), Arrivals (trolley, vending machine), the beach (two deckchairs), Ramsden (trolley), Orpington Station (vending machine, A-board), Charing Cross (phone box, vending machine), the Smoking Area (crate, trolley)
+  - Art in `tools/v85/smash_src` (some PixelLab states came back with a fake grey checker painted behind them; it was cleaned off), code in `tools/v85/smash.js`, patched in by `tools/v85_smash_build.py`. `tools/v85/smashtest.py` shoots every breakable on every stage whole, dented, breaking, mid-pop and wrecked: no page errors, no missing sprites. 230 generations
+- [ ] Tim: say if the phone box at 3x looks too chunky next to the painted one on the Frequency (it sits further along the street from it), and if any stage wants more or fewer things to smash
+- [ ] Bot note: in the pub's bar room the bot sometimes gets stuck above the counter while the darts thrower hovers at its corner (happens before this change too, 1 run in 5). A real player just steps down; worth a look if anyone reports it
+
+### Livelier backgrounds (15 November)
+The Meshy paintings stay exactly as they are: the movement is a layer drawn on top of them (the same place the club's DJ and Ramsden's fires already live), behind the fighters.
+- [x] Pilot on The Frequency (V85): the shop neon breathes and BOOKIES stutters out now and then (its glow on the pavement with it), the fairy lights over the shops twinkle, the street lamps glow and have moths round them, one of the underpass strip lights flickers, drops land in the puddles, a black cat sits on the park wall flicking its tail, and a fox trots across the park every so often, back the other way next time
+  - Code in `tools/v85/alive.js` (ALIVE lists each stage's signs, bulbs, lamps, strip lights, puddles and critters), patched in by `tools/v85_alive_build.py`. `tools/v85/bulbs.py` finds the fairy-light bulbs in a painting. `tools/v85/alivetest.py <stage> --gif` shoots the stage at a few clock times and records a clip
+  - PixelLab critters made for all the stages in one go (25 generations): fox, cat, pigeon walking and pecking, pigeon flying, seagull flying and standing, rat, duck, a carp jumping, heron, dragonfly, moth, a sailing boat, a flag. Strips in `tools/v85/alive_src`
+- [x] Tim was happy with the Frequency pilot; rolled out to the other 12 painted stages (V85):
+  - Soundz: ON AIR glowing, the records turning on the decks, city lights out of the windows and off the roof, the corridor lights flickering, the mast's red light blinking, the roof fan turning
+  - Arrivals airport: the plane's propellers turning, gulls over the hills, the tower beacon, the baggage belt moving, a row on the arrivals board flipping
+  - Dive Bar: the telly flickering, the coffee machines steaming, the cigarette machine light; outside, fireflies in the dusk and birds going over
+  - The beach: the lifeguard flag flapping (the painted one is painted out under it), the sea glinting, gulls, a sailing boat crossing the horizon very slowly, a gull standing by the towels
+  - The club, outside: DISCO and the door neon (DISCO stutters), lamps with moths, lights in the hills, a cat on the wall
+  - The Social: the string of coloured bulbs twinkling
+  - Orpington Station: lamps and moths, drops in the puddles, the departures board, strip lights, the ticket machines and vending machine glowing, a fox on the far platform now and then
+  - Charing Cross: lamps, the big departures board, city windows, pigeons pecking and walking on the concourse, one flying under the roof
+  - The Smoking Area: lamps, the green fire door glowing, the air con fan, drops in the puddles, steam off a vent, a cat, rats running along the wall
+  - The fishery and Peg Nine: sun (or dawn) glinting on the water, ducks paddling across, a carp jumping now and then, a heron at the edge, dragonflies by the reeds, smoke off the smoker; mist drifting over Peg Nine and a bite alarm blinking
+  - Ramsden: windows in the burning towers going on and off (the fires and embers were already there)
+  - `tools/v85/alivetest.py` shoots every stage at three clock times with no page errors; bot clears the beach, the fishery, Charing Cross and the alley as before
+- [ ] Tim: play a few of them on the phone and say if anything is too busy, too small to notice, or in the wrong place (every position is one number in ALIVE in `tools/v85/alive.js`)
 
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
@@ -310,7 +343,19 @@ Tim asked to spend the spare PixelLab allowance on the lads: more depth, cleaner
 - [x] Hit flashes, speed lines and stray specks the generator drew in are cleaned out or left out of the picks
 - [x] Ash's GINGER SNAP: the new sheet draws the spin itself, so the old left-right flip is off for him
 - [x] `tools/v85/lad_sheet.py` builds each sheet and its frame picks, `tools/v85_build.py` patches the page (re-runnable), `tools/v85/test.py` puts each lad through every state headless. All nine pass with no page errors
-- PixelLab: 273 of this cycle's 2,000 generations used (resets 13 December)
+- [x] Weapons and effects lined up with the new art (Tim: "special effects and weapons are off a bit")
+  - Done (V85): a new two-handed swing row for every lad (`bat`), used for weapon swings and the weapon dash, so a stick or net now swings flat at chest height instead of into the floor. Fist points now ignore boots and Ash's chinos, so a held weapon stays in his hand on every frame. Combo swooshes are placed from each lad's actual fist or foot on the hit frame (`tools/v85/strike.py`, worked out in `tools/v85_build.py`), with an uppercut swoosh for Thet. Kelly's MASS HEAD redrawn (the old run hid his face behind a giant fist and drew its own blast) and the big head now lifts just his head. Kelly's hook lost a stretched-arm smear frame. Kelly's BMX 360 spins again (the Ash fix had switched it off)
+  - `tools/v85/fxtest.py` freezes the clock and shoots every lad holding a weapon, mid-swoosh, mid-mini and mid-special, for before and after sheets (`--root` another checkout)
+- [x] Enemies three-quarters on, pilot: the Townie and the Parkie
+  - Done (V85): each kind gets its own three-quarter stance, then idle, walk, attack, both hurts (head and body take turns), a knockdown that lands flat and gets up, dazed and a struggle when grabbed. The Townie also gets a wild haymaker for the second hit of his combo and a jumping uppercut for his anti-air; the Parkie a litter picker stab (the claw forward this time; the first stance held it backwards), his whistle and an overarm lob for the balls. `tools/v85/foe_sheet.py` builds the sheets, `tools/v85_foes_build.py` patches the page (foeFrame learns the new rows only for kinds marked deep, so everyone else draws as before), `tools/v85/foetest.py` freezes the game and shoots each kind in every state
+  - Knockdowns (lads and enemies) and the lads' jumps are now drawn on the ground: the game already lifts them, so the art's own height was doubling it
+- [x] The rest of the enemies and bosses the same way (roughly 10 to 12 generations a kind), in stage order. `tools/v85/foes/PLAN.json` tracks each sheet (stance, attack note, status); `tools/v85/foes/overrides.json` lists the frames dropped from each row; `tools/v85/clean.py` strips the blood sprays PixelLab adds to hurt frames
+  - Done (72 of 72 sheets, plus the Townie and Parkie pilot): bouncer, vibez, chunk, ladette, dti, mc, angler, warden, carpbro, farbank, regular, darts, nozzer, denise, tracksuit, hoodie, lady, sec, handler, ragazzo, ragazza, carab, gianni, marco, luca, paolo, lifeguard, beachm, beachf, mafioso, clubm, clubf, beast, quick, city, itgirl, burb, hoops, snood, puffer, hood, grappler, dipper, lookout, stag, groom, noface, leathers, shades, denim, shellsuit, tuba, commuter, oldboy, smiler, inspector, lenny, jeweller, alan, jeff, sue, mick, kappa, razor, frosted, scrunchie, garagemc, builder, codger, shark, moschino, raver
+  - Still to do: nothing. Worth a play-through to spot any frame that reads oddly in motion (hurt rows on shark, moschino and raver had a stray attacker's fist drawn in, so those frames are dropped or re-rolled)
+- [x] Bot playthrough of every stage (headless, god mode, tools at /home/claude/work/play in the session): 19 of 21 stages cleared with no page errors and no frame out of range. The Social timed out on Denise (the bot can't wear her down; she clears fine once beaten) and the Kebab Siege is endless by design. The Frogger crossing was skipped. Fixed from the review: the attack wind-up showed the punch already out on razor, garagemc, quick, grappler and tuba (now the stance, then the hit), kappa's whip now cracks on the extended frame, and Big Tony's charge and Don Vito's far move use the right frames
+- [x] Bosses now flinch on a hit: a quarter of a second from their hurt rows (head, then body, alternating), skipped while they wind up, strike, charge, lie down or are held, so the AI and the telegraphs are unchanged
+- [ ] Rows the bot hardly reached and worth a hand check: dazed (only after the SENT OFF special), held on bosses, the anti-air uppercut (needs a jump-in), mick's belly barge, denim's slide, dipper's steal
+- PixelLab: 1,374 of this cycle's 2,000 generations used (resets 13 December)
 
 ### Tim
 - [ ] Play each lad on a phone and say which moves look off (wrong frame on the hit, a pose that turns his back, size)
@@ -318,7 +363,8 @@ Tim asked to spend the spare PixelLab allowance on the lads: more depth, cleaner
 - [ ] Merge the PR when happy (main publishes the release and the in-app update)
 
 ### Later
-- [ ] The swooshes (`SW_FIT`) were placed for the old side-on sprites: check they still sit on the new fists and feet
+- [x] The swooshes (`SW_FIT`) were placed for the old side-on sprites: check they still sit on the new fists and feet
+  - Done (V85): fitted from the art, see above
 
 ## Carried over from the build plan
 
