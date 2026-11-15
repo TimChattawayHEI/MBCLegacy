@@ -262,6 +262,14 @@ Tim asked if Meshy could make the attack and hit effects look as clear and stron
 - [ ] Tim: say if the phone box at 3x looks too chunky next to the painted one on the Frequency (it sits further along the street from it), and if any stage wants more or fewer things to smash
 - [ ] Bot note: in the pub's bar room the bot sometimes gets stuck above the counter while the darts thrower hovers at its corner (happens before this change too, 1 run in 5). A real player just steps down; worth a look if anyone reports it
 
+### Livelier backgrounds (15 November)
+The Meshy paintings stay exactly as they are: the movement is a layer drawn on top of them (the same place the club's DJ and Ramsden's fires already live), behind the fighters.
+- [x] Pilot on The Frequency (V85): the shop neon breathes and BOOKIES stutters out now and then (its glow on the pavement with it), the fairy lights over the shops twinkle, the street lamps glow and have moths round them, one of the underpass strip lights flickers, drops land in the puddles, a black cat sits on the park wall flicking its tail, and a fox trots across the park every so often, back the other way next time
+  - Code in `tools/v85/alive.js` (ALIVE lists each stage's signs, bulbs, lamps, strip lights, puddles and critters), patched in by `tools/v85_alive_build.py`. `tools/v85/bulbs.py` finds the fairy-light bulbs in a painting. `tools/v85/alivetest.py <stage> --gif` shoots the stage at a few clock times and records a clip
+  - PixelLab critters made for all the stages in one go (25 generations): fox, cat, pigeon walking and pecking, pigeon flying, seagull flying and standing, rat, duck, a carp jumping, heron, dragonfly, moth, a sailing boat, a flag. Strips in `tools/v85/alive_src`
+- [ ] Tim: watch the Frequency clip and say if it's the right amount of movement before the other 12 painted stages get theirs
+- [ ] Roll out: Soundz (ON AIR sign, mast light, city lights), Arrivals airport (propellers, baggage belt, flag), Dive Bar (TV, fireflies outside), the beach (sea glinting, gulls, boat, lifeguard flag), the club, the Social (fairy lights), Orpington Station, Charing Cross (pigeons, departure board), the alley (rat, strip lights, vent steam), the fishery and Peg Nine (ducks, a carp jumping, heron, dragonflies, mist), Ramsden
+
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
 
@@ -335,7 +343,7 @@ Tim asked to spend the spare PixelLab allowance on the lads: more depth, cleaner
 - [x] Bot playthrough of every stage (headless, god mode, tools at /home/claude/work/play in the session): 19 of 21 stages cleared with no page errors and no frame out of range. The Social timed out on Denise (the bot can't wear her down; she clears fine once beaten) and the Kebab Siege is endless by design. The Frogger crossing was skipped. Fixed from the review: the attack wind-up showed the punch already out on razor, garagemc, quick, grappler and tuba (now the stance, then the hit), kappa's whip now cracks on the extended frame, and Big Tony's charge and Don Vito's far move use the right frames
 - [x] Bosses now flinch on a hit: a quarter of a second from their hurt rows (head, then body, alternating), skipped while they wind up, strike, charge, lie down or are held, so the AI and the telegraphs are unchanged
 - [ ] Rows the bot hardly reached and worth a hand check: dazed (only after the SENT OFF special), held on bosses, the anti-air uppercut (needs a jump-in), mick's belly barge, denim's slide, dipper's steal
-- PixelLab: 1,349 of this cycle's 2,000 generations used (resets 13 December)
+- PixelLab: 1,374 of this cycle's 2,000 generations used (resets 13 December)
 
 ### Tim
 - [ ] Play each lad on a phone and say which moves look off (wrong frame on the hit, a pose that turns his back, size)
