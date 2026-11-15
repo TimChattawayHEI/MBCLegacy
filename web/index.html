@@ -721,7 +721,7 @@ const TRACK_GAIN = 0.4, MP3_DELAY = 1105 / 44100;
 const trk = { bytes: {}, bufs: new Map(), src: null, key: null, t0: 0, len: 0, req: 0, pending: null, pos: {}, gain: null };
 function trackBytes(key) {
   const T = TRACKS[key]; if (!T) return null;
-  if (!trk.bytes[key]) trk.bytes[key] = fetch(T.src).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.arrayBuffer(); }).catch(() => { T.failed = true; return null; });
+  if (!trk.bytes[key]) trk.bytes[key] = fetch(T.src).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.arrayBuffer(); }).catch(() => { if (T.old && TRACKS[key] === T) { TRACKS[key] = T.old; delete trk.bytes[key]; return trackBytes(key); } T.failed = true; return null; });   // Version 85: a new track that won't load falls back to the old one
   return trk.bytes[key];
 }
 function trackBuffer(key) {
@@ -734,7 +734,8 @@ function trackBuffer(key) {
 }
 function trackStop() {
   if (trk.src) {
-    try { if (trk.len) trk.pos[trk.key] = ((actx.currentTime - trk.t0) % trk.len + trk.len) % trk.len; trk.src.stop(); } catch (e) { /* already stopped */ }
+    try { const T = TRACKS[trk.key], fp = T && T.from ? trackFilePos() : null;   // Version 85: an intro-then-loop track remembers its place in the loop
+      if (T && T.from) trk.pos[trk.key] = fp != null && fp >= T.from ? fp - T.from : 0; else if (trk.len) trk.pos[trk.key] = ((actx.currentTime - trk.t0) % trk.len + trk.len) % trk.len; trk.src.stop(); } catch (e) { /* already stopped */ }
     try { trk.src.disconnect(); } catch (e) { /* already gone */ }
   }
   trk.src = null; trk.key = null; trk.len = 0;
@@ -757,7 +758,7 @@ function trackStart(key) {
     s.connect(trk.gain);
     const off = (trk.pos[key] || 0) % len, t = actx.currentTime + 0.04;
     s.start(t, T.from && !trk.pos[key] ? T.lead : ls + off);
-    trk.src = s; trk.key = key; trk.len = len; trk.t0 = t - off;
+    trk.src = s; trk.key = key; trk.len = len; trk.t0 = t - (T.from && trk.pos[key] ? T.from + off : off);
   }).catch(() => { if (want === trk.req) trk.pending = null; });
 }
 function musicSet(key, keepPos) {
@@ -8794,6 +8795,9 @@ function orpBeatPhase() {
   const bpm = ST && ST.beat, sc = S && orpSc(); if (!bpm || !sc || !sc.beat) return -1;
   const per = 60 / bpm;
   // locked to Alarm Call itself when it's playing (its loop is exactly 128 beats), else to the stage clock
+  if (actx && trk.src && trk.key === mus.key && mus.key === ST.music && TRACKS[trk.key].bpm) {   // Version 85: the new track's own tempo and first beat
+    const T = TRACKS[trk.key], fp = trackFilePos(), bp = 60 / T.bpm; if (fp != null) return ((((fp - T.beat0) % bp) + bp) % bp) / bp;
+  }
   if (actx && trk.src && trk.key === mus.key && mus.key === ST.music) {
     const lat = (actx.outputLatency || 0) + (actx.baseLatency || 0), el = actx.currentTime - lat - trk.t0;
     return (((el % per) + per) % per) / per;
@@ -10396,6 +10400,25 @@ function talkBubbleFace(b, bx, by, bw, bh, bs) {
   drawPortrait(id, Math.round(x), Math.round(y), s, (SPEAKERS[id] || SPEAKERS.sys || {}).color, talkFrame(b.text, b.t - 0.1));
 }
 // V85 talk end
+// V85 music start
+// The new soundtrack (Version 85): every stage and boss theme made again with PixelLab's music, in the style of the title
+// theme Tim rated best by a lot. Each file plays its intro once, then loops from `from` for `loop` seconds; `end` is the
+// file's length (to spot a browser that kept the MP3 lead-in). The Mega Drive tracks they replace stay in web/music and
+// play again with ?oldmusic in the address, and still stand in if a new file fails to load.
+// bpm/beat0 (the tempo and the first beat in the file, found by tools/v85/beats.py) keep Atlantis's BEAT ring on the beat.
+const NEW_MUSIC = {"garage":[36.548,96.09,96.341,1.02],"codered":[36.618,108.943,109.19,1.0],"soundz":[38.22,92.888,93.14,1.02],"heist":[35.062,101.302,101.55,1.05],"alarmcall":[31.347,100.243,100.49,1.22,134.12,0.4091],"airport":[40.519,99.926,100.181,1.01],"road":[32.903,163.349,163.6,0.94],"divebar":[32.996,91.243,91.49,1.08],"beach":[38.383,84.087,84.34,0.99],"club":[36.061,92.148,92.4,1.11],"platform":[39.66,102.165,102.42,1.01],"train":[40.449,103.528,103.78,0.94],"terminus":[39.938,86.838,87.09,0.99],"smoking":[37.692,106.275,106.56,1.04],"nightbus":[39.404,96.656,96.91,1.07],"arrival":[39.474,89.211,89.46,0.97],"naval":[37.013,98.269,98.52,1.04],"social":[39.845,104.698,104.95,0.95],"pegnine":[30.093,74.133,74.38,0.99],"ramsden":[33.646,91.922,92.17,0.99],"boss1999":[37.849,109.918,110.17,1.01],"lockdown":[35.039,107.802,108.05,1.08],"bosselba":[34.923,92.972,93.22,1.02],"boss2006":[35.619,112.43,112.68,0.88],"boss":[34.969,101.174,101.42,1.07],"lady":[39.219,125.254,125.504,1.04]};
+if (!/[?&]oldmusic\b/.test(location.search)) for (const k in NEW_MUSIC) {
+  const [from, le, end, vol, bpm, beat0] = NEW_MUSIC[k];
+  TRACKS[k] = { src: 'music/v85/' + k + '.mp3', from, loop: le - from, end, vol, bpm, beat0, fb: (TRACKS[k] && TRACKS[k].fb) || 'garage', old: TRACKS[k] };
+}
+// where the playing track is in its own file, seconds (the intro once, then round the loop)
+function trackFilePos() {
+  const T = TRACKS[trk.key]; if (!T || !actx || !trk.src) return null;
+  const lat = (actx.outputLatency || 0) + (actx.baseLatency || 0), el = actx.currentTime - lat - trk.t0;
+  if (!T.from) return ((el % trk.len) + trk.len) % trk.len;
+  return el < T.from ? el : T.from + (el - T.from) % T.loop;
+}
+// V85 music end
 function artPending() {
   for (const k in bgImgs) { const b = bgImgs[k]; if (!b.ready && !b.failed) return true; }
   for (const k in ladSheets) { const b = ladSheets[k]; if (!b.ready && !b.failed) return true; }

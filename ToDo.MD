@@ -293,6 +293,16 @@ Tim upgraded PixelLab to Tier 2 (sound and music need it; the allowance went to 
 - [x] Tim on the title theme: "amazing, best so far by a lot" (15 November). Worth using PixelLab music for more tracks in the same style
 - [ ] Tim: listen to the new voices on the sound board and say if they fit
 
+### The new soundtrack (15 November)
+- [x] Every stage and boss track made again with PixelLab music in the title theme's style (V85, Tim: "Yes do them all"): 20 stage keys (garage, soundz, arrival, naval, social, pegnine, airport, road, divebar, beach, club, ramsden, platform, train, terminus, smoking, nightbus, codered, heist, alarmcall) and 6 boss themes (boss, boss1999, bosselba, boss2006, lockdown, lady). Each was asked for in the old track's tempo and feel, then made into a loop: the intro plays once, then the main part repeats, as the title theme does. 356 generations (2,964 left until 13 December)
+  - Files in `web/music/v85/<key>.mp3` (128k, cut at the loop end, 41 MB). Loop points, file lengths and loudness-matched volumes in `tools/v85/music.json`; code in `tools/v85/music.js`, patched in by `tools/v85_music_build.py`. Prompts and PixelLab ids in the work notes and the claude.ai project's `soundtrack/README.md`
+  - Atlantis: the new Alarm Call is 134.12 bpm with its loop exactly 154 beats, so the BEAT ring follows the new track's own tempo and first beat (measured, not assumed)
+  - Coming back from a mini-boss picks up inside the loop, not the intro. A new file that won't load falls back to the old track. `?oldmusic` in the address plays the old tracks everywhere, to compare
+  - Six loops clicked at the join (smoking worst, then boss, nightbus, train, arrival, bosselba); the 10 ms before each loop end now blends into the audio before the loop start, and smoking's loop moved 40 ms earlier off a drum hit, so all six join as smoothly as continuous audio
+  - Test: `tools/v85/musictest.py` (all 26 decode at the right length, loop points, gain, mini-boss resume, fallback, ?oldmusic, beat phase). Passes
+- [ ] Tim: listen on the sound board (Carp Diem sound board, now with a soundtrack section: each track new, a 12 second clip across its loop seam, and the old one) and name any to redo. Redoing one costs about 14 generations
+- [ ] The app grows by 41 MB with both soundtracks inside it, and the next in-app update downloads it. Once Tim is happy with the new ones, the old files the new ones replace (about 24 MB in `web/music/`) can go, which also drops `?oldmusic` and the old-file fallback. Keep `alarmcall2`, `deepcover` and `title-theme.mp3`
+
 ### Talking portraits (15 November)
 - [x] The 12 portraits (the lads, Denise, Jo, Nozzer) talk (V85). When one of them says something in a stage, their face pops up beside the speech bubble and the mouth follows the letters of the line, then shuts; in the WhatsApp-style group chat the newest message's face talks. The Nokia text chats stay still (they're texts)
   - PixelLab drew five mouths per face (shut, a, o, e, f; 3 generations each, 36 in all); only the mouth area was pasted onto the original portraits (`tools/v85/mouths.py`), so the faces stay the hand-made ones. Strips in `tools/v85/talk_src`, code in `tools/v85/talk.js`, patched by `tools/v85_talk_build.py`
