@@ -1655,7 +1655,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/452ae620-53dd-4f6c-a802-e8387f8e0f2e/animations/59ed20db-3f55-4285-aa52-9c851546b333/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "cue"
  },
  "moschino": {
