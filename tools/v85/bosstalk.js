@@ -16,6 +16,8 @@ function tauntLoad() {
     .then(b => new Promise((ok, no) => { const p = actx.decodeAudioData(b, ok, no); if (p && p.then) p.then(ok, no); }))
     .then(buf => { taunt.bufs[k] = buf; }).catch(() => {}));
 }
+// load once the sound is on (checked each second, so the start-up code needn't change)
+const tauntWait = setInterval(() => { if (actx) { tauntLoad(); clearInterval(tauntWait); } }, 1000);
 const cardTalkId = name => { const k = BOSS_ART[name]; return k && BOSS_TALK.includes(k) ? k : null; };
 // the card's picture at the current mouth (null: draw the plain card)
 function cardTalkFrame(c, art) {

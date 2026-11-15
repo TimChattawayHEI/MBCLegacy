@@ -31,9 +31,6 @@ SWAPS = [
      "musicSet(bossMusic()); if (!FOE_FEMALE.has(b.kind)) bossRoar(); showBanner(d.name"),
     ("const b = makeHB(w.boss); foes.push(b); S.bosses = [b]; musicSet(bossMusic()); sfx('roar');",
      "const b = makeHB(w.boss); foes.push(b); S.bosses = [b]; musicSet(bossMusic()); bossRoar();"),
-    # load the sounds with the others
-    ("    sfxLoad();   // Version 85: the recorded sound effects\n",
-     "    sfxLoad();   // Version 85: the recorded sound effects\n    tauntLoad();   // and the bosses' own\n"),
 ]
 for old, new in SWAPS:
     if new in s: continue
