@@ -496,6 +496,7 @@ function audioInit() {
     const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
     applySound();
     sfxLoad();   // Version 85: the recorded sound effects
+    stingsPreload();   // and the music stings
   } catch (e) { actx = null; }
 }
 function applySound() {
@@ -778,6 +779,7 @@ function trackStart(key) {
 }
 function musicSet(key, keepPos) {
   if (mus.key === key) return;
+  if (key) stingStop();   // Version 85
   const from = mus.key;
   mus.key = key; mus.step = 0; mus.next = actx ? actx.currentTime + 0.08 : 0;
   trackStop(); trk.req++; trk.pending = null;
@@ -3613,7 +3615,7 @@ function isFinalBoss(b) {
 function bossFinish(b) {
   if (!isFinalBoss(b)) return;
   hitstop = Math.max(hitstop, 0.12); slowT = 1.9; flashT = Math.max(flashT, 0.2); addShake(14);
-  musicSet(null); sfx('heavy'); sfx('boom');
+  musicSet(null); sfx('heavy'); sfx('boom'); stingPlay('bossdown');   // Version 85
   spark(b.x, b.y, (b.z || 0) + 80, true); spark(b.x + 20, b.y, (b.z || 0) + 110, true);
   finishFX = { t: 0, x: b.x, y: b.y - (b.z || 0) - (b.fish ? 70 : 80) };
 }
@@ -7987,6 +7989,7 @@ function comicShow(id, done) {
   comicPreload(id);
   comic = { id, P, done, n: 0, t: 0, nT: 0, wait: 0 };
   mode = 'comic'; modeT = 0; banner = null; sfx('page');
+  if (/^CHAPTER /.test(P.title || '') || id === 'p2001') { musicSet(null); stingPlay('chapter'); }   // Version 85
 }
 function comicEnd() { const d = comic && comic.done; comic = null; sfx('page'); if (d) d(); }
 const COMIC_SKIP = { x: W - 104, y: 14, w: 86, h: 32 };
@@ -10422,7 +10425,7 @@ function talkBubbleFace(b, bx, by, bw, bh, bs) {
 // file's length (to spot a browser that kept the MP3 lead-in). The Mega Drive tracks they replace stay in web/music and
 // play again with ?oldmusic in the address, and still stand in if a new file fails to load.
 // bpm/beat0 (the tempo and the first beat in the file, found by tools/v85/beats.py) keep Atlantis's BEAT ring on the beat.
-const NEW_MUSIC = {"garage":[36.548,96.09,96.341,1.02],"codered":[36.618,108.943,109.19,1.0],"soundz":[38.22,92.888,93.14,1.02],"heist":[35.062,101.302,101.55,1.05],"alarmcall":[31.347,100.243,100.49,1.22,134.12,0.4091],"airport":[40.519,99.926,100.181,1.01],"road":[32.903,163.349,163.6,0.94],"divebar":[32.996,91.243,91.49,1.08],"beach":[38.383,84.087,84.34,0.99],"club":[36.061,92.148,92.4,1.11],"platform":[39.66,102.165,102.42,1.01],"train":[40.449,103.528,103.78,0.94],"terminus":[39.938,86.838,87.09,0.99],"smoking":[37.692,106.275,106.56,1.04],"nightbus":[39.404,96.656,96.91,1.07],"arrival":[39.474,89.211,89.46,0.97],"naval":[37.013,98.269,98.52,1.04],"social":[39.845,104.698,104.95,0.95],"pegnine":[30.093,74.133,74.38,0.99],"ramsden":[33.646,91.922,92.17,0.99],"boss1999":[37.849,109.918,110.17,1.01],"lockdown":[35.039,107.802,108.05,1.08],"bosselba":[34.923,92.972,93.22,1.02],"boss2006":[35.619,112.43,112.68,0.88],"boss":[34.969,101.174,101.42,1.07],"lady":[39.219,125.254,125.504,1.04]};
+const NEW_MUSIC = {"garage":[36.548,96.09,96.341,1.02],"codered":[36.618,108.943,109.19,1.0],"soundz":[38.22,92.888,93.14,1.02],"heist":[35.062,101.302,101.55,1.05],"alarmcall":[31.347,100.243,100.49,1.22,134.12,0.4091],"airport":[40.519,99.926,100.181,1.01],"road":[32.903,163.349,163.6,0.94],"divebar":[32.996,91.243,91.49,1.08],"beach":[38.383,84.087,84.34,0.99],"club":[36.061,92.148,92.4,1.11],"platform":[39.66,102.165,102.42,1.01],"train":[40.449,103.528,103.78,0.94],"terminus":[39.938,86.838,87.09,0.99],"smoking":[37.692,106.275,106.56,1.04],"nightbus":[39.404,96.656,96.91,1.07],"arrival":[39.474,89.211,89.46,0.97],"naval":[37.013,98.269,98.52,1.04],"social":[39.845,104.698,104.95,0.95],"pegnine":[30.093,74.133,74.38,0.99],"ramsden":[33.646,91.922,92.17,0.99],"boss1999":[37.849,109.918,110.17,1.01],"lockdown":[35.039,107.802,108.05,1.08],"bosselba":[34.923,92.972,93.22,1.02],"boss2006":[35.619,112.43,112.68,0.88],"boss":[34.969,101.174,101.42,1.07],"lady":[39.219,125.254,125.504,1.04],"pub":[37.918,89.717,89.967,1.14],"pubgames":[40.728,150.432,150.682,1.08],"pens":[38.359,113.773,114.023,1.0],"kiss":[38.15,106.773,107.023,1.12],"awake":[36.014,104.682,104.932,1.07],"golf":[37.268,99.375,99.625,1.08],"snake":[34.714,120.455,120.705,1.16],"kebab":[32.996,101.56,101.81,1.06]};
 if (!/[?&]oldmusic\b/.test(location.search)) for (const k in NEW_MUSIC) {
   const [from, le, end, vol, bpm, beat0] = NEW_MUSIC[k];
   TRACKS[k] = { src: 'music/v85/' + k + '.mp3', from, loop: le - from, end, vol, bpm, beat0, fb: (TRACKS[k] && TRACKS[k].fb) || 'garage', old: TRACKS[k] };
@@ -10601,7 +10604,7 @@ function finishStage() {
   clearInfo.lifeUp = run.lives > clearInfo.livesBefore;
   run.reached = Math.max(run.reached, ST.n);
   run.totalTime += S.time;
-  musicSet(null); sfx('life');
+  musicSet(null); sfx('life'); if (!stingRecent('bossdown', 5)) stingPlay('clear');   // Version 85
   const after = () => { mode = 'clear'; modeT = 0; sfx('cheer'); };   // Version 85: the crowd
   if (ST.outro) openChat(CHATS[ST.outro], after, null, ST.era); else after();
 }
@@ -10628,7 +10631,7 @@ function afterClearNow() {
     comicPreload('pend'); openChat(lines, () => comicShow('pend', () => endingShow(winGame)));   // Version 71: Big Gary, the endings, the damage
   }
 }
-function gameOver() { if (run && run.mini) { kebabEnd('OUT ON WAVE ' + ((S ? S.waveIdx : 0) + 1)); return; } pubBankStage(); if (!NET.on) clearSavedRun(); mode = 'over'; modeT = 0; musicSet(null); showBanner('BLANKED', 'Nothing in the net this time', 99); }
+function gameOver() { if (run && run.mini) { kebabEnd('OUT ON WAVE ' + ((S ? S.waveIdx : 0) + 1)); return; } pubBankStage(); if (!NET.on) clearSavedRun(); mode = 'over'; modeT = 0; musicSet(null); stingPlay('gameover'); showBanner('BLANKED', 'Nothing in the net this time', 99); }
 let challenger = null;
 function winGame() {
   if (!NET.on) clearSavedRun();
@@ -14016,7 +14019,7 @@ function openPub(from, next, lad) {
   if (ladLocked(CHAR_BY_ID[PUB.lad])) PUB.lad = 'tim';   // Version 65
   PUB.x = 150; PUB.y = 470; PUB.face = 1; PUB.target = null; PUB.view = null; PUB.round = false; PUB.t = 0;
   if (from === 'run') PUB.pints = 0;
-  cam.x = 0; mode = 'pub'; modeT = 0; banner = null; musicSet('social');
+  cam.x = 0; mode = 'pub'; modeT = 0; banner = null; musicSet('pub');   // Version 85: its own track
   pubSay(from === 'run' ? 'The lads pile into the Harvest Moon. HIT at the bar for a round.' : 'The Harvest Moon. Walk up to anything, or anyone, and press HIT.', 3);
 }
 function pubLeave() {
@@ -14061,7 +14064,7 @@ function pubAct(o) {
   if (!cabOpen(o.id)) { sfx('grab'); pubSay('OUT OF ORDER. It turns up on the campaign first, after ' + MINI_DEF[o.id].after + '.', 3); return; }
   const d = MINI_DEF[o.id];
   if (d.price && PUB.wallet < d.price) { sfx('grab'); pubSay('Not enough on your tab. ' + fmtN(d.price) + ' a go.'); return; }
-  openMini(o.id, 'pub', () => { mode = 'pub'; modeT = 0; musicSet('social'); });
+  openMini(o.id, 'pub', () => { mode = 'pub'; modeT = 0; musicSet('pub'); });
 }
 function updatePub(dt) {
   pubTapsIn(); PUB.t += dt; if (PUB.msgT > 0) PUB.msgT -= dt;
@@ -15846,7 +15849,8 @@ function contYes() {
   const p = CONT.p || player; respawn(p);
   showBanner('ANOTHER ON THE TAB', run.lives + ' lives · ' + fmtN(PUB.wallet) + ' left on your tab', 2.2);
   sfx('life'); buzz(60);
-  musicSet(CONT.music || ST.music || null, true);
+  const back = CONT.music || ST.music || null; musicSet(null); stingPlay('tab');   // Version 85
+  setTimeout0(() => { if (mode === 'play' && !mus.key) musicSet(back, true); }, 3.4);
 }
 function contNo() { CONT.on = false; mode = 'play'; gameOver(); }
 function contUpdate(dt) {
@@ -17000,6 +17004,52 @@ applySound();
 canvas.addEventListener('pointerdown', () => { if (mode !== 'name') canvas.focus(); });
 if (document.fonts && document.fonts.load) { document.fonts.load('700 20px \'Pixelify Sans\'').catch(() => {}); document.fonts.load('800 12px Rubik').catch(() => {}); }
 boardInit();
+// V85 stings start
+// ================================================================== Version 85: music for the moments and the pub
+// Tim, 15 November: more music, in the Smoking Area's style (dark half-time grime, 140 bpm, sparse heavy drums, sub bass
+// slides, dry low stabs, no lead). All from PixelLab music; prompts and ids in tools/v85/music_prompts.json.
+// - Stings, played once over silence: a stage cleared, the last boss down, game over, ON THE TAB, and a chapter's title
+//   page. Each is cut from the start of a PixelLab take on the downbeat, two bars (three for game over) with a fade.
+// - The pub and its games get their own loops (they borrowed stage tracks before; Kebab Siege had the N47's):
+//   the pub, darts and the fruit machine, penalties, kiss chase, stay awake, the long drive, Snake and Kebab Siege.
+//   These go in through NEW_MUSIC like the rest of the new soundtrack. With ?oldmusic they play the tracks they had.
+const STING_VOL = { clear: 1.12, bossdown: 1.0, tab: 1.3, chapter: 1.46, gameover: 1.68 };   // matched to the soundtrack's loudness
+var sting = { bufs: {}, loading: {}, src: null, gain: null, at: -99, key: '' };   // var: the hooks may run before this line
+function stingLoad(k) {
+  if (!sting || !actx || sting.bufs[k] || sting.loading[k]) return; sting.loading[k] = true;
+  fetch('music/v85/sting_' + k + '.mp3').then(r => r.ok ? r.arrayBuffer() : Promise.reject(r.status))
+    .then(b => new Promise((ok, no) => { const p = actx.decodeAudioData(b, ok, no); if (p && p.then) p.then(ok, no); }))
+    .then(buf => { sting.bufs[k] = buf; }).catch(() => {});
+}
+function stingStop() { if (sting && sting.src) { try { sting.src.stop(); sting.src.disconnect(); } catch (e) { /* done */ } sting.src = null; } }
+function stingPlay(k) {
+  if (!sting || !actx || !settings.sound) return;
+  const b = sting.bufs[k]; if (!b) { stingLoad(k); return; }   // not loaded yet: silence, as before
+  stingStop();
+  if (!sting.gain) { sting.gain = actx.createGain(); sting.gain.connect(musBus); }
+  sting.gain.gain.value = TRACK_GAIN * (STING_VOL[k] || 1);
+  const s = actx.createBufferSource(); s.buffer = b; s.connect(sting.gain); s.start(actx.currentTime + 0.02);
+  s.onended = () => { if (sting.src === s) sting.src = null; };
+  sting.src = s; sting.at = actx.currentTime; sting.key = k;
+}
+// true when sting k started under s seconds ago
+function stingRecent(k, s) { return !!(sting && actx && sting.key === k && actx.currentTime - sting.at < s); }
+function stingsPreload() { for (const k in STING_VOL) stingLoad(k); }
+
+// the pub's and the games' own tracks, with the tracks they used before for ?oldmusic and as a fallback
+const PUB_MUSIC_WAS = { pub: 'social', pubgames: 'social', pens: 'garage', kiss: 'soundz', awake: 'road', golf: 'naval', snake: 'nightbus', kebab: 'nightbus' };
+for (const k in PUB_MUSIC_WAS) {
+  const was = TRACKS[PUB_MUSIC_WAS[k]];
+  if (!TRACKS[k]) TRACKS[k] = was;   // ?oldmusic
+  else if (TRACKS[k] !== was) { TRACKS[k].old = was && (was.old || was); TRACKS[k].fb = (was && was.fb) || 'garage'; }
+}
+// after the Snake cabinet is added (it is set up on a timer at start-up)
+setTimeout(() => {
+  const set = { darts: 'pubgames', fruit: 'pubgames', pens: 'pens', kiss: 'kiss', awake: 'awake', golf: 'golf', snake: 'snake' };
+  for (const id in set) if (MINI_DEF[id]) MINI_DEF[id].music = set[id];
+  if (STAGES.kebab) STAGES.kebab.music = 'kebab';
+}, 30);
+// V85 stings end
 
 
 })();

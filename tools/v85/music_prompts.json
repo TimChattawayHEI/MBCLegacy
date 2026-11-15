@@ -243,5 +243,136 @@
   ],
   "loop": "fb2f6796-a253-4b70-b56f-fde8bc3acef9",
   "file": "3d3aef10-c450-4e98-ae83-8edc89dfa98f/mbc-lady-loop.mp3"
- }
+ },
+ "pub": {
+  "bpm": 140,
+  "prompt": "16-bit Mega Drive FM chiptune dark half-time grime pub theme: sparse heavy drums, deep sub bass slides, single dry low stabs, a muted low FM organ chord now and then, no beeping lead and no melody; the back room of a rough local pub after hours, moody, loops cleanly.",
+  "takes": [
+   "9f81f404-b73d-4e7f-9b63-01c400f222b8",
+   "09391990-1e1f-464c-8714-e28db53e3bf8"
+  ],
+  "loop": "804e39ba-15a0-4071-ab9f-41f969a039ed",
+  "file": "web/music/v85/pub.mp3"
+ },
+ "pubgames": {
+  "bpm": 140,
+  "prompt": "16-bit Mega Drive FM chiptune dark half-time grime game theme: sparse heavy drums with a ticking hi-hat, deep sub bass slides, single dry low stabs, a tense ticking pulse, no beeping lead and no melody; darts and a fruit machine in the back of a rough pub, focused, loops cleanly.",
+  "takes": [
+   "311593bf-967a-469d-ba4c-318fbe5b6aad",
+   "0dc0278c-ba3b-453e-8c23-1b92d9ec94bb"
+  ],
+  "loop": "0f823d1b-eb6b-4862-af8c-c009cfc2b436",
+  "file": "web/music/v85/pubgames.mp3"
+ },
+ "pens": {
+  "bpm": 140,
+  "prompt": "16-bit Mega Drive FM chiptune dark half-time grime penalty shoot-out theme: sparse heavy drums with stadium-like claps, deep sub bass slides, single dry low stabs, tension that tightens every bar, no beeping lead and no melody; a floodlit park pitch at night, loops cleanly.",
+  "takes": [
+   "404f8b96-9c33-4f16-8718-e435543befa2",
+   "33901c23-e935-425a-8c05-a380781bc5b1"
+  ],
+  "loop": "ec3935b0-7364-401c-8520-142de2cf7b65",
+  "file": "web/music/v85/pens.mp3"
+ },
+ "kiss": {
+  "bpm": 140,
+  "prompt": "16-bit Mega Drive FM chiptune dark half-time grime chase theme with a cheeky edge: sparse heavy drums with a quick skippy hi-hat, bouncing deep sub bass slides, single dry low stabs, no beeping lead and no melody; New Year's Eve on a council estate, someone is it, loops cleanly.",
+  "takes": [
+   "2c113e74-9cbf-4dff-9eeb-465edb8f2091",
+   "e49ff9d3-f4f4-4e1f-aa9d-b7d36228bacb"
+  ],
+  "loop": "4f6d4952-b0c0-4f84-851e-3a555ec1b624",
+  "file": "web/music/v85/kiss.mp3"
+ },
+ "awake": {
+  "bpm": 140,
+  "prompt": "16-bit Mega Drive FM chiptune dark half-time grime night drive theme: a steady sparse heavy beat that never stops, deep sub bass slides, single dry low stabs on the bar, a low hum underneath, no beeping lead and no melody; 4am on an empty coast road fighting sleep, loops cleanly. (A first try with a drone would not loop.)",
+  "takes": [
+   "6be1b7ef-51d3-450d-9a10-0728c3632911",
+   "c791ea81-8339-43ba-a3e1-4143c12e6766"
+  ],
+  "loop": "33c63c6c-3882-48f2-99fc-423d5269fd58",
+  "file": "web/music/v85/awake.mp3"
+ },
+ "golf": {
+  "bpm": 140,
+  "prompt": "16-bit Mega Drive FM chiptune dark half-time grime theme with swagger: sparse heavy drums with a cocky clap pattern, deep sub bass slides, single dry low stabs, no beeping lead and no melody; teeing off over a carp lake at dawn, loops cleanly.",
+  "takes": [
+   "69dc3aa8-cdaa-4a25-afa3-5fa59556d087",
+   "7cc804f2-4c97-484c-a949-5765ead4b9da"
+  ],
+  "loop": "2dffd196-9b73-497b-9cac-de566dd481db",
+  "file": "web/music/v85/golf.mp3"
+ },
+ "snake": {
+  "bpm": 140,
+  "prompt": "16-bit Mega Drive FM chiptune dark half-time grime theme for a phone game: sparse heavy drums, deep sub bass slides, single dry low stabs, a tiny low blip pulse like a phone keypad, no beeping lead and no melody; sat alone on the coach outside a club at 2am, bored and sulking, loops cleanly.",
+  "takes": [
+   "ae644eaf-4449-43ca-b0fb-01ad35347e36",
+   "73e5b4b8-29cd-472b-a87c-d076ea8e337b"
+  ],
+  "loop": "42fd27cb-a812-41f1-bb4d-af5ae7915b60",
+  "file": "web/music/v85/snake.mp3"
+ },
+ "kebab": {
+  "bpm": 140,
+  "prompt": "16-bit Mega Drive FM chiptune dark half-time grime siege theme: heavy drums that keep building, deep sub bass slides, single dry low stabs, a tense low alarm pulse, no beeping lead and no melody; a kebab shop at 3am with the queue about to kick off, menacing, loops cleanly.",
+  "takes": [
+   "69d1e058-183a-447e-b7b7-fb3af4ecef5d",
+   "b3c5c792-893c-4c81-9978-2c369cbefae5"
+  ],
+  "loop": "450f6f1b-c641-46fc-b9ae-2146e44afaf7",
+  "file": "web/music/v85/kebab.mp3"
+ },
+ "sting_clear": {
+  "bpm": 140,
+  "prompt": "16-bit Mega Drive FM chiptune dark half-time grime stage clear sting: one heavy drum hit, a deep sub bass slide down, two dry low stabs, ending on a held low chord, short and cocky.",
+  "takes": [
+   "f319895b-158b-4f81-ab30-2c4a126ed0e9",
+   "b559253f-0b1d-4e7e-a058-0c5c14458f8f"
+  ],
+  "note": "PixelLab returned full-tilt loops rather than endings, so take 1 was cut on its first downbeat to two bars (three for game over) with a fade",
+  "file": "web/music/v85/sting_clear.mp3"
+ },
+ "sting_bossdown": {
+  "bpm": 140,
+  "prompt": "16-bit Mega Drive FM chiptune dark half-time grime boss defeated sting: a crash, a huge deep sub bass drop, single dry low stabs, ending on a held low note, short and heavy.",
+  "takes": [
+   "34e81746-e059-449c-b9ec-6dbf96a7c33d",
+   "1e59d36c-5ac8-4443-8522-2f6d25bef03c"
+  ],
+  "note": "PixelLab returned full-tilt loops rather than endings, so take 1 was cut on its first downbeat to two bars (three for game over) with a fade",
+  "file": "web/music/v85/sting_bossdown.mp3"
+ },
+ "sting_gameover": {
+  "bpm": 140,
+  "prompt": "16-bit Mega Drive FM chiptune dark half-time grime game over sting: slow sparse heavy drums that stop, a deep sub bass sliding down, one single dry low stab, ending on a held low note, defeated and gloomy.",
+  "takes": [
+   "22a15b8c-f38d-46a3-a526-4f6b6ce8a75e",
+   "04ccacb1-46e5-43e1-98b3-3d8bc3055547"
+  ],
+  "note": "PixelLab returned full-tilt loops rather than endings, so take 1 was cut on its first downbeat to two bars (three for game over) with a fade",
+  "file": "web/music/v85/sting_gameover.mp3"
+ },
+ "sting_tab": {
+  "bpm": 140,
+  "prompt": "16-bit Mega Drive FM chiptune dark half-time grime 'carry on' sting: a quick heavy drum fill, a deep sub bass slide up, one dry low stab, ending punchy on a held low note, short and defiant.",
+  "takes": [
+   "9ea40a9d-bee3-4072-ac91-cf2b8b9a5812",
+   "6e110de0-29f5-436d-ab87-6fdefbc49c35"
+  ],
+  "note": "PixelLab returned full-tilt loops rather than endings, so take 1 was cut on its first downbeat to two bars (three for game over) with a fade",
+  "file": "web/music/v85/sting_tab.mp3"
+ },
+ "sting_chapter": {
+  "bpm": 140,
+  "prompt": "16-bit Mega Drive FM chiptune dark half-time grime chapter title sting: a heavy drum roll, a deep sub bass slide, three bold dry low stabs, ending on a held low chord, menacing and cinematic.",
+  "takes": [
+   "62025f81-488b-4670-b37b-683da2326394",
+   "f44c8eea-6511-4434-ace6-015afb92058d"
+  ],
+  "note": "PixelLab returned full-tilt loops rather than endings, so take 1 was cut on its first downbeat to two bars (three for game over) with a fade",
+  "file": "web/music/v85/sting_chapter.mp3"
+ },
+ "_note2": "15 November, second batch: Tim asked for the Smoking Area style (dark half-time grime, 140 bpm). Garage-style first tries of the pub, the pub games and the clear sting were made and not used: "
 }
