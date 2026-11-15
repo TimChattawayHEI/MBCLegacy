@@ -312,6 +312,14 @@ Tim upgraded PixelLab to Tier 2 (sound and music need it; the allowance went to 
   - PixelLab drew five mouths per face (shut, a, o, e, f; 3 generations each, 36 in all); only the mouth area was pasted onto the original portraits (`tools/v85/mouths.py`), so the faces stay the hand-made ones. Strips in `tools/v85/talk_src`, code in `tools/v85/talk.js`, patched by `tools/v85_talk_build.py`
 - [ ] Tim: say if the face beside the speech bubble is too much in a busy fight (it can be limited to story lines, or made smaller)
 
+### Hand-drawn small effects (15 November)
+- [x] The little effects the code drew as plain circles and polygons are pixel art now, on the same grid as the other effect sheets (V85; Tim picked this from the Tier 2 list). Smoke puffs (exhausts, plaster dust, Pearcy's powder, steam) are a cartoon puff that billows and breaks up, in two sizes, and the biggest smoke uses the poof in the same greys; kicked-up dust is the puff in sandy browns; flames are a flame tongue that flares and dies; sparkles a four-point star that pops and shrinks; plus hearts, water drops, the sleep Zs, and debris and glass as chunky outlined bits that tumble a quarter turn at a time. Movement is unchanged; only the drawing is new, and the old drawing stands in until the sheets load
+  - The puff and the flame are from PixelLab's effects tool (free; in Tim's My effects as "Carp Diem smoke puff" and "Carp Diem flame lick"); the tiny ones (a few pixels each) are drawn pixel by pixel in `tools/v85/vfx_art.py`. Code in `tools/v85/vfx.js`, patched in by `tools/v85_vfx_build.py`
+  - Puffs are see-through as the old ones were (big ones at half), after the first try hid Pearcy inside his own White Out cloud. See-through wind flecks keep their old look
+  - Test: `tools/v85/vfxtest.py` (every effect at four moments of its life; `--root` for a before and after). smashtest and fxtest still pass with no page errors
+- [ ] Tim: play a few stages and say if any puff, flame or sparkle is too big, too solid or too busy (each is one line in `v85Part` in `tools/v85/vfx.js`)
+- [ ] Rings (the shouts and the speaker waves) are still drawn by the code: they grow and travel too far for a fixed sheet. Worth a drawn version if they look out of place next to the rest
+
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
 
