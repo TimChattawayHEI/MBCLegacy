@@ -312,6 +312,13 @@ Tim upgraded PixelLab to Tier 2 (sound and music need it; the allowance went to 
   - PixelLab drew five mouths per face (shut, a, o, e, f; 3 generations each, 36 in all); only the mouth area was pasted onto the original portraits (`tools/v85/mouths.py`), so the faces stay the hand-made ones. Strips in `tools/v85/talk_src`, code in `tools/v85/talk.js`, patched by `tools/v85_talk_build.py`
 - [ ] Tim: say if the face beside the speech bubble is too much in a busy fight (it can be limited to story lines, or made smaller)
 
+### The bosses talk (15 November)
+- [x] All 18 boss intro cards talk (V85): once the card slams in, the boss's mouth follows the letters of their line, as the lads' faces do, and they let out their own sound in place of the generic roar (a cackle for Lady Addict, a shriek for Denise, a gurgling roar for Big Gary, a wheezy cackle for Nozzer, a drunk shout for Alan...). Covers the Parkie, Master Control, Denise, Lady Addict, Big Gary, Big Gaz, Don Vito, Big Tony and Little Nicky, Il Carabiniere, I Fratelli, the Ticket Inspector, Lewisham Lenny, the Jeweller, the Far Bank, Nozzer, Alan, Jeff and Mick
+  - Mouths: PixelLab's mouth tool on a 64px crop of each head (3 generations each), then only the mouth area pasted back onto the painted card (`tools/v85/bossmouths.py`), so the cards are otherwise untouched. Strips, crops and GIFs in `tools/v85/bosstalk_src`
+  - Sounds: PixelLab sound effects (1 generation each; they can't say words, so each is wordless), trimmed, limited and levelled with the other voices. About 75 generations in all
+  - Code `tools/v85/bosstalk.js`, patched by `tools/v85_bosstalk_build.py`. Test `tools/v85/bosstalktest.py` (every card loads, is shut before it lands and talks after, plays its own sound once, the generic roar skipped under it). Passes
+- [ ] Tim: say if any boss's sound doesn't fit (one PixelLab call to redo, about 1 generation)
+
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
 
