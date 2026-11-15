@@ -254,6 +254,14 @@ Tim asked if Meshy could make the attack and hit effects look as clear and stron
 - [x] Tim: play a few fights as Tim and say if the trails and sparks feel right, then roll them out to the other lads
   - Done: Tim was happy with V80; V81 gives every lad his own
 
+### Things to smash (15 November)
+- [x] Every breakable gets three looks from PixelLab: whole, dented and wrecked (V85). One hit dents it, the third breaks it: a white pop, the dust ring, bits in its colour (plus glass for the phone box, vending machine and pub table), the food or weapon jumps out and lands on the side you hit it from, and the wreck stays on the floor for the rest of the stage (the phone box and vending machine still stand, so they sort by depth with the fighters)
+  - New kinds, styled off the old bin: red phone box (drawn at 3x so it stands taller than the lads), newspaper A-board, wooden crate, drinks vending machine, pub table with pints, shopping trolley, striped deckchair. The old bin, keg, cool box and suitcase got dented and wrecked looks too (scaled down to match their size)
+  - Placed: Frequency (phone box, A-board), Soundz (crate), the fishery and Peg Nine (crate, deckchair), the Social, Dive Bar, Club and both pub rooms (pub table), Arrivals (trolley, vending machine), the beach (two deckchairs), Ramsden (trolley), Orpington Station (vending machine, A-board), Charing Cross (phone box, vending machine), the Smoking Area (crate, trolley)
+  - Art in `tools/v85/smash_src` (some PixelLab states came back with a fake grey checker painted behind them; it was cleaned off), code in `tools/v85/smash.js`, patched in by `tools/v85_smash_build.py`. `tools/v85/smashtest.py` shoots every breakable on every stage whole, dented, breaking, mid-pop and wrecked: no page errors, no missing sprites. 230 generations
+- [ ] Tim: say if the phone box at 3x looks too chunky next to the painted one on the Frequency (it sits further along the street from it), and if any stage wants more or fewer things to smash
+- [ ] Bot note: in the pub's bar room the bot sometimes gets stuck above the counter while the darts thrower hovers at its corner (happens before this change too, 1 run in 5). A real player just steps down; worth a look if anyone reports it
+
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
 
@@ -327,7 +335,7 @@ Tim asked to spend the spare PixelLab allowance on the lads: more depth, cleaner
 - [x] Bot playthrough of every stage (headless, god mode, tools at /home/claude/work/play in the session): 19 of 21 stages cleared with no page errors and no frame out of range. The Social timed out on Denise (the bot can't wear her down; she clears fine once beaten) and the Kebab Siege is endless by design. The Frogger crossing was skipped. Fixed from the review: the attack wind-up showed the punch already out on razor, garagemc, quick, grappler and tuba (now the stance, then the hit), kappa's whip now cracks on the extended frame, and Big Tony's charge and Don Vito's far move use the right frames
 - [x] Bosses now flinch on a hit: a quarter of a second from their hurt rows (head, then body, alternating), skipped while they wind up, strike, charge, lie down or are held, so the AI and the telegraphs are unchanged
 - [ ] Rows the bot hardly reached and worth a hand check: dazed (only after the SENT OFF special), held on bosses, the anti-air uppercut (needs a jump-in), mick's belly barge, denim's slide, dipper's steal
-- PixelLab: 1,119 of this cycle's 2,000 generations used (resets 13 December)
+- PixelLab: 1,349 of this cycle's 2,000 generations used (resets 13 December)
 
 ### Tim
 - [ ] Play each lad on a phone and say which moves look off (wrong frame on the hit, a pose that turns his back, size)

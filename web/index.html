@@ -1648,7 +1648,7 @@ const TRACK_COLS = [['#9aa0a8', '#f4f4f4'], ['#24304a', '#e8e8e8'], ['#1d1f23', 
 const STAGES = {
   frequency: { n: 1, era: 1999, title: 'THE FREQUENCY', sub: 'Orpington. December 1999.', bg: 'orpington', ft: 344, fb: 506, len: 3400, music: 'garage', aggro: 2, aa: 0.25, intro: 'frequency',
     items: [{ w: 'ball', x: 640, y: 470 }, { w: 'alcopop', x: 1240, y: 430 }, { w: 'cone', x: 2060, y: 480 }],
-    breakables: [{ type: 'bin', x: 1000, y: 476, drop: 'chips' }, { type: 'bin', x: 2240, y: 440, drop: 'chips' }],
+    breakables: [{ type: 'phonebox', x: 2350, y: 430, drop: 'chips' }, { type: 'aboard', x: 2650, y: 480, drop: 'chips' }, { type: 'bin', x: 1000, y: 476, drop: 'chips' }, { type: 'bin', x: 2240, y: 440, drop: 'chips' }],
     tree: { x: 3060 },
     waves: [
       { at: 360, groups: [[['townie', 'R'], ['townie', 'R'], ['ladette', 'L']]] },
@@ -1659,7 +1659,7 @@ const STAGES = {
     ] },
   soundz: { secret: { x: 1900, word: 'DING! GOING UP.' }, n: 2, era: 1999, title: 'SOUNDZ FM', sub: "New Year's Eve, 1999. 104.1 FM.", bg: 'soundz', ft: 348, fb: 506, len: 3600, music: 'soundz', aggro: 2, aa: 0.32, intro: 'soundz', outro: 'soundzOutro',
     items: [{ w: 'alcopop', x: 620, y: 470 }, { w: 'aerial', x: 1700, y: 440 }],
-    breakables: [{ type: 'keg', x: 1150, y: 480, drop: 'chips' }, { type: 'bin', x: 2300, y: 470, drop: 'chips' }, { type: 'bin', x: 2900, y: 440, drop: 'w:alcopop' }],
+    breakables: [{ type: 'crate', x: 1750, y: 470, drop: 'chips' }, { type: 'keg', x: 1150, y: 480, drop: 'chips' }, { type: 'bin', x: 2300, y: 470, drop: 'chips' }, { type: 'bin', x: 2900, y: 440, drop: 'w:alcopop' }],
     waves: [
       { at: 360, groups: [[['vibez', 'R'], ['vibez', 'R'], ['townie', 'L'], ['ladette', 'R']]] },
       { at: 1100, raid: true, groups: [[['dti', 'R'], ['townie', 'R']], [['dti', 'L'], ['townie', 'R']]] },
@@ -1669,7 +1669,7 @@ const STAGES = {
     ] },
   arrival: { secret: { x: 1130, word: 'LOOSE PLANK!' }, n: 13, title: 'THE ARRANGEMENT', sub: "Friday. Denise's Fishery.", bg: 'fishery', tod: 'day', ft: 340, fb: 506, len: 3400, music: 'arrival', aggro: 2, aa: 0.22, intro: 'arrival',
     items: [{ w: 'stick', x: 880, y: 470 }, { w: 'net', x: 2160, y: 420 }],
-    breakables: [{ type: 'coolbox', x: 1520, y: 400, drop: 'bacon' }, { type: 'coolbox', x: 2460, y: 478, drop: 'bacon' }],
+    breakables: [{ type: 'crate', x: 2000, y: 460, drop: 'bacon' }, { type: 'coolbox', x: 1520, y: 400, drop: 'bacon' }, { type: 'coolbox', x: 2460, y: 478, drop: 'bacon' }],
     waves: [
       { at: 360, groups: [[['angler', 'R'], ['angler', 'R'], ['angler', 'L']]] },
       { at: 1120, groups: [[['warden', 'R'], ['angler', 'R']], [['goose', 'R'], ['goose', 'R'], ['angler', 'L']]] },
@@ -1688,7 +1688,7 @@ const STAGES = {
     ] },
   social: { n: 15, title: 'THE SOCIAL', sub: 'Saturday. Raffle. No exceptions.', bg: 'social', ft: 352, fb: 506, len: 2900, music: 'social', aggro: 3, aa: 0.4, intro: 'social',
     items: [{ w: 'cue', x: 720, y: 470 }, { w: 'guinness', x: 1250, y: 436 }],
-    breakables: [{ type: 'keg', x: 1120, y: 484, drop: 'sroll' }, { type: 'keg', x: 2080, y: 470, drop: 'sroll' }],
+    breakables: [{ type: 'pubtable', x: 1650, y: 470, drop: 'w:guinness' }, { type: 'keg', x: 1120, y: 484, drop: 'sroll' }, { type: 'keg', x: 2080, y: 470, drop: 'sroll' }],
     fruit: { x: 1480 },
     waves: [
       { at: 360, groups: [[['regular', 'R'], ['regular', 'R'], ['regular', 'L']]] },
@@ -1699,7 +1699,7 @@ const STAGES = {
     ] },
   pegnine: { secret: { x: 2820, word: 'PEG NINE PROVIDES' }, n: 16, title: 'THE BATTLE OF PEG NINE', sub: "Sunday, 6am. One rod. Nine people.", bg: 'fishery', tod: 'dawn', ft: 340, fb: 506, len: 3200, music: 'pegnine', aggro: 4, aa: 0.45, intro: 'pegnine',
     items: [{ w: 'lam', x: 560, y: 440 }, { w: 'net', x: 1660, y: 476 }],
-    breakables: [{ type: 'coolbox', x: 1260, y: 470, drop: 'brisket' }, { type: 'coolbox', x: 2380, y: 410, drop: 'bacon' }],
+    breakables: [{ type: 'deckchair', x: 1850, y: 450, drop: 'bacon' }, { type: 'coolbox', x: 1260, y: 470, drop: 'brisket' }, { type: 'coolbox', x: 2380, y: 410, drop: 'bacon' }],
     waves: [
       { at: 360, groups: [[['goose', 'R'], ['goose', 'R'], ['angler', 'L'], ['angler', 'R']]] },
       { at: 1080, groups: [[['warden', 'R'], ['carpbro', 'R']], [['goose', 'L'], ['goose', 'R'], ['goose', 'R']]] },
@@ -1709,7 +1709,7 @@ const STAGES = {
     ] },
   airport: { secret: { x: 2440, word: 'NOT MY BAG' }, n: 3, era: 2002, title: 'ARRIVALS', sub: 'Elba, Italy. August 2002.', bg: 'airport', ft: 344, fb: 506, len: 3600, music: 'airport', aggro: 2, aa: 0.3, intro: 'airport',
     items: [{ w: 'cone', x: 700, y: 470 }, { w: 'alcopop', x: 2100, y: 440 }],
-    breakables: [{ type: 'bin', x: 1260, y: 476, drop: 'pizza' }, { type: 'bin', x: 2700, y: 450, drop: 'pizza' }],
+    breakables: [{ type: 'trolley', x: 1900, y: 470, drop: 'pizza' }, { type: 'vending', x: 3000, y: 420, drop: 'w:alcopop' }, { type: 'bin', x: 1260, y: 476, drop: 'pizza' }, { type: 'bin', x: 2700, y: 450, drop: 'pizza' }],
     waves: [
       { at: 360, groups: [[['handler', 'R'], ['sec', 'R'], ['handler', 'L']]] },
       { at: 820, event: 'marc' },
@@ -1722,7 +1722,7 @@ const STAGES = {
     waves: [] },
   divebar: { n: 5, era: 2002, title: 'THE DIVE BAR', sub: 'Night one. One drink.', bg: 'divebar', ft: 344, fb: 506, len: 3600, music: 'divebar', aggro: 3, aa: 0.4, intro: 'divebar',
     items: [{ w: 'cue', x: 900, y: 470 }, { w: 'alcopop', x: 2200, y: 450 }],
-    breakables: [{ type: 'keg', x: 1100, y: 480, drop: 'pizza' }, { type: 'bin', x: 2100, y: 470, drop: 'gelato' }],
+    breakables: [{ type: 'pubtable', x: 2300, y: 470, drop: 'w:alcopop' }, { type: 'keg', x: 1100, y: 480, drop: 'pizza' }, { type: 'bin', x: 2100, y: 470, drop: 'gelato' }],
     waves: [
       { at: 360, groups: [[['ragazzo', 'R'], ['ragazza', 'R'], ['ragazzo', 'L']]] },
       { at: 900, groups: [[['ragazza', 'R'], ['ragazzo', 'R']], [['ragazzo', 'L'], ['ragazza', 'R'], ['ragazzo', 'R']]], food: 'pizza' },
@@ -1732,7 +1732,7 @@ const STAGES = {
     ] },
   beach: { secret: { x: 2900, word: 'SANDCASTLE!' }, n: 6, era: 2002, title: 'LA SPIAGGIA', sub: 'Day three. Factor nothing.', bg: 'beach', ft: 350, fb: 506, len: 3600, music: 'beach', aggro: 3, aa: 0.4, intro: 'beach', stuart: 1720,
     items: [{ w: 'ball', x: 800, y: 470 }, { w: 'cone', x: 2300, y: 460 }],
-    breakables: [{ type: 'coolbox', x: 1200, y: 480, drop: 'gelato' }, { type: 'coolbox', x: 2500, y: 450, drop: 'pizza' }],
+    breakables: [{ type: 'deckchair', x: 1800, y: 450, drop: 'gelato' }, { type: 'deckchair', x: 3200, y: 480, drop: 'pizza' }, { type: 'coolbox', x: 1200, y: 480, drop: 'gelato' }, { type: 'coolbox', x: 2500, y: 450, drop: 'pizza' }],
     waves: [
       { at: 360, groups: [[['lifeguard', 'R'], ['beachm', 'R'], ['beachf', 'L']]] },
       { at: 1000, groups: [[['beachm', 'R'], ['beachf', 'R'], ['lifeguard', 'L']], [['lifeguard', 'R'], ['beachm', 'L']]], food: 'gelato' },
@@ -1742,7 +1742,7 @@ const STAGES = {
     ] },
   club: { n: 7, era: 2002, title: 'THE CLUB', sub: 'Last night. Biggest club on the island.', bg: 'club', ft: 350, fb: 506, len: 3600, music: 'club', aggro: 3, aa: 0.45, intro: 'club', outro: 'clubOutro',
     items: [{ w: 'alcopop', x: 700, y: 470 }, { w: 'cue', x: 2400, y: 450 }],
-    breakables: [{ type: 'keg', x: 1250, y: 480, drop: 'pizza' }, { type: 'bin', x: 2600, y: 470, drop: 'gelato' }],
+    breakables: [{ type: 'pubtable', x: 1850, y: 460, drop: 'w:alcopop' }, { type: 'keg', x: 1250, y: 480, drop: 'pizza' }, { type: 'bin', x: 2600, y: 470, drop: 'gelato' }],
     waves: [
       { at: 360, groups: [[['clubm', 'R'], ['clubf', 'R'], ['clubm', 'L']]] },
       { at: 900, groups: [[['doorman', 'R'], ['clubf', 'L']], [['clubm', 'R'], ['clubf', 'R'], ['clubm', 'L']]], food: 'pizza' },
@@ -1753,7 +1753,7 @@ const STAGES = {
     ] },
   ramsden: { secret: { x: 1240, word: 'BALL GAMES ALLOWED' }, n: 2, hidden: true, title: 'RAMSDEN', sub: "Marc's old manor. Always on fire.", bg: 'ramsden', ft: 346, fb: 506, len: 3600, music: 'ramsden', aggro: 3, aa: 0.55, intro: 'ramsden',
     items: [{ w: 'cone', x: 700, y: 472 }, { w: 'cone', x: 1660, y: 430 }],
-    breakables: [{ type: 'bin', x: 1300, y: 470, drop: 'kebab' }, { type: 'bin', x: 2300, y: 440, drop: 'kebab' }, { type: 'bin', x: 2920, y: 486, drop: 'w:cone' }],
+    breakables: [{ type: 'trolley', x: 1800, y: 460, drop: 'kebab' }, { type: 'bin', x: 1300, y: 470, drop: 'kebab' }, { type: 'bin', x: 2300, y: 440, drop: 'kebab' }, { type: 'bin', x: 2920, y: 486, drop: 'w:cone' }],
     waves: [
       { at: 360, groups: [[['tracksuit', 'R'], ['tracksuit', 'R'], ['tracksuit', 'L'], ['tracksuit', 'L']]] },
       { at: 1050, mopeds: 2, groups: [[['hoodie', 'R'], ['tracksuit', 'R'], ['tracksuit', 'L']], [['tracksuit', 'R'], ['tracksuit', 'R'], ['hoodie', 'L']]] },
@@ -2066,7 +2066,7 @@ Object.assign(STAGES, {
   nl_station: { n: 8, era: 2006, title: 'ORPINGTON STATION', sub: 'Friday. 9pm. Train to Charing Cross.', bg: 'nl_station', ft: 352, fb: 506, len: 3300,
     music: 'platform', aggro: 3, aa: 0.4, intro: 'nlIntro',
     items: [{ w: 'alcopop', x: 760, y: 470 }, { w: 'cone', x: 1560, y: 440 }],
-    breakables: [{ type: 'bin', x: 1180, y: 476, drop: 'kebab' }, { type: 'bin', x: 2380, y: 450, drop: 'w:alcopop' }],
+    breakables: [{ type: 'vending', x: 1500, y: 420, drop: 'chips' }, { type: 'aboard', x: 2700, y: 480, drop: 'chips' }, { type: 'bin', x: 1180, y: 476, drop: 'kebab' }, { type: 'bin', x: 2380, y: 450, drop: 'w:alcopop' }],
     waves: [
       // Orpington on a Friday: the locals first, then the lot heading into town, then a bit of everything
       { at: 360, groups: [[['burb', 'R'], ['hoops', 'R'], ['burb', 'L']]] },
@@ -2088,7 +2088,7 @@ Object.assign(STAGES, {
   nl_cx: { n: 10, era: 2006, title: 'CHARING CROSS', sub: '21:47. This train terminates here.', bg: 'nl_cx', ft: 356, fb: 506, len: 3400,
     music: 'terminus', aggro: 3, aa: 0.45, intro: 'nlCross',
     items: [{ w: 'alcopop', x: 820, y: 470 }],
-    breakables: [{ type: 'bin', x: 1300, y: 470, drop: 'chips' }, { type: 'bin', x: 2300, y: 460, drop: 'w:alcopop' }],
+    breakables: [{ type: 'phonebox', x: 1800, y: 420, drop: 'kebab' }, { type: 'vending', x: 2850, y: 430, drop: 'w:alcopop' }, { type: 'bin', x: 1300, y: 470, drop: 'chips' }, { type: 'bin', x: 2300, y: 460, drop: 'w:alcopop' }],
     waves: [
       { at: 360, groups: [[['puffer', 'R'], ['denim', 'R'], ['city', 'L']]] },
       { at: 700, groups: [[['burb', 'R'], ['hoops', 'R']], [['itgirl', 'R'], ['city', 'R'], ['burb', 'L']]], food: 'chips' },
@@ -2098,7 +2098,7 @@ Object.assign(STAGES, {
   nl_alley: { n: 11, era: 2006, title: 'THE SMOKING AREA', sub: "Round the back. Where's Seb?", bg: 'nl_alley', ft: 356, fb: 506, len: 3200,
     music: 'smoking', aggro: 3, aa: 0.5, intro: 'nlSeb',
     items: [{ w: 'cue', x: 1200, y: 460 }],
-    breakables: [{ type: 'keg', x: 980, y: 480, drop: 'kebab' }, { type: 'bin', x: 2100, y: 460, drop: 'w:alcopop' }],
+    breakables: [{ type: 'crate', x: 1600, y: 470, drop: 'kebab' }, { type: 'trolley', x: 2600, y: 460, drop: 'w:alcopop' }, { type: 'keg', x: 980, y: 480, drop: 'kebab' }, { type: 'bin', x: 2100, y: 460, drop: 'w:alcopop' }],
     waves: [
       { at: 300, event: 'sebScene' },
       { at: 420, groups: [[['dipper', 'R'], ['grappler', 'R'], ['lookout', 'R']]] },
@@ -3423,9 +3423,10 @@ function hitBreakable(b) {
   b.hp--; b.flash = 0.12; sfx('hit'); spark(b.x, b.y, 30, false);
   if (b.hp <= 0) {
     breakables = breakables.filter(o => o !== b);
-    const col = b.type === 'coolbox' ? '#e9eef0' : b.type === 'keg' ? '#a8adb2' : b.type === 'luggage' ? '#6a4630' : '#8a9096';   // Version 64
+    const col = smashCol(b.type), n0 = items.length;   // Version 64, 85
     debris(b.x, b.y, 20, col, 10); sfx('break'); addScore(100);
     if (b.drop) { if (b.drop.startsWith('w:')) dropItemWeapon(b.drop.slice(2), b.x, b.y + 4); else dropFood(b.drop, b.x, b.y + 4); }
+    smashBreak(b, n0);   // Version 85
   }
 }
 function hitFruit(fm) {
@@ -6037,7 +6038,7 @@ function drawBreakable(b) {
   const x = b.x - cam.x + (b.flash > 0 ? rand(-2, 2) : 0), y = b.y;
   if (x < -60 || x > W + 60) return;
   shadow(x, y, 26, 0);
-  drawBinSprite(x, y, b.flash > 0, b.type === 'bin' ? null : b.type);
+  if (!smashDraw(b, x, y)) drawBinSprite(x, y, b.flash > 0, b.type === 'bin' ? null : b.type);   // Version 85
   if (b.type === 'bin' && ST && ST.bg === 'ramsden') realFire(b.fid || (b.fid = 'bin' + (++FIRE_N)), x - 20, y - 62, 20, 40, 0.8);   // Version 69: real fire
 }
 function drawFlame(x, y, sz, seed) {
@@ -8183,7 +8184,7 @@ const ORP_SCENES = {
         { at: 0, mini: true, miniKind: 'chunk', title: 'THE PETTS WOOD MASSIVE', groups: [orpG(['chunk', 'R'], ['garagemc', 'L']), orpG(['frosted', 'R'], ['kappa', 'L'], ['razor', 'R'], ['scrunchie', 'L'])] },
         { event: 'exit', dir: 1, to: 3, label: 'YE OLDE BLACKSMITH' }] },
     { bg: 'front', ft: 406, fb: 506, label: 'YE OLDE BLACKSMITH', posts: [{ x: 782, foot: 460, w: 16, top: 326 }],
-      items: [{ w: 'guinness', x: 300, y: 470 }], breakables: [{ type: 'keg', x: 640, y: 484, drop: 'chips' }],
+      items: [{ w: 'guinness', x: 300, y: 470 }], breakables: [{ type: 'pubtable', x: 420, y: 480, drop: 'chips' }, { type: 'keg', x: 640, y: 484, drop: 'chips' }],
       waves: [{ event: 'smokers' },
         { at: 0, groups: [orpG(['codger', 'R'], ['regular', 'L'], ['darts', 'R']), orpG(['regular', 'R'], ['kappa', 'L'])] },
         { at: 0, final: true, groups: [orpG(['builder', 'R'], ['regular', 'L'], ['codger', 'R'], ['darts', 'L']), orpG(['darts', 'R'], ['regular', 'L'], ['builder', 'R'])], food: 'chips' }] },
@@ -8197,7 +8198,7 @@ const ORP_SCENES = {
         { at: 0, groups: [orpG(['codger', 'L'], ['regular', 'R'], ['darts', 'R']), orpG(['builder', 'L'], ['regular', 'R'])], food: 'chips' },
         { event: 'exit', dir: 1, to: 2, label: 'THE POOL ROOM' }] },
     { bg: 'pool', ft: 380, fb: 506, label: 'THE POOL ROOM', block: [[380, 772, 436]], fruit: 860,
-      items: [{ w: 'cue', x: 260, y: 470 }, { w: 'horseshoe', x: 600, y: 490 }, { w: 'horseshoe', x: 880, y: 470 }], breakables: [{ type: 'keg', x: 140, y: 484, drop: 'chips' }], wheels: true,
+      items: [{ w: 'cue', x: 260, y: 470 }, { w: 'horseshoe', x: 600, y: 490 }, { w: 'horseshoe', x: 880, y: 470 }], breakables: [{ type: 'pubtable', x: 760, y: 470, drop: 'w:guinness' }, { type: 'keg', x: 140, y: 484, drop: 'chips' }], wheels: true,
       waves: [{ at: 0, groups: [orpG(['shark', 'R'], ['regular', 'L'], ['darts', 'R']), orpG(['shark', 'L'], ['codger', 'R'])] },
         { at: 0, mini: true, miniKind: 'jeff', title: 'JEFF', groups: [orpG(['jeff', 'R'], ['shark', 'L']), orpG(['darts', 'R'], ['builder', 'R'], ['regular', 'L'])], food: 'chips' },
         { event: 'mickComing' }, { event: 'exit', dir: -1, to: 3, label: 'THE BAR' }] },
@@ -8293,10 +8294,10 @@ function orpGoScene(i, fromDir) {
   const L = orpScenes(), sc = L[i]; S.sc = i; S.scBg = sc.bg;
   FT = ST.ft = sc.ft; FB = ST.fb = sc.fb || 506;
   ST.waves = sc.waves; S.waveIdx = 0; S.wave = null; S.g = 0; S.exitReady = null; S.goT = 0; S.bosses = [];
-  foes.length = 0; shots.length = 0; hazards.length = 0; items.length = 0; breakables.length = 0; S.npcs = [];
+  foes.length = 0; shots.length = 0; hazards.length = 0; items.length = 0; breakables.length = 0; smashWrecks.length = 0; S.npcs = [];
   for (const a of allies) a.remove = true; allies = allies.filter(a => !a.remove);
   (sc.items || []).forEach(it => dropItemWeapon(it.w, it.x, it.y));
-  (sc.breakables || []).forEach(b => breakables.push({ ...b, hp: 3, flash: 0, half: 22 }));
+  (sc.breakables || []).forEach(b => breakables.push({ ...b, hp: 3, flash: 0, half: smashHalf(b.type) }));
   FLOOR_BLOCK[S.key] = sc.block || [];
   for (const q of (sc.posts || [])) { const n = makeNpc('post', q.x, q.foot); n.hp = 0; n.post = q; n.draw = orpDrawPost; S.npcs.push(n); }
   S.fruit = sc.fruit ? { x: sc.fruit, hits: 0, spin: 0, paid: false, flash: 0 } : null;
@@ -9937,6 +9938,69 @@ function v85DrawOwned(p) {
   ctx.restore();
 }
 // V85 hitfx end
+// V85 smash start
+// Things to smash (Version 85): every breakable has three looks drawn by PixelLab, whole, damaged and wrecked. One hit
+// dents it, the last one breaks it: a white pop, a dust ring, bits flying (glass for the phone box, the vending machine
+// and the pub table), the food or the weapon jumping out, and the wreck left lying on the floor for the rest of the stage.
+const SMASH = {
+  bin:       { col: '#8a9096' },
+  keg:       { col: '#a8adb2' },
+  coolbox:   { col: '#e9eef0' },
+  luggage:   { col: '#6a4630' },
+  phonebox:  { col: '#c8242a', sc: 3, half: 34, glass: true, isnew: true },   // drawn at 3 so it stands taller than the lads
+  aboard:    { col: '#7a5a3a', half: 26, isnew: true },
+  crate:     { col: '#8a6238', half: 26, isnew: true },
+  vending:   { col: '#5e5a52', half: 28, glass: true, isnew: true },
+  pubtable:  { col: '#5a3a24', half: 24, glass: true, isnew: true },
+  trolley:   { col: '#b8c0c8', half: 28, isnew: true },
+  deckchair: { col: '#d84a4a', half: 26, isnew: true },
+};
+let smashWrecks = [];
+Object.keys(SMASH).forEach(k => { if (SMASH[k].isnew) bgImg('props/' + k); bgImg('props/' + k + '_d'); bgImg('props/' + k + '_w'); });
+function smashHalf(t) { return (SMASH[t] && SMASH[t].half) || 22; }
+function smashCol(t) { return (SMASH[t] && SMASH[t].col) || '#8a9096'; }
+function smashSprite(x, y, flash, name, sc) {
+  const img = bgImg('props/' + name); if (!img) return false;
+  ctx.save(); ctx.imageSmoothingEnabled = false;
+  if (flash) ctx.filter = 'brightness(2.4)';
+  ctx.drawImage(img, Math.round((x - img.width * sc / 2) / 2) * 2, Math.round(y / 2) * 2 - (img.height - 3) * sc, img.width * sc, img.height * sc);
+  ctx.restore(); return true;
+}
+// a breakable still standing: dented once it has been hit
+function smashDraw(b, x, y) {
+  const m = SMASH[b.type]; if (!m) return false;
+  const sc = m.sc || 2;
+  if (b.hp < 3 && smashSprite(x, y, b.flash > 0, b.type + '_d', sc)) return true;
+  if (m.isnew) return smashSprite(x, y, b.flash > 0, b.type, sc);
+  return false;
+}
+// the last hit: the wreck goes down on the floor and whatever was inside jumps out
+function smashBreak(b, n0) {
+  const m = SMASH[b.type]; if (!m) return;
+  smashWrecks.push({ type: b.type, x: b.x, y: b.y, t: time });
+  if (m.glass) debris(b.x, b.y, 40, '#d8eef8', 8);
+  if (FX.slam) fxPlay('slam', b.x, b.y, 0, false);
+  addShake(m.sc === 3 ? 6 : 3);
+  const side = player && player.x > b.x ? 1 : -1;   // it lands on the side you hit it from, not on top of the wreck
+  for (let i = n0; i < items.length; i++) { const it = items[i]; it.pop = true; it.t = 0; it.x = itemX(b.x + side * 44); it.y = clamp(b.y + 10, FT + 6, FB - 4); }
+}
+// wrecks lie on the floor, under the food and under everyone's feet; the two that still stand (the phone box and the
+// vending machine) go in with the fighters so they are drawn in front of or behind them by depth
+function smashWreck(w) {
+  const x = w.x - cam.x; if (x < -140 || x > W + 140) return;
+  const m = SMASH[w.type], age = time - w.t, hop = age < 0.14 ? (1 - age / 0.14) * 8 : 0;
+  smashSprite(x, w.y - hop, age < 0.08, w.type + '_w', m.sc || 2);
+}
+const smashTall = w => { const img = bgImg('props/' + w.type + '_w'); return img && img.height > 44; };
+function smashWrecksDraw() { for (const w of smashWrecks) if (!smashTall(w)) smashWreck(w); }
+function smashWrecksList(list) { for (const w of smashWrecks) if (smashTall(w)) list.push({ y: w.y, f: () => smashWreck(w) }); }
+// food or a weapon out of a broken thing jumps up and lands in front of it
+function smashItem(it) {
+  if (!it.pop || it.t >= 0.5) { drawItem(it); return; }
+  ctx.save(); ctx.translate(0, -Math.round(Math.sin(it.t / 0.5 * Math.PI) * 56)); drawItem(it); ctx.restore();
+}
+for (const k in SMASH) { if (SMASH[k].isnew) ASSET_BG.push('props/' + k); ASSET_BG.push('props/' + k + '_d', 'props/' + k + '_w'); }   // preloaded with the rest of the art
+// V85 smash end
 function artPending() {
   for (const k in bgImgs) { const b = bgImgs[k]; if (!b.ready && !b.failed) return true; }
   for (const k in ladSheets) { const b = ladSheets[k]; if (!b.ready && !b.failed) return true; }
@@ -9975,9 +10039,9 @@ function startStageNow(key) {
     tree: ST.tree ? { x: ST.tree.x, star: false } : null, fireworks: 0,
     chain: 0, chainT: 0, bestChain: 0, hitsTaken: 0, bossHits: 0, koT: -9, koN: 0, splashes: 0,
     secret: ST.secret ? { x: ST.secret.x, word: ST.secret.word, hits: 0 } : null, secretFound: false };
-  foes = []; shots = []; parts = []; bubbles = []; hazards = []; items = []; breakables = []; timers.length = 0; allies = []; barrages = [];
+  foes = []; shots = []; parts = []; bubbles = []; hazards = []; items = []; breakables = []; smashWrecks = []; timers.length = 0; allies = []; barrages = [];
   (ST.items || []).forEach(i => dropItemWeapon(i.w, i.x, i.y));
-  (ST.breakables || []).forEach(b => breakables.push({ ...b, hp: 3, flash: 0, half: 22 }));
+  (ST.breakables || []).forEach(b => breakables.push({ ...b, hp: 3, flash: 0, half: smashHalf(b.type) }));
   cam.x = 0; lastFoe = null; lastFoeT = 0;
   const p = player;
   p.look = lookFor(p.def, ST.era);
@@ -13099,13 +13163,15 @@ function drawWorld(pix) {
     ctx.strokeStyle = 'rgba(220,235,240,0.5)'; ctx.lineWidth = 2;
     for (let i = 0; i < 3; i++) { const r = ((g.t * 90 + i * 30) % 90) + 20; ctx.beginPath(); ctx.ellipse(x, 270, r * 1.8, r * 0.35, 0, 0, Math.PI * 2); ctx.stroke(); }
   }
-  for (const it of items) drawItem(it);
+  smashWrecksDraw();   // Version 85
+  for (const it of items) smashItem(it);
   for (const h of hazards) if (h.kind !== 'moped') drawHazardFloor(h);
   drawDeniseFloor(); drawBossFloor();
   v85Dim();   // Version 85
   const list = [];
   for (const e of [...netDrawPlayers(), ...allies, ...foes]) list.push({ y: e.y + (e.state === 'netted' ? 1 : 0), f: () => drawEntity(e) });
   for (const b of breakables) list.push({ y: b.y, f: () => drawBreakable(b) });
+  smashWrecksList(list);   // Version 85
   for (const n of (S.npcs || [])) list.push({ y: n.y, f: () => n.draw ? n.draw(n) : drawEntity(n) });
   ladFxDraw(list);
   v85FxList(list);   // Version 85
