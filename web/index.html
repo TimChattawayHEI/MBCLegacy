@@ -3472,7 +3472,7 @@ function applyHit(a, t, k, dir) {
   const dmg = Math.max(1, k.dmg * orpBeatMult(a, t) * (t === player ? D().dmg : 1) * (t.dazedT > 0 ? 1.5 : 1) * (t.boss && (k.sp || (a && a.ally)) ? 0.5 : 1));
   t.hp -= dmg; t.flash = 0.12;
   const hz = t.kind === 'goose' ? 26 : t.kind === 'swan' ? 34 : t.fish ? 70 : 76;
-  if (!v80Spark(a, t.x - dir * t.half * 0.4, t.y, t.z + hz, big, dir)) spark(t.x - dir * t.half * 0.4, t.y, t.z + hz, big);   // Version 80
+  if (!v85HitFx(a, t, k, dir, big, hz) && !v80Spark(a, t.x - dir * t.half * 0.4, t.y, t.z + hz, big, dir)) spark(t.x - dir * t.half * 0.4, t.y, t.z + hz, big);   // Version 80, 85
   dmgNum(t.x, t.y, t.z + hz + 30, dmg);
   hitstop = Math.max(hitstop, k.hs || 0.05);
   sfx(big ? 'heavy' : 'hit');
@@ -3712,7 +3712,7 @@ function stun(f, dur) {
 function physics(e, dt, noClamp) {
   if (e.z > 0 || e.vz !== 0) {
     e.vz -= GRAV * dt; e.z += e.vz * dt;
-    if (e.z <= 0) { if (e.vz < -260 && (e.state === 'down' || e.state === 'thrown' || e.state === 'dead')) sfx('fall'); else if (e === player && e.vz < -300) sfx('land'); e.z = 0; e.vz = 0; e.landed = true; }
+    if (e.z <= 0) { v85Land(e); if (e.vz < -260 && (e.state === 'down' || e.state === 'thrown' || e.state === 'dead')) sfx('fall'); else if (e === player && e.vz < -300) sfx('land'); e.z = 0; e.vz = 0; e.landed = true; }
   }
   const px0 = e.x, py0 = e.y;   // Version 69: where it was, for the floor blocks
   e.x += e.vx * dt; e.y += e.vy * dt;
@@ -3910,6 +3910,7 @@ function launchThrow(p) {
 // specials
 function startSpecial(p) {
   runStat('specials', p.def.id);   // Version 71
+  v85SpecialStart(p);   // Version 85
   if (isMine(p)) buzz(90);
   p.meter = 0; p.state = 'special'; p.t = 0; p.inv = 99; p.spDone = false; p.spEnd = 0; p.vx = 0; p.vy = 0; p.landed = false; p.atk = null; p.running = false;
   p.spWhistle = false; p.spDove = false; p.spGhost = p.spInf = p.spYawn = p.spZ = p.spSnore = p.spWake = false; p.headK = 1;
@@ -6243,7 +6244,7 @@ function sprTint(sh, sx, sy, cell, kind) {
   const x = sprTintCtx;
   x.globalCompositeOperation = 'source-over'; x.clearRect(0, 0, cell, cell);
   x.drawImage(sh.img, sx, sy, cell, cell, 0, 0, cell, cell);
-  x.globalCompositeOperation = 'source-atop'; x.fillStyle = SPR_TINT[kind]; x.fillRect(0, 0, cell, cell);
+  x.globalCompositeOperation = 'source-atop'; x.fillStyle = SPR_TINT[kind] || kind; x.fillRect(0, 0, cell, cell);
   x.globalCompositeOperation = 'source-over';
   return sprTintCv;
 }
@@ -6435,7 +6436,8 @@ function drawLad(e, sx, sy, s, sh) {
   ctx.imageSmoothingEnabled = false;
   // Duck and Cover backup: angry red, with a ring at their feet and a marker overhead (drawn after)
   if (e.ally && !e.friend) { ctx.save(); ctx.scale(1 / dir, 1); ctx.fillStyle = 'rgba(255,40,30,' + (0.35 + Math.sin(time * 8) * 0.15).toFixed(2) + ')'; ctx.beginPath(); ctx.ellipse(0, e.z, 34, 9, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
-  const tint = e.flash > 0 ? 'white' : ((e.ally && !e.friend) || (crazed && Math.floor(time * 10) % 2)) ? 'red' : null;
+  const tint = e.flash > 0 ? (e.v85col && time - e.v85at > 0.06 && time - e.v85at < 0.24 ? e.v85col : 'white') :   // Version 85: white, then the lad's colour
+    ((e.ally && !e.friend) || (crazed && Math.floor(time * 10) % 2)) ? 'red' : null;
   drawSprCell(sh, idx * m.cell, row[0] * m.cell, m.cell, tint, -m.ax * k, -m.ay * k, m.cell * k, m.cell * k);
   if (!tint && ST && ST.era === 2001 && mode !== 'title') orpLightSprite(e, sh, idx * m.cell, row[0] * m.cell, m.cell, -m.ax * k, -m.ay * k, m.cell * k, m.cell * k, dir);   // Version 77
   // a moped helmet stays on his head until he takes it off to swing it
@@ -7354,6 +7356,7 @@ function drawStageFore() {
 // ================================================================== particles, shots, bubbles
 function drawPart(p) {
   const x = p.x - cam.x, y = p.y - p.z, k = p.t / p.life;
+  if (p.k === 'v85burst' || p.k === 'v85speed') return;   // Version 85: drawn behind their owner (v85FxList)
   if (p.k === 'v81fx' || p.k === 'v81flash') { v81DrawPart(p); return; }   // Version 81
   if (p.k === 'swoosh') { v80DrawSwoosh(p); return; }   // Version 80
   if (p.k === 'fx') { const m = FX[p.fx]; drawFxFrame(p.fx, Math.min(m.n - 1, Math.floor(p.t * m.fps)), x, y, p.flip); return; }
@@ -9854,6 +9857,86 @@ function v81DrawPart(p) {
   }
 }
 // V81 js end
+// V85 hitfx start
+// ================================================================== Version 85: hits that land harder
+// Art from PixelLab's VFX workbench (in Tim's My effects as "Carp Diem ground slam", "Carp Diem sweat spray",
+// "Carp Diem weapon thwack" and "Tim special burst"; the burst is recoloured for every lad by tools/v85/hitfx_art.py).
+// - a weapon hit throws a chunky orange thwack with grit instead of the lad's spark
+// - a head shot flicks sweat off the way the hit travels
+// - a combo ender: the victim flashes white then the lad's colour, a short sharp shake, speed lines behind the knockback
+// - a body hitting the floor hard: a dust ring and puffs rolling out both sides
+// - a special: a burst in the lad's colour behind him, and the stage dims for a moment so he stands out
+FX.slam = { fw: 124, fh: 44, n: 8, cols: 3, ax: 62, ay: 32, fps: 16, loop: false };
+FX.sweat = { fw: 56, fh: 44, n: 5, cols: 3, ax: 10, ay: 24, fps: 16, loop: false };
+FX.thwack = { fw: 80, fh: 72, n: 5, cols: 3, ax: 30, ay: 36, fps: 16, loop: false };
+for (const k of ['slam', 'sweat', 'thwack']) fxImg(k);
+for (const id in FX_COL) { FX[id + '_burst'] = { fw: 128, fh: 128, n: 10, cols: 4, ax: 64, ay: 64, fps: 16, loop: false }; fxImg(id + '_burst'); }
+
+const V85_NOBODY = { goose: 1, swan: 1, espace: 1 };   // no sweat or dust ring for birds and cars
+let v85DimAt = -9;
+function v85Rgba(h, a) { const c = hexRgb(h); return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')'; }
+
+// called from applyHit before the spark; true when it drew the hit itself (a weapon's thwack)
+function v85HitFx(a, t, k, dir, big, hz) {
+  if (!t || t.car || t.fish || V85_NOBODY[t.kind]) return false;
+  const hx = t.x - dir * t.half * 0.4, f = dir < 0 ? -1 : 1;
+  // a head shot (the next hurt row is the head one): sweat flies off the way the hit goes
+  const n = t === player || (t.def && t.def.id && typeof LAD_FRAMES !== 'undefined' && LAD_FRAMES[t.def.id]) ? (t.hurtN || 0) % 2 === 1 : ((t.boss ? t._bh : t._hn) || 0) % 2 === 0;
+  if ((n && !k.kd) || big) fxPlay('sweat', t.x + dir * 8, t.y + 1, t.z + hz + 30, f);   // off the back of the head
+  // a combo ender, knockdown or finisher from a lad: white, then his colour; a sharp shake; speed lines behind
+  if (big && fxLad(a) && t !== player) {
+    t.v85col = v85Rgba(FX_COL[a.def.id] || '#ffffff', 0.62); t.v85at = time; t.flash = Math.max(t.flash || 0, 0.22);
+    if (!reduceMotion && settings.shake !== 'less') shake = Math.max(shake, 7);
+    parts.push({ k: 'v85speed', who: t, dir: f, col: FX_COL[a.def.id] || '#ffffff', x: t.x, y: t.y, z: 0, t: 0, life: 0.3 });
+  }
+  if (k.weapon) { fxPlay('thwack', hx, t.y, t.z + hz, f); return true; }
+  return false;
+}
+// called from physics the frame something lands, before its fall speed is cleared
+function v85Land(e) {
+  if (e.vz > -260 || !(e.state === 'down' || e.state === 'thrown' || e.state === 'dead')) return;
+  if (e.car || e.fish || V85_NOBODY[e.kind]) return;
+  fxPlay('slam', e.x, e.y + 1, 0, e.vx < 0 ? -1 : 1);
+  if (e.boss || (e.def && e.def.scale > 1.15)) addShake(3);
+}
+// called from startSpecial: a burst in his colour behind him, and the stage dims
+function v85SpecialStart(p) {
+  if (!fxLad(p) || !FX[p.def.id + '_burst']) return;
+  parts.push({ k: 'v85burst', fx: p.def.id + '_burst', who: p, x: p.x, y: p.y, z: 0, t: 0, life: FX[p.def.id + '_burst'].n / 16 });
+  v85DimAt = time;
+}
+// after the floor and before anyone stands on it: the dim, so the fighters stay bright
+function v85Dim() {
+  const t = time - v85DimAt; if (t < 0 || t > 0.85) return;
+  const a = t < 0.08 ? t / 0.08 : t < 0.45 ? 1 : 1 - (t - 0.45) / 0.4;
+  ctx.save(); ctx.fillStyle = 'rgba(6,8,18,' + (0.42 * a).toFixed(3) + ')'; ctx.fillRect(-20, -20, W + 40, H + 40); ctx.restore();
+}
+// the burst and the speed lines sit just behind their owner in the depth sort
+function v85FxList(list) {
+  for (const p of parts) {
+    if (p.k !== 'v85burst' && p.k !== 'v85speed') continue;
+    const o = p.who || p; list.push({ y: o.y - 0.5, f: () => v85DrawOwned(p) });
+  }
+}
+function v85DrawOwned(p) {
+  const o = p.who || p;
+  if (p.k === 'v85burst') {
+    const m = FX[p.fx]; drawFxFrame(p.fx, Math.min(m.n - 1, Math.floor(p.t * m.fps)), o.x - cam.x, o.y - (o.z || 0) - 62, 1);
+    return;
+  }
+  // speed lines: streaks trailing behind the body as it flies, white near it, his colour further back
+  if (reduceMotion) return;
+  const k = p.t / p.life, back = -Math.sign(o.vx || p.dir) || -p.dir, x0 = o.x - cam.x + back * 26, y0 = o.y - (o.z || 0);
+  ctx.save(); ctx.globalAlpha = 1 - k;
+  for (let i = 0; i < 5; i++) {
+    const h = 26 + i * 18 + ((i * 7) % 5) * 2, len = 34 + ((i * 13) % 4) * 14 + k * 30;
+    const xa = Math.round((x0 + back * (i % 2) * 6) / 2) * 2, ya = Math.round((y0 - h) / 2) * 2;
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(back > 0 ? xa : xa - len * 0.4, ya, len * 0.4, 2);
+    ctx.fillStyle = p.col; ctx.fillRect(back > 0 ? xa + len * 0.4 : xa - len, ya, len * 0.6, 2);
+  }
+  ctx.restore();
+}
+// V85 hitfx end
 function artPending() {
   for (const k in bgImgs) { const b = bgImgs[k]; if (!b.ready && !b.failed) return true; }
   for (const k in ladSheets) { const b = ladSheets[k]; if (!b.ready && !b.failed) return true; }
@@ -13019,11 +13102,13 @@ function drawWorld(pix) {
   for (const it of items) drawItem(it);
   for (const h of hazards) if (h.kind !== 'moped') drawHazardFloor(h);
   drawDeniseFloor(); drawBossFloor();
+  v85Dim();   // Version 85
   const list = [];
   for (const e of [...netDrawPlayers(), ...allies, ...foes]) list.push({ y: e.y + (e.state === 'netted' ? 1 : 0), f: () => drawEntity(e) });
   for (const b of breakables) list.push({ y: b.y, f: () => drawBreakable(b) });
   for (const n of (S.npcs || [])) list.push({ y: n.y, f: () => n.draw ? n.draw(n) : drawEntity(n) });
   ladFxDraw(list);
+  v85FxList(list);   // Version 85
   if (ST.drive) driveDraw(list);
   if (S.cut || S.carPark) list.push({ y: (S.cut ? S.cut.carY : S.carPark.y) - 1, f: drawCarScene });
   for (const f of foes) if (f.mower || f.mowerPark > 0) list.push({ y: (f.mower ? f.y : f.mowerY) - 0.5, f: () => drawMower(f) });
