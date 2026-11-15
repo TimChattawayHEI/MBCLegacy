@@ -1679,7 +1679,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/63aaf8c0-e186-41eb-8199-7e543cc4fbe4/animations/9609c986-2519-4851-a967-d3a56c9e0786/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "bottle"
  },
  "raver": {
