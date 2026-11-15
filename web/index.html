@@ -634,10 +634,15 @@ const SFX_TAKES = {
   grunt: ['grunt_m1', 'grunt_m2', 'grunt_m3'], gruntf: ['grunt_f1', 'grunt_f2'], cry: ['cry_m1', 'cry_m2'], cryf: ['cry_f1', 'cry_f2'],
   eat: ['eat'], wpick: ['wpick'], jump: ['jump'], cheer: ['cheer'], roar: ['roar'],
 };
-const SFX_VOL = { hit: 0.55, heavy: 0.7, swing: 0.3, fall: 0.6, ouch: 0.45, ko: 0.8, smash: 0.6, break: 0.6, grab: 0.55, throw: 0.5, land: 0.4,
+const SFX_VOL = { hit: 0.55, heavy: 0.7, swing: 0.3, fall: 0.6, ouch: 0.36, ko: 0.8, smash: 0.6, break: 0.6, grab: 0.55, throw: 0.5, land: 0.4,
   splash: 0.6, boom: 0.7, airhorn: 0.55, scratch: 0.5, clink: 0.5, dart: 0.6, thunk: 0.6, whistle: 0.4, special: 0.7, door: 0.6, engine: 0.5,
-  honk: 0.5, bang: 0.6, snore: 0.5, fire: 0.5, hiss: 0.4, grunt: 0.42, gruntf: 0.42, cry: 0.5, cryf: 0.5, eat: 0.6, wpick: 0.5,
-  jump: 0.28, cheer: 0.5, roar: 0.6 };
+  honk: 0.5, bang: 0.6, snore: 0.5, fire: 0.5, hiss: 0.4, grunt: 0.18, gruntf: 0.22, cry: 0.2, cryf: 0.18, eat: 0.6, wpick: 0.5,
+  jump: 0.28, cheer: 0.29, roar: 0.31 };
+// Voices (Tim, 15 November: "very loud over the music"): levelled so every take of a voice is as loud as the others
+// (SFX_TRIM, per take) and the voices sit just above the music: grunts lowest, cries and ouch a little higher, the crowd and
+// a boss's roar higher still. Measured as the ear hears it, the loudest tenth of a second against the music's middle level.
+const SFX_TRIM = { grunt_m1: 1.03, grunt_m2: 0.72, grunt_m3: 1.35, grunt_f1: 0.81, grunt_f2: 1.23, cry_m1: 0.94, cry_m2: 1.07,
+  cry_f1: 0.98, cry_f2: 1.02, ouch_1: 0.79, ouch_2: 1.26 };
 const SFX_STEADY = new Set(['airhorn', 'whistle', 'honk', 'scratch']);   // these keep their pitch
 const sfxBufs = {};
 let sfxLoading = false;
@@ -652,19 +657,29 @@ function sfxLoad() {
 function sfxSample(kind) {
   const takes = (SFX_TAKES[kind] || []).filter(n => sfxBufs[n]); if (!takes.length) return false;
   const src = actx.createBufferSource(), g = actx.createGain();
-  src.buffer = sfxBufs[takes[Math.floor(Math.random() * takes.length)]];
+  const take = takes[Math.floor(Math.random() * takes.length)]; src.buffer = sfxBufs[take];
   if (!SFX_STEADY.has(kind)) src.playbackRate.value = rand(0.93, 1.07);
-  g.gain.value = SFX_VOL[kind] || 0.6; src.connect(g); g.connect(sfxBus); src.start(); return true;
+  g.gain.value = (SFX_VOL[kind] || 0.6) * (SFX_TRIM[take] || 1); src.connect(g); g.connect(sfxBus); src.start(); return true;
 }
-// enemies have voices: a grunt now and then when hit, a cry when knocked down; one voice at a time so a crowd doesn't babble
+// enemies have voices: a grunt now and then when hit, a cry when knocked down. Tim, 15 November: knocking a crowd down
+// played a groan for nearly every one of them. Now a cry is heard at most once every 1.6 s whoever it comes from, a
+// knockdown that isn't the last cries only one time in three (the last one, two in three), the same enemy cries at most once
+// every 5 s, and no grunt starts while a cry is still going. Grunts: one hit in four, at most one every 0.8 s.
 const FOE_FEMALE = new Set(['ladette', 'lady', 'ragazza', 'beachf', 'clubf', 'itgirl', 'denise', 'sue', 'scrunchie', 'hoops', 'commuter']);
 const FOE_MUTE = new Set(['goose', 'swan', 'gary', 'gaz', 'koala']);
-let foeVoiceT = 0;
+let foeCryT = 0, foeGruntT = 0;
 function foeVoice(t, down) {
   if (!t || t.car || t.fish || FOE_MUTE.has(t.kind) || !actx) return;
-  if (actx.currentTime < foeVoiceT || (!down && Math.random() > 0.35)) return;
-  const f = FOE_FEMALE.has(t.kind); foeVoiceT = actx.currentTime + (down ? 0.55 : 0.3);
-  sfx(down ? (f ? 'cryf' : 'cry') : (f ? 'gruntf' : 'grunt'));
+  const now = actx.currentTime, f = FOE_FEMALE.has(t.kind);
+  if (down) {
+    if (now < foeCryT || now < (t.v85CryT || 0) || Math.random() > (t.hp <= 0 ? 0.66 : 0.33)) return;
+    foeCryT = now + 1.6; foeGruntT = Math.max(foeGruntT, now + 0.8); t.v85CryT = now + 5;
+    sfx(f ? 'cryf' : 'cry');
+  } else {
+    if (now < foeGruntT || Math.random() > 0.25) return;
+    foeGruntT = now + 0.8;
+    sfx(f ? 'gruntf' : 'grunt');
+  }
 }
 // V85 sfx end
 
