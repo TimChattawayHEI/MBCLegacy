@@ -282,6 +282,14 @@ The Meshy paintings stay exactly as they are: the movement is a layer drawn on t
   - `tools/v85/alivetest.py` shoots every stage at three clock times with no page errors; bot clears the beach, the fishery, Charing Cross and the alley as before
 - [ ] Tim: play a few of them on the phone and say if anything is too busy, too small to notice, or in the wrong place (every position is one number in ALIVE in `tools/v85/alive.js`)
 
+### Sound effects (15 November)
+Tim upgraded PixelLab to Tier 2 (sound and music need it; the allowance went to 4,800 generations this cycle).
+- [x] 33 recorded takes made in PixelLab (V85) for 27 sounds: punches (3 takes), heavy hits, swings and falls (2 each), KO, ouch (2), grab, throw, landing, the special, glass smash, wood breaking, thunk, dart, pint clink, splash, boom, gunshot, fire, airhorn, record scratch, whistle, door, moped, car horn, snore, spray hiss. Each play picks a take and nudges the pitch a little. Sounds without a take (pickups, the special bar, jumps, the fruit machine, sirens, the jokes) keep their arcade bleeps, and so does every sound while the files load
+  - Code in `tools/v85/sfx.js`, patched in by `tools/v85_sfx_build.py`; takes in `web/sfx` (24 kHz mono WAV, trimmed and levelled, 1.3 MB); prompts and PixelLab ids in `tools/v85/sfx_prompts.json`. `?classicsfx` in the address plays only the old sounds, to compare
+  - PixelLab's file host is blocked from Claude's sessions, so the files came through a PixelLab sandbox packed into an image; worth knowing if more are made
+- [ ] Tim: listen on the sound board artifact (Carp Diem sound board, in your artifacts) and say which takes to redo, and once merged, whether any are too loud or quiet in play (one number each in SFX_VOL)
+- Tier 2 also unlocks PixelLab music: the stages all have Tim's own recorded tracks already; only the title screen still plays the old step-sequencer tune
+
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
 
@@ -355,7 +363,7 @@ Tim asked to spend the spare PixelLab allowance on the lads: more depth, cleaner
 - [x] Bot playthrough of every stage (headless, god mode, tools at /home/claude/work/play in the session): 19 of 21 stages cleared with no page errors and no frame out of range. The Social timed out on Denise (the bot can't wear her down; she clears fine once beaten) and the Kebab Siege is endless by design. The Frogger crossing was skipped. Fixed from the review: the attack wind-up showed the punch already out on razor, garagemc, quick, grappler and tuba (now the stance, then the hit), kappa's whip now cracks on the extended frame, and Big Tony's charge and Don Vito's far move use the right frames
 - [x] Bosses now flinch on a hit: a quarter of a second from their hurt rows (head, then body, alternating), skipped while they wind up, strike, charge, lie down or are held, so the AI and the telegraphs are unchanged
 - [ ] Rows the bot hardly reached and worth a hand check: dazed (only after the SENT OFF special), held on bosses, the anti-air uppercut (needs a jump-in), mick's belly barge, denim's slide, dipper's steal
-- PixelLab: 1,374 of this cycle's 2,000 generations used (resets 13 December)
+- PixelLab: about 1,410 of this cycle's 4,800 generations used (Tier 2 from 15 November; resets 13 December)
 
 ### Tim
 - [ ] Play each lad on a phone and say which moves look off (wrong frame on the hit, a pose that turns his back, size)
