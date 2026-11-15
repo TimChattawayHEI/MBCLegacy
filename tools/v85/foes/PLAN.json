@@ -1558,7 +1558,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/78f6ff62-3fac-4585-bcd0-d6d65d34784c/animations/5d18f11b-f985-48dd-8d81-8df0d07c0f26/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: fast open-hand slap; throw: underarm throw; aa c2"
  },
  "garagemc": {
