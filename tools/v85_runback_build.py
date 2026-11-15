@@ -23,6 +23,8 @@ SWAPS = [
     ("if (ST && ST.drive && mode === 'play') drawDriveHud();", "if (ST && ST.drive && mode === 'play') drawDriveHud(); if (ST && ST.run && mode === 'play') runHud();"),
     ("  if (ST.drive) driveStart(); else setTimeout0(", "  if (ST.drive) driveStart(); else if (ST.run) runStart(); else setTimeout0("),
     ("  if (ST.drive) driveRows(add); else {", "  if (ST.drive) driveRows(add); else if (ST.run) runRows(add); else {"),
+    ("function updateOrp(dt) {\n  if (!S || !ST || ST.era !== 2001) return;", "function updateOrp(dt) {\n  if (!S || !ST || ST.era !== 2001 || ST.run) return;"),
+    ("function orpDrawFore() {\n  if (!ST || ST.era !== 2001 || !S) return;", "function orpDrawFore() {\n  if (!ST || ST.era !== 2001 || !S || ST.run) return;"),
     ("function stageRank() {\n  let p = 0;\n", "function stageRank() {\n  if (ST.run) return runRank();   // Version 85\n  let p = 0;\n"),
     ("orp_pub: 'Jeff, then Mick (and Sue)', orp_atlantis:", "orp_pub: 'Jeff, then Mick (and Sue)', orp_run: 'No boss. Make the coach.', orp_atlantis:"),
     ("orp_pub: 'orp/bar', orp_atlantis: 'orp/floor',", "orp_pub: 'orp/bar', orp_run: 'orp/front', orp_atlantis: 'orp/floor',"),

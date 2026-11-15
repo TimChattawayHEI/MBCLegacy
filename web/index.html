@@ -8372,7 +8372,7 @@ function orpWipe(to, dir, label) { if (S.wipe) return; S.wipe = { t: 0, to, dir,
 
 // ---------------------------------------------------------------- per frame
 function updateOrp(dt) {
-  if (!S || !ST || ST.era !== 2001) return;
+  if (!S || !ST || ST.era !== 2001 || ST.run) return;
   if (!S.npcs) S.npcs = [];
   if (S.sc == null) qolOrpStartScene();   // Version 79: from the place you'd reached, when carrying a run on
   updateNpcs(dt);
@@ -8833,7 +8833,7 @@ function orpClubLights() {
   ctx.restore();
 }
 function orpDrawFore() {
-  if (!ST || ST.era !== 2001 || !S) return;
+  if (!ST || ST.era !== 2001 || !S || ST.run) return;
   orpDrawServed(); orpDrawQueue(); orpCrowdFore();
   if (S.ann) {   // the announcement plate, as the 2006 stages have
     const a = S.ann, k = Math.min(1, a.t / 0.15, (a.life - a.t) / 0.25), w = Math.max(320, a.text.length * 12 + 60), x = W / 2 - w / 2, y = 152;
