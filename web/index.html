@@ -657,7 +657,7 @@ function sfxSample(kind) {
   g.gain.value = SFX_VOL[kind] || 0.6; src.connect(g); g.connect(sfxBus); src.start(); return true;
 }
 // enemies have voices: a grunt now and then when hit, a cry when knocked down; one voice at a time so a crowd doesn't babble
-const FOE_FEMALE = new Set(['ladette', 'lady', 'ragazza', 'beachf', 'clubf', 'itgirl', 'denise', 'sue', 'scrunchie']);
+const FOE_FEMALE = new Set(['ladette', 'lady', 'ragazza', 'beachf', 'clubf', 'itgirl', 'denise', 'sue', 'scrunchie', 'hoops', 'commuter']);
 const FOE_MUTE = new Set(['goose', 'swan', 'gary', 'gaz', 'koala']);
 let foeVoiceT = 0;
 function foeVoice(t, down) {
@@ -7558,6 +7558,7 @@ function drawBubble(b) {
   }
   ctx.fillStyle = OUT; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
   lines.forEach((l, i) => ctx.fillText(l, bx + 9 * bs, by + (6 + 7.5) * bs + i * 15 * bs));
+  talkBubbleFace(b, bx, by, bw, bh, bs);   // Version 85: the speaker's face, talking
   ctx.restore();
 }
 function drawStars(x, y) {
@@ -10364,6 +10365,37 @@ ALIVE.ramsden = {   // the estate on fire: the tower windows going on and off
   city: [[0, 3600, 20, 220, 40, '#ffb060']],
 };
 // V85 alive end
+// V85 talk start
+// Talking portraits (Version 85): each portrait has a strip of five faces, web/bg/portraits/<id>_talk.png: the original
+// (mouth shut), then open (a), round (o), teeth (e, and most consonants) and lip-bite (f). PixelLab drew the mouths;
+// only the mouth area was pasted onto the original portrait (tools/v85/mouths.py), so the face stays the hand-made one.
+// The face follows the letters of the line being said, about 13 letters a second, and shuts at the end.
+setTimeout(() => PORTRAIT_IDS.forEach(id => { ASSET_BG.push('portraits/' + id + '_talk'); bgImg('portraits/' + id + '_talk'); }), 0);   // PORTRAIT_IDS is declared further down
+const TALK_RATE = 0.075;
+function talkFrame(text, t) {
+  if (!text || t == null || t < 0) return 0;
+  const i = Math.floor(t / TALK_RATE); if (i >= text.length) return 0;
+  const c = text[i].toLowerCase();
+  if (c === 'a' || c === 'h') return 1;
+  if ('ouw'.includes(c)) return 2;
+  if ('fv'.includes(c)) return 4;
+  if ('mbp .,!?\'-'.includes(c)) return 0;
+  return 3;
+}
+// the speaker of a bubble, if they have a portrait
+function talkId(e) {
+  if (!e) return null;
+  if (e.def && PORTRAIT_IDS.includes(e.def.id)) return e.def.id;
+  return PORTRAIT_IDS.includes(e.kind) ? e.kind : null;
+}
+// a small talking face tucked beside the speech bubble (drawn inside drawBubble, so it pops and fades with it)
+function talkBubbleFace(b, bx, by, bw, bh, bs) {
+  const id = talkId(b.e); if (!id || !portraitImg(id)) return;
+  const s = Math.round(36 * bs / 2) * 2, left = bx - s - 6 >= 4;
+  const x = left ? bx - s - 6 : Math.min(W - s - 4, bx + bw + 6), y = by + bh - s;
+  drawPortrait(id, Math.round(x), Math.round(y), s, (SPEAKERS[id] || SPEAKERS.sys || {}).color, talkFrame(b.text, b.t - 0.1));
+}
+// V85 talk end
 function artPending() {
   for (const k in bgImgs) { const b = bgImgs[k]; if (!b.ready && !b.failed) return true; }
   for (const k in ladSheets) { const b = ladSheets[k]; if (!b.ready && !b.failed) return true; }
@@ -10618,7 +10650,7 @@ function drawChat() {
       ctx.font = '600 14px ' + BODY;
       const w = Math.max(110, Math.max(...b.ls.map(l => ctx.measureText(l).width)) + 24);
       const av = portraitImg(b.who) ? 54 : 0, bx = b.mine ? px + pw - 22 - av - w : px + 22 + av;
-      if (av) drawPortrait(b.who, b.mine ? px + pw - 22 - 44 : px + 22, y, 44, (SPEAKERS[b.who] || SPEAKERS.sys).color);
+      if (av) drawPortrait(b.who, b.mine ? px + pw - 22 - 44 : px + 22, y, 44, (SPEAKERS[b.who] || SPEAKERS.sys).color, i === blocks.length - 1 ? talkFrame(b.ls.join(' '), chat.t - 0.1) : 0);   // Version 85: the newest one talks
       rrect(bx, y, w, b.h, 10); ctx.fillStyle = b.mine ? '#1f5c4b' : '#202c33'; ctx.fill();
       const sp = SPEAKERS[b.who] || SPEAKERS.sys;
       ctx.textAlign = 'left'; ctx.font = '800 12px ' + BODY; ctx.fillStyle = sp.color; ctx.fillText(b.mine ? sp.name + ' (you)' : sp.name, bx + 12, y + 14);
@@ -10638,14 +10670,15 @@ function drawChat() {
 const PORTRAIT_IDS = ['tim', 'seb', 'byron', 'pearcy', 'kelly', 'marc', 'sam', 'thet', 'ash', 'denise', 'jo', 'nozzer'];
 function portraitImg(id) { return PORTRAIT_IDS.includes(id) ? bgImg('portraits/' + id) : null; }
 // a framed portrait, s game units square, drawn pixel-sharp
-function drawPortrait(id, x, y, s, rim) {
+function drawPortrait(id, x, y, s, rim, mouth) {
   const img = portraitImg(id); if (!img) return false;
+  const strip = mouth ? bgImg('portraits/' + id + '_talk') : null;   // Version 85: a talking mouth
   ctx.save(); ctx.imageSmoothingEnabled = false;
   ctx.fillStyle = OUT; ctx.fillRect(x - 2, y - 2, s + 4, s + 4);
   ctx.fillStyle = rim || '#2b3b42'; ctx.fillRect(x, y, s, s);
   ctx.fillStyle = '#1a242a'; ctx.fillRect(x + 2, y + 2, s - 4, s - 4);
   ctx.beginPath(); ctx.rect(x + 2, y + 2, s - 4, s - 4); ctx.clip();
-  ctx.drawImage(img, x + 2, y + 2, s - 4, s - 4);
+  if (strip) ctx.drawImage(strip, mouth * 48, 0, 48, 48, x + 2, y + 2, s - 4, s - 4); else ctx.drawImage(img, x + 2, y + 2, s - 4, s - 4);
   ctx.restore();
   return true;
 }

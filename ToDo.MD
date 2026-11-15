@@ -292,6 +292,11 @@ Tim upgraded PixelLab to Tier 2 (sound and music need it; the allowance went to 
 - [x] Title theme (V85): a new garage track from PixelLab music in the soundtrack's style (132 bpm, FM bass and swung beat lead, sparse square riff), made into a loop: the intro plays once, then 39.1 s to 93.4 s repeats. Plays on the title screen (it was silent), the select screen, the group chats and the endings; the old sequencer tune stays as the fallback. `web/music/title-theme.mp3`, key `title` (with from/end in TRACKS). The second take was refused by PixelLab's music service as too close to a catalogue recording, so it wasn't used
 - [ ] Tim: listen to the title theme and the new voices on the sound board and say if they fit
 
+### Talking portraits (15 November)
+- [x] The 12 portraits (the lads, Denise, Jo, Nozzer) talk (V85). When one of them says something in a stage, their face pops up beside the speech bubble and the mouth follows the letters of the line, then shuts; in the WhatsApp-style group chat the newest message's face talks. The Nokia text chats stay still (they're texts)
+  - PixelLab drew five mouths per face (shut, a, o, e, f; 3 generations each, 36 in all); only the mouth area was pasted onto the original portraits (`tools/v85/mouths.py`), so the faces stay the hand-made ones. Strips in `tools/v85/talk_src`, code in `tools/v85/talk.js`, patched by `tools/v85_talk_build.py`
+- [ ] Tim: say if the face beside the speech bubble is too much in a busy fight (it can be limited to story lines, or made smaller)
+
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
 
@@ -364,8 +369,9 @@ Tim asked to spend the spare PixelLab allowance on the lads: more depth, cleaner
   - Still to do: nothing. Worth a play-through to spot any frame that reads oddly in motion (hurt rows on shark, moschino and raver had a stray attacker's fist drawn in, so those frames are dropped or re-rolled)
 - [x] Bot playthrough of every stage (headless, god mode, tools at /home/claude/work/play in the session): 19 of 21 stages cleared with no page errors and no frame out of range. The Social timed out on Denise (the bot can't wear her down; she clears fine once beaten) and the Kebab Siege is endless by design. The Frogger crossing was skipped. Fixed from the review: the attack wind-up showed the punch already out on razor, garagemc, quick, grappler and tuba (now the stance, then the hit), kappa's whip now cracks on the extended frame, and Big Tony's charge and Don Vito's far move use the right frames
 - [x] Bosses now flinch on a hit: a quarter of a second from their hurt rows (head, then body, alternating), skipped while they wind up, strike, charge, lie down or are held, so the AI and the telegraphs are unchanged
-- [ ] Rows the bot hardly reached and worth a hand check: dazed (only after the SENT OFF special), held on bosses, the anti-air uppercut (needs a jump-in), mick's belly barge, denim's slide, dipper's steal
-- PixelLab: about 1,445 of this cycle's 4,800 generations used (Tier 2 from 15 November; resets 13 December)
+- [x] Rows the bot hardly reached, hand-checked with frozen-clock shots (15 November): dazed, grabbed and the anti-air uppercut on all 76 kinds, plus Mick's belly, Denim's slide, the Dipper's steal and dodge, and every boss being held. All read correctly; nothing needed fixing. `tools/v85/foetest.py <kinds> --only dazed,grabbed,uppercut` repeats it
+  - Small note: Mick's belly wind-up and barge use his stance rather than a row of their own (the belly itself has one). Fine as is
+- PixelLab: about 1,480 of this cycle's 4,800 generations used (Tier 2 from 15 November; resets 13 December)
 
 ### Tim
 - [ ] Play each lad on a phone and say which moves look off (wrong frame on the hit, a pose that turns his back, size)

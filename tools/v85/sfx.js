@@ -34,7 +34,7 @@ function sfxSample(kind) {
   g.gain.value = SFX_VOL[kind] || 0.6; src.connect(g); g.connect(sfxBus); src.start(); return true;
 }
 // enemies have voices: a grunt now and then when hit, a cry when knocked down; one voice at a time so a crowd doesn't babble
-const FOE_FEMALE = new Set(['ladette', 'lady', 'ragazza', 'beachf', 'clubf', 'itgirl', 'denise', 'sue', 'scrunchie']);
+const FOE_FEMALE = new Set(['ladette', 'lady', 'ragazza', 'beachf', 'clubf', 'itgirl', 'denise', 'sue', 'scrunchie', 'hoops', 'commuter']);
 const FOE_MUTE = new Set(['goose', 'swan', 'gary', 'gaz', 'koala']);
 let foeVoiceT = 0;
 function foeVoice(t, down) {
