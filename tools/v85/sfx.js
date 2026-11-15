@@ -7,10 +7,14 @@ const SFX_TAKES = {
   ko: ['ko'], smash: ['smash'], break: ['break'], grab: ['grab'], throw: ['throw'], land: ['land'], splash: ['splash'], boom: ['boom'],
   airhorn: ['airhorn'], scratch: ['scratch'], clink: ['clink'], dart: ['dart'], thunk: ['thunk'], whistle: ['whistle'], special: ['special'],
   door: ['door'], engine: ['engine'], honk: ['honk'], bang: ['bang'], snore: ['snore'], fire: ['fire'], hiss: ['hiss'],
+  // batch 2: enemy voices, eating, picking up a weapon, jumping, the crowd at a stage clear, a boss arriving
+  grunt: ['grunt_m1', 'grunt_m2', 'grunt_m3'], gruntf: ['grunt_f1', 'grunt_f2'], cry: ['cry_m1', 'cry_m2'], cryf: ['cry_f1', 'cry_f2'],
+  eat: ['eat'], wpick: ['wpick'], jump: ['jump'], cheer: ['cheer'], roar: ['roar'],
 };
 const SFX_VOL = { hit: 0.55, heavy: 0.7, swing: 0.3, fall: 0.6, ouch: 0.45, ko: 0.8, smash: 0.6, break: 0.6, grab: 0.55, throw: 0.5, land: 0.4,
   splash: 0.6, boom: 0.7, airhorn: 0.55, scratch: 0.5, clink: 0.5, dart: 0.6, thunk: 0.6, whistle: 0.4, special: 0.7, door: 0.6, engine: 0.5,
-  honk: 0.5, bang: 0.6, snore: 0.5, fire: 0.5, hiss: 0.4 };
+  honk: 0.5, bang: 0.6, snore: 0.5, fire: 0.5, hiss: 0.4, grunt: 0.42, gruntf: 0.42, cry: 0.5, cryf: 0.5, eat: 0.6, wpick: 0.5,
+  jump: 0.28, cheer: 0.5, roar: 0.6 };
 const SFX_STEADY = new Set(['airhorn', 'whistle', 'honk', 'scratch']);   // these keep their pitch
 const sfxBufs = {};
 let sfxLoading = false;
@@ -28,4 +32,14 @@ function sfxSample(kind) {
   src.buffer = sfxBufs[takes[Math.floor(Math.random() * takes.length)]];
   if (!SFX_STEADY.has(kind)) src.playbackRate.value = rand(0.93, 1.07);
   g.gain.value = SFX_VOL[kind] || 0.6; src.connect(g); g.connect(sfxBus); src.start(); return true;
+}
+// enemies have voices: a grunt now and then when hit, a cry when knocked down; one voice at a time so a crowd doesn't babble
+const FOE_FEMALE = new Set(['ladette', 'lady', 'ragazza', 'beachf', 'clubf', 'itgirl', 'denise', 'sue', 'scrunchie']);
+const FOE_MUTE = new Set(['goose', 'swan', 'gary', 'gaz', 'koala']);
+let foeVoiceT = 0;
+function foeVoice(t, down) {
+  if (!t || t.car || t.fish || FOE_MUTE.has(t.kind) || !actx) return;
+  if (actx.currentTime < foeVoiceT || (!down && Math.random() > 0.35)) return;
+  const f = FOE_FEMALE.has(t.kind); foeVoiceT = actx.currentTime + (down ? 0.55 : 0.3);
+  sfx(down ? (f ? 'cryf' : 'cry') : (f ? 'gruntf' : 'grunt'));
 }

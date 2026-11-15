@@ -288,7 +288,9 @@ Tim upgraded PixelLab to Tier 2 (sound and music need it; the allowance went to 
   - Code in `tools/v85/sfx.js`, patched in by `tools/v85_sfx_build.py`; takes in `web/sfx` (24 kHz mono WAV, trimmed and levelled, 1.3 MB); prompts and PixelLab ids in `tools/v85/sfx_prompts.json`. `?classicsfx` in the address plays only the old sounds, to compare
   - PixelLab's file host is blocked from Claude's sessions, so the files came through a PixelLab sandbox packed into an image; worth knowing if more are made
 - [ ] Tim: listen on the sound board artifact (Carp Diem sound board, in your artifacts) and say which takes to redo, and once merged, whether any are too loud or quiet in play (one number each in SFX_VOL)
-- Tier 2 also unlocks PixelLab music: the stages all have Tim's own recorded tracks already; only the title screen still plays the old step-sequencer tune
+- [x] Batch 2 (V85): enemies now have voices. A grunt on about a third of their hurts, a cry when knocked down, one voice at a time so a crowd doesn't babble; women (ladette, Lady Addict, ragazza, sunbather, club girl, IT girl, Denise, Sue, Scrunchie) get their own. Also eating (food pickups), picking up a weapon, a jump, a crowd cheer at every stage clear, and a roar when a boss arrives (not on Denise, Sue or Lady Addict). 14 more takes, 15 generations
+- [x] Title theme (V85): a new garage track from PixelLab music in the soundtrack's style (132 bpm, FM bass and swung beat lead, sparse square riff), made into a loop: the intro plays once, then 39.1 s to 93.4 s repeats. Plays on the title screen (it was silent), the select screen, the group chats and the endings; the old sequencer tune stays as the fallback. `web/music/title-theme.mp3`, key `title` (with from/end in TRACKS). The second take was refused by PixelLab's music service as too close to a catalogue recording, so it wasn't used
+- [ ] Tim: listen to the title theme and the new voices on the sound board and say if they fit
 
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason
@@ -363,7 +365,7 @@ Tim asked to spend the spare PixelLab allowance on the lads: more depth, cleaner
 - [x] Bot playthrough of every stage (headless, god mode, tools at /home/claude/work/play in the session): 19 of 21 stages cleared with no page errors and no frame out of range. The Social timed out on Denise (the bot can't wear her down; she clears fine once beaten) and the Kebab Siege is endless by design. The Frogger crossing was skipped. Fixed from the review: the attack wind-up showed the punch already out on razor, garagemc, quick, grappler and tuba (now the stance, then the hit), kappa's whip now cracks on the extended frame, and Big Tony's charge and Don Vito's far move use the right frames
 - [x] Bosses now flinch on a hit: a quarter of a second from their hurt rows (head, then body, alternating), skipped while they wind up, strike, charge, lie down or are held, so the AI and the telegraphs are unchanged
 - [ ] Rows the bot hardly reached and worth a hand check: dazed (only after the SENT OFF special), held on bosses, the anti-air uppercut (needs a jump-in), mick's belly barge, denim's slide, dipper's steal
-- PixelLab: about 1,410 of this cycle's 4,800 generations used (Tier 2 from 15 November; resets 13 December)
+- PixelLab: about 1,445 of this cycle's 4,800 generations used (Tier 2 from 15 November; resets 13 December)
 
 ### Tim
 - [ ] Play each lad on a phone and say which moves look off (wrong frame on the hit, a pose that turns his back, size)
