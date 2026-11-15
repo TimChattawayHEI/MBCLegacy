@@ -105,17 +105,19 @@ Real street order, left to right (the mirror shop is past the Blacksmiths, not b
 ### Story and chapter
 - [x] Decide where it sits in the campaign: between 1999 and Elba 2002 (it's 2001), with the time travel arc landing the lads there
   - Done (V72): between 1999 and Elba in ROUTE, its own chapter tab (ORPINGTON 2001) on the select screen and the route picker. Stages renumbered (ranks are kept by name, so nothing is lost)
-- [ ] Group chat opener in 2001 SMS speak on brick phones ("c u @ pizza xpress 8, dnt b l8"); a present-day chat flashback (the Blacksmiths is now Aksular, Ram Ba Ba became Fiesta Mexicana)
+- [x] Group chat opener in 2001 SMS speak on brick phones ("c u @ pizza xpress 8, dnt b l8"); a present-day chat flashback (the Blacksmiths is now Aksular, Ram Ba Ba became Fiesta Mexicana)
+  - Done (V85): starting the chapter opens a present-day group chat (the Blacksmiths is Aksular now, Ram Ba Ba is Fiesta Mexicana, "Remember the texts? March 2001."), then the March 2001 comic page, then the Nokia. All five Orpington chats are now in 2001 text speak ("c u @ pizza xpress bus stop 8 ... dnt b l8"). Carrying a run on skips the present-day chat. `tools/v85/orpnight.js`
 - [ ] Comic pages: Kelly knocked back at the Ram Ba Ba door; the coach to Croydon (replaces a coach fight, since the N47 is already a bus fight); 2am, everyone back on the coach and Kelly asleep on it
 - [ ] Tim: confirm the night's details (what time the coach left, any other Blacksmiths or Atlantis stories worth a moment)
 
 ### Stages and mechanics (not just left to right)
 - [x] 1. Pizza Express bus stop: lads arrive one at a time while you hold the stop against a rival crew
-  - First pass (V72): THE HIGH STREET opens with a fight at the bus stop (HOLD THE BUS STOP). The lads arriving one at a time is still to do
+  - First pass (V72): THE HIGH STREET opens with a fight at the bus stop (HOLD THE BUS STOP). The lads arriving one at a time came in V73 (a lad turns up after each wave)
 - [x] 2. The mini roundabout: a short Frogger-style crossing (zebra, Belisha beacons, Corsas, the red estate, a bus)
-  - First pass (V72): cars come round the roundabout along the road (the moped hazard with a horn first); keep to the pavement. A proper Frogger crossing with its own screen is still to do
+  - First pass (V72): cars come round the roundabout along the road (the moped hazard with a horn first); keep to the pavement. The proper Frogger crossing on its own screen came in V73
 - [x] 3. Ram Ba Ba, first pass: no fight; a chalkboard by the shutter says ATLANTIS COACH 10.30 and starts the night's clock on screen
   - Done (V72): ATLANTIS COACH 10.30 pops up passing Ram Ba Ba. The on-screen clock is still to do
+  - Done (V85): the night's clock, a Nokia screen at the top of every Orpington place: 20:00 at the bus stop, 20:30 at Ram Ba Ba, 20:40 into the Blacksmiths, 21:20 the pool room, 22:55 the Atlantis queue, and the dance floor's waves carry it to 02:00 at lights up. Each place starts at its own time and ticks a minute every four seconds, never past the next place. After Ram Ba Ba's chalkboard it also shows COACH 22:30, flashing orange from ten to ten
 - [x] 4. The Blacksmiths, getting served: stealth in the L-shaped bar. The bar is in the corner so whoever's serving sees down both arms; keep Byron (looks like a kid) out of Sue's eyeline behind fruit machines and seating while the oldest-looking lad goes up
   - Done (V72): Sue pours with her back turned, turns round with a "!" and TURNING..., then WATCHING. Move in her sight (away from the fruit machines) and she clocks you and sends you back to the door; three strikes and it kicks off anyway; reach the bar for SERVED! and 2,000
 - [x] 5. The Blacksmiths, it kicks off: Alan and Jeff start it round the pool table at the top of the L. Throwable horseshoes, pool cues and balls, wagon wheels off the walls rolling as hazards, the fruit machine gives a hold/nudge bonus when hit. Boss: Mick ringing the bell, Sue's "OI!" from behind the bar as a stun
@@ -127,6 +129,8 @@ Real street order, left to right (the mirror shop is past the Blacksmiths, not b
 - [ ] Tim: play the run back on a phone and say if it's too easy or too hard (the time per difficulty is one line, runLimit), and whether the lads should be running with you
 - [x] 7. Ram Ba Ba door: blag mini-game with a nerve meter, tapping to keep Kelly's Mass Head from inflating. Scripted to fail (it's canon): Kelly is refused and sits on the coach till 2am. Playing as Kelly: Snake on his brick phone, with a board
   - First pass (V72): at the Atlantis door, the bouncers let the lads in and turn Kelly away; playing as Kelly, he sits the night out on the coach and the stage ends. The nerve-meter blag and Kelly's Snake are still to do
+  - Done (V85): the blag. At the Atlantis door the bouncer asks three questions (always "How old are you?", then two of date of birth, star sign, the wristband, who's on). A nerve meter: HIT when the needle is in the green for a cool answer ("Pisces."); miss or wait and you stammer ("Is that the crab?"), the green shrinks and the needle speeds up. Two cool of three: SMOOTH, 3,000. The wristband gets you in either way. Playing as Kelly the green is a sliver and he's refused regardless. Not done: Kelly's Mass Head inflating as the meter (it's the player's nerve instead)
+  - Test `tools/v85/orpnighttest.py`: the chat order, the clock at four places, the blag both ways (SMOOTH and +3,000; silent and no bonus), through to the dance floor, no glitches. Passes
 - [x] 8. Atlantis: rhythm brawler, hits land harder on the 2-step beat, strobes reveal foes; ends at 2am
   - First pass (V72): inside, a BEAT ring at the bottom of the screen; hits landed on the beat do 1.6x (ON BEAT!), and a strobe flashes every bar. The 2am finale and the coach home chat are in. Needs a garage track at the right tempo (it uses the Elba club music for now)
 - [ ] Mini-games 6 and 7 go in the Harvest Moon arcade once met, like the others
