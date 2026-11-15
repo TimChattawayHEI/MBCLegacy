@@ -1631,7 +1631,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/c492d4e0-dd5a-435d-b144-2f47842a65e8/animations/e753dc1f-cc5e-4da0-b99f-8cf155695006/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "old man with walking stick: attack sharp headbutt; hook: reaches far forward with the crook of his stick and yanks back"
  },
  "shark": {
