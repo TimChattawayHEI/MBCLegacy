@@ -267,8 +267,20 @@ The Meshy paintings stay exactly as they are: the movement is a layer drawn on t
 - [x] Pilot on The Frequency (V85): the shop neon breathes and BOOKIES stutters out now and then (its glow on the pavement with it), the fairy lights over the shops twinkle, the street lamps glow and have moths round them, one of the underpass strip lights flickers, drops land in the puddles, a black cat sits on the park wall flicking its tail, and a fox trots across the park every so often, back the other way next time
   - Code in `tools/v85/alive.js` (ALIVE lists each stage's signs, bulbs, lamps, strip lights, puddles and critters), patched in by `tools/v85_alive_build.py`. `tools/v85/bulbs.py` finds the fairy-light bulbs in a painting. `tools/v85/alivetest.py <stage> --gif` shoots the stage at a few clock times and records a clip
   - PixelLab critters made for all the stages in one go (25 generations): fox, cat, pigeon walking and pecking, pigeon flying, seagull flying and standing, rat, duck, a carp jumping, heron, dragonfly, moth, a sailing boat, a flag. Strips in `tools/v85/alive_src`
-- [ ] Tim: watch the Frequency clip and say if it's the right amount of movement before the other 12 painted stages get theirs
-- [ ] Roll out: Soundz (ON AIR sign, mast light, city lights), Arrivals airport (propellers, baggage belt, flag), Dive Bar (TV, fireflies outside), the beach (sea glinting, gulls, boat, lifeguard flag), the club, the Social (fairy lights), Orpington Station, Charing Cross (pigeons, departure board), the alley (rat, strip lights, vent steam), the fishery and Peg Nine (ducks, a carp jumping, heron, dragonflies, mist), Ramsden
+- [x] Tim was happy with the Frequency pilot; rolled out to the other 12 painted stages (V85):
+  - Soundz: ON AIR glowing, the records turning on the decks, city lights out of the windows and off the roof, the corridor lights flickering, the mast's red light blinking, the roof fan turning
+  - Arrivals airport: the plane's propellers turning, gulls over the hills, the tower beacon, the baggage belt moving, a row on the arrivals board flipping
+  - Dive Bar: the telly flickering, the coffee machines steaming, the cigarette machine light; outside, fireflies in the dusk and birds going over
+  - The beach: the lifeguard flag flapping (the painted one is painted out under it), the sea glinting, gulls, a sailing boat crossing the horizon very slowly, a gull standing by the towels
+  - The club, outside: DISCO and the door neon (DISCO stutters), lamps with moths, lights in the hills, a cat on the wall
+  - The Social: the string of coloured bulbs twinkling
+  - Orpington Station: lamps and moths, drops in the puddles, the departures board, strip lights, the ticket machines and vending machine glowing, a fox on the far platform now and then
+  - Charing Cross: lamps, the big departures board, city windows, pigeons pecking and walking on the concourse, one flying under the roof
+  - The Smoking Area: lamps, the green fire door glowing, the air con fan, drops in the puddles, steam off a vent, a cat, rats running along the wall
+  - The fishery and Peg Nine: sun (or dawn) glinting on the water, ducks paddling across, a carp jumping now and then, a heron at the edge, dragonflies by the reeds, smoke off the smoker; mist drifting over Peg Nine and a bite alarm blinking
+  - Ramsden: windows in the burning towers going on and off (the fires and embers were already there)
+  - `tools/v85/alivetest.py` shoots every stage at three clock times with no page errors; bot clears the beach, the fishery, Charing Cross and the alley as before
+- [ ] Tim: play a few of them on the phone and say if anything is too busy, too small to notice, or in the wrong place (every position is one number in ALIVE in `tools/v85/alive.js`)
 
 ### For whoever builds next
 - [ ] Re-running `tools/v64_build.py` adds another copy of the Meshy backdrop line in `drawStageBg` each time (there are ten now; harmless but untidy). `title3d_build.py` undoes V65's locked-lad fixes in the page. V66 to V71 patch the page directly for that reason

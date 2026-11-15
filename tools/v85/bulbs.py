@@ -25,7 +25,7 @@ for y in range(y0, y1):
                 if 0 <= n[0] < W and y0 <= n[1] < y1 and n not in seen:
                     pp = px[n]
                     if max(pp) >= mb - 40 and max(pp) - min(pp) >= 40: seen.add(n); q.append(n)
-        if 1 <= len(comp) <= 6:
+        if 1 <= len(comp) <= (int(sys.argv[5]) if len(sys.argv) > 5 else 6):
             ax = sum(c[0] for c in comp) / len(comp); ay = sum(c[1] for c in comp) / len(comp)
             r, g, b = max((px[c] for c in comp), key=sum)
             out.append([round(ax * 2), round(ay * 2), '#%02x%02x%02x' % (r, g, b)])
