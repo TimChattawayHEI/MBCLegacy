@@ -1607,7 +1607,7 @@
   "ai": "melee",
   "boss": false,
   "stance": "https://backblaze.pixellab.ai/file/pixellab-characters/1042f8ba-2c2f-47b3-be12-8da02f66abe6/c713ce1e-b80a-4f88-93cc-68dd51e020ba/animations/7f169c18-1314-4bb0-b29c-8d8db109a09f/east/8.png",
-  "status": "todo",
+  "status": "done",
   "notes": "attack: heavy slow overhand right; barge: head down shoulder charge; throw: lifts a heavy brick overhead and hurls it"
  },
  "codger": {
