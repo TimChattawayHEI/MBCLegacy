@@ -15489,6 +15489,10 @@ function updPoll() {
   if (st.mine) UPD.mine = st.mine;
   if (st.state === 'ready' && st.latest > UPD.mine) { UPD.latest = st.latest; UPD.kind = 'ready'; }
   else if (st.state === 'apk' && st.latest > UPD.mine) { UPD.latest = st.latest; UPD.kind = 'apk'; UPD.url = UPD_APK; }
+  else if (st.state === 'downloading' && st.latest > UPD.mine) { UPD.latest = st.latest; UPD.kind = 'down'; UPD.prog = st; }   // Version 85: show the download
+  else if (st.state === 'error' && st.latest > UPD.mine) { UPD.latest = st.latest; UPD.kind = 'err'; UPD.err = st.err || ''; }   // Version 85: and say if it stopped
+  else if (st.state === 'checking' && UPD.kind === 'err') { UPD.kind = 'down'; UPD.prog = null; }   // trying again
+  else if ((UPD.kind === 'down' || UPD.kind === 'err') && st.state === 'current') UPD.kind = '';
   else if (UPD.kind === 'ready' && st.state !== 'ready') UPD.kind = '';
   return true;
 }
@@ -15523,6 +15527,11 @@ function updGo() {
   UPD.dismissed = UPD.latest; UPD.dismissedT = performance.now(); sfx('life');
   try { cloudPush(true); } catch (e) { /* best effort */ }
   const sub = UPD.el && UPD.el.querySelector('#updSub');
+  if (UPD.kind === 'err') {   // Version 85: try the download again now
+    UPD.dismissed = 0; UPD.dismissedT = -1e9; UPD.kind = 'down'; UPD.prog = null; UPD.checkedT = performance.now();
+    try { window.MBCNative.otaCheck(); } catch (e) { /* next time */ }
+    return;
+  }
   if (UPD.kind === 'ready') {   // Version 66: switch in the downloaded files and reload
     if (sub) sub.textContent = 'Restarting...';
     UPD.dismissedT = 1e12;
@@ -15539,7 +15548,7 @@ function updTick() {
   const quiet = ['title', 'select', 'pub', 'board'].includes(mode) && !NET.on && !PROFILE.asking;
   // look when the app opens, then every 20 minutes while it's on a menu
   const now = performance.now();
-  if (quiet && now - UPD.checkedT > (UPD.mine ? 20 * 60000 : 4000)) updCheck();
+  if (quiet && now - UPD.checkedT > (UPD.kind === 'err' ? 60000 : UPD.mine ? 20 * 60000 : 4000)) updCheck();   // Version 85: a stopped download retries after a minute
   if (updNative() && now - UPD.statT > 700) { UPD.statT = now; updPoll(); }   // Version 66: how the download is going
   const el = UPD.latest || UPD.el ? updCardEl() : null; if (!el) return;
   // Later hides it for half an hour (a downloaded update also goes in by itself the next time the game opens)
@@ -15549,7 +15558,14 @@ function updTick() {
   const key = UPD.kind + UPD.latest;
   if (el.style.display === 'none' || UPD.shown !== key) {
     UPD.shown = key;
-    if (UPD.kind === 'ready') {
+    el.querySelector('#updGo').style.display = UPD.kind === 'down' ? 'none' : '';
+    if (UPD.kind === 'down') {   // Version 85
+      el.querySelector('#updWhat').textContent = 'DOWNLOADING 1.' + UPD.latest;
+    } else if (UPD.kind === 'err') {
+      el.querySelector('#updWhat').textContent = 'UPDATE 1.' + UPD.latest + ' STOPPED';
+      el.querySelector('#updSub').textContent = (UPD.err ? UPD.err + '. ' : '') + "It'll try again in a minute.";
+      el.querySelector('#updGo').textContent = 'Try again';
+    } else if (UPD.kind === 'ready') {
       el.querySelector('#updWhat').textContent = 'UPDATE READY: 1.' + UPD.latest;
       el.querySelector('#updSub').textContent = 'Restart to play it. Takes a couple of seconds, and your progress is kept.';
       el.querySelector('#updGo').textContent = 'Restart';
@@ -15558,7 +15574,12 @@ function updTick() {
       el.querySelector('#updSub').textContent = "You've got 1." + UPD.mine + (updNative() ? '. This one needs the full download.' : '. Your progress is saved under your name.');
       el.querySelector('#updGo').textContent = 'Update';
     }
-    sfx('incoming');
+    if (UPD.kind !== 'down') sfx('incoming');
+  }
+  if (UPD.kind === 'down') {   // Version 85: how far it's got
+    const p = UPD.prog, mb = v => (v / 1048576).toFixed(v < 10485760 ? 1 : 0);
+    const t = p && p.total ? p.files + ' of ' + p.of + ' files, ' + mb(p.done) + ' of ' + mb(p.total) + ' MB. Keep the game open; you can play while it downloads.' : 'Starting...';
+    const sub = el.querySelector('#updSub'); if (sub.textContent !== t) sub.textContent = t;
   }
   const r = canvas.getBoundingClientRect();
   el.style.display = 'flex'; el.style.left = Math.max(8, r.left + r.width / 2 - el.offsetWidth / 2) + 'px'; el.style.top = Math.max(8, r.bottom - el.offsetHeight - 12) + 'px';
