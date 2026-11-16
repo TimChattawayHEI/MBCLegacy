@@ -328,6 +328,16 @@ Tim upgraded PixelLab to Tier 2 (sound and music need it; the allowance went to 
 - [ ] Tim: listen on the sound board (new sections: the pub and its games, and Moments with both takes of each sting) and say which to swap or redo
 - [ ] Garage-style first tries of the pub, pub games and clear sting were made before Tim asked for the Smoking Area style (30 generations); not used
 
+### Songs with vocals and the jukebox (16 November)
+- [x] Songs with vocals (PixelLab create_music with lyrics): 14 in the style of the stage themes (MCs on the verses, sung or chanted choruses, the words about the lads): The Frequency (MC Mystery), Soundz FM, Arrivals, The High Street, Ye Olde Blacksmith, Atlantis, The 21:12, The Smoking Area, The N47, Naval Operations, The Social, Ramsden, and two jungle posse cuts (Pass the Mic, Pass the Mic 2 with five different voices). Two takes of each. All on the sound board with their words
+- [x] Three guitar songs in a mid-2000s British indie style about the 2006 night out: Orpington Station, Charing Cross, Fourteen Miles
+- [x] Sound board: star ratings (1 to 5) for each take, a best-take vote and a top five. Kept on each person's device for now (Copy my votes sends them); it becomes a shared vote once the board's public link is off and people are invited as Editors
+- [x] The jukebox (V85), at the far end of the Harvest Moon past the Snake cabinet (the pub is 200 px longer). Three pages: SONGS, GUITAR (both takes as the A side and B side) and SOUNDTRACK (the game's own tracks, offline). The song plays in the pub in place of the pub track while you walk about, pauses during a pub game, goes on to the next song when it ends, and stops when you leave. Art by PixelLab in the style of the arcade cabinet (10 generations)
+  - The songs are in `jukebox/` at the top of the repo, not in `web/`, so the in-app update doesn't download them (34 files, about 80 MB at 128 kbps). The jukebox streams them from GitHub (main), so they need signal and only work once this is merged; without signal it says so and the SOUNDTRACK page still works
+  - `tools/v85/jukebox.js`, `tools/v85_jukebox_build.py`, test `tools/v85/juketest.py` (opens it, every page, the soundtrack, both sides streaming, STOP, no signal, leaving). Passes
+- [ ] Tim: pick a take of each vocal song for its stage (the sound board's votes will help); then each stage plays its song once at the start and drops back to its loop
+- [ ] Atlantis's dance floor timed to the vocal garage track's 132 BPM once a take is picked
+
 ### Talking portraits (15 November)
 - [x] The 12 portraits (the lads, Denise, Jo, Nozzer) talk (V85). When one of them says something in a stage, their face pops up beside the speech bubble and the mouth follows the letters of the line, then shuts; in the WhatsApp-style group chat the newest message's face talks. The Nokia text chats stay still (they're texts)
   - PixelLab drew five mouths per face (shut, a, o, e, f; 3 generations each, 36 in all); only the mouth area was pasted onto the original portraits (`tools/v85/mouths.py`), so the faces stay the hand-made ones. Strips in `tools/v85/talk_src`, code in `tools/v85/talk.js`, patched by `tools/v85_talk_build.py`
